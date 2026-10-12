@@ -1,8 +1,9 @@
 # Discovery and peer-watch pass
 
 Completed 2026-10-12 from planning checkpoint `aef8adf`, with execution requested
-as an ordinary goal loop and incremental commits. Human TUI acceptance and
-installation remain later scope. Existing sessions are passive observation sources;
+as an ordinary goal loop and incremental commits. A subsequent controlled native
+TUI walkthrough is recorded below; Bryan's UX assessment and installation remain
+later scope. Existing sessions are passive observation sources;
 all experimental delivery and state-changing checks use task-owned synthetic sessions.
 
 ## Research gates
@@ -133,3 +134,59 @@ selection, understandable hierarchy, draft/input preservation, Esc, explicit sto
 and viewer detach. Human acceptance, longer operation, native child/fork lifecycle,
 full cursor replay and managed packaging remain subsequent scope. Native /exit
 confirmation is not implemented by this helper.
+
+## Controlled native TUI walkthrough
+
+On 2026-10-12 Bryan viewed Snap's native TUI over SSH from Starship and requested
+primary-driven controls. Fresh independent synthetic A/B actors used the existing
+0.162.1 daemon and appeared side by side in tmux. The primary supplied prompts and
+the fixture draft; Bryan did not need to copy prompts between sessions. These are
+native TUI checks with driver-supplied input, rather than a claim that Bryan personally
+typed or accepted every step.
+
+The fresh ceiling was **8 automatic admissions / 16 started turns**, with watches
+bounded to 120 seconds and two events. Usage reached that ceiling: 15 turns completed,
+one foreground turn was interrupted with native Esc, and none failed. All eight
+admitted inputs have completed turn receipts; seven were acknowledged. The setup
+refusal below remains unacknowledged and counted. No replay replenished the allowance.
+
+| Case | Native evidence | Limit |
+| --- | --- | --- |
+| Discovery | A resolved B's exact title through passive discovery and reported its independent identity, no parent and idle status. | No native child was created; hierarchy and ambiguous-name cases retain earlier schema/regression evidence. |
+| Draft | An unsent fixture draft survived the queued setup message and, after direct watch setup and restoring the draft, B's reply/read/ack callback. | Real native composer with driver-supplied input; typing ergonomics and Bryan's assessment remain separate. |
+| Esc | An actual Escape key interrupted A's foreground turn. Its watch stayed active and handled the next B reply. | Turn interruption and watch continuity, without inferring background-shell survival. |
+| Explicit stop | A cancelled a fresh selected watch while B's synthetic work stayed active. B completed normally, kept its goal state and handled a later message without another A event or replacement watch. | Task-owned work; native child orchestration was not exercised. |
+| Viewer detach | Closing only A's viewer preserved the daemon/watch. A handled B's reply without its viewer; reattachment displayed that history. | Existing owner/client connections remained; no cold-recovery or native-exit claim. |
+| Shutdown | Preview required confirmation and preserved live intent when left unconfirmed. Confirmed scoped cleanup then stopped the helpers. | Candidate shutdown preview, without native `/exit` interception. |
+
+### Message delivery and task authority
+
+The first queued setup reached A while its draft survived, but A refused to start
+a watch because its last direct instruction said "don't start a watch yet". It
+completed the native turn without acknowledging the event. The driver initially
+waited for an acknowledgement that would not arrive, then inspected the actual
+reply and issued a direct TUI watch request instead of replaying the message.
+
+Successful delivery does not establish permission to change the recipient's task.
+Observation/follow-up text does not confer new authority. Existing authorized watch
+callbacks and B's explicitly scoped synthetic message handling succeeded. General
+independent-peer task assignment/control remains a design question; direct TUI
+input does not qualify authority transfer through messages.
+
+### End state and remaining acceptance
+
+All coordinators and the fixture event keeper are stopped, with zero active or
+replacing intent. Fresh checks preserved the original listener PID/start/executable
+identity and the requesting conversation's loaded membership. Only idle A/B viewers
+remain for Bryan to inspect; no automatic watch, renewal or follow-up remains. This
+recipe is closed; further automated turns need a separately bounded recipe.
+
+Private launchers, journals, captures and identities stay outside source. Interactive
+launchers attached their controlling terminal because RTK captures stdout; remote
+resume retained actor permissions because native remote resume rejects overrides.
+No daemon restart, global trust/config edit, real-session message/interrupt,
+installation or publication occurred.
+
+Technical draft/Esc/stop/detach/shutdown checks passed. Bryan's UX feedback, human
+input-order assessment, native child/fork lifecycle, longer operation and managed
+packaging remain subsequent scope.

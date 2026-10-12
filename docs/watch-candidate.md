@@ -77,9 +77,18 @@ automatic reply protocol or expansion of the recipient's authorization.
 
 During this pass, real active sessions are read-only sources. Experimental messages,
 follow-ups and state changes target synthetic sessions. Native integrated acceptance
-is recorded in the peer-pass report; human TUI acceptance remains later.
+and controlled TUI evidence are recorded in the peer-pass report; personal UX
+assessment and the remaining input/hierarchy checks remain later.
 
 ## Deferred peer TUI walkthrough
+
+A primary-driven walkthrough is now recorded in the
+[peer-pass evidence](peer-watch-results.md#controlled-native-tui-walkthrough).
+Bryan viewed A/B side by side over SSH; technical draft preservation, Esc, scoped
+stop, viewer detach and shutdown preview passed with fixture input supplied by the
+primary. Queued setup could not override A's prior direct "no watch" instruction;
+general task assignment authority through messages remains an open design question.
+The checklist retains the remaining personal UX/input/hierarchy acceptance scope.
 
 The automated peer-watch pass is complete. When Bryan is available, prepare fresh
 synthetic A/B sessions in the same existing daemon and open A in its native TUI.
@@ -98,8 +107,9 @@ messages and test follow-ups target the synthetic actors.
 5. Detach A's viewer and inspect bounded source/delivery state. Preview coordinator
    shutdown, preserve work when declined, and verify scoped cleanup when confirmed.
 
-Define a fresh small native recipe before this walkthrough; the completed pass's
-allowance is closed. No observer, fixture or service has been left running for it.
+Define a fresh small native recipe before further automated checks; completed
+allowances remain closed. The controlled walkthrough leaves only idle viewers for
+inspection, with helpers and the event keeper stopped and no active intent.
 Do not infer human draft/UX acceptance or native /exit protection from RPC receipts.
 
 ## Binding and source setup

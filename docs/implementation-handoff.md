@@ -34,6 +34,18 @@ the report distinguishes the first harness timing failure from the passing targe
 recipe. All owned fixtures/coordinators were settled; the original owner and requester
 were freshly verified preserved. Human TUI acceptance remains pending.
 
+A subsequent controlled native TUI walkthrough is now complete. Bryan watched
+Snap's A/B viewers over SSH from Starship and requested primary-driven controls.
+The fresh recipe used 8 admissions / 16 turns: 15 completed, one interrupted with
+Esc, zero failures. Native draft preservation, post-Esc follow-up, scoped stop while
+B kept working, viewer detach/reattach and shutdown preview/cleanup passed. A setup
+message also exposed a scope boundary: delivery could not override A's earlier
+direct instruction not to start a watch. See the
+[walkthrough evidence](peer-watch-results.md#controlled-native-tui-walkthrough).
+All helpers and the event keeper are stopped; only idle synthetic viewers remain
+for inspection. Personal UX assessment, human input ordering and independent-peer
+task assignment authority remain open; native `/exit` protection is not implemented.
+
 Bryan explicitly permits monitoring/watching existing active sessions with no
 writes or interruptions. Passive discovery and bounded reads may use those sessions;
 messages, queued follow-ups, goal changes, interruption and other state-changing
@@ -63,9 +75,9 @@ from A's delivery identity; both must refer to the same positively verified owne
 Use selected peer progress/result/input-needed evidence, not idle or child completion
 as a universal task-completion signal. Model-selected signals, cadence and follow-up
 remain choices. Human draft/TUI acceptance stays explicitly pending when unattended.
-The next concrete acceptance step is the
-[prepared peer TUI walkthrough](watch-candidate.md#deferred-peer-tui-walkthrough),
-followed by separately scoped packaging/installation. Native child/fork lifecycle
+The [peer TUI checklist](watch-candidate.md#deferred-peer-tui-walkthrough) now has
+controlled technical evidence; Bryan's assessment and remaining authority/UI
+questions precede separately scoped packaging/installation. Native child/fork lifecycle
 and the newer task-tool facade are not newly qualified by the source implementation.
 
 ## Completed lifecycle pass after review

@@ -1009,6 +1009,14 @@ planning decisions; [current results](peer-watch-results.md) are authoritative f
 implementation and evidence limits. Existing sessions supplied only passive reads;
 all messaging, delivery and fault cases used task-owned synthetic sessions.
 
+A later primary-driven native TUI walkthrough is also complete, with Bryan viewing
+Snap's synthetic A/B actors over SSH from Starship. Its fresh 8-admission/16-turn
+recipe qualified technical draft/Esc/stop/detach/shutdown behavior and exposed the
+distinction between message delivery and authority to change a recipient's task.
+See the [controlled walkthrough](peer-watch-results.md#controlled-native-tui-walkthrough)
+for evidence, cleanup and remaining personal UX/input/hierarchy scope. Its allowance
+is closed; idle viewers remain for inspection without active helpers or intent.
+
 ### Objective and retained evidence
 
 Leave a reviewed local discovery/peer-watch candidate that lets A find the right
