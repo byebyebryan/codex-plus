@@ -66,6 +66,7 @@ def metadata(thread):
     name, name_cut = bounded_text(thread.get('name'), 512)
     cwd, cwd_cut = bounded_text(thread.get('cwd'), 1024)
     return {'thread_id': identity, **classification(thread), 'name': name, 'cwd': cwd,
+            'name_truncated': name_cut, 'cwd_truncated': cwd_cut,
             'context_truncated': name_cut or cwd_cut, 'status': status,
             'forked_from': thread.get('forkedFromId'),
             'direct_input': thread.get('canAcceptDirectInput'),
@@ -167,7 +168,9 @@ class PeerReader:
         inventory = self.discover(caller=caller, timeout=timeout)
         if not inventory['complete']:
             raise ValueError('inventory incomplete; resolve an exact verified UUID')
-        matches = [row for row in inventory['peers'] if row['name'] == name]
+        if any(row.get('name') == name for row in inventory['unclassified']):
+            raise ValueError('name also matches an unclassified session; select an exact verified UUID')
+        matches = [row for row in inventory['peers'] if row['name'] == name and not row['name_truncated']]
         if len(matches) != 1:
             raise ValueError('independent-session name is missing or ambiguous; select an exact UUID')
         return {**self.owner, 'thread_id': matches[0]['thread_id']}

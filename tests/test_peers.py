@@ -218,6 +218,18 @@ class PeerTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(len(first['reply']), 1)
 
+    def test_unclassified_name_collision_and_truncated_title_are_not_exact_matches(self):
+        self.backend.threads[OTHER] = {**ordinary(OTHER), 'source':'unknown'}
+        self.backend.pages = [[B, OTHER]]
+        with self.assertRaises(ValueError):
+            self.reader.resolve(name='B', caller=A)
+        self.assertEqual(self.reader.resolve(target=B, caller=A), self.frozen)
+        self.backend.pages = [[B]]
+        self.backend.threads[B]['name'] = 'x' * 600
+        with self.assertRaises(ValueError):
+            self.reader.resolve(name='x' * 512, caller=A)
+        self.assertEqual(self.reader.resolve(target=B, caller=A), self.frozen)
+
 
 if __name__ == '__main__':
     unittest.main()
