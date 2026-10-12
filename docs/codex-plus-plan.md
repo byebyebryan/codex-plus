@@ -825,10 +825,13 @@ shared limits; all task-owned resources were cleaned up. The
 [current report](coordinator-loop-results.md) records the qualifying checks,
 corrected failures, review, usage checkpoint and preservation evidence.
 
-Post-loop review reproduced two additional lifecycle gaps offline: renewal of a
-lost source can remain pending past expiry, and cancellation skips an uncertain
-queue start even when its owned input is still pending. Resolve those combinations
-before the human walkthrough and a real-source pilot. The
+Post-loop review reproduced two additional lifecycle gaps offline. The corrective
+unattended pass has now resolved those combinations and the nearby deadline,
+retry, pagination and shutdown boundaries, with 94 passing tests and a closed
+fresh batch of 4 admissions / 5 native turns. Human/manual steps were deferred
+at Bryan's request. Review the
+[corrective evidence](coordinator-loop-results.md#corrective-unattended-pass-automated-acceptance-complete)
+and prepared TUI/pilot handoff before the next acceptance scope. The
 [next-pass plan](#next-pass-lifecycle-correctness-and-native-tui-acceptance) below
 defines the proposed finish line and acceptance checks.
 Longer lifetime, native-daemon restart and managed packaging remain separate work.
@@ -853,7 +856,11 @@ deferred manual steps. A fresh ordinary goal now covers the unattended fixes,
 regressions, bounded native checks, cleanup and prepared TUI/pilot handoff. Human
 acceptance and source-selection decisions remain outside its completion objective.
 
-### Decisions to carry into implementation
+The unattended slice is complete and its fresh batch is closed. The contract and
+recipes below record what was implemented/tested; human acceptance and pilot
+selection remain pending. Spare allowance does not authorize further trials.
+
+### Implemented decisions
 
 Preserve the existing model choices, native conversation/daemon, Esc semantics and
 worker identities. Sources continue within their lease while native goals hold
@@ -870,6 +877,10 @@ input, and must distinguish admission, withdrawal, turn outcome and acknowledgem
 | Cancel/replacement/expiry after uncertain start | Reconcile owned pending input independently of start eligibility, including `unknown` start state. Read fresh queue membership under the exact frozen owner/thread. | A matching still-pending entry is withdrawn; no replay or new turn is started by cleanup. |
 | Entry absent, consumed or lookup incomplete | Report only what was observed. Absence is not proof of completion or successful withdrawal; timeout/deletion races remain explicit. | Known admission survives; consumed turns and foreign inputs are preserved; incomplete lookup remains unknown. |
 | Shutdown with owned pending input | Use the same bounded withdrawal logic for confirmed coordinator shutdown, while preserving its affected-work preview. An unavailable owner yields an unresolved receipt. | Confirmation cannot bypass cleanup merely by stopping the event loop; no native turn/daemon is killed. |
+
+An already-confirmed finished source needs no stop handshake and can renew directly
+into a fresh lease after its previous lease ends. This retains model-chosen renewal
+after a terminal lifecycle notice without treating a lost source as confirmed stopped.
 
 The installed experimental queue schema has `cursor` and `nextCursor`. A lookup
 must handle pagination within an explicit bound; not finding an ID on the first

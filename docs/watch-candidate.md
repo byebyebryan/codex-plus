@@ -160,10 +160,49 @@ See [the goal-loop evidence](coordinator-loop-results.md) for tested behavior an
 current limitations. Human draft/input/stop acceptance, an accessible real-source
 pilot, longer operation and managed installation remain subsequent checks.
 
-Post-loop review also found that renewal after source loss can hang, and
-cancellation after an uncertain queue start can skip a still-pending owned entry.
-The corrective unattended pass now has offline regressions for those gaps,
-pagination and shared shutdown cleanup; renewed native acceptance is in progress.
-See the
+Post-loop review found renewal/cancellation gaps. The corrective unattended pass
+resolved them with 94 passing tests and a fresh native batch of four admissions
+and five turns. See the
 [next-pass plan](codex-plus-plan.md#next-pass-lifecycle-correctness-and-native-tui-acceptance)
-for the proposed contracts and checks.
+and the corrective report for the implemented contracts and evidence limits.
+
+## Deferred TUI walkthrough and real-source pilot
+
+Bryan requested finishing unattended work before manual steps. This checklist is
+prepared for the next shared session; it is not an executed human acceptance test.
+Use a fresh private state/fixture and an explicitly selected loaded CLI thread.
+Read the binding/setup/control examples above and recheck the native version/owner.
+Use the public simulator and a model-prepared read-only observer, with a quiet
+initial baseline, 120-second lease and at most two useful events. Choose a fresh
+bounded recipe before running it; the corrective native batch is already closed.
+
+1. Keep a recognizable draft in the TUI, trigger a useful fixture observation and
+   verify that the draft survives. Also check that earlier submitted human input
+   keeps its place ahead of an observation.
+2. Interrupt foreground work with Esc, then trigger a fresh observation. Verify
+   that it is handled while registered observation remains independent.
+3. Register a short watch and one-shot timer, send an explicit stop message, then
+   pass their trigger/deadline. Verify cancellation without renewal or later input
+   from those registrations; inspect already-admitted receipts separately.
+4. Detach the viewer while a bounded observer is registered, reconnect through the
+   qualified path and inspect its evidence. Preview coordinator shutdown, decline
+   it, then confirm and inspect source/input cleanup. Preserve unrelated work.
+
+Record observed behavior, IDs and outcomes privately, with only sanitized results
+in the report. This does not implement a native `/exit` dialog or replace Bryan's
+direct acceptance with scripted keystrokes.
+
+Before opening a real-source pilot, fill in this short worksheet:
+
+| Choice | Needed evidence |
+| --- | --- |
+| Existing cheap task | Identify the selected job/run and owner; prefer work already running. |
+| Read-only source | Exact host-readable status/log command, its permissions and any observation gaps. |
+| Useful events | Which changes deserve follow-up; what proves actual progress, completion or failure. |
+| Model follow-up | Existing permitted actions, reporting and acknowledgement; observation grants no new authority. |
+| Lifetime and stop | Source/timer limits, renewal choice, explicit stop and cleanup expectations. |
+
+If no existing job is suitable, select one existing short validation command and
+private result path before launching it. Network/credential access, restricted
+calling contexts, longer operation and deployment require their own qualification.
+The unattended pass has not selected a real source or launched a workload.

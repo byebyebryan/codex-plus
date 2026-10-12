@@ -17,22 +17,79 @@ candidate's readiness for a pilot; the
 records their proposed resolution and acceptance. No new native trial was run
 for that review.
 
-## Corrective unattended pass: in progress
+## Corrective unattended pass: automated acceptance complete
 
 Bryan requested executing the next pass with incremental commits and deferring
 manual steps. The fresh ordinary goal covers fixes, offline/native acceptance,
 cleanup and prepared handoff. Human acceptance and a selected real-source pilot
 remain pending. The older closed batch counts below are not renewed allowance.
 
-The first corrective slice rejects lost-source renewal without intent mutation,
-adds finite durable renewal attempts, resolves pending replacement IDs, preserves
-failed retries and migrates existing receipts transactionally. It also reaches
-the cancellation path for an uncertain start. All 76 tests pass at this checkpoint;
-that checkpoint preceded pagination-aware cancellation and shared shutdown cleanup.
-The next slice reaches owned pending inputs after unknown starts, keeps separate
-withdrawal receipts, handles bounded pagination and uses one five-second shutdown
-budget. Offline cancellation makes only a cleanup connection, with no cold resume
-or observer startup. All 90 tests now pass; the fresh native batch remains required.
+The corrective source rejects lost-source renewal without intent mutation, adds
+finite durable renewal attempts, resolves pending replacement IDs, preserves
+failed retries and migrates existing receipts transactionally. Cancellation reaches
+owned pending input after unknown starts, records withdrawal separately and handles
+bounded pagination. Confirmed shutdown shares one five-second budget, including
+connection, source termination and withdrawal. Offline cancellation makes only a
+cleanup connection when needed, with no cold resume or observer startup; already
+consumed receipts need no connection.
+
+Review additionally tightened deadline checks after blocking stop requests and
+when a registration arrives during native receive. RPC sending and receiving share
+the same timeout rather than starting a fresh receive allowance after a slow send.
+
+All **94 tests** pass: 5 metadata/checker, 13 original spike, 9 control/delivery,
+22 store, 35 engine/transport and 10 CLI tests. Existing-journal tests preserve IDs,
+baselines and uncertainty; failed migration rolls back and repeated opening does
+not extend a migrated deadline. Fault cases cover loss/cancel/retry/late-stop,
+clock rollback, pagination bounds, foreign entries, delete/consume races, unknown
+outcomes and shared cleanup deadlines. Inventory remains **46 files**. The final
+source checks and unstaged/staged whitespace checks pass.
+
+### Fresh native evidence
+
+CLI and the existing exact daemon still reported `0.162.1`. A fresh ordinary
+CLI/TUI fixture used the same owner, with its own private state and short setup.
+The batch is closed at **4 admissions / 5 started native turns**, below its
+8-admission/16-turn ceiling. No provider-capacity failure occurred; manual cases
+were deferred rather than spending the spare allowance or extending the batch.
+
+| Corrective case | Observed result | Limit |
+| --- | --- | --- |
+| Source lost before renewal | Killing only the identity-verified coordinator stopped its reader. Renewal returned a lost-source error and left parent intent active. Explicit recovery then handled and acknowledged one fresh event. | Controlled snapshot fixture on the qualified full-access path. |
+| Owner lost during renewal | A controlled scheduling pause kept the handshake pending before crash. Restart exposed an interrupted attempt under the returned ID; explicit recovery/retry preserved that failed attempt and produced one live reader. | SIGSTOP/SIGKILL affected only the test coordinator. No unconfirmed stop was relabelled successful. |
+| Uncertain start, input still pending | The native server refused a busy start. A private wrapper deliberately withheld that reply and supplied a stale idle preflight, exercising `unknown`. Offline cancellation withdrew the exact pending entry and preserved its known admission. | Controlled reply-loss/stale-preflight evidence, not a naturally occurring native timeout. |
+| Uncertain start, later consumed | A second controlled case consumed its admitted input, read the fixture and acknowledged it. Cancellation preserved the correlated live completed turn and recorded consumed input. | Real live receipts were relayed from the study connection after intentional coordinator connection loss. This does not prove reconstruction of an unobserved completion during recovery. |
+| Confirmed shutdown with pending input | Preview preserved its generation/work. Confirmation withdrew the pending entry and stopped its reader/coordinator. The separate ordinary foreground sleep turn completed normally. | Native exit interception and direct human TUI acceptance remain separate. |
+
+Startup and measurement corrections were retained privately. An RTK wrapper inside
+the PTY child hid its terminal, so the corrected launch kept RTK around the PTY
+launcher. The empty-thread observer did not receive the first turn's notifications;
+the ordinary TUI and its persisted ready response confirmed that single bootstrap
+turn, which was counted without replaying the prompt. A cleanup quit needed another
+Enter, and a missing import in the cleanup harness was corrected before final
+restoration. No additional model turn resulted from those cleanup corrections.
+
+### Cleanup and deferred handoff
+
+Final receipts verified no active intent, pending renewal, source or coordinator
+in either private state directory, no queued fixture input or fixture goal, and
+the owned viewer closed. No owned reader/quiet-source process remained. Only the
+temporary fixture trust entry was restored; all other parsed configuration and
+bytes were preserved. The original owner PID/start/executable and requesting
+thread's positive loaded membership matched baseline, including a final read-only
+check with the tightened transport. Worker agents, skills and legacy files have
+no changes from the planning checkpoint. Raw case receipts and failures remain
+private; nothing was pushed, published, installed or applied through chezmoi.
+
+The corrective primary goal supplied a pre-report checkpoint of **154,377 tracked
+tokens / 2,086 tracked seconds**. Final accounting is reported by the completion
+tool separately; these are goal-tool metrics, not a native/provider bill.
+
+Bryan explicitly deferred manual steps. The
+[prepared walkthrough and pilot worksheet](watch-candidate.md#deferred-tui-walkthrough-and-real-source-pilot)
+are ready. No real source was selected or launched, and no human acceptance is
+claimed. Native-daemon restart, longer operation, restricted callers, complete
+source cursor coverage and native exit protection remain outside this pass.
 
 ## Checkpoints and preservation
 

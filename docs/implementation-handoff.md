@@ -2,7 +2,8 @@
 
 Updated 2026-10-12 for Bryan's continuation on Snap in
 `/home/bryan/code/codex-plus`. The agreed research-to-local-candidate loop is complete;
-plan the next acceptance/installation scope before extending it.
+its corrective unattended pass is also complete. Human acceptance and installation
+remain subsequent scope.
 Read this first, then the [implementation plan](codex-plus-plan.md). The plan
 defines milestones; this handoff explains why they were chosen and what the
 research does and does not establish. Recheck live versions, endpoints and Git
@@ -35,6 +36,17 @@ ordinary goal loop with incremental commits, completing as much as possible
 unattended and deferring manual steps. Its objective covers the automated slice,
 cleanup and prepared human/pilot handoff; direct human acceptance remains pending.
 The prior goal and native batches remain closed.
+
+The corrective automated slice now resolves those gaps, plus bounded/inspectable
+renewal attempts and retries, pagination-aware withdrawal, shared shutdown cleanup
+and late deadline boundaries. All 94 tests pass. Its fresh native batch closed
+at 4 admissions / 5 turns with no capacity failures, and task-owned cleanup and
+original-owner preservation were verified. See the
+[corrective evidence](coordinator-loop-results.md#corrective-unattended-pass-automated-acceptance-complete)
+and [prepared manual handoff](watch-candidate.md#deferred-tui-walkthrough-and-real-source-pilot).
+Earlier paragraphs preserve the planning/review sequence; they are not unresolved
+implementation findings. Manual TUI acceptance and real-source selection remain
+deferred at Bryan's request, outside this completed unattended objective.
 
 ## Accepted direction and preferences
 
