@@ -10,6 +10,33 @@ It reuses that conversation's daemon for read-only observation commands and queu
 input. It does not create a daemon, choose a saved session by name or automatically
 load a cold thread. The model chooses scripts, filtering, cadence and follow-up.
 
+## Passive peer discovery and inspection
+
+The local peer helper reads the current existing daemon without loading, resuming
+or subscribing to a peer. It excludes the calling session and known delegated
+children from ordinary peer selection. Unknown classification and incomplete
+inventory remain visible; exact name resolution refuses ambiguity or an incomplete
+inventory. Native delegation provenance is separate from independent fork ancestry.
+
+Use exact identities from the returned inventory:
+
+```sh
+rtk proxy scripts/codex-plus-peer list
+rtk proxy scripts/codex-plus-peer list --include-children
+rtk proxy scripts/codex-plus-peer resolve --name 'EXACT_SESSION_TITLE'
+rtk proxy scripts/codex-plus-peer read PEER_UUID --turn-limit 3
+```
+
+An explicit `--socket` and `--caller` can select the existing owner/caller; otherwise
+the running-daemon version query and `CODEX_THREAD_ID` provide defaults. This is
+same-daemon discovery, not a saved/fleet census. Reads include bounded agent/plan
+text, runtime phase and native goal status, excluding user prompts/tool outputs.
+Truncation and bounded snapshot coverage are declared. No task outcome is inferred
+from idle, a completed turn, or a child completion.
+
+See [the peer-pass report](peer-watch-results.md) for current evidence. Messaging
+and background peer-watch integration remain the next implementation slice.
+
 ## Binding and source setup
 
 Use a private directory (0700), an exact loaded thread UUID and its requested Unix

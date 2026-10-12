@@ -25,6 +25,16 @@ and admitted zero messages. The requesting thread and existing daemon were prese
 
 ## Implementation and acceptance
 
-Pending. The intended slices are independent-session discovery/bounded read,
-selected message routing, peer observation through the existing coordinator,
-offline recovery/selection regressions and a fresh capped synthetic native batch.
+The discovery/read slice adds a passive PeerReader and local peer CLI. Sixteen
+new regressions cover native subagent variants, child/name collisions, independent
+forks, duplicate roots, incomplete pages/metadata, unavailable targets, owner
+replacement, passive method enforcement, shared deadlines and truthful bounded
+snapshot/reply semantics. Existing sessions supplied a read-only CLI list/read
+smoke: three independent peers excluding the caller, no sampled children or
+unclassified records, complete loaded inventory, and one bounded history turn.
+The original listener identity was preserved. These checks admitted no messages
+and started no model turns. No sampled native child means native child behavior
+is supported by the installed schema and offline regressions, not a new live spawn.
+
+Selected message routing, coordinator peer sources and the capped synthetic native
+batch remain in progress.

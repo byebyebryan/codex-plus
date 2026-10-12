@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+"""Run the local passive peer helper without importing an installed bundle."""
+from pathlib import Path
+import sys
+
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from codex_plus.peer_cli import entrypoint
+
+entrypoint()
