@@ -1,0 +1,10 @@
+#!/usr/bin/env -S python3 -B
+"""Run the local watch candidate directly from this source checkout."""
+
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from codex_plus.cli import entrypoint
+
+entrypoint()

@@ -106,3 +106,19 @@ coordinator for the qualified full-access calling context. Test cancellation, re
 truthful receipts and recovery. Preserve capacity failures and in-flight boundaries.
 The morning report will distinguish automated native checks from Bryan's pending
 TUI acceptance and separate installation scope.
+
+## Local implementation checkpoint
+
+The source candidate now lives in `codex_plus/` with a direct
+`scripts/codex-plus-watch` entry point. See [the candidate guide](watch-candidate.md).
+It extracts the qualified local transport/control/framing mechanics and adds one
+coordinator owner, private SQLite intent/events, live handling receipts, explicit
+acknowledgement, source/delivery separation, one-shot timers, projection baselines,
+lineage cancellation, stopped-predecessor renewal, explicit source recovery and a
+shutdown preview/confirmation boundary. Native acceptance of this extracted code
+is the next batch; implementation presence is not that acceptance.
+
+Thirty candidate tests cover transactional and lifecycle boundaries, output
+truncation, goal-held observation, admission/start uncertainty, live correlation,
+renewal/cancel races, source recovery and CLI shutdown/status behavior. Existing
+metadata/spike/control tests remain separate.
