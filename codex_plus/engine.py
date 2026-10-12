@@ -12,6 +12,7 @@ import uuid
 from .control import delivery_decision
 from .framing import Lines
 from .native import Client, RpcError
+from .peers import PeerReader, snapshot, classification
 from .store import Store
 
 
@@ -37,6 +38,7 @@ class Engine:
         self.client = backend
         self.generation = str(uuid.uuid4())
         self.sources: dict[str, Source] = {}
+        self.peer_polls: dict[str, dict] = {}
         self.deadlines: dict[str, float] = {}
         self.wake_due: dict[str, float] = {}
         self.renewal_deadlines: dict[str, float] = {}
@@ -70,6 +72,7 @@ class Engine:
         for job_id in list(self.sources):
             self.store.source(job_id, 'lost', reason, self.generation)
         self.sources.clear()
+        self.peer_polls.clear()
         self.store.reconcile()
         self.next_connect = self.monotonic() + 2
 
@@ -81,6 +84,20 @@ class Engine:
         return thread, delivery_decision(self.binding['thread_id'], thread, goal)
 
     def _start_source(self, job):
+        if job['spec'].get('peer') is not None:
+            peer = job['spec']['peer']
+            if peer['thread_id'] == self.binding['thread_id'] or {
+                    key: value for key, value in peer.items() if key != 'thread_id'} != {
+                    key: value for key, value in self.binding.items() if key != 'thread_id'}:
+                self.store.source(job['id'], 'error', 'peer must be distinct and in the same frozen daemon')
+                self.store.notice(job['id'], 'invalid_peer_binding')
+                return
+            gap = job['source_state'] == 'lost'
+            if not self.store.source(job['id'], 'starting', generation=self.generation):
+                return
+            self.peer_polls[job['id']] = {'due': self.monotonic(), 'gap': gap}
+            self.store.db.execute('UPDATE jobs SET recover_requested=0 WHERE id=?', (job['id'],))
+            return
         if not self.store.source(job['id'], 'starting', generation=self.generation):
             return
         spec = job['spec']
@@ -98,6 +115,10 @@ class Engine:
         self.store.db.execute('UPDATE jobs SET recover_requested=0 WHERE id=?', (job['id'],))
 
     def _stop_source(self, job_id, reason, deadline=None):
+        if self.store.job(job_id)['spec'].get('peer') is not None:
+            self.peer_polls.pop(job_id, None)
+            self.store.source(job_id, 'stopped', reason, self.generation)
+            return
         source = self.sources.get(job_id)
         if source is None:
             job = self.store.job(job_id)
@@ -110,6 +131,35 @@ class Engine:
         timeout = 10 if deadline is None else self._remaining(deadline)
         self.client.call('command/exec/terminate', {'processId': source.process_id}, timeout=timeout)
         self.store.source(job_id, 'stop_requested', reason, self.generation)
+
+    def _poll_peer(self, job):
+        poll = self.peer_polls[job['id']]
+        if self.monotonic() < poll['due']:
+            return
+        try:
+            spec = job['spec']
+            reader = PeerReader(self.client, monotonic=self.monotonic)
+            read = reader.read(spec['peer'], turn_limit=spec['turn_limit'],
+                history=bool(set(spec['signals']) & {'turn', 'reply', 'progress'}),
+                goal='goal' in spec['signals'],
+                timeout=min(5, self._remaining(self.deadlines[job['id']])))
+            # Native reads can yield while the CLI cancels or the lease ends.
+            if self.monotonic() >= self.deadlines[job['id']]:
+                self.store.expire(job['id'])
+                self._stop_source(job['id'], 'expired')
+                return
+            if not self.store.source(job['id'], 'running',
+                    'bounded passive peer snapshots' + ('; observation gap after recovery' if poll['gap'] else ''),
+                    self.generation):
+                self._stop_source(job['id'], 'intent_changed_during_read')
+                return
+            self.store.emit(job['id'], json.dumps(snapshot(read, spec['signals'], gap=poll['gap']),
+                                                ensure_ascii=False))
+            poll['due'] = self.monotonic() + spec['interval']
+        except (OSError, ValueError, KeyError, RpcError, TimeoutError) as error:
+            self.peer_polls.pop(job['id'], None)
+            self.store.source(job['id'], 'lost', 'peer read unavailable: ' + str(error), self.generation)
+            self.store.notice(job['id'], 'peer_observation_unavailable')
 
     def _source_error(self, job_id, reason):
         self._stop_source(job_id, 'source_error: ' + reason)
@@ -194,10 +244,13 @@ class Engine:
 
     def _admit(self, event):
         thread, decision = self._control()
+        job = self.store.job(event['job_id'])
+        if job['kind'] == 'message' and classification(thread)['kind'] != 'independent':
+            self.store.control(event['job_id'], 'peer_provenance_unavailable')
+            return
         self.store.control(event['job_id'], decision.reason)
         if not decision.allowed or not self.store.reserve(event['id']):
             return
-        job = self.store.job(event['job_id'])
         envelope = {'codex_plus_observation': True, 'event_id': event['id'],
             'registration_id': event['job_id'], 'kind': event['kind'],
             'observation': event['observation'], 'followup': job['spec']['followup'],
@@ -222,6 +275,9 @@ class Engine:
         if event['start_state'] != 'pending':
             return
         thread, decision = self._control()
+        if job['kind'] == 'message' and classification(thread)['kind'] != 'independent':
+            self.store.control(event['job_id'], 'peer_provenance_unavailable')
+            return
         if not decision.allowed or thread['status']['type'] != 'idle':
             return
         try:
@@ -362,10 +418,13 @@ class Engine:
                     if self.monotonic() >= self.wake_due[job['id']]:
                         self.store.emit(job['id'], job['spec']['prompt'], 'wake')
                 elif job['source_state'] == 'pending' or job['source_state'] == 'lost' and job['recover_requested']:
-                    if len(self.sources) < 16:
+                    if len(self.sources) + len(self.peer_polls) < 16:
                         self._start_source(job)
-                elif job['id'] in self.sources and job['event_count'] >= job['spec']['event_limit']:
-                    self._stop_source(job['id'], 'event_limit_reached')
+                elif job['id'] in self.sources or job['id'] in self.peer_polls:
+                    if job['event_count'] >= job['spec']['event_limit']:
+                        self._stop_source(job['id'], 'event_limit_reached')
+                    elif job['id'] in self.peer_polls:
+                        self._poll_peer(job)
             self._drain()
             if self.monotonic() >= self.next_delivery:
                 self.next_delivery = self.monotonic() + 1
@@ -389,6 +448,8 @@ class Engine:
         deadline = self.monotonic() + 5
         events = []
         try:
+            for job_id in list(self.peer_polls):
+                self._stop_source(job_id, 'coordinator_shutdown', deadline)
             events = [event for event in self.store.events() if event['delivery'] == 'native_queued' and
                       self.store.job(event['job_id'])['intent'] in ('cancelled', 'replaced', 'replacing', 'expired')]
             needs_lookup = any(not event['turn_id'] and event['withdraw_state'] != 'withdrawn' for event in events)

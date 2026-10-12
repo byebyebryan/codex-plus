@@ -34,8 +34,50 @@ text, runtime phase and native goal status, excluding user prompts/tool outputs.
 Truncation and bounded snapshot coverage are declared. No task outcome is inferred
 from idle, a completed turn, or a child completion.
 
-See [the peer-pass report](peer-watch-results.md) for current evidence. Messaging
-and background peer-watch integration remain the next implementation slice.
+See [the peer-pass report](peer-watch-results.md) for current evidence.
+
+## Peer observation and correlated messages
+
+Bind the coordinator state to destination A using the normal binding command.
+Select an exact independent B from passive discovery. A peer watch reads B through
+the host-side reader and delivers selected changes into A:
+
+```sh
+rtk proxy scripts/codex-plus-watch --state STATE_A watch_start --peer PEER_B_UUID --interval 5 --signals reply,needs_input,goal --duration 120 --limit 2 --quiet-initial --followup 'Read fresh peer state and follow up under the existing request'
+rtk proxy scripts/codex-plus-watch --state STATE_A renew --id WATCH_UUID --peer PEER_B_UUID --interval 10 --signals reply,goal --duration 120 --limit 2 --quiet-initial
+```
+
+Supported signals are phase, needs_input, goal, reply, progress and turn. Reply
+requires an explicit final agent message in a completed native turn; progress uses
+bounded commentary/plan content. Each is native evidence, not a universal task
+outcome. The model chooses signals, interval, initial emission and follow-up.
+Intervals range from one to 3600 seconds; history windows range from one to ten
+turns, with default three. Snapshot records remain capped at 4 KiB and declare
+truncation, snapshot-only coverage and a continuity gap on explicit recovery.
+Reads do not resume, subscribe to, enqueue into, change the goal of, or stop B.
+
+Existing watch status/cancel/ack/recover/shutdown apply. Lost peer access or changed
+provenance stops observation with a lost-source receipt and requires explicit
+recovery. Renewal cannot change the frozen peer or switch source type. Cancellation
+and shutdown stop the local reader and reconcile only destination A's owned input.
+
+For an authorized message to B, bind a separate coordinator state to B and use:
+
+```sh
+rtk proxy scripts/codex-plus-watch --state STATE_B peer_send --message 'MESSAGE_WITHIN_EXISTING_SCOPE' --duration 120
+rtk proxy scripts/codex-plus-watch --state STATE_B status MESSAGE_REGISTRATION_UUID
+```
+
+The returned registration/event IDs identify durable intent. Admission, native
+turn identity/outcome and acknowledgement remain separate. A startup failure returns
+those durable IDs with registered_coordinator_unavailable; inspect them rather than
+repeating the send. Acknowledgement proves handling only. Inspect the recipient's
+bounded history using the correlated turn ID to identify its reply; there is no
+automatic reply protocol or expansion of the recipient's authorization.
+
+During this pass, real active sessions are read-only sources. Experimental messages,
+follow-ups and state changes target synthetic sessions. Native integrated acceptance
+is pending until recorded in the peer-pass report; human TUI acceptance remains later.
 
 ## Binding and source setup
 

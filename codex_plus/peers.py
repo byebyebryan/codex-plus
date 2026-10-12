@@ -256,7 +256,7 @@ def snapshot(read, signals, *, gap=False):
             continue
         matches = []
         for turn in turns:
-            for item in turn['items']:
+            for item in reversed(turn['items']):
                 final = item['type'] == 'agentMessage' and item['phase'] == 'final_answer'
                 if signal == 'reply' and not (final and turn['status'] == 'completed'):
                     continue
@@ -270,6 +270,9 @@ def snapshot(read, signals, *, gap=False):
             if len(matches) >= 3:
                 break
         result[signal] = matches[:3]
+    result['coverage']['content_truncated'] = any(
+        item['text_truncated'] for signal in ('reply', 'progress')
+        for item in result.get(signal, []))
     if len(json.dumps(result, ensure_ascii=False).encode()) > 4096:
         raise ValueError('selected peer snapshot exceeds 4 KiB')
     return result

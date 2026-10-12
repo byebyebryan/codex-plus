@@ -60,6 +60,7 @@ EXPECTED_FILES = {
     "scripts/codex-plus-watch",
     "scripts/codex-plus-peer",
     "tests/test_peers.py",
+    "tests/test_peer_watch.py",
     "docs/worker-routing-design.md",
     "docs/worker-routing-study.md",
     *AGENTS,

@@ -16,6 +16,7 @@ import uuid
 
 from .engine import Engine
 from .native import Client
+from .peers import PeerReader, DEFAULT_SIGNALS
 from .store import Store, private_directory
 
 
@@ -129,7 +130,7 @@ def serve(root: Path):
                 awaiting = any(event['delivery'] == 'pending' or
                     event['delivery'] == 'native_queued' and event['expires'] > store.clock() and event['turn_outcome'] is None and
                     event['withdraw_state'] != 'withdrawn' and not event['acknowledged'] for event in store.events())
-                if not active and not awaiting and not engine.sources:
+                if not active and not awaiting and not engine.sources and not engine.peer_polls:
                     idle_since = idle_since or time.monotonic()
                     if time.monotonic() - idle_since >= 10:
                         break
@@ -204,11 +205,18 @@ def parser():
         command.add_argument('--snapshot-fields', help='Comma-separated top-level JSON projection fields')
         command.add_argument('--quiet-initial', action='store_true')
         command.add_argument('--notify-end', action='store_true')
+        command.add_argument('--peer', help='Exact independent peer UUID in the same daemon; replaces command source')
+        command.add_argument('--interval', type=float, default=5)
+        command.add_argument('--signals', default=','.join(DEFAULT_SIGNALS))
+        command.add_argument('--turn-limit', type=int, default=3)
         command.add_argument('command', nargs=argparse.REMAINDER)
     wake = commands.add_parser('wake_schedule')
     wake.add_argument('--after', type=float, required=True)
     wake.add_argument('--duration', type=float, default=120)
     wake.add_argument('--prompt', required=True)
+    message = commands.add_parser('peer_send', help='Send one correlated input to this state directory destination')
+    message.add_argument('--message', required=True)
+    message.add_argument('--duration', type=float, default=120)
     for name in ('status', 'cancel', 'ack', 'recover'):
         commands.add_parser(name).add_argument('id')
     commands.add_parser('list')
@@ -255,15 +263,26 @@ def main(argv=None) -> int:
     store = Store(root)
     try:
         if args.operation in ('watch_start', 'renew'):
-            validate_binding(root)
+            frozen = validate_binding(root)
             command = args.command[1:] if args.command[:1] == ['--'] else args.command
-            if not command:
+            if not command and not args.peer:
                 raise ValueError('source argv is required after --')
-            cwd = str(Path(args.cwd or os.getcwd()).resolve())
-            spec = {'command': command, 'cwd': cwd, 'duration': args.duration,
+            spec = {'duration': args.duration,
                 'event_limit': args.limit, 'followup': args.followup,
                 'snapshot_fields': args.snapshot_fields.split(',') if args.snapshot_fields else None,
                 'quiet_initial': args.quiet_initial, 'notify_end': args.notify_end}
+            if args.peer:
+                if command or args.cwd:
+                    raise ValueError('choose --peer or a command/cwd source')
+                with Client(frozen['requested_socket'], experimental=True) as client:
+                    peer = PeerReader(client).resolve(target=args.peer, caller=frozen['thread_id'])
+                if {key: value for key, value in peer.items() if key != 'thread_id'} != {
+                        key: value for key, value in frozen.items() if key != 'thread_id'}:
+                    raise ValueError('peer owner changed before registration')
+                spec.update(peer=peer, interval=args.interval,
+                            signals=args.signals.split(','), turn_limit=args.turn_limit)
+            else:
+                spec.update(command=command, cwd=str(Path(args.cwd or os.getcwd()).resolve()))
             if args.operation == 'watch_start':
                 job_id = store.create('watch', spec)
             else:
@@ -278,7 +297,28 @@ def main(argv=None) -> int:
                 'destination': binding(root), 'effective_bounds': {
                     'duration': args.duration, 'source_events': args.limit, 'record_bytes': 4096,
                     'stdout_bytes': 65536, 'stderr_bytes': 16384, 'lifecycle_notices': int(args.notify_end)},
-                'source_policy': {'type': 'readOnly', 'networkAccess': False}}))
+                'source_policy': ({'type': 'passivePeerRpc', 'observed_peer': peer,
+                                   'resumes_peer': False} if args.peer else
+                                  {'type': 'readOnly', 'networkAccess': False})}))
+        elif args.operation == 'peer_send':
+            frozen = validate_binding(root)
+            with Client(frozen['requested_socket'], experimental=True) as client:
+                PeerReader(client).validate(frozen)
+            with store.transaction():
+                job_id = store.create('message', {'duration': args.duration,
+                    'prompt': args.message, 'followup': args.message})
+                event_id = store.emit(job_id, args.message, 'message')
+                if event_id is None:
+                    raise ValueError('message lease ended before registration completed')
+            result = {'id': job_id, 'event_id': event_id, 'state': 'registered',
+                      'destination': frozen, 'admission_is_not_handling': True}
+            try:
+                ensure_coordinator(root)
+            except (OSError, ValueError, RuntimeError, TimeoutError) as error:
+                # Durable accepted intent must remain inspectable, not look like a
+                # refused send that a caller should repeat with a different ID.
+                result.update(state='registered_coordinator_unavailable', coordinator_error=str(error))
+            print(json.dumps(result))
         elif args.operation == 'wake_schedule':
             validate_binding(root)
             job_id = store.create('wake', {'after': args.after, 'duration': args.duration,

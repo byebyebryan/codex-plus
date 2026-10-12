@@ -10,6 +10,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from codex_plus.cli import main, shutdown_preview
 from codex_plus.store import Store
+from test_peers import A, B, OWNER
 
 
 class CliTests(unittest.TestCase):
@@ -127,6 +128,43 @@ class CliTests(unittest.TestCase):
         self.assertEqual(result['cancelled'], [parent])
         engine.return_value.close.assert_called_once()
         start.assert_not_called()
+
+    def test_peer_watch_reports_distinct_frozen_source_and_destination(self):
+        frozen = {**OWNER, 'thread_id': A}
+        peer = {**OWNER, 'thread_id': B}
+        (self.state / 'binding.json').write_text(json.dumps(frozen))
+        with patch('codex_plus.cli.validate_binding', return_value=frozen), \
+                patch('codex_plus.cli.Client'), patch('codex_plus.cli.PeerReader') as reader, \
+                patch('codex_plus.cli.ensure_coordinator'):
+            reader.return_value.resolve.return_value = peer
+            _, result = self.run_cli(['watch_start', '--peer', B, '--signals', 'reply,goal',
+                                     '--interval', '7', '--quiet-initial'])
+        self.assertEqual(result['destination'], frozen)
+        self.assertEqual(result['source_policy']['observed_peer'], peer)
+        self.assertFalse(result['source_policy']['resumes_peer'])
+        self.assertEqual(self.store.job(result['id'])['spec']['interval'], 7)
+
+    def test_foreign_peer_owner_is_refused_before_any_registration(self):
+        frozen = {**OWNER, 'thread_id': A}
+        with patch('codex_plus.cli.validate_binding', return_value=frozen), \
+                patch('codex_plus.cli.Client'), patch('codex_plus.cli.PeerReader') as reader, \
+                patch('codex_plus.cli.ensure_coordinator') as start:
+            reader.return_value.resolve.return_value = {**OWNER, 'pid': 101, 'thread_id': B}
+            with self.assertRaises(ValueError):
+                self.run_cli(['watch_start', '--peer', B])
+        self.assertEqual(self.store.jobs(), [])
+        start.assert_not_called()
+
+    def test_message_startup_failure_returns_durable_ids_without_claiming_delivery(self):
+        frozen = {**OWNER, 'thread_id': B}
+        with patch('codex_plus.cli.validate_binding', return_value=frozen), \
+                patch('codex_plus.cli.Client'), patch('codex_plus.cli.PeerReader'), \
+                patch('codex_plus.cli.ensure_coordinator', side_effect=TimeoutError('startup unknown')):
+            _, result = self.run_cli(['peer_send', '--message', 'information'])
+        self.assertEqual(result['state'], 'registered_coordinator_unavailable')
+        self.assertEqual(self.store.event(result['event_id'])['delivery'], 'pending')
+        self.assertEqual(len(self.store.events(result['id'])), 1)
+        self.assertTrue(result['admission_is_not_handling'])
 
 
 if __name__ == '__main__':

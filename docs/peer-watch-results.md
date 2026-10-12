@@ -36,5 +36,15 @@ The original listener identity was preserved. These checks admitted no messages
 and started no model turns. No sampled native child means native child behavior
 is supported by the installed schema and offline regressions, not a new live spawn.
 
-Selected message routing, coordinator peer sources and the capped synthetic native
-batch remain in progress.
+The coordinator now supports passive peer snapshots and one-event correlated
+message registrations. Peer identity is separate from delivery identity; both are
+frozen to one owner. Peer loss/provenance changes require explicit recovery, and
+renewal cannot retarget. Cancellation stops the reader without a peer RPC write.
+Message registration is atomic and returns durable IDs even if coordinator startup
+is unavailable. The native delivery path rechecks independent provenance.
+
+All 126 offline tests pass, including thirteen peer-watch/message cases and three
+new CLI boundary cases. The 52-file inventory and whitespace checks pass. Existing
+command/watch/wakeup and worker tests remain separate and passing. The capped
+synthetic native batch and final review are next; this is not yet native acceptance
+of the new peer-watch/message surface.

@@ -10,6 +10,8 @@ import sqlite3
 import time
 import uuid
 
+from .peers import DEFAULT_SIGNALS, SIGNALS, thread_id
+
 
 MAX_DURATION = 86400
 MAX_EVENTS = 1000
@@ -30,7 +32,8 @@ def private_directory(path: Path) -> Path:
 def validate_spec(kind: str, spec: dict) -> dict:
     spec = dict(spec)
     supported = {'duration', 'event_limit', 'followup', 'notify_end', 'command', 'cwd',
-                 'snapshot_fields', 'quiet_initial', 'after', 'prompt'}
+                 'snapshot_fields', 'quiet_initial', 'after', 'prompt',
+                 'peer', 'interval', 'signals', 'turn_limit'}
     if set(spec) - supported:
         raise ValueError('unsupported registration fields: ' + ', '.join(sorted(set(spec) - supported)))
     duration = spec.get('duration', 120)
@@ -39,29 +42,58 @@ def validate_spec(kind: str, spec: dict) -> dict:
         raise ValueError('duration must be positive and at most 86400 seconds')
     if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= MAX_EVENTS:
         raise ValueError('event limit must be an integer from 1 to 1000')
-    spec.update(duration=duration, event_limit=1 if kind == 'wake' else limit)
+    spec.update(duration=duration, event_limit=1 if kind in ('wake', 'message') else limit)
     followup = spec.get('followup', 'Inspect this observation under the existing request.')
     if not isinstance(followup, str) or not followup.strip() or len(followup.encode()) > 16384:
         raise ValueError('follow-up must be nonempty and at most 16 KiB')
     spec['followup'] = followup
     if kind == 'watch':
-        command = spec.get('command')
-        if not isinstance(command, list) or not command or any(
-            not isinstance(arg, str) or '\0' in arg for arg in command
-        ) or not command[0]:
-            raise ValueError('source command must be a nonempty argv without NUL bytes')
-        cwd = spec.get('cwd')
-        if not isinstance(cwd, str) or not Path(cwd).is_absolute() or not Path(cwd).is_dir():
-            raise ValueError('source cwd must be an existing absolute directory')
+        if spec.get('peer') is not None:
+            peer = spec['peer']
+            if not isinstance(peer, dict) or set(peer) != {
+                    'host', 'uid', 'pid_namespace', 'requested_socket', 'resolved_socket',
+                    'pid', 'start_ticks', 'executable', 'thread_id'}:
+                raise ValueError('peer must contain an exact frozen native binding')
+            thread_id(peer['thread_id'])
+            if any(spec.get(key) is not None for key in ('command', 'cwd')):
+                raise ValueError('choose a peer source or a command source')
+            interval = spec.get('interval', 5)
+            if isinstance(interval, bool) or not isinstance(interval, (int, float)) or not 1 <= interval <= 3600:
+                raise ValueError('peer interval must be 1 through 3600 seconds')
+            signals = spec.get('signals', DEFAULT_SIGNALS)
+            if not isinstance(signals, list) or not signals or any(not isinstance(s, str) for s in signals) or len(signals) != len(set(signals)) or set(signals) - SIGNALS:
+                raise ValueError('select distinct supported peer signals')
+            turns = spec.get('turn_limit', 3)
+            if isinstance(turns, bool) or not isinstance(turns, int) or not 1 <= turns <= 10:
+                raise ValueError('peer turn window must be 1 through 10')
+            fields = ['peer_id', 'coverage', 'task_outcome', *signals]
+            if spec.get('snapshot_fields') is not None and spec['snapshot_fields'] != fields:
+                raise ValueError('peer projection is defined by selected signals')
+            spec.update(interval=interval, signals=list(signals), turn_limit=turns,
+                        snapshot_fields=fields)
+        else:
+            if any(key in spec for key in ('interval', 'signals', 'turn_limit')):
+                raise ValueError('peer options require a peer binding')
+            command = spec.get('command')
+            if not isinstance(command, list) or not command or any(
+                not isinstance(arg, str) or '\0' in arg for arg in command
+            ) or not command[0]:
+                raise ValueError('source command must be a nonempty argv without NUL bytes')
+            cwd = spec.get('cwd')
+            if not isinstance(cwd, str) or not Path(cwd).is_absolute() or not Path(cwd).is_dir():
+                raise ValueError('source cwd must be an existing absolute directory')
         fields = spec.get('snapshot_fields')
         if fields is not None and (not isinstance(fields, list) or not fields or
                 any(not isinstance(field, str) or not field for field in fields) or
                 len(fields) != len(set(fields))):
             raise ValueError('snapshot fields must be distinct nonempty top-level names')
-    elif kind == 'wake':
-        after = spec.get('after')
-        if isinstance(after, bool) or not isinstance(after, (int, float)) or not 0 <= after < duration:
-            raise ValueError('wakeup delay must be nonnegative and before expiry')
+    elif kind in ('wake', 'message'):
+        if spec.get('peer') is not None:
+            raise ValueError('peer observation requires a watch registration')
+        if kind == 'wake':
+            after = spec.get('after')
+            if isinstance(after, bool) or not isinstance(after, (int, float)) or not 0 <= after < duration:
+                raise ValueError('wakeup delay must be nonnegative and before expiry')
         if not isinstance(spec.get('prompt'), str) or not spec['prompt'].strip():
             raise ValueError('wakeup prompt must be nonempty')
         if len(spec['prompt'].encode()) > RECORD_BYTES:
@@ -108,6 +140,7 @@ class Store:
                 acknowledged INTEGER NOT NULL DEFAULT 0, detail TEXT NOT NULL DEFAULT '',
                 UNIQUE(job_id, sequence));
             CREATE UNIQUE INDEX IF NOT EXISTS one_wake ON events(job_id) WHERE kind='wake';
+            CREATE UNIQUE INDEX IF NOT EXISTS one_message ON events(job_id) WHERE kind='message';
             CREATE TABLE IF NOT EXISTS turn_receipts (
                 turn_id TEXT PRIMARY KEY, outcome TEXT NOT NULL, error TEXT);
             CREATE TABLE IF NOT EXISTS renewals (
@@ -241,9 +274,9 @@ class Store:
             job = self.job(job_id)
             if job['intent'] != 'active' or self.clock() >= job['expires']:
                 return None
-            if kind == 'wake':
-                if job['kind'] != 'wake' or self.db.execute(
-                        "SELECT 1 FROM events WHERE job_id=? AND kind='wake'", (job_id,)).fetchone():
+            if kind in ('wake', 'message'):
+                if job['kind'] != kind or self.db.execute(
+                        'SELECT 1 FROM events WHERE job_id=? AND kind=?', (job_id, kind)).fetchone():
                     return None
             elif kind == 'source':
                 if job['kind'] != 'watch' or job['event_count'] >= job['spec']['event_limit']:
@@ -379,6 +412,8 @@ class Store:
             if parent['source_state'] == 'lost':
                 raise ValueError('source is lost; explicitly recover its remaining lease or cancel and register fresh observation')
             spec = validate_spec('watch', spec)
+            if parent['spec'].get('peer') != spec.get('peer'):
+                raise ValueError('renewal cannot change the observed peer identity or source type')
             final = parent['source_state'] in ('stopped', 'completed', 'error')
             now = self.clock()
             deadline = now + 10 if final else min(parent['expires'], now + 10)
