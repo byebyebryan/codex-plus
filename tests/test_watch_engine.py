@@ -467,6 +467,17 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(self.store.renewal(child)['state'], 'expired')
         with self.assertRaises(ValueError): self.store.job(child)
 
+    def test_registration_expired_during_receive_does_not_start_a_source(self):
+        created = []
+        def receive(timeout):
+            created.append(self.store.create('watch', {**self.spec, 'duration': 1}))
+            self.now += 2
+            raise TimeoutError('fixture receive delayed')
+        self.backend.receive = receive
+        self.engine.tick()
+        self.assertEqual(self.store.job(created[0])['intent'], 'expired')
+        self.assertEqual(self.backend.commands, [])
+
 
 if __name__ == '__main__':
     unittest.main()

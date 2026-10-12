@@ -349,6 +349,9 @@ class Engine:
             for job in self.store.jobs():
                 # A CLI may register while receive or another native RPC yields.
                 self._remember_deadline(job)
+                if job['intent'] == 'active' and self.monotonic() >= self.deadlines[job['id']]:
+                    self.store.expire(job['id'])
+                    job = self.store.job(job['id'])
                 if job['intent'] != 'active':
                     self._stop_source(job['id'], job['intent'])
                     if job['intent'] == 'replacing':
