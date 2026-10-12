@@ -301,7 +301,7 @@ class Engine:
                 return
             result = self.client.call('thread/queue/delete', {'threadId': self.binding['thread_id'],
                 'queuedSubmissionId': event['native_id']}, timeout=self._remaining(deadline))
-            if result['deleted']:
+            if result.get('deleted') is True:
                 self.store.withdrawal(event['id'], 'withdrawn', 'exact owned pending native input withdrawn')
             else:
                 self.store.withdrawal(event['id'], 'unknown', 'delete refused or input consumed during cleanup; no retraction proved')
@@ -317,8 +317,7 @@ class Engine:
             delay = min(job['spec']['after'], max(0, job['due'] - self.store.clock()))
             self.wake_due[job['id']] = self.monotonic() + delay
 
-    def tick(self, *, receive=True):
-        self.store.expire_pending_events()
+    def _expire_renewals(self):
         expired = []
         for attempt in self.store.renewals():
             if attempt['state'] != 'pending':
@@ -329,6 +328,10 @@ class Engine:
             if self.monotonic() >= self.renewal_deadlines[key]:
                 expired.append(key)
         self.store.expire_renewals(expired)
+
+    def tick(self, *, receive=True):
+        self.store.expire_pending_events()
+        self._expire_renewals()
         jobs = self.store.jobs()
         for job in jobs:
             self._remember_deadline(job)
@@ -349,6 +352,7 @@ class Engine:
                 if job['intent'] != 'active':
                     self._stop_source(job['id'], job['intent'])
                     if job['intent'] == 'replacing':
+                        self._expire_renewals()
                         self.store.finish_renewal(job['id'])
                     continue
                 if job['kind'] == 'wake':

@@ -452,6 +452,21 @@ class EngineTests(unittest.TestCase):
         self.assertIn('bound', receipt['withdraw_detail'])
         self.assertFalse(any(method == 'thread/queue/delete' for method, _ in self.backend.calls))
 
+    def test_stop_reply_after_monotonic_deadline_cannot_create_child(self):
+        parent, _ = self.source()
+        child = self.store.request_renewal(parent, self.spec)
+        original = self.backend.call
+        def call(method, params, **kwargs):
+            result = original(method, params, **kwargs)
+            if method == 'command/exec/terminate':
+                self.now += 11
+                self.store.clock = lambda: 100  # Wall clock did not advance.
+            return result
+        self.backend.call = call
+        self.tick()
+        self.assertEqual(self.store.renewal(child)['state'], 'expired')
+        with self.assertRaises(ValueError): self.store.job(child)
+
 
 if __name__ == '__main__':
     unittest.main()
