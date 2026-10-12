@@ -1,4 +1,22 @@
-# Codex Worker Kit
+# Codex Plus
+
+Small augmentations around native Codex conversations and the TUI. This repository
+was previously published as Codex Worker Kit; its existing worker agents and skills
+remain available with the same identities and installation paths.
+
+## Current scope and next step
+
+The implemented bundle is currently the worker agents and skills described below.
+The next capability is **watches**: start with one bounded read-only command or file
+observer, filter unchanged observations outside inference, and deliver a meaningful
+event to an explicitly selected existing Codex thread. Status, cancellation and
+expiry belong in that first capability. A watch service is not implemented yet.
+
+Coordination follows watches. The initial watcher will have no Agent Observer
+dependency. Reassess Observer's readiness and the discovery contract when
+coordination work begins, then decide whether an integration is useful.
+
+## Existing worker bundle
 
 Reusable workers and execution workflows for a Sol XHigh primary with selective
 Luna Max delegation. The primary owns decisions, integration, review, and
@@ -63,16 +81,22 @@ new evidence call for primary diagnosis rather than repeated worker cycling.
 Clone the repository and install the two current custom agents and four skills:
 
 ```sh
-git clone https://github.com/byebyebryan/codex-worker-kit.git
+git clone https://github.com/byebyebryan/codex-plus.git
 mkdir -p ~/.codex/agents ~/.agents/skills
-cp codex-worker-kit/agents/*.toml ~/.codex/agents/
-cp -R codex-worker-kit/skills/. ~/.agents/skills/
+cp codex-plus/agents/*.toml ~/.codex/agents/
+cp -R codex-plus/skills/. ~/.agents/skills/
 ```
 
 The example uses `~/.codex/agents` for custom agents and `~/.agents/skills`
 for user skills. If your client supports another personal skills directory,
 install the same skill directories there. With a dotfile manager, update its
 source and published pins instead of copying over managed targets.
+
+Bryan's chezmoi distribution uses `.chezmoiexternals/codex-plus.toml` with pinned
+Codex Plus URLs and checksums. It retains `~/.local/share/codex-worker-kit` as the
+managed archive location for compatibility; the installed agent and skill paths
+also stay the same. The repository rename does not activate a watcher or change
+worker routing.
 
 Select the primary separately in your client or configuration:
 
@@ -94,8 +118,8 @@ retain the `terra-xhigh`, `$terra-task`, and `$terra-goal-loop` identities and d
 not alias Sol. Install them separately only to preserve an explicit Terra workflow:
 
 ```sh
-cp codex-worker-kit/legacy/agents/terra-xhigh.toml ~/.codex/agents/
-cp -R codex-worker-kit/legacy/skills/. ~/.agents/skills/
+cp codex-plus/legacy/agents/terra-xhigh.toml ~/.codex/agents/
+cp -R codex-plus/legacy/skills/. ~/.agents/skills/
 ```
 
 Copying the current default bundle does not remove previously installed Terra

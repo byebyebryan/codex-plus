@@ -208,7 +208,7 @@ source and compute checksums from the fetched bytes.
 
 Use a clean release checkout based on the current published dotfiles branch
 to prepare the pin update without bundling Snap's unpublished Observer commits.
-Update `.chezmoiexternals/codex-worker-kit.toml` and the matching expectations
+Update `.chezmoiexternals/codex-plus.toml` and the matching expectations
 in the dotfiles `scripts/check` together. All seven external entries should
 select the published kit commit; archive and agent-file checksums should match
 the fetched artifacts. Retain regular materialized files and directories.

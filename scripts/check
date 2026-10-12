@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the public Codex worker kit without third-party dependencies."""
+"""Validate the public Codex Plus bundle without third-party dependencies."""
 
 from __future__ import annotations
 
