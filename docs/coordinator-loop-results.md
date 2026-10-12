@@ -17,6 +17,20 @@ candidate's readiness for a pilot; the
 records their proposed resolution and acceptance. No new native trial was run
 for that review.
 
+## Corrective unattended pass: in progress
+
+Bryan requested executing the next pass with incremental commits and deferring
+manual steps. The fresh ordinary goal covers fixes, offline/native acceptance,
+cleanup and prepared handoff. Human acceptance and a selected real-source pilot
+remain pending. The older closed batch counts below are not renewed allowance.
+
+The first corrective slice rejects lost-source renewal without intent mutation,
+adds finite durable renewal attempts, resolves pending replacement IDs, preserves
+failed retries and migrates existing receipts transactionally. It also reaches
+the cancellation path for an uncertain start. All 76 tests pass at this checkpoint;
+pagination-aware cancellation, shared shutdown cleanup and a fresh native batch
+are still required before unattended completion.
+
 ## Checkpoints and preservation
 
 `8f3b380` commits the existing planning drafts, first-spike source and results,

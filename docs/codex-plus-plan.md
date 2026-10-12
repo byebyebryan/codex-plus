@@ -848,6 +848,10 @@ The default finish line is a fixed local candidate, a small new native acceptanc
 batch and a walkthrough with Bryan. A cheap real-source pilot follows those gates;
 its source and scope have not been selected. This planning update does not launch
 implementation, create a goal or reopen either closed native batch.
+Bryan subsequently requested execution with incremental commits and explicitly
+deferred manual steps. A fresh ordinary goal now covers the unattended fixes,
+regressions, bounded native checks, cleanup and prepared TUI/pilot handoff. Human
+acceptance and source-selection decisions remain outside its completion objective.
 
 ### Decisions to carry into implementation
 

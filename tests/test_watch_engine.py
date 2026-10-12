@@ -269,6 +269,39 @@ class EngineTests(unittest.TestCase):
         self.assertIn(created[0], self.engine.sources)
         self.assertFalse(self.backend.closed)
 
+    def test_cancel_unknown_start_withdraws_owned_pending_input(self):
+        job = self.store.create('watch', self.spec)
+        event = self.store.emit(job, 'fixture')
+        self.tick()
+        self.backend.start_error = TimeoutError('start reply lost')
+        self.now += 1; self.tick()
+        queued = list(self.backend.queue)
+        self.store.cancel(job)
+        self.backend = Backend(self.binding)
+        self.backend.queue = queued
+        self.engine.client = self.backend
+        self.now += 1; self.tick()
+        self.assertEqual(self.backend.queue, [])
+        self.assertEqual(self.store.event(event)['start_state'], 'withdrawn')
+
+    def test_renewal_deadline_settles_even_without_native_connection(self):
+        parent = self.store.create('watch', self.spec)
+        child = self.store.request_renewal(parent, self.spec)
+        self.engine.client = None
+        self.engine.next_connect = self.now + 1000
+        self.tick(); self.now += 11; self.tick()
+        self.assertEqual(self.store.renewal(child)['state'], 'expired')
+        self.assertEqual(self.store.job(parent)['intent'], 'active')
+
+    def test_clock_rollback_does_not_extend_renewal_handshake(self):
+        parent = self.store.create('watch', self.spec)
+        child = self.store.request_renewal(parent, self.spec)
+        self.engine.client = None; self.engine.next_connect = self.now + 1000
+        self.tick()
+        self.store.clock = lambda: 50
+        self.now += 11; self.tick()
+        self.assertEqual(self.store.renewal(child)['state'], 'expired')
+
 
 if __name__ == '__main__':
     unittest.main()

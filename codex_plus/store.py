@@ -114,6 +114,31 @@ class Store:
                 parent_id TEXT PRIMARY KEY REFERENCES jobs(id), new_id TEXT NOT NULL,
                 spec TEXT NOT NULL, state TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '');
         ''')
+        try:
+            self._migrate_renewals()
+        except BaseException:
+            self.db.close()
+            raise
+
+    def _migrate_renewals(self):
+        """Keep legacy IDs/receipts; allow multiple failed attempts per parent."""
+        with self.transaction():
+            columns = {row['name'] for row in self.db.execute('PRAGMA table_info(renewals)')}
+            if 'deadline' not in columns:
+                self.db.execute('''CREATE TABLE renewals_next (
+                    parent_id TEXT NOT NULL REFERENCES jobs(id), new_id TEXT PRIMARY KEY,
+                    spec TEXT NOT NULL, state TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '',
+                    created REAL, deadline REAL)''')
+                self.db.execute('''INSERT INTO renewals_next
+                    SELECT r.parent_id,r.new_id,r.spec,r.state,r.detail,NULL,
+                        CASE WHEN r.state='pending' THEN MIN(j.expires,?) ELSE NULL END
+                    FROM renewals r JOIN jobs j ON j.id=r.parent_id''', (self.clock() + 10,))
+                if self.db.execute('SELECT COUNT(*) FROM renewals_next').fetchone()[0] != self.db.execute('SELECT COUNT(*) FROM renewals').fetchone()[0]:
+                    raise ValueError('legacy renewal has no valid parent; journal migration refused')
+                self.db.execute('DROP TABLE renewals')
+                self.db.execute('ALTER TABLE renewals_next RENAME TO renewals')
+            self.db.execute("CREATE UNIQUE INDEX IF NOT EXISTS one_pending_renewal ON renewals(parent_id) WHERE state='pending'")
+            self.db.execute('PRAGMA user_version=1')
 
     @contextmanager
     def transaction(self):
@@ -245,7 +270,10 @@ class Store:
 
     def cancel(self, job_id: str) -> dict:
         with self.transaction():
-            job = self.job(job_id)
+            try:
+                job = self.job(job_id)
+            except ValueError:
+                job = self.job(self.renewal(job_id)['parent_id'])
             ids = [row[0] for row in self.db.execute('SELECT id FROM jobs WHERE root_id=?', (job['root_id'],))]
             for target in ids:
                 current = self.job(target)
@@ -256,7 +284,7 @@ class Store:
                     state = 'stop_requested'
                 self.db.execute("UPDATE jobs SET intent='cancelled',source_state=? WHERE id=?", (state, target))
                 self.db.execute("UPDATE events SET delivery='cancelled',detail='explicit supervision cancellation' WHERE job_id=? AND delivery='pending'", (target,))
-                self.db.execute("UPDATE renewals SET state='cancelled' WHERE parent_id=? AND state!='done'", (target,))
+                self.db.execute("UPDATE renewals SET state='cancelled',detail='explicit supervision cancellation' WHERE parent_id=? AND state='pending'", (target,))
         return {'cancelled': ids, 'events': [e for e in self.events() if e['job_id'] in ids]}
 
     def expire(self, job_id: str):
@@ -335,28 +363,68 @@ class Store:
             parent = self.job(parent_id)
             if parent['kind'] != 'watch' or parent['intent'] in ('cancelled', 'replaced', 'replacing') or self.job(parent['root_id'])['intent'] == 'cancelled':
                 raise ValueError('registration cannot be renewed')
+            if parent['source_state'] == 'lost':
+                raise ValueError('source is lost; explicitly recover its remaining lease or cancel and register fresh observation')
             spec = validate_spec('watch', spec)
+            final = parent['source_state'] in ('stopped', 'completed', 'error')
+            now = self.clock()
+            deadline = now + 10 if final else min(parent['expires'], now + 10)
+            if deadline <= now:
+                raise ValueError('source lease expired without a confirmed stop')
             new_id = str(uuid.uuid4())
-            self.db.execute('INSERT INTO renewals VALUES (?,?,?,?,?)',
-                (parent_id, new_id, json.dumps(spec), 'pending', ''))
+            self.db.execute('INSERT INTO renewals VALUES (?,?,?,?,?,?,?)',
+                (parent_id, new_id, json.dumps(spec), 'pending', '', now, deadline))
             self.db.execute("UPDATE jobs SET intent='replacing' WHERE id=?", (parent_id,))
             self.db.execute("UPDATE events SET delivery='cancelled',detail='predecessor replaced' WHERE job_id=? AND delivery='pending'", (parent_id,))
+            if final:
+                self.finish_renewal(parent_id)
         return new_id
+
+    def renewals(self, parent_id: str | None = None) -> list[dict]:
+        rows = self.db.execute('SELECT * FROM renewals ORDER BY rowid' if parent_id is None
+            else 'SELECT * FROM renewals WHERE parent_id=? ORDER BY rowid',
+            () if parent_id is None else (parent_id,))
+        return [self._job(row) for row in rows]
+
+    def renewal(self, new_id: str) -> dict:
+        row = self.db.execute('SELECT * FROM renewals WHERE new_id=?', (new_id,)).fetchone()
+        if row is None:
+            raise ValueError('unknown registration or renewal attempt')
+        return self._job(row)
+
+    def _end_renewal(self, row, state, detail):
+        self.db.execute('UPDATE renewals SET state=?,detail=? WHERE new_id=?', (state, detail, row['new_id']))
+        parent = self.job(row['parent_id'])
+        if parent['intent'] == 'replacing':
+            intent = 'expired' if self.clock() >= parent['expires'] else 'active'
+            self.db.execute('UPDATE jobs SET intent=? WHERE id=?', (intent, parent['id']))
+
+    def expire_renewals(self, expired_ids=()):
+        with self.transaction():
+            for row in self.db.execute("SELECT * FROM renewals WHERE state='pending'").fetchall():
+                if self.clock() >= row['deadline'] or row['new_id'] in expired_ids:
+                    self._end_renewal(row, 'expired', 'renewal handshake deadline ended without a confirmed stop')
 
     def finish_renewal(self, parent_id: str) -> str | None:
         with self.transaction():
-            row = self.db.execute('SELECT * FROM renewals WHERE parent_id=?', (parent_id,)).fetchone()
-            if not row or row['state'] != 'pending':
+            row = self.db.execute("SELECT * FROM renewals WHERE parent_id=? AND state='pending'", (parent_id,)).fetchone()
+            if not row:
                 return None
             parent = self.job(parent_id)
             if parent['intent'] == 'cancelled' or self.job(parent['root_id'])['intent'] == 'cancelled':
                 self.db.execute("UPDATE renewals SET state='cancelled' WHERE parent_id=?", (parent_id,))
                 return None
+            if self.clock() >= row['deadline']:
+                self._end_renewal(row, 'expired', 'stop receipt arrived after renewal deadline')
+                return None
+            if parent['source_state'] == 'lost':
+                self._end_renewal(row, 'interrupted', 'source owner lost during renewal; explicit recovery required')
+                return None
             if parent['source_state'] not in ('stopped', 'completed', 'error'):
                 return None
             new_id = self.create('watch', json.loads(row['spec']), parent_id=parent_id, job_id=row['new_id'])
             self.db.execute("UPDATE jobs SET intent='replaced' WHERE id=?", (parent_id,))
-            self.db.execute("UPDATE renewals SET state='done' WHERE parent_id=?", (parent_id,))
+            self.db.execute("UPDATE renewals SET state='done' WHERE new_id=?", (row['new_id'],))
             return new_id
 
     def reconcile(self):
@@ -364,6 +432,11 @@ class Store:
             self.db.execute("UPDATE events SET delivery='uncertain',detail='coordinator stopped during admission' WHERE delivery='dispatching'")
             self.db.execute("UPDATE events SET start_state='unknown',detail='coordinator stopped during queue start' WHERE start_state='starting'")
             self.db.execute("UPDATE jobs SET source_state='lost',source_detail='previous coordinator connection ended' WHERE source_state IN ('starting','running','stop_requested')")
+            for row in self.db.execute("SELECT * FROM renewals WHERE state='pending'").fetchall():
+                parent = self.job(row['parent_id'])
+                if parent['source_state'] == 'lost':
+                    self._end_renewal(row, 'interrupted', 'source owner lost during renewal; explicit recovery required')
+            self.expire_renewals()
 
     def request_recovery(self, job_id: str):
         with self.transaction():

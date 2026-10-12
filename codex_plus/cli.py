@@ -152,7 +152,15 @@ def serve(root: Path):
 
 def inspection(store: Store, job_id: str | None = None) -> dict:
     info = coordinator_info(store.root)
-    jobs = [store.job(job_id)] if job_id else store.jobs()
+    attempts = store.renewals()
+    target = job_id
+    if job_id:
+        try:
+            store.job(job_id)
+        except ValueError:
+            target = store.renewal(job_id)['parent_id']
+        attempts = [row for row in attempts if row['parent_id'] == target or row['new_id'] == job_id]
+    jobs = [store.job(target)] if target else store.jobs()
     if info is None:
         for job in jobs:
             if job['source_state'] in ('starting', 'running', 'stop_requested'):
@@ -161,7 +169,7 @@ def inspection(store: Store, job_id: str | None = None) -> dict:
     return {'coordinator': {'state': 'running' if info else 'offline',
             'generation': info['generation'] if info else None},
         'destination': binding(store.root), 'registrations': jobs,
-        'events': store.events(job_id),
+        'events': store.events(target), 'renewals': attempts,
         'source_receipts_may_be_stale': info is None}
 
 
@@ -259,9 +267,13 @@ def main(argv=None) -> int:
             if args.operation == 'watch_start':
                 job_id = store.create('watch', spec)
             else:
+                # Startup reconciles a previous owner before accepting renewal.
+                ensure_coordinator(root)
                 job_id = store.request_renewal(args.id, spec)
             ensure_coordinator(root)
-            print(json.dumps({'id': job_id, 'state': 'registered' if args.operation == 'watch_start' else 'replacement_pending',
+            attempt = store.renewal(job_id) if args.operation == 'renew' else None
+            print(json.dumps({'id': job_id, 'state': 'registered' if attempt is None else 'replacement_' + attempt['state'],
+                'renewal': attempt,
                 'predecessor': args.id if args.operation == 'renew' else None,
                 'destination': binding(root), 'effective_bounds': {
                     'duration': args.duration, 'source_events': args.limit, 'record_bytes': 4096,

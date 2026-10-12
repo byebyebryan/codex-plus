@@ -39,6 +39,7 @@ class Engine:
         self.sources: dict[str, Source] = {}
         self.deadlines: dict[str, float] = {}
         self.wake_due: dict[str, float] = {}
+        self.renewal_deadlines: dict[str, float] = {}
         self.next_connect = 0.0
         self.next_delivery = 0.0
         self.stopping = False
@@ -210,12 +211,14 @@ class Engine:
         self.store.admitted(event['id'], queued['id'])
 
     def _start_admitted(self, event):
-        if event['start_state'] != 'pending' or not event['native_id']:
+        if not event['native_id']:
             return
         job = self.store.job(event['job_id'])
         if (job['intent'] in ('cancelled', 'replaced', 'replacing') or
                 self.store.clock() >= event['expires']):
             self._withdraw(event)
+            return
+        if event['start_state'] != 'pending':
             return
         thread, decision = self._control()
         if not decision.allowed or thread['status']['type'] != 'idle':
@@ -273,6 +276,16 @@ class Engine:
 
     def tick(self, *, receive=True):
         self.store.expire_pending_events()
+        expired = []
+        for attempt in self.store.renewals():
+            if attempt['state'] != 'pending':
+                continue
+            key = attempt['new_id']
+            if key not in self.renewal_deadlines:
+                self.renewal_deadlines[key] = self.monotonic() + min(10, max(0, attempt['deadline'] - self.store.clock()))
+            if self.monotonic() >= self.renewal_deadlines[key]:
+                expired.append(key)
+        self.store.expire_renewals(expired)
         jobs = self.store.jobs()
         for job in jobs:
             self._remember_deadline(job)

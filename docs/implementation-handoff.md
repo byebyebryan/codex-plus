@@ -30,8 +30,11 @@ and a TUI walkthrough with Bryan. Renewal should reject an already-lost source
 without mutating intent; owner loss during renewal must settle a bounded attempt
 without claiming an unconfirmed stop. Cancellation/shutdown should reconcile exact
 owned pending input independently of an uncertain start outcome. A real-source
-pilot follows acceptance; its source is not selected. Planning has not started
-implementation or reopened a completed goal/batch.
+pilot follows acceptance; its source is not selected. Bryan has now requested an
+ordinary goal loop with incremental commits, completing as much as possible
+unattended and deferring manual steps. Its objective covers the automated slice,
+cleanup and prepared human/pilot handoff; direct human acceptance remains pending.
+The prior goal and native batches remain closed.
 
 ## Accepted direction and preferences
 

@@ -73,6 +73,18 @@ Renewal first stops/confirms the predecessor, then registers a linked replacemen
 with the supplied invocation and bounds. It cannot overlap the predecessor or
 renew cancelled supervision. Cancellation covers the selected registration's
 lineage, including replacements, and remains authoritative during renewal races.
+`status` accepts the returned replacement ID before a successor exists and shows
+the durable attempt, predecessor and deadline. Lost-source renewal is rejected
+without changing intent: explicitly recover the remaining lease or cancel and
+register fresh observation. Live-source handshakes end within ten seconds or the
+parent lease, whichever comes first. An already-confirmed finished source can
+renew directly into a fresh lease after its old lease ends.
+
+Owner loss interrupts a pending attempt; deadline expiry ends it without claiming
+a confirmed source stop. Remaining parent intent can be explicitly recovered or
+cancelled. Retry creates a distinct attempt receipt and preserves previous failures,
+with at most one successful successor. Existing journals migrate transactionally;
+legacy request timestamps remain unknown rather than being invented.
 
 Inspection separates intent, source health, control reason, native admission,
 queue-start state, live turn outcome and explicit acknowledgement. Cached status
@@ -137,6 +149,8 @@ pilot, longer operation and managed installation remain subsequent checks.
 
 Post-loop review also found that renewal after source loss can hang, and
 cancellation after an uncertain queue start can skip a still-pending owned entry.
-Those reproduced gaps need fixes before a real-source pilot. See the
+The corrective unattended pass has offline regressions for those gaps; renewed
+native acceptance is in progress. Pagination and shared shutdown cleanup are
+being completed before a real-source pilot. See the
 [next-pass plan](codex-plus-plan.md#next-pass-lifecycle-correctness-and-native-tui-acceptance)
 for the proposed contracts and checks.

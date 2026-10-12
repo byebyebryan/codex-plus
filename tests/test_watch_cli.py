@@ -98,6 +98,28 @@ class CliTests(unittest.TestCase):
         self.assertTrue(result['observation_gap'])
         self.assertTrue(self.store.job(watch)['recover_requested'])
 
+    def test_pending_and_failed_replacement_ids_have_cached_receipts(self):
+        parent = self.store.create('watch', self.spec)
+        self.store.source(parent, 'running')
+        child = self.store.request_renewal(parent, self.spec)
+        with patch('codex_plus.cli.Client') as native, patch('codex_plus.cli.ensure_coordinator') as start:
+            _, pending = self.run_cli(['status', child])
+            self.store.reconcile()
+            _, failed = self.run_cli(['status', child])
+        self.assertEqual(pending['renewals'][0]['state'], 'pending')
+        self.assertEqual(failed['renewals'][0]['state'], 'interrupted')
+        self.assertEqual(failed['registrations'][0]['id'], parent)
+        native.assert_not_called(); start.assert_not_called()
+
+    def test_renewal_reconciles_offline_owner_before_acceptance(self):
+        parent = self.store.create('watch', self.spec)
+        self.store.source(parent, 'running')
+        with patch('codex_plus.cli.validate_binding'), patch('codex_plus.cli.ensure_coordinator', side_effect=lambda root:self.store.reconcile()):
+            with self.assertRaisesRegex(ValueError, 'lost'):
+                self.run_cli(['renew', '--id', parent, '--', 'rtk', 'proxy', 'true'])
+        self.assertEqual(self.store.job(parent)['intent'], 'active')
+        self.assertEqual(self.store.renewals(), [])
+
 
 if __name__ == '__main__':
     unittest.main()
