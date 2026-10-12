@@ -678,7 +678,7 @@ this finish line: **qualify the research gates, then build and review a local
 coordinator candidate if they pass; installation comes later.** This extends the
 next-spike proposal into a substantial execution pass. Planning this loop did
 not start it or reopen either completed research goal. Bryan subsequently
-requested execution with incremental commits. The fresh ordinary goal is active;
+requested execution with incremental commits. That ordinary goal is now complete;
 [current results](coordinator-loop-results.md) track it.
 
 ### Goal and deliverable
@@ -825,10 +825,12 @@ shared limits; all task-owned resources were cleaned up. The
 [current report](coordinator-loop-results.md) records the qualifying checks,
 corrected failures, review, usage checkpoint and preservation evidence.
 
-Review the candidate with Bryan in the native TUI: preserve draft/human input,
-interrupt a foreground turn, handle a fresh observation, explicitly stop selected
-supervision and preview destructive coordinator shutdown. Then select a cheap
-already-accessible real source and qualify its permissions and outcome handling.
+Post-loop review reproduced two additional lifecycle gaps offline: renewal of a
+lost source can remain pending past expiry, and cancellation skips an uncertain
+queue start even when its owned input is still pending. Resolve those combinations
+before the human walkthrough and a real-source pilot. The
+[next-pass plan](#next-pass-lifecycle-correctness-and-native-tui-acceptance) below
+defines the proposed finish line and acceptance checks.
 Longer lifetime, native-daemon restart and managed packaging remain separate work.
 No additional trial is authorized by this handoff alone.
 
@@ -838,3 +840,126 @@ qualification recorded in the current report.
 
 Planning changes do not launch a service, create a watch, change chezmoi pins,
 activate a worker workflow or restart the closed research goal.
+
+## Next pass: lifecycle correctness and native TUI acceptance
+
+Proposed follow-up to the completed loop and read-only review, 2026-10-12.
+The default finish line is a fixed local candidate, a small new native acceptance
+batch and a walkthrough with Bryan. A cheap real-source pilot follows those gates;
+its source and scope have not been selected. This planning update does not launch
+implementation, create a goal or reopen either closed native batch.
+
+### Decisions to carry into implementation
+
+Preserve the existing model choices, native conversation/daemon, Esc semantics and
+worker identities. Sources continue within their lease while native goals hold
+delivery; the coordinator does not resume goals. An explicit supervision stop
+cancels selected intent and renewal. Cleanup may remove only a proven owned pending
+input, and must distinguish admission, withdrawal, turn outcome and acknowledgement.
+
+| Boundary | Recommended contract | Observable acceptance |
+| --- | --- | --- |
+| Renewal requested for an already-lost source | Reject before changing intent, with an actionable lost-source receipt. The model can explicitly recover the remaining lease or cancel and register fresh observation. | No stuck replacement; the original remains recoverable until expiry; no source starts implicitly. |
+| Owner loss during an accepted renewal | Terminate the renewal attempt with an interrupted receipt; preserve lost-source truth and expose any remaining parent lease for explicit recovery/cancellation. | No successor without a confirmed predecessor stop; no permanently active `replacing` intent. |
+| Predecessor stop not confirmed in time | Persist a handshake deadline of the earlier of parent expiry and ten seconds after the request. End with an explicit failed/expired attempt. | Advancing an injected clock settles the attempt; native unavailability cannot hold the coordinator indefinitely. |
+| Renewal identity and retry | Status must resolve the returned pending replacement ID to its predecessor, deadline and attempt outcome. Keep failed-attempt receipts when an explicit retry is accepted; allow at most one live successor. | No unknown-ID response for a returned receipt, duplicate live successor or erased failure history. |
+| Cancel/replacement/expiry after uncertain start | Reconcile owned pending input independently of start eligibility, including `unknown` start state. Read fresh queue membership under the exact frozen owner/thread. | A matching still-pending entry is withdrawn; no replay or new turn is started by cleanup. |
+| Entry absent, consumed or lookup incomplete | Report only what was observed. Absence is not proof of completion or successful withdrawal; timeout/deletion races remain explicit. | Known admission survives; consumed turns and foreign inputs are preserved; incomplete lookup remains unknown. |
+| Shutdown with owned pending input | Use the same bounded withdrawal logic for confirmed coordinator shutdown, while preserving its affected-work preview. An unavailable owner yields an unresolved receipt. | Confirmation cannot bypass cleanup merely by stopping the event loop; no native turn/daemon is killed. |
+
+The installed experimental queue schema has `cursor` and `nextCursor`. A lookup
+must handle pagination within an explicit bound; not finding an ID on the first
+page does not establish absence. Bound total reconciliation work, not just each
+RPC, and retain unknown when the bound is exhausted. Status/list stay cached and
+must never start a connection or observer to collect fresh state.
+Confirmed shutdown keeps its existing five-second cleanup window as a total
+budget across owned work. A missed deadline records unresolved cleanup; it must
+not multiply into a separate full timeout for every event or claim retraction.
+
+### Implementation and offline acceptance
+
+First add regressions for the two review reproductions, then change
+`codex_plus/store.py`, `engine.py` and the necessary CLI receipts. Cover the nearby
+combinations that share these transitions rather than reopening the whole study:
+
+- Source lost before renewal; owner lost while stopping; cancellation during
+  renewal; stop acknowledgement after the deadline; explicit retry; crash/reopen
+  with the pending attempt; expiry while native control stays unavailable.
+- Unknown queue-start outcome with an exact pending entry, an already-consumed
+  entry, a missing entry, a foreign entry and an entry beyond the first page.
+  Include delete/consume races, query timeout, binding mismatch and explicit
+  cancellation while the coordinator is offline.
+- Confirmed shutdown using the same cleanup path; preview preserves work;
+  cancellation never restarts observation or schedules a replacement. Cached
+  inspection remains passive and receipts keep admission distinct from handling.
+
+Use injected clocks and controlled fault backends. If durable schema changes are
+needed, verify opening an existing journal preserves IDs, baseline, cancellation
+and uncertain receipts; make the migration transactional and repeatable. Keep
+fixtures synthetic and private runtime captures outside source. Run the separate
+worker metadata/checker tests, the full existing suite, `scripts/check` and both
+unstaged/staged whitespace checks. Commit each validated cohesive slice.
+
+### Small native batch
+
+After the regressions pass, use a fresh task-owned CLI/TUI fixture on the existing
+daemon. Recheck the installed version/schema, exact owner and positively loaded
+thread before binding. Do not reuse the spare allowance of a closed batch.
+
+Proposed combined automated/human ceiling: **8 follow-up admissions and 16 started
+native test turns**. Use at most 120 seconds/two events per watch, one event per
+timer, ten-to-thirty-second timer delays and the existing byte/protocol bounds.
+Record setup, controlled failures and any goal continuation in the turn count.
+Prepare each recipe and expected receipts before launching; a provider failure
+does not silently replenish the allowance. Use a short recipient setup and a
+prepared fixture, and do not repeat the broader research loop for context alone.
+
+| Native recipe | Required result |
+| --- | --- |
+| Lose a source, request renewal | Structured refusal leaves intent truthful; explicit recovery handles one fresh event; cancellation ends its lineage. |
+| Lose coordinator ownership during pending renewal | Restart reconciles to a finite interrupted/expired attempt with a resolvable returned ID; no duplicate reader or unconfirmed successor. |
+| Uncertain queue start followed by cancellation | A task-owned fault harness with known server-side receipts exercises both still-pending and consumed cases. Exact pending input is removed; consumed handling retains its receipt; no replay. Label injected reply loss as controlled evidence. |
+| Confirmed shutdown with pending input | Preview preserves work; confirmation withdraws provably owned pending input and stops only owned sources/coordinator. Unresolved in-flight work stays visible. |
+
+Keep slow/large pagination and exhaustive deadline permutations offline. Real
+native checks qualify the changed integration boundaries; they do not need to
+repeat all earlier successful goal/filtering/adaptation scenarios.
+
+### Human TUI walkthrough and pilot gate
+
+With Bryan available, use the same bounded synthetic setup to check:
+
+1. A draft survives an arriving observation, and earlier human input keeps its
+   position. Record the observed UI behavior rather than inferring it from RPCs.
+2. Esc interrupts a foreground turn; a later fresh observation still arrives.
+3. An explicit stop message cancels the selected watch and timer, with no later
+   wakeup or automatic renewal from those registrations.
+4. Viewer detach leaves bounded coordinator observation available while its
+   owning runtime remains available. Coordinator shutdown shows affected work;
+   declining preserves it and confirmation produces truthful cleanup receipts.
+
+Native `/exit` interception and a Claude-style exit dialog remain a separate
+extension question. This walkthrough tests the current separate coordinator
+boundary; it must not describe that as native exit protection.
+
+The next pass can complete its automated slice and leave the walkthrough ready
+if Bryan is unavailable, but must record human acceptance as pending and must not
+mark a goal requiring that walkthrough complete. A real-source
+pilot opens only after both gates pass and an accessible source is selected.
+Prefer observing an already-running cheap local task through host-readable status
+or logs. If none is suitable, select one existing short validation command and
+its private result path before launching it. Define progress/terminal evidence,
+permitted follow-up and stopping bounds first; job restart/repair requires its own
+existing authorization. Restricted callers and network/credential requirements
+remain outside the qualified source policy.
+
+### Handoff and scope boundary
+
+Deliver the fixed candidate commits, updated receipts/guide, regression and native
+results, remaining human checks and exact task-owned cleanup/preservation evidence.
+Retain raw recipes privately. Preserve the existing daemon, requesting thread,
+unrelated work and worker agents/skills. The ordinary primary owns the pass;
+generic goal-loop language does not activate a worker workflow or delegation.
+Packaging, publication, chezmoi apply, fleet/Observer integration, daemon replacement
+and a long soak remain subsequent scope. Completion should match the selected
+finish line, with unperformed human/pilot acceptance stated plainly.

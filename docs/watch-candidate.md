@@ -134,3 +134,9 @@ reproduced by this pass.
 See [the goal-loop evidence](coordinator-loop-results.md) for tested behavior and
 current limitations. Human draft/input/stop acceptance, an accessible real-source
 pilot, longer operation and managed installation remain subsequent checks.
+
+Post-loop review also found that renewal after source loss can hang, and
+cancellation after an uncertain queue start can skip a still-pending owned entry.
+Those reproduced gaps need fixes before a real-source pilot. See the
+[next-pass plan](codex-plus-plan.md#next-pass-lifecycle-correctness-and-native-tui-acceptance)
+for the proposed contracts and checks.

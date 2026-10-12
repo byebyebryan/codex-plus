@@ -16,6 +16,23 @@ local surface is now implemented in `codex_plus/` with
 [current evidence](coordinator-loop-results.md) before using it. Published and
 installed worker files remain unchanged; this helper is local source only.
 
+## Next pass after review
+
+Read-only post-loop review reproduced two additional gaps in the current candidate:
+renewing a lost source can leave `replacing` pending beyond expiry, and cancellation
+skips queue reconciliation when start state is `unknown`. The existing 64 tests
+still pass; they do not cover these combinations. The earlier native results
+remain scoped evidence, not proof that these newly reproduced cases are correct.
+
+The [next-pass plan](codex-plus-plan.md#next-pass-lifecycle-correctness-and-native-tui-acceptance)
+proposes regressions and lifecycle fixes first, then a fresh bounded native batch
+and a TUI walkthrough with Bryan. Renewal should reject an already-lost source
+without mutating intent; owner loss during renewal must settle a bounded attempt
+without claiming an unconfirmed stop. Cancellation/shutdown should reconcile exact
+owned pending input independently of an uncertain start outcome. A real-source
+pilot follows acceptance; its source is not selected. Planning has not started
+implementation or reopened a completed goal/batch.
+
 ## Accepted direction and preferences
 
 **Native Codex CLI/TUI, background follow-up first, coordination next.** Preserve Bryan's

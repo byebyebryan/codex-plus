@@ -8,6 +8,15 @@ The [execution contract](codex-plus-plan.md#large-goal-loop-research-to-a-review
 allows two finite native batches, with 24 follow-up admissions and 40 started
 native test turns overall. The original research batch remains closed.
 
+Post-loop read-only review reproduced two additional cases outside the completed
+native matrix: renewal of an already-lost source can remain `replacing` past
+expiry, and cancellation does not inspect an owned pending input after an
+uncertain queue start. Existing tests still pass. These findings qualify the
+candidate's readiness for a pilot; the
+[next-pass plan](codex-plus-plan.md#next-pass-lifecycle-correctness-and-native-tui-acceptance)
+records their proposed resolution and acceptance. No new native trial was run
+for that review.
+
 ## Checkpoints and preservation
 
 `8f3b380` commits the existing planning drafts, first-spike source and results,
