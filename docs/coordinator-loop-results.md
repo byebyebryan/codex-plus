@@ -64,10 +64,45 @@ spike. Read-only native source execution remains a separate policy. Restricted
 calling contexts need a host-side tool/control design and must report unsupported
 access clearly, without silent sandbox downgrade or assumed credential inheritance.
 
+## Complete supervision and explicit stop
+
+The model prepared a read-only observer with a one-second cadence, selected useful
+fields and a 20-point progress threshold. Six irrelevant fixture updates produced
+zero emissions/admissions. Progress and terminal observations had distinct event
+IDs, were correlated to recipient turns, and each produced fresh inspection and
+a successful live `turn/completed` outcome.
+
+The first measurement recipe stopped early because it treated a persisted
+`thread/turns/list` status as the handling outcome. In this earlier-interrupted
+legacy CLI conversation, that page reported `interrupted` while the matching live
+completion notification reported `completed` and the final assistant response
+acknowledged the event. A fresh named recipe reused the model-prepared script and
+required correlated live outcomes. Both progress and completion passed, while
+the contradictory stored statuses remained visible. Do not overwrite live receipts
+with a later historical snapshot or use that snapshot alone to resolve recovery.
+
+For timed adaptation, the model chose a short wakeup, inspected the stalled fixture
+and actually registered a terminal observer as its continuation. The driver then
+completed the fixture; the continuation event was inspected and supervision ended.
+Two follow-up admissions covered that scenario. This qualifies executed adaptive
+continuation; linked in-place renewal remains a candidate acceptance case.
+
+An explicit stop message cancelled both a quiet marker-controlled observer and a
+pending timer. Triggering the marker and passing the timer deadline after effective
+cancellation produced no new events or replacement registrations. No event had
+been admitted before cancellation in this particular check; in-flight boundaries
+still require truthful receipts and race tests.
+
+The integration batch is closed at **10 follow-up admissions and 19 started native
+test turns**, including setup, goal continuation and the failed measurement
+recipes. No provider-capacity failure occurred. Candidate/recovery acceptance has
+its separate allowance of at most 12 admissions and 20 started turns; unused
+integration allowance is not an automatic retry pool.
+
 ## Remaining work
 
-Exercise complete model-prepared observation and executed timed adaptation.
-Use those gates to extract the local coordinator and test cancellation, renewal,
+The required integration and supervision gates now support extracting the local
+coordinator for the qualified full-access calling context. Test cancellation, renewal,
 truthful receipts and recovery. Preserve capacity failures and in-flight boundaries.
 The morning report will distinguish automated native checks from Bryan's pending
 TUI acceptance and separate installation scope.
