@@ -87,6 +87,17 @@ class CliTests(unittest.TestCase):
         self.assertEqual(job['last_source_state'], 'running')
         self.assertEqual(self.store.job(watch)['source_state'], 'running')
 
+    def test_recovery_reconciles_offline_source_before_requesting_restart(self):
+        watch = self.store.create('watch', self.spec)
+        self.store.source(watch, 'running')
+        def restarted(root):
+            self.store.reconcile()
+        with patch('codex_plus.cli.validate_binding'), patch('codex_plus.cli.ensure_coordinator', side_effect=restarted):
+            code, result = self.run_cli(['recover', watch])
+        self.assertEqual(code, 0)
+        self.assertTrue(result['observation_gap'])
+        self.assertTrue(self.store.job(watch)['recover_requested'])
+
 
 if __name__ == '__main__':
     unittest.main()

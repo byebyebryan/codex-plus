@@ -94,7 +94,6 @@ class Engine:
             'processId': process_id, 'streamStdoutStderr': True,
             'timeoutMs': max(1, int(remaining * 1000)), 'outputBytesCap': STDOUT_BYTES})
         self.sources[job['id']] = Source(request_id, process_id)
-        self.store.source(job['id'], 'running', generation=self.generation)
         self.store.db.execute('UPDATE jobs SET recover_requested=0 WHERE id=?', (job['id'],))
 
     def _stop_source(self, job_id, reason):
@@ -122,6 +121,7 @@ class Engine:
         job_id, source = match
         if source.stop_reason is not None or self.store.job(job_id)['intent'] != 'active':
             return
+        self.store.source(job_id, 'running', generation=self.generation)
         try:
             if params.get('capReached') is not False:
                 raise ValueError('native output truncated or cap status unknown')

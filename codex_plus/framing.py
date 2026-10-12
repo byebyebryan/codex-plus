@@ -12,4 +12,3 @@ class Lines:
         if len(self.buffer) > self.limit or any(len(p) > self.limit for p in parts):
             raise ValueError('event exceeds byte limit')
         return [p.decode('utf-8') for p in parts if p.strip()]
-

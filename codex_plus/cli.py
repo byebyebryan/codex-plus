@@ -282,8 +282,8 @@ def main(argv=None) -> int:
             print(json.dumps(store.acknowledge(args.id)))
         elif args.operation == 'recover':
             validate_binding(root)
-            store.request_recovery(args.id)
             ensure_coordinator(root)
+            store.request_recovery(args.id)
             print(json.dumps({'id': args.id, 'state': 'recovery_requested',
                 'observation_gap': True, 'uncertain_admissions_will_not_be_replayed': True}))
         elif args.operation == 'shutdown':

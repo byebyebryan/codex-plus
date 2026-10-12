@@ -121,7 +121,15 @@ class EngineTests(unittest.TestCase):
             'threadId': 'fixture-thread', 'turn': {'id': 'ordinary-turn', 'status': 'interrupted'}}})
         self.tick()
         self.assertEqual(self.store.job(job)['intent'], 'active')
+        self.assertEqual(self.store.job(job)['source_state'], 'starting')
+
+    def test_source_start_receipt_requires_native_output(self):
+        job, process = self.source()
+        self.assertEqual(self.store.job(job)['source_state'], 'starting')
+        self.backend.output(process, b'\n')
+        self.tick()
         self.assertEqual(self.store.job(job)['source_state'], 'running')
+        self.assertEqual(self.store.events(job), [])
 
     def test_output_truncation_terminates_source_explicitly(self):
         job, process = self.source()
