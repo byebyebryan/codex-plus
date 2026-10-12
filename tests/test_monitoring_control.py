@@ -7,6 +7,9 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'spikes/monitoring'))
 from control import delivery_decision
+from native import RpcError
+from spike import Journal, NotSubmitted, deliver
+import tempfile
 
 
 class ControlTests(unittest.TestCase):
@@ -62,6 +65,64 @@ class ControlTests(unittest.TestCase):
         self.assertTrue(self.decide().allowed)
         self.thread['id'] = 'other'
         self.assertFalse(self.decide().allowed)
+
+    def test_stopped_native_preflight_never_enqueues(self):
+        client = FakeClient(self.thread, {'goal': {**self.goal, 'status': 'paused'}})
+        with self.assertRaises(NotSubmitted):
+            deliver(client, client.binding, 'inspect', {'id': 'event', 'job_id': 'watch',
+                    'kind': 'source', 'observation': 'fixture'})
+        self.assertNotIn('thread/queue/add', client.calls)
+
+    def test_admission_survives_unknown_start_without_replay(self):
+        with tempfile.TemporaryDirectory() as root:
+            journal = Journal(Path(root) / 'state.db')
+            watch = journal.create('watch', {})
+            event = journal.emit(watch, 'fixture')
+            client = FakeClient(self.thread, {'goal': None}, start_error=TimeoutError('unknown start'))
+            journal.dispatch(event, lambda e: deliver(client, client.binding, 'inspect', e))
+            journal.dispatch(event, lambda e: self.fail('known admission was replayed'))
+            receipt = journal.events(watch)[0]
+            self.assertEqual(receipt['state'], 'native_queued')
+            self.assertEqual(receipt['native_id'], 'native-queue-id')
+            self.assertIn('unknown start', receipt['detail'])
+            self.assertEqual(client.calls.count('thread/queue/add'), 1)
+            journal.db.close()
+
+    def test_consumed_or_busy_start_keeps_admission_truthful(self):
+        for error in ('queued submission not found', 'thread already has an active or pending turn'):
+            client = FakeClient(self.thread, {'goal': None}, start_error=RpcError(error))
+            event = {'id': 'event', 'job_id': 'watch', 'kind': 'source', 'observation': 'fixture'}
+            self.assertEqual(deliver(client, client.binding, 'inspect', event), 'native-queue-id')
+            self.assertIn(error, event['_native_start_detail'])
+            self.assertEqual(client.input_id, 'event')
+
+
+class FakeClient:
+    binding = {'thread_id': 'fixture-thread'}
+
+    def __init__(self, thread, goal, start_error=None):
+        self.thread, self.goal, self.start_error = thread, goal, start_error
+        self.calls = []
+        self.events = [{'method': 'turn/completed', 'params': {
+            'turn': {'status': 'interrupted'}}}]
+
+    def bind(self, thread):
+        return self.binding
+
+    def call(self, method, params):
+        self.calls.append(method)
+        if method == 'thread/read':
+            return {'thread': self.thread}
+        if method == 'thread/goal/get':
+            return self.goal
+        if method == 'thread/queue/add':
+            self.input_id = params['clientUserMessageId']
+            return {'queuedSubmission': {'id': 'native-queue-id'}}
+        if method == 'thread/queue/start':
+            if self.start_error:
+                raise self.start_error
+            return {'turn': {'id': 'native-turn-id'}}
+        raise AssertionError(method)
 
 
 if __name__ == '__main__':

@@ -30,7 +30,9 @@ fixture state and raw evidence remain private and outside source.
 | Active goal | Corrected bounded probe admitted and handled an observation while native goal status remained active, with objective and allowance preserved. Driver later marked the fixture done and the goal became complete. | A task-owned trailing turn was interrupted during probe cleanup after goal completion; this is not direct human acceptance. |
 | Paused goal | Pure preflight held delivery; the native queue was unchanged. A separate read-only native source executed successfully while the goal stayed paused. | Observation lifetime and delivery eligibility are independent. No goal-resume or queue-start call was made in the paused state. |
 | Esc | Current tool turn was interrupted. Independent source output continued and exited normally; a later CLI-queued follow-up remained pending for the 60-second check. | CLI admission alone did not provide the required post-interruption wakeup. |
-| Exact queue-start alternative | After validating idle runtime and no stopped goal, starting the exact owned head entry through `thread/queue/start` produced a completed handling turn without goal mutation. | Busy-race behavior, viewer-closed handling and candidate integration still need qualification. |
+| Exact queue-start alternative | After validating idle runtime and no stopped goal, starting the exact owned head entry through `thread/queue/start` produced a completed handling turn without goal mutation. The same method refused a busy turn with `thread already has an active or pending turn`, leaving its entry queued. | Receiver handling and native admission remain separate receipts. |
+| Viewer-closed event | Ordinary `/exit` closed only the owned viewer. A new event admitted afterward through `thread/queue/add` completed its handling turn, correlated by its supplied `clientUserMessageId` to persisted `userMessage.clientId`. | The study connection kept the target loaded. Closing that final client later left it unloaded; the helper must keep its connection and reject unqualified cold targets. |
+| Start/admission race | An extra start raced automatic consumption and received `queued submission not found`; persisted correlated history proved completed handling. | That error cannot turn known admission into failed/uncertain enqueue or justify replay. |
 | Restricted control access | Native read-only and restricted workspace policies with network disabled both denied a task-owned Unix control-channel probe with `Operation not permitted`. | Moving a socket into the writable fixture directory did not establish control access. No global permissions were relaxed. |
 
 The first active-goal recipe had an insufficient synthetic token allowance: the
@@ -48,10 +50,14 @@ unknown goals, unknown input capability and waiting/unknown runtime states hold
 delivery. It does not change goals or control source lifetime. Esc is not inferred
 to cancel monitoring or install a durable follow-up pause.
 
-Six separate control tests cover eligible/stopped/unknown goals, busy/waiting
-runtime states, strict input capability, exact thread matching and interruption
-independence. The original helper still has its earlier study guards; this new
-policy is not yet a claim that the product coordinator is implemented.
+Nine separate control/delivery tests cover eligible/stopped/unknown goals,
+busy/waiting runtime states, strict input capability, exact thread matching,
+interruption independence and known admission after a failed/unknown start.
+The research helper now uses the qualified preflight and direct native queue
+operations with stable event IDs. Its blanket interruption guard is removed.
+Its per-registration worker and stopped-state source suspension remain prototype
+limitations; observation/delivery separation belongs in the candidate. This is
+not yet a claim that the product coordinator is implemented.
 
 Full-access calling setup is the qualified host starting point from the first
 spike. Read-only native source execution remains a separate policy. Restricted
@@ -60,8 +66,7 @@ access clearly, without silent sandbox downgrade or assumed credential inheritan
 
 ## Remaining work
 
-Qualify atomic busy refusal and viewer-closed handling for the queue-start route,
-then exercise complete model-prepared observation and executed timed adaptation.
+Exercise complete model-prepared observation and executed timed adaptation.
 Use those gates to extract the local coordinator and test cancellation, renewal,
 truthful receipts and recovery. Preserve capacity failures and in-flight boundaries.
 The morning report will distinguish automated native checks from Bryan's pending

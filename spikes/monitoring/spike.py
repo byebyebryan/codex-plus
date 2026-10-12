@@ -14,6 +14,7 @@ import time
 import uuid
 
 from native import Client, RpcError
+from control import delivery_decision
 
 
 class NotSubmitted(RuntimeError):
@@ -141,7 +142,7 @@ class Journal:
             state, native_id, detail = 'uncertain', None, str(error)[:1024]
             self.state(event['job_id'], 'suspended', detail)
         else:
-            state, detail = 'native_queued', ''
+            state, detail = 'native_queued', event.get('_native_start_detail', '')
         with self.db:
             self.db.execute('UPDATE events SET state=?, native_id=?, detail=? WHERE id=?',
                             (state, native_id, detail, event_id))
@@ -155,26 +156,28 @@ def deliver(client: Client, binding: dict, followup: str, event: dict) -> str | 
     try:
         if client.bind(binding['thread_id']) != binding:
             raise RpcError('frozen binding changed')
-        # This study does not qualify goal coexistence. Fail closed rather than
-        # submitting user-shaped input to a paused/budget-limited/active goal.
-        if client.call('thread/goal/get', {'threadId': binding['thread_id']}).get('goal') is not None:
-            raise RpcError('goal coexistence is unqualified; automatic delivery suspended')
-        if any(e.get('method') == 'turn/completed' and
-               e['params']['turn'].get('status') == 'interrupted' for e in client.events):
-            raise RpcError('observed native interruption; automatic delivery suspended')
+        thread = client.call('thread/read', {'threadId': binding['thread_id']})['thread']
+        goal = client.call('thread/goal/get', {'threadId': binding['thread_id']})
+        decision = delivery_decision(binding['thread_id'], thread, goal)
+        if not decision.allowed:
+            raise RpcError('native control holds delivery: ' + decision.reason)
     except Exception as error:
         raise NotSubmitted(str(error)) from error
     message = json.dumps({'codex_plus_spike': True, 'event_id': event['id'],
                           'job_id': event['job_id'], 'kind': event['kind'],
                           'observation': event['observation'], 'followup': followup})
-    result = subprocess.run(['rtk', 'proxy', 'codex', 'queue', '--remote',
-                             'unix://' + binding['requested_socket'], '--thread',
-                             binding['thread_id'], '--message', message],
-                            capture_output=True, text=True, timeout=10)
-    if result.returncode:
-        raise RpcError('native queue command failed; submission outcome not assumed')
-    words = result.stdout.split()
-    return words[2] if len(words) > 2 and words[:2] == ['Queued', 'message'] else None
+    queued = client.call('thread/queue/add', {'threadId': binding['thread_id'],
+        'clientUserMessageId': event['id'], 'input': [{'type': 'text', 'text': message}]})['queuedSubmission']
+    if thread['status']['type'] == 'idle':
+        try:
+            client.call('thread/queue/start', {'threadId': binding['thread_id'],
+                'queuedSubmissionId': queued['id']})
+        except Exception as error:
+            # Admission is already known. Busy refusal/automatic consumption
+            # and an uncertain start must not become an uncertain enqueue or
+            # cause the observation to be admitted a second time.
+            event['_native_start_detail'] = 'admitted; start result: ' + str(error)[:900]
+    return queued['id']
 
 
 def worker(path: Path, job_id: str) -> None:
@@ -196,9 +199,6 @@ def worker(path: Path, job_id: str) -> None:
                         client.receive(min(0.1, max(0.001, job['due'] - time.time())))
                     except socket.timeout:
                         pass
-                    if any(e.get('method') == 'turn/completed' and
-                           e['params']['turn'].get('status') == 'interrupted' for e in client.events):
-                        journal.state(job_id, 'suspended', 'observed native turn interruption')
                 if journal.live(job_id):
                     event = journal.wake_due(job_id)
                     if event:
@@ -225,9 +225,6 @@ def worker(path: Path, job_id: str) -> None:
                         event = client.events[consumed]
                         consumed += 1
                         params = event.get('params', {})
-                        if event.get('method') == 'turn/completed' and params['turn'].get('status') == 'interrupted':
-                            journal.state(job_id, 'suspended', 'observed native turn interruption')
-                            break
                         if event.get('method') != 'command/exec/outputDelta' or params['processId'] != pid:
                             continue
                         if params['capReached']:
