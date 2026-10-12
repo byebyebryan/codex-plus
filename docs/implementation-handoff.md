@@ -83,7 +83,11 @@ The [large-loop execution contract](codex-plus-plan.md#large-goal-loop-research-
 defines staged qualification, conditional implementation, recovery/review work,
 productive fallback, two finite native batches and the morning report. It permits
 24 follow-up admissions and 40 started native test turns overall, with the existing
-short source/timer/protocol bounds. Planning has not started a new goal or batch.
+short source/timer/protocol bounds. Bryan subsequently requested execution and
+incremental commits. The ordinary goal is now active; the
+[current evidence report](coordinator-loop-results.md) records native results
+and implementation status. The planning/first-spike baseline is committed at
+`8f3b380`; preserve later concurrent changes.
 Human TUI acceptance, real-source supervision and installation remain later scope.
 
 The next step is to execute that agreed contract when requested. The candidate first slice is
@@ -216,11 +220,10 @@ exactly; the two current agents and four skills match this checkout. The earlier
 published rename state above is not this host's managed source state. Preserve
 its unrelated source edits; the spike does not require a pin migration or apply.
 
-**The planning additions remain uncommitted drafts.** Expected paths include
-modified `README.md` and `scripts/check`, plus new `AGENTS.md`,
-`docs/codex-plus-plan.md`, `docs/claude-monitoring-context.md` and this handoff.
-The executed pass additionally introduced `spikes/monitoring/`, separate spike
-tests and `docs/monitoring-spike-results.md`. Preserve them. Bryan requested
+**The planning and first-spike additions were checkpointed at `8f3b380`.** They
+include `README.md`, `scripts/check`, `AGENTS.md`, the plan/Claude context/handoff,
+`spikes/monitoring/`, separate spike tests and the initial results. Preserve them
+and any newer concurrent edits. Bryan requested
 source/doc synchronization to Snap, including
 updating and moving its clean old `codex-worker-kit` checkout to `codex-plus`.
 Continue in that checkout; a fresh clone or worktree based only on published

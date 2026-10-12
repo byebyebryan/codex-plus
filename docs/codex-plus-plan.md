@@ -672,8 +672,10 @@ release/chezmoi installation follow synthetic and human acceptance.
 Planning contract, 2026-10-12. Bryan is stepping away for the night and selected
 this finish line: **qualify the research gates, then build and review a local
 coordinator candidate if they pass; installation comes later.** This extends the
-next-spike proposal into a substantial execution pass. Planning this loop does
-not start it or reopen either completed research goal.
+next-spike proposal into a substantial execution pass. Planning this loop did
+not start it or reopen either completed research goal. Bryan subsequently
+requested execution with incremental commits. The fresh ordinary goal is active;
+[current results](coordinator-loop-results.md) track it.
 
 ### Goal and deliverable
 
@@ -808,8 +810,8 @@ unsupported coordinator accepted or claim milestone 1 complete. Record unresolve
 viable work as remaining work rather than hiding it in a successful summary.
 
 Before marking an executed goal complete, confirm the actual agreed objective is
-achieved, required checks pass and task-owned resources are cleaned up. The current
-request is to plan this loop; execution starts on the subsequent go-ahead.
+achieved, required checks pass and task-owned resources are cleaned up. Execution
+has been requested and started; the completed prior goals remain closed.
 
 ## Immediate next work
 
