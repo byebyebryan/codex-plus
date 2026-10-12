@@ -97,7 +97,7 @@ class Engine:
         self.sources[job['id']] = Source(request_id, process_id)
         self.store.db.execute('UPDATE jobs SET recover_requested=0 WHERE id=?', (job['id'],))
 
-    def _stop_source(self, job_id, reason):
+    def _stop_source(self, job_id, reason, deadline=None):
         source = self.sources.get(job_id)
         if source is None:
             job = self.store.job(job_id)
@@ -107,7 +107,8 @@ class Engine:
         if source.stop_reason is not None:
             return
         source.stop_reason = reason
-        self.client.call('command/exec/terminate', {'processId': source.process_id})
+        timeout = 10 if deadline is None else self._remaining(deadline)
+        self.client.call('command/exec/terminate', {'processId': source.process_id}, timeout=timeout)
         self.store.source(job_id, 'stop_requested', reason, self.generation)
 
     def _source_error(self, job_id, reason):
@@ -210,31 +211,33 @@ class Engine:
             raise
         self.store.admitted(event['id'], queued['id'])
 
-    def _start_admitted(self, event):
+    def _start_admitted(self, event, cleanup_deadline=None):
         if not event['native_id']:
             return
         job = self.store.job(event['job_id'])
         if (job['intent'] in ('cancelled', 'replaced', 'replacing') or
                 self.store.clock() >= event['expires']):
-            self._withdraw(event)
+            self._withdraw(event, cleanup_deadline)
             return
         if event['start_state'] != 'pending':
             return
         thread, decision = self._control()
         if not decision.allowed or thread['status']['type'] != 'idle':
             return
-        rows = self.client.call('thread/queue/list', {'threadId': self.binding['thread_id'], 'limit': 100})['data']
-        own = next((row for row in rows if row['id'] == event['native_id'] and
-                    row['clientUserMessageId'] == event['id']), None)
+        try:
+            own, head = self._queue_find(event, self.monotonic() + 5)
+        except Exception as error:
+            self.store.db.execute('UPDATE events SET detail=? WHERE id=?', ('queue lookup unresolved: ' + str(error)[:900], event['id']))
+            return
         if own is None:
             self.store.db.execute("UPDATE events SET start_state='not_in_queue' WHERE id=?", (event['id'],))
             return
-        if rows[0]['id'] != own['id']:
+        if head != own['id']:
             return  # Never start past an earlier user input.
         if not self.store.reserve_start(event['id']):
             current = self.store.job(event['job_id'])
             if current['intent'] in ('cancelled', 'replaced', 'replacing') or self.store.clock() >= event['expires']:
-                self._withdraw(self.store.event(event['id']))
+                self._withdraw(self.store.event(event['id']), cleanup_deadline)
             return
         try:
             result = self.client.call('thread/queue/start', {'threadId': self.binding['thread_id'],
@@ -254,16 +257,56 @@ class Engine:
         else:
             self.store.link_turn(event['id'], result['turn']['id'])
 
-    def _withdraw(self, event):
-        if not event['native_id'] or event['turn_id'] or event['start_state'] == 'withdrawn':
+    def _remaining(self, deadline):
+        remaining = deadline - self.monotonic()
+        if remaining <= 0:
+            raise TimeoutError('total reconciliation deadline ended')
+        return min(10, remaining)
+
+    def _queue_find(self, event, deadline):
+        cursor, head, seen = None, None, set()
+        for _ in range(20):
+            params = {'threadId': self.binding['thread_id'], 'limit': 100}
+            if cursor is not None:
+                params['cursor'] = cursor
+            page = self.client.call('thread/queue/list', params, timeout=self._remaining(deadline))
+            rows = page['data']
+            if head is None and rows:
+                head = rows[0]['id']
+            own = next((row for row in rows if row['id'] == event['native_id'] and
+                        row['clientUserMessageId'] == event['id']), None)
+            if own is not None:
+                return own, head
+            cursor = page.get('nextCursor')
+            if cursor is None:
+                return None, head
+            if not isinstance(cursor, str) or cursor in seen:
+                raise RpcError('queue pagination incomplete or repeated cursor')
+            seen.add(cursor)
+        raise RpcError('queue pagination bound reached; membership unknown')
+
+    def _withdraw(self, event, deadline=None):
+        if not event['native_id'] or event['withdraw_state'] == 'withdrawn':
             return
-        rows = self.client.call('thread/queue/list', {'threadId': self.binding['thread_id'], 'limit': 100})['data']
-        if any(row['id'] == event['native_id'] and row['clientUserMessageId'] == event['id'] for row in rows):
-            result = self.client.call('thread/queue/delete', {'threadId': self.binding['thread_id'], 'queuedSubmissionId': event['native_id']})
+        if event['turn_id']:
+            self.store.withdrawal(event['id'], 'consumed', 'known native turn is preserved')
+            return
+        deadline = self.monotonic() + 5 if deadline is None else deadline
+        try:
+            if self.client.bind(self.binding['thread_id'], timeout=self._remaining(deadline)) != self.binding:
+                raise RpcError('frozen binding changed; withdrawal refused')
+            own, _ = self._queue_find(event, deadline)
+            if own is None:
+                self.store.withdrawal(event['id'], 'not_pending', 'owned input absent from complete queue scan; turn outcome remains unknown')
+                return
+            result = self.client.call('thread/queue/delete', {'threadId': self.binding['thread_id'],
+                'queuedSubmissionId': event['native_id']}, timeout=self._remaining(deadline))
             if result['deleted']:
-                self.store.db.execute("UPDATE events SET start_state='withdrawn',detail='owned pending native input withdrawn' WHERE id=?", (event['id'],))
-        else:
-            self.store.db.execute("UPDATE events SET start_state='not_in_queue' WHERE id=?", (event['id'],))
+                self.store.withdrawal(event['id'], 'withdrawn', 'exact owned pending native input withdrawn')
+            else:
+                self.store.withdrawal(event['id'], 'unknown', 'delete refused or input consumed during cleanup; no retraction proved')
+        except Exception as error:
+            self.store.withdrawal(event['id'], 'unknown', str(error))
 
     def _remember_deadline(self, job):
         if job['id'] in self.deadlines:
@@ -319,11 +362,12 @@ class Engine:
             self._drain()
             if self.monotonic() >= self.next_delivery:
                 self.next_delivery = self.monotonic() + 1
+                cleanup_deadline = self.monotonic() + 5
                 for event in self.store.events():
                     if event['delivery'] == 'pending':
                         self._admit(event)
                     elif event['delivery'] == 'native_queued':
-                        self._start_admitted(event)
+                        self._start_admitted(event, cleanup_deadline)
                 self._drain()
             for job in self.store.jobs():
                 self.store.settle(job['id'])
@@ -335,19 +379,32 @@ class Engine:
 
     def close(self):
         self.stopping = True
-        if self.client:
-            try:
+        deadline = self.monotonic() + 5
+        try:
+            events = [event for event in self.store.events() if event['delivery'] == 'native_queued' and
+                      self.store.job(event['job_id'])['intent'] in ('cancelled', 'replaced', 'replacing', 'expired')]
+            if self.client is None and events:
+                # Explicit cleanup can connect to a positively loaded owner, never
+                # resume a cold target or restart observation just to cancel it.
+                self.client = Client(self.binding['requested_socket'], experimental=True, timeout=self._remaining(deadline))
+            if self.client:
                 for job_id in list(self.sources):
-                    self._stop_source(job_id, 'coordinator_shutdown')
-                deadline = self.monotonic() + 5
+                    self._stop_source(job_id, 'coordinator_shutdown', deadline)
+                for event in events:
+                    self._withdraw(event, deadline)
                 while self.sources and self.monotonic() < deadline:
                     try:
-                        self.client.receive(0.2)
+                        self.client.receive(min(0.2, self._remaining(deadline)))
                     except socket.timeout:
                         pass
                     self._drain()
-            finally:
+        except Exception as error:
+            for event in self.store.events():
+                if event['delivery'] == 'native_queued' and not event['turn_id'] and event['withdraw_state'] != 'withdrawn':
+                    self.store.withdrawal(event['id'], 'unknown', 'cleanup unresolved: ' + str(error))
+        finally:
+            if self.client:
                 self.client.close()
-                for job_id in self.sources:
-                    self.store.source(job_id, 'lost', 'shutdown without final source receipt', self.generation)
-                self.sources.clear()
+            for job_id in self.sources:
+                self.store.source(job_id, 'lost', 'shutdown without final source receipt', self.generation)
+            self.sources.clear()

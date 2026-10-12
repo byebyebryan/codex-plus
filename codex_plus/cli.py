@@ -128,7 +128,7 @@ def serve(root: Path):
                 active = any(job['intent'] in ('active', 'replacing') for job in store.jobs())
                 awaiting = any(event['delivery'] == 'pending' or
                     event['delivery'] == 'native_queued' and event['expires'] > store.clock() and event['turn_outcome'] is None and
-                    not event['acknowledged'] for event in store.events())
+                    event['withdraw_state'] != 'withdrawn' and not event['acknowledged'] for event in store.events())
                 if not active and not awaiting and not engine.sources:
                     idle_since = idle_since or time.monotonic()
                     if time.monotonic() - idle_since >= 10:
@@ -289,7 +289,11 @@ def main(argv=None) -> int:
         elif args.operation in ('status', 'list'):
             print(json.dumps(inspection(store, args.id if args.operation == 'status' else None)))
         elif args.operation == 'cancel':
-            print(json.dumps(store.cancel(args.id)))
+            result = store.cancel(args.id)
+            if coordinator_info(root) is None:
+                Engine(store, binding(root)).close()
+                result['events'] = [event for event in store.events() if event['job_id'] in result['cancelled']]
+            print(json.dumps(result))
         elif args.operation == 'ack':
             print(json.dumps(store.acknowledge(args.id)))
         elif args.operation == 'recover':
@@ -312,6 +316,8 @@ def main(argv=None) -> int:
                 deadline = time.monotonic() + 7
                 while coordinator_info(root) and time.monotonic() < deadline:
                     time.sleep(0.05)
+            else:
+                Engine(store, binding(root)).close()
             print(json.dumps({'shutdown_requested': True, 'coordinator_stopped': coordinator_info(root) is None,
                 'native_owner_preserved': True, 'receipts': store.events()}))
         return 0

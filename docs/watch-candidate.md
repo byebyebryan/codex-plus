@@ -102,6 +102,16 @@ to withdraw only an exact owned entry that is still pending, including after its
 delivery window ends. Pending notices expire even while native control is offline.
 Cancellation is checked again after queue inspection, before reserving a start;
 requests already in flight retain their actual receipt.
+Cleanup checks exact native and client event IDs across at most twenty queue pages
+under a shared time bound. An incomplete scan stays unknown. `withdraw_state`
+and `withdraw_detail` record withdrawal separately from original admission/start
+uncertainty: absence is not proof of completion, and a refused/racing delete is
+not reported as successful retraction. Known consumed turns remain untouched.
+
+Explicit cancellation while the coordinator is offline may make a bounded native
+cleanup connection to the positively loaded frozen target. It does not start a
+coordinator, resume a cold thread, restart observation or change a goal. Status
+and list remain entirely cached.
 
 Event envelopes include stable event/registration IDs, bounded data and the
 original follow-up. They explicitly retain the existing authorization scope.
@@ -135,6 +145,9 @@ stop registrations or leave pending handling. Confirmation cancels those
 registrations, stops only their sources and closes the coordinator. It preserves
 the native daemon, conversation, goals and unrelated background shells/tasks.
 An explicit cancellation already supplies authority for that selected work.
+Confirmed shutdown shares one five-second budget across source termination,
+pending-input withdrawal and final source receipts. Its connection closes even
+when cleanup is incomplete; unresolved input/source receipts remain visible.
 
 The helper does not intercept native `/exit` or add a native confirmation dialog.
 The native viewer remains separate from the coordinator's lifetime. Bryan's
@@ -149,8 +162,8 @@ pilot, longer operation and managed installation remain subsequent checks.
 
 Post-loop review also found that renewal after source loss can hang, and
 cancellation after an uncertain queue start can skip a still-pending owned entry.
-The corrective unattended pass has offline regressions for those gaps; renewed
-native acceptance is in progress. Pagination and shared shutdown cleanup are
-being completed before a real-source pilot. See the
+The corrective unattended pass now has offline regressions for those gaps,
+pagination and shared shutdown cleanup; renewed native acceptance is in progress.
+See the
 [next-pass plan](codex-plus-plan.md#next-pass-lifecycle-correctness-and-native-tui-acceptance)
 for the proposed contracts and checks.

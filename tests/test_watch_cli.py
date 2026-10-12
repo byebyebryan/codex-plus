@@ -120,6 +120,14 @@ class CliTests(unittest.TestCase):
         self.assertEqual(self.store.job(parent)['intent'], 'active')
         self.assertEqual(self.store.renewals(), [])
 
+    def test_offline_cancel_requests_cleanup_without_starting_coordinator(self):
+        parent = self.store.create('watch', self.spec)
+        with patch('codex_plus.cli.coordinator_info', return_value=None), patch('codex_plus.cli.Engine') as engine, patch('codex_plus.cli.ensure_coordinator') as start:
+            _, result = self.run_cli(['cancel', parent])
+        self.assertEqual(result['cancelled'], [parent])
+        engine.return_value.close.assert_called_once()
+        start.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()

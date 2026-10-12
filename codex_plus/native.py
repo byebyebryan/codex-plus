@@ -52,7 +52,8 @@ def listener_identity(requested: str) -> dict[str, Any]:
 
 
 class Client:
-    def __init__(self, requested: str, *, experimental: bool = False):
+    def __init__(self, requested: str, *, experimental: bool = False, timeout: float = 10):
+        deadline = time.monotonic() + timeout
         self.identity = listener_identity(requested)
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.sock.settimeout(10)
@@ -64,6 +65,7 @@ class Client:
         self.thread_id: str | None = None
         self.process_ids: set[str] = set()
         try:
+            self.sock.settimeout(self.remaining(deadline))
             self.sock.connect(self.identity['resolved_socket'])
             key = base64.b64encode(os.urandom(16)).decode()
             self.sock.sendall(('GET / HTTP/1.1\r\nHost: localhost\r\nUpgrade: websocket\r\n'
@@ -72,6 +74,7 @@ class Client:
             while b'\r\n\r\n' not in self.buffer:
                 if len(self.buffer) > 16384:
                     raise RpcError('oversized upgrade response')
+                self.sock.settimeout(self.remaining(deadline))
                 chunk = self.sock.recv(4096)
                 if not chunk:
                     raise RpcError('EOF during upgrade')
@@ -85,7 +88,7 @@ class Client:
                 raise RpcError('WebSocket upgrade rejected')
             self.call('initialize', {'clientInfo': {'name': 'codex_plus_watch',
                                                    'version': '0.1.0'},
-                                     'capabilities': {'experimentalApi': experimental}})
+                                     'capabilities': {'experimentalApi': experimental}}, timeout=self.remaining(deadline))
             self.send({'method': 'initialized'})
         except BaseException:
             self.sock.close()
@@ -119,7 +122,7 @@ class Client:
 
     def _fill(self, count: int, deadline: float) -> None:
         while len(self.buffer) < count:
-            self.sock.settimeout(max(0.001, deadline - time.monotonic()))
+            self.sock.settimeout(self.remaining(deadline))
             chunk = self.sock.recv(max(4096, count - len(self.buffer)))
             if not chunk:
                 raise RpcError('transport EOF')
@@ -128,6 +131,7 @@ class Client:
     def receive(self, timeout: float = 10) -> dict:
         deadline = time.monotonic() + timeout
         while True:
+            self.remaining(deadline)
             self._fill(2, deadline)
             a, b = self.buffer[:2]
             length = b & 127
@@ -187,7 +191,15 @@ class Client:
     def call(self, method: str, params: dict, timeout: float = 10) -> dict:
         return self.result(self.submit(method, params), timeout)
 
-    def bind(self, thread_id: str) -> dict:
+    @staticmethod
+    def remaining(deadline):
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError('protocol deadline ended')
+        return remaining
+
+    def bind(self, thread_id: str, timeout: float = 10) -> dict:
+        deadline = time.monotonic() + timeout
         if listener_identity(self.identity['requested_socket']) != self.identity:
             raise RpcError('listener owner changed')
         cursor = None
@@ -195,7 +207,7 @@ class Client:
             params = {'limit': 100}
             if cursor:
                 params['cursor'] = cursor
-            page = self.call('thread/loaded/list', params)
+            page = self.call('thread/loaded/list', params, timeout=self.remaining(deadline))
             if thread_id in page['data']:
                 self.thread_id = thread_id
                 return {**self.identity, 'thread_id': thread_id}

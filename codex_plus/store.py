@@ -115,12 +115,12 @@ class Store:
                 spec TEXT NOT NULL, state TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '');
         ''')
         try:
-            self._migrate_renewals()
+            self._migrate_journal()
         except BaseException:
             self.db.close()
             raise
 
-    def _migrate_renewals(self):
+    def _migrate_journal(self):
         """Keep legacy IDs/receipts; allow multiple failed attempts per parent."""
         with self.transaction():
             columns = {row['name'] for row in self.db.execute('PRAGMA table_info(renewals)')}
@@ -138,7 +138,14 @@ class Store:
                 self.db.execute('DROP TABLE renewals')
                 self.db.execute('ALTER TABLE renewals_next RENAME TO renewals')
             self.db.execute("CREATE UNIQUE INDEX IF NOT EXISTS one_pending_renewal ON renewals(parent_id) WHERE state='pending'")
-            self.db.execute('PRAGMA user_version=1')
+            event_columns = {row['name'] for row in self.db.execute('PRAGMA table_info(events)')}
+            for column in ('withdraw_state', 'withdraw_detail'):
+                if column not in event_columns:
+                    default = 'none' if column == 'withdraw_state' else ''
+                    self.db.execute(f"ALTER TABLE events ADD COLUMN {column} TEXT NOT NULL DEFAULT '{default}'")
+            if 'withdraw_state' not in event_columns:
+                self.db.execute("UPDATE events SET withdraw_state='withdrawn',withdraw_detail='legacy confirmed withdrawal receipt' WHERE start_state='withdrawn'")
+            self.db.execute('PRAGMA user_version=2')
 
     @contextmanager
     def transaction(self):
@@ -331,6 +338,12 @@ class Store:
     def uncertain(self, event_id: str, reason: str):
         self.db.execute("UPDATE events SET delivery='uncertain',detail=? WHERE id=?", (reason[:1024], event_id))
 
+    def withdrawal(self, event_id: str, state: str, detail: str):
+        with self.transaction():
+            self.db.execute('UPDATE events SET withdraw_state=?,withdraw_detail=? WHERE id=?', (state, detail[:1024], event_id))
+            if state == 'withdrawn':
+                self.db.execute("UPDATE events SET start_state='withdrawn' WHERE id=? AND turn_id IS NULL", (event_id,))
+
     def link_turn(self, event_id: str, turn_id: str):
         with self.transaction():
             event = self.event(event_id)
@@ -412,7 +425,7 @@ class Store:
                 return None
             parent = self.job(parent_id)
             if parent['intent'] == 'cancelled' or self.job(parent['root_id'])['intent'] == 'cancelled':
-                self.db.execute("UPDATE renewals SET state='cancelled' WHERE parent_id=?", (parent_id,))
+                self.db.execute("UPDATE renewals SET state='cancelled' WHERE new_id=?", (row['new_id'],))
                 return None
             if self.clock() >= row['deadline']:
                 self._end_renewal(row, 'expired', 'stop receipt arrived after renewal deadline')

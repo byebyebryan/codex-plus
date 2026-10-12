@@ -28,8 +28,11 @@ The first corrective slice rejects lost-source renewal without intent mutation,
 adds finite durable renewal attempts, resolves pending replacement IDs, preserves
 failed retries and migrates existing receipts transactionally. It also reaches
 the cancellation path for an uncertain start. All 76 tests pass at this checkpoint;
-pagination-aware cancellation, shared shutdown cleanup and a fresh native batch
-are still required before unattended completion.
+that checkpoint preceded pagination-aware cancellation and shared shutdown cleanup.
+The next slice reaches owned pending inputs after unknown starts, keeps separate
+withdrawal receipts, handles bounded pagination and uses one five-second shutdown
+budget. Offline cancellation makes only a cleanup connection, with no cold resume
+or observer startup. All 90 tests now pass; the fresh native batch remains required.
 
 ## Checkpoints and preservation
 
