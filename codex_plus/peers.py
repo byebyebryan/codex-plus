@@ -255,6 +255,7 @@ def snapshot(read, signals, *, gap=False):
         if signal not in signals:
             continue
         matches = []
+        maximum = 1 if signal == 'reply' else 3
         for turn in turns:
             for item in reversed(turn['items']):
                 final = item['type'] == 'agentMessage' and item['phase'] == 'final_answer'
@@ -267,7 +268,6 @@ def snapshot(read, signals, *, gap=False):
                 matches.append({'turn_id': turn['id'], 'turn_status': turn['status'],
                     'item_id': item['id'], 'text': text,
                     'text_truncated': cut or item['text_truncated']})
-            maximum = 1 if signal == 'reply' else 3
             if len(matches) >= maximum:
                 break
         result[signal] = matches[:maximum]

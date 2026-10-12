@@ -69,6 +69,11 @@ turn could evict an older reply and change a multi-reply snapshot without any ne
 reply. Reply watches now compare the latest completed final reply, with a regression
 for that case. Snapshot coverage still explicitly permits missed intermediate events.
 
+The first reply-window correction failed the full suite for an empty history:
+the selected reply limit was initialized only inside the turn loop. That checkpoint
+was committed before honoring the failed check. The follow-up initializes the limit
+before iteration; the existing empty-baseline watch regressions cover this case.
+
 A separately prepared targeted recipe will check admission-aware busy delivery,
 cancellation and explicit coordinator recovery with new synthetic actors. Its
 ceiling is five admissions/eight turns; all prior usage remains counted against
