@@ -26,13 +26,16 @@ idle or busy. This is a planning checkpoint; no new goal, native trial or peer
 message is started by this update. See the
 [discovery and peer-watch plan](codex-plus-plan.md#next-pass-discovery-and-peer-watches).
 
+Bryan has now requested execution as an ordinary goal loop with incremental
+commits. The [peer-watch gate report](peer-watch-results.md) records the fresh
+read-only qualification and will track the implementation/native acceptance.
+
 Bryan explicitly permits monitoring/watching existing active sessions with no
 writes or interruptions. Passive discovery and bounded reads may use those sessions;
 messages, queued follow-ups, goal changes, interruption and other state-changing
 checks use task-owned synthetic sessions. A synthetic A may watch a real B, provided
 all experimental delivery goes to synthetic A and B remains read-only. Raw session
-data stays private. This permission refines the next-pass recipe; the current task
-remains planning, not launch of the implementation loop.
+data stays private. This permission refines the active execution recipe.
 
 Carry forward the ordinary-session message/reply evidence. The original follow-up
 note records successful independent-session replies and a discovery correction:
