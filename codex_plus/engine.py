@@ -387,18 +387,21 @@ class Engine:
     def close(self):
         self.stopping = True
         deadline = self.monotonic() + 5
+        events = []
         try:
             events = [event for event in self.store.events() if event['delivery'] == 'native_queued' and
                       self.store.job(event['job_id'])['intent'] in ('cancelled', 'replaced', 'replacing', 'expired')]
-            if self.client is None and events:
+            needs_lookup = any(not event['turn_id'] and event['withdraw_state'] != 'withdrawn' for event in events)
+            if self.client is None and needs_lookup:
                 # Explicit cleanup can connect to a positively loaded owner, never
                 # resume a cold target or restart observation just to cancel it.
                 self.client = Client(self.binding['requested_socket'], experimental=True, timeout=self._remaining(deadline))
             if self.client:
                 for job_id in list(self.sources):
                     self._stop_source(job_id, 'coordinator_shutdown', deadline)
-                for event in events:
-                    self._withdraw(event, deadline)
+            for event in events:
+                self._withdraw(event, deadline)
+            if self.client:
                 while self.sources and self.monotonic() < deadline:
                     try:
                         self.client.receive(min(0.2, self._remaining(deadline)))
@@ -406,7 +409,7 @@ class Engine:
                         pass
                     self._drain()
         except Exception as error:
-            for event in self.store.events():
+            for event in events:
                 if event['delivery'] == 'native_queued' and not event['turn_id'] and event['withdraw_state'] != 'withdrawn':
                     self.store.withdrawal(event['id'], 'unknown', 'cleanup unresolved: ' + str(error))
         finally:

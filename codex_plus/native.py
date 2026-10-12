@@ -189,7 +189,10 @@ class Client:
         return response['result']
 
     def call(self, method: str, params: dict, timeout: float = 10) -> dict:
-        return self.result(self.submit(method, params), timeout)
+        deadline = time.monotonic() + timeout
+        self.sock.settimeout(self.remaining(deadline))
+        request_id = self.submit(method, params)
+        return self.result(request_id, self.remaining(deadline))
 
     @staticmethod
     def remaining(deadline):

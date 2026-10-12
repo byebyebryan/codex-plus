@@ -478,6 +478,36 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(self.store.job(created[0])['intent'], 'expired')
         self.assertEqual(self.backend.commands, [])
 
+    def test_offline_known_consumed_receipt_needs_no_native_connection(self):
+        _, event = self.cancelled_admission()
+        self.store.link_turn(event, 'already-consumed')
+        self.engine._disconnect('fixture owner stopped')
+        with patch('codex_plus.engine.Client') as connect:
+            self.engine.close()
+        connect.assert_not_called()
+        self.assertEqual(self.store.event(event)['withdraw_state'], 'consumed')
+
+    def test_slow_rpc_send_does_not_reset_response_deadline(self):
+        now = [100.0]
+        class SlowPeer:
+            def settimeout(self, value): self.timeout = value
+            def sendall(self, data): now[0] += 3
+            def recv(self, count):
+                delay = 3
+                if self.timeout < delay:
+                    now[0] += self.timeout
+                    raise TimeoutError('response exceeded remaining budget')
+                now[0] += delay
+                payload = b'{"id":1,"result":{}}'
+                return b'\x81' + bytes([len(payload)]) + payload
+        client = Client.__new__(Client)
+        client.sock = SlowPeer(); client.sequence = 0
+        client.buffer = b''; client.fragments = bytearray()
+        client.responses = {}; client.events = []; client.process_ids = set(); client.thread_id = None
+        with patch('codex_plus.native.time.monotonic', side_effect=lambda:now[0]):
+            with self.assertRaises(TimeoutError): client.call('fixture', {}, timeout=5)
+        self.assertLessEqual(now[0] - 100, 5)
+
 
 if __name__ == '__main__':
     unittest.main()
