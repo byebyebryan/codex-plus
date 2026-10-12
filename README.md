@@ -7,14 +7,30 @@ remain available with the same identities and installation paths.
 ## Current scope and next step
 
 The implemented bundle is currently the worker agents and skills described below.
-The next capability is **watches**: start with one bounded read-only command or file
-observer, filter unchanged observations outside inference, and deliver a meaningful
-event to an explicitly selected existing Codex thread. Status, cancellation and
-expiry belong in that first capability. A watch service is not implemented yet.
+The next capability is **background follow-up**: monitoring and model-controlled
+wakeups into an explicitly selected existing Codex thread. Claude Code's Monitor
+and adaptive scheduling, informed by Bryan's actual usage, guide the design.
+Give the model options for sources, scripts, filtering, cadence and renewal;
+bounded JSON snapshot filtering is one useful option. Status, cancellation and
+expiry belong in the first capability. The product runtime is not implemented yet.
+The [initial monitoring spike](docs/monitoring-spike-results.md) records native
+source/queue/timer evidence, a research-only simulator/helper and the remaining
+goal, stop and daily-use acceptance gates.
 
 Coordination follows watches. The initial watcher will have no Agent Observer
 dependency. Reassess Observer's readiness and the discovery contract when
 coordination work begins, then decide whether an integration is useful.
+
+The [implementation plan](docs/codex-plus-plan.md) records the proposed runtime,
+same-thread delivery, daily-use acceptance and chezmoi packaging. The
+[Claude monitoring context](docs/claude-monitoring-context.md) captures the latest
+design correction, source-host history findings and open planning decisions.
+Planning continues on Snap before implementation. Codex CLI remains the daily
+interface after reviewing the desktop app's overlap.
+
+For a new implementation thread, read [AGENTS.md](AGENTS.md) and the
+[implementation handoff](docs/implementation-handoff.md) before the plan. They
+summarize research evidence, reuse boundaries, distribution and local draft state.
 
 ## Existing worker bundle
 
