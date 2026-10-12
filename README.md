@@ -11,6 +11,10 @@ This checkout also contains a tested **local watch coordinator candidate** for
 monitoring and model-controlled wakeups into an explicitly selected existing
 Codex thread. See [the candidate guide](docs/watch-candidate.md) and
 [the research and acceptance report](docs/coordinator-loop-results.md).
+It also includes same-daemon independent-session discovery, bounded passive peer
+reads, correlated message registrations and peer watches through that coordinator.
+See [the peer-watch acceptance report](docs/peer-watch-results.md) for the tested
+scope and remaining human checks.
 Claude Code's Monitor
 and adaptive scheduling, informed by Bryan's actual usage, guide the design.
 Give the model options for sources, scripts, filtering, cadence and renewal;
@@ -20,9 +24,9 @@ The [initial monitoring spike](docs/monitoring-spike-results.md) records native
 source/queue/timer evidence, a research-only simulator/helper and the remaining
 goal, stop and daily-use acceptance gates.
 
-Coordination follows watches. The initial watcher will have no Agent Observer
-dependency. Reassess Observer's readiness and the discovery contract when
-coordination work begins, then decide whether an integration is useful.
+Same-daemon peer coordination now builds on watches without an Agent Observer
+dependency. Reassess Observer's discovery/freshness contract when cross-host
+coordination is needed.
 
 The [implementation plan](docs/codex-plus-plan.md) records the proposed runtime,
 same-thread delivery, daily-use acceptance and chezmoi packaging. The
@@ -30,7 +34,9 @@ same-thread delivery, daily-use acceptance and chezmoi packaging. The
 design correction, source-host history findings and open planning decisions.
 Development continues on Snap. The qualified candidate uses the existing native
 CLI daemon and leaves Codex CLI/TUI as the daily interface. Human TUI acceptance,
-a real-source pilot, longer operation and installation remain subsequent work.
+longer operation and installation remain subsequent work. Existing active sessions
+have supplied passive observation evidence; all experimental messaging and delivery
+used synthetic sessions.
 
 For a new implementation thread, read [AGENTS.md](AGENTS.md) and the
 [implementation handoff](docs/implementation-handoff.md) before the plan. They

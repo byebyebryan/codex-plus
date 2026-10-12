@@ -2,8 +2,8 @@
 
 Updated 2026-10-12 for Bryan's continuation on Snap in
 `/home/bryan/code/codex-plus`. The agreed research-to-local-candidate loop is complete;
-its corrective unattended pass is also complete. Human acceptance and installation
-remain subsequent scope.
+its corrective unattended pass and discovery/peer-watch pass are also complete.
+Human acceptance and installation remain subsequent scope.
 Read this first, then the [implementation plan](codex-plus-plan.md). The plan
 defines milestones; this handoff explains why they were chosen and what the
 research does and does not establish. Recheck live versions, endpoints and Git
@@ -17,18 +17,22 @@ local surface is now implemented in `codex_plus/` with
 [current evidence](coordinator-loop-results.md) before using it. Published and
 installed worker files remain unchanged; this helper is local source only.
 
-## Current next pass: discovery and peer watches
+## Discovery and peer watches: automated pass complete
 
 Bryan's latest planning direction is to use inter-session coordination as the
 next watch acceptance case: **session A observes session B and follows up, with
 both existing, loaded sessions inside the same owning daemon**. Either may be
-idle or busy. This is a planning checkpoint; no new goal, native trial or peer
-message is started by this update. See the
+idle or busy. The subsequent ordinary goal loop delivered the local surface and
+closed its bounded synthetic native recipes. See the
 [discovery and peer-watch plan](codex-plus-plan.md#next-pass-discovery-and-peer-watches).
 
 Bryan has now requested execution as an ordinary goal loop with incremental
-commits. The [peer-watch gate report](peer-watch-results.md) records the fresh
-read-only qualification and will track the implementation/native acceptance.
+commits. The [peer-watch report](peer-watch-results.md) records qualification,
+implementation, review and native acceptance. All 128 tests and the 52-file inventory
+pass. Combined native usage was 8 admissions / 14 turns with zero provider failures;
+the report distinguishes the first harness timing failure from the passing targeted
+recipe. All owned fixtures/coordinators were settled; the original owner and requester
+were freshly verified preserved. Human TUI acceptance remains pending.
 
 Bryan explicitly permits monitoring/watching existing active sessions with no
 writes or interruptions. Passive discovery and bounded reads may use those sessions;
@@ -51,14 +55,18 @@ them under their parent. Use native delegation provenance/relationships, keep
 unknown classification visible, and distinguish independent forks from delegated
 children. Native parent-child orchestration remains responsible for child results.
 
-The proposed pass first qualifies discovery metadata and passive read access,
-then adds the smallest missing peer adapter over the existing coordinator.
+The implemented slice supplies passive peer discovery/read, exact resolved native
+message registrations and selectable peer snapshots through the existing coordinator.
 Current command sources cannot be assumed to access the daemon socket or native
 MCP tools under their restricted policy. Freeze B's observation identity separately
 from A's delivery identity; both must refer to the same positively verified owner.
 Use selected peer progress/result/input-needed evidence, not idle or child completion
 as a universal task-completion signal. Model-selected signals, cadence and follow-up
 remain choices. Human draft/TUI acceptance stays explicitly pending when unattended.
+The next concrete acceptance step is the
+[prepared peer TUI walkthrough](watch-candidate.md#deferred-peer-tui-walkthrough),
+followed by separately scoped packaging/installation. Native child/fork lifecycle
+and the newer task-tool facade are not newly qualified by the source implementation.
 
 ## Completed lifecycle pass after review
 

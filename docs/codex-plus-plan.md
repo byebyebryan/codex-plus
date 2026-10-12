@@ -15,11 +15,14 @@ request, evidence and open decisions. The earlier JSON-snapshot-only scope has
 been broadened. The local CLI now supplies sources, projection, one-shot wakeups,
 renewal, cancellation and explicit recovery; broader integrations remain draft.
 
-The current next-pass proposal is
+The completed next-pass contract is
 [discovery and peer watches](#next-pass-discovery-and-peer-watches): two existing,
 loaded independent sessions inside the same owning daemon. Carry forward the
 earlier message/reply evidence, resolve independent-session discovery first, and
-use A watching B as the next integrated acceptance case. This is planning only.
+use A watching B as the integrated acceptance case. The subsequent goal loop is
+complete; [the peer-watch report](peer-watch-results.md) records 128 tests, the
+52-file inventory and two closed native recipes totaling 8 admissions / 14 turns.
+Human TUI acceptance and installation remain subsequent scope.
 
 ## Product contract
 
@@ -999,6 +1002,12 @@ create sessions or watches, send messages, or reopen a closed native batch.
 Bryan explicitly permits read-only monitoring/watching of existing active sessions.
 This permission is available for the next pass; it does not change the current
 planning task into execution of the full loop.
+
+Bryan subsequently requested execution as an ordinary goal loop with incremental
+commits. That unattended objective is now complete. The contract below retains the
+planning decisions; [current results](peer-watch-results.md) are authoritative for
+implementation and evidence limits. Existing sessions supplied only passive reads;
+all messaging, delivery and fault cases used task-owned synthetic sessions.
 
 ### Objective and retained evidence
 

@@ -1,6 +1,6 @@
 # Discovery and peer-watch pass
 
-Started 2026-10-12 from planning checkpoint `aef8adf`, with execution requested
+Completed 2026-10-12 from planning checkpoint `aef8adf`, with execution requested
 as an ordinary goal loop and incremental commits. Human TUI acceptance and
 installation remain later scope. Existing sessions are passive observation sources;
 all experimental delivery and state-changing checks use task-owned synthetic sessions.
@@ -43,11 +43,12 @@ renewal cannot retarget. Cancellation stops the reader without a peer RPC write.
 Message registration is atomic and returns durable IDs even if coordinator startup
 is unavailable. The native delivery path rechecks independent provenance.
 
-All 127 offline tests pass, including thirteen peer-watch/message cases and three
-new CLI boundary cases. The 52-file inventory and whitespace checks pass. Existing
+All 128 offline tests pass, including eighteen peer discovery/read cases,
+thirteen peer-watch/message cases and three new CLI boundary cases. The 52-file
+inventory and whitespace checks pass. Existing
 command/watch/wakeup and worker tests remain separate and passing. The capped
-synthetic native batch and final review are next; this is not yet native acceptance
-of the new peer-watch/message surface.
+synthetic native evidence and review below qualify the local surface within the
+recorded Linux/full-access/native 0.162.1 boundary.
 
 ## First native batch and review correction
 
@@ -74,8 +75,61 @@ the selected reply limit was initialized only inside the turn loop. That checkpo
 was committed before honoring the failed check. The follow-up initializes the limit
 before iteration; the existing empty-baseline watch regressions cover this case.
 
-A separately prepared targeted recipe will check admission-aware busy delivery,
+A separately prepared targeted recipe checked admission-aware busy delivery,
 cancellation and explicit coordinator recovery with new synthetic actors. Its
 ceiling is five admissions/eight turns; all prior usage remains counted against
 the overall pass ceiling of eight admissions/sixteen turns. The closed first batch
 is not reopened, and no provider failure or harness failure replenishes the limit.
+
+## Targeted native acceptance and final review
+
+The separately prepared recipe is complete and closed at **5 admissions / 8 turns**.
+Combined usage across both recipes is **8 admissions / 14 started turns**, including
+the first harness attempt and its unfinished synthetic foreground turn. There were
+zero provider failures. The targeted recipe's eight turns all completed normally.
+
+| Case | Evidence | Limit |
+| --- | --- | --- |
+| Same-daemon independent actors | Both new synthetic actors were positively loaded and independently classified under the original daemon. | API-created ordinary sessions, not a new human TUI walkthrough. |
+| Busy delivery | The watcher event had known native admission while A's foreground turn was active, with no recipient turn yet. The foreground completed normally, followed by the correlated read/ack callback. | Protocol/history receipts qualify ordering; draft/UI behavior remains human acceptance. |
+| Explicit stop | A second quiet watch was cancelled before B's message. It emitted no event as B handled that message normally; B's goal state was unchanged by cancellation. | Task-owned synthetic scope; no action against real sessions. |
+| Coordinator loss/recovery | Killing only the exact owned A coordinator left a cached unknown-source receipt and preserved its baseline. Explicit recovery produced a declared-gap event, then observed and handled a new B reply. | Snapshot continuity is explicit, not missed-occurrence reconstruction. |
+| Handling/correlation | Message/watch event IDs matched persisted native user-message client IDs and completed turn IDs. Actors acknowledged exact events and returned the expected fixture tokens. | Handling does not prove any external task effect. |
+| Real active peer observation | Three bounded samples of one actual active independent peer used only loaded/read/history/goal RPCs. Selected facts stayed unchanged, with zero messages/model turns. | Passive reader sampling and earlier discovery smoke; experimental delivery always used synthetic actors. |
+
+Final review tightened exact-name resolution: an unclassified same-name record or
+a truncated title cannot masquerade as a unique exact independent-session match.
+Exact verified UUID selection remains available. Reply watches compare the latest
+completed final reply; idle, native turn completion and child completion do not
+invent a task outcome. Older intermediate replies can be missed by a bounded
+snapshot window, and that coverage limit is reported.
+
+A zero-turn fork metadata check against an already archived owned fixture was
+refused by the daemon. It was not unarchived or retried, and no fork was created.
+Independent-fork and native subagent classification therefore rely on the installed
+schema plus controlled regressions, not a newly exercised native fork/child lifecycle.
+The native task-tool facade itself remains unqualified beyond earlier listing;
+this candidate uses the directly qualified native RPC/queue route.
+
+## Cleanup and deferred acceptance
+
+All four synthetic actors were archived and freshly read as notLoaded. All fixture
+coordinators are offline, journals have no active/replacing intent or pending
+renewal, and all known admitted inputs have a consumed turn receipt or withdrawal
+receipt. The first recipe's cleanup interruption was confirmed as interrupted in
+persisted native history. No pending owned input or cleanup error remains. The
+original listener PID/start/executable identity and positive loaded membership of
+the requesting conversation were freshly verified preserved.
+
+No daemon restart, global trust/config edit, real-session write/interrupt, worker
+change, installation, push or publication was performed. Private study recipes,
+raw snapshots and histories remain outside source. The public report carries only
+sanitized findings. Local source/artifact acceptance does not establish an installed
+integration, restricted calling access or cross-host support.
+
+The automated objective is complete. The prepared
+[peer TUI checklist](watch-candidate.md#deferred-peer-tui-walkthrough) covers natural
+selection, understandable hierarchy, draft/input preservation, Esc, explicit stop
+and viewer detach. Human acceptance, longer operation, native child/fork lifecycle,
+full cursor replay and managed packaging remain subsequent scope. Native /exit
+confirmation is not implemented by this helper.

@@ -77,7 +77,30 @@ automatic reply protocol or expansion of the recipient's authorization.
 
 During this pass, real active sessions are read-only sources. Experimental messages,
 follow-ups and state changes target synthetic sessions. Native integrated acceptance
-is pending until recorded in the peer-pass report; human TUI acceptance remains later.
+is recorded in the peer-pass report; human TUI acceptance remains later.
+
+## Deferred peer TUI walkthrough
+
+The automated peer-watch pass is complete. When Bryan is available, prepare fresh
+synthetic A/B sessions in the same existing daemon and open A in its native TUI.
+Keep any real session used as an observation source read-only; all deliberate
+messages and test follow-ups target the synthetic actors.
+
+1. Use natural language to select B from independent peers. Inspect children on
+   request and check that ordinary matching never silently picks a delegated child
+   or an uncertain/truncated same-name candidate.
+2. Register a quiet peer watch, type a draft in A and cause a bounded synthetic B
+   reply. Record whether the draft survives and earlier human input keeps its order.
+3. Interrupt only a synthetic foreground turn with Esc; verify the independent
+   watch remains registered and the next permitted observation follows up.
+4. Explicitly stop the watch. Verify no new admission or automatic renewal, while
+   B's work and native child orchestration remain available.
+5. Detach A's viewer and inspect bounded source/delivery state. Preview coordinator
+   shutdown, preserve work when declined, and verify scoped cleanup when confirmed.
+
+Define a fresh small native recipe before this walkthrough; the completed pass's
+allowance is closed. No observer, fixture or service has been left running for it.
+Do not infer human draft/UX acceptance or native /exit protection from RPC receipts.
 
 ## Binding and source setup
 
