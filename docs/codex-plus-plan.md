@@ -996,6 +996,10 @@ are independent conversations, not a parent/subagent pair; either can be idle or
 busy. This document prepares an execution contract. It does not start a goal,
 create sessions or watches, send messages, or reopen a closed native batch.
 
+Bryan explicitly permits read-only monitoring/watching of existing active sessions.
+This permission is available for the next pass; it does not change the current
+planning task into execution of the full loop.
+
 ### Objective and retained evidence
 
 Leave a reviewed local discovery/peer-watch candidate that lets A find the right
@@ -1074,6 +1078,24 @@ facade. Recheck installed version/schema and owner identity at execution start.
 | Message route compatibility | Reuse the already-qualified native queue route or qualify the selected task facade's exact targeting, busy/idle behavior and receipt/correlation fields in one short smoke case. |
 | Source access boundary | Prove a coordinator-owned read adapter can reach the owner through the qualified host path. Native MCP tools are not automatically available to a background command source. |
 
+### Existing-session observation boundary
+
+Existing active sessions may supply passive discovery, bounded metadata/history
+reads and read-only watch observations. Do not send them test messages, enqueue or
+start follow-ups, interrupt turns, change goals/metadata, load/resume them, or stop
+their background work. Subscription must not be assumed passive if it requires a
+resume or affects session lifetime. Keep observational coverage limits explicit.
+
+Private local observer journals/cursors are permitted; they do not authorize writes
+to the observed session. Raw metadata, transcripts and identifiers remain private;
+committed evidence uses sanitized findings.
+
+Use task-owned synthetic sessions for messaging, delivery/wakeup, busy-input,
+interruption, goal-state and active fault checks. A synthetic A may observe an
+existing real B and receive experimental follow-ups in A; B remains read-only.
+If preserving that boundary cannot be established, use synthetic B too. Cleanup
+affects only task-owned fixtures/observers, never observed real sessions or the daemon.
+
 If a gate fails, finish with the supported discovery/read subset and a specific
 missing-capability report. Do not manufacture independence from heuristics, relax
 global permissions, start a new daemon, or add Observer/fleet infrastructure to
@@ -1133,11 +1155,12 @@ not invent a task outcome; missed history retains a coverage-gap receipt.
 
 When native execution is subsequently requested, prepare a fresh private fixture
 with A and B positively loaded in the same existing daemon. The test unit is daemon
-sessions; viewer windows/process count are not its definition. Use task-owned
-sessions/work for active fault cases. Do not message or alter unrelated running work
-to manufacture acceptance. Creating fixture sessions or a child requires that
-execution scope; this planning checkpoint authorizes none. Child collision cases
-can remain offline unless a native fixture is explicitly included in the recipe.
+sessions; viewer windows/process count are not its definition. Under Bryan's
+observation permission, passive discovery/read/watch cases may use existing active
+sessions, with experimental delivery directed only to synthetic A. All messaging
+and active fault cases use task-owned synthetic sessions/work. This planning update
+launches no fixture. Child collision cases can remain offline unless a native
+fixture is explicitly included in the execution recipe.
 
 Proposed batch ceiling: **8 follow-up/message admissions and 16 started native test
 turns**, including setup and any continuation. Every watch stays within 120 seconds
