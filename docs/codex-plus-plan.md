@@ -15,6 +15,12 @@ request, evidence and open decisions. The earlier JSON-snapshot-only scope has
 been broadened. The local CLI now supplies sources, projection, one-shot wakeups,
 renewal, cancellation and explicit recovery; broader integrations remain draft.
 
+The current next-pass proposal is
+[discovery and peer watches](#next-pass-discovery-and-peer-watches): two existing,
+loaded independent sessions inside the same owning daemon. Carry forward the
+earlier message/reply evidence, resolve independent-session discovery first, and
+use A watching B as the next integrated acceptance case. This is planning only.
+
 ## Product contract
 
 Use the ordinary Codex conversation to ask for a watch, inspect it, or cancel it.
@@ -221,10 +227,12 @@ do not weaken validation merely to allow new files.
 
 ## Coordination after watches
 
-First qualify the currently exposed native task list/read/send/wait operations
-for independent ordinary sessions, idle/busy delivery and correlated replies.
-Use native operations wherever they meet the need. Add conventions or a thin
-adapter only for missing behavior.
+Ordinary independent-session message/reply paths already have bounded live
+evidence. The current next pass is discovery and peer observation within one
+owning daemon; see [its contract](#next-pass-discovery-and-peer-watches). Qualify
+the newer native task-tool facade only where its targeting/receipts remain
+unestablished. Use native operations wherever they meet the need, and add
+conventions or a thin adapter only for missing behavior.
 
 Revisit Agent Observer when cross-host discovery, freshness and uncertainty
 become necessary. Assess its accepted public contract and readiness at that
@@ -978,3 +986,197 @@ generic goal-loop language does not activate a worker workflow or delegation.
 Packaging, publication, chezmoi apply, fleet/Observer integration, daemon replacement
 and a long soak remain subsequent scope. Completion should match the selected
 finish line, with unperformed human/pilot acceptance stated plainly.
+
+## Next pass: discovery and peer watches
+
+Proposed 2026-10-12 after the completed corrective loop. Bryan selected
+inter-session coordination as a useful next monitoring case and corrected the
+scope to **two existing, loaded sessions inside the same owning daemon**. A and B
+are independent conversations, not a parent/subagent pair; either can be idle or
+busy. This document prepares an execution contract. It does not start a goal,
+create sessions or watches, send messages, or reopen a closed native batch.
+
+### Objective and retained evidence
+
+Leave a reviewed local discovery/peer-watch candidate that lets A find the right
+independent B, inspect B, observe selected useful changes outside inference, and
+receive a follow-up in A. A can then read fresh B state, report, renew observation,
+or send a follow-up within the existing request. Existing timers and delivery
+machinery are sufficient for this slice; general calendar scheduling remains later.
+
+Carry forward these findings:
+
+- The original ordinary-session follow-up established independent-session
+  messages and correlated replies, including a cross-host path. Its discovery
+  correction replaced saved-name lookup with actual-owner loaded inventory and
+  bounded metadata. The reference is Starship's
+  `agent-harness-research/notes/2026-10-11-codex-daily-workflow-follow-up.md`,
+  summarized in [the handoff](implementation-handoff.md#evidence-already-available).
+- The newer native list/read/send/wait facade is exposed, and listing was checked;
+  those receipts do not establish every facade operation. A targeted compatibility
+  check is appropriate if that facade is selected, not a new basic messaging study.
+- The watch batch's ordinary CLI-created thread reported `source=vscode`,
+  `originator=codex-tui`, `threadSource=user`. A `sourceKinds=[cli]` filter missed it.
+  [Current evidence](coordinator-loop-results.md#conversation-and-control-findings)
+  also separates loaded membership from resumable saved history.
+- The current coordinator has bounded watch/wakeup, delivery, cancellation and
+  recovery behavior. It binds one destination and has command sources; dedicated
+  peer discovery and peer observation are not implemented.
+
+### User-facing selection and hierarchy contract
+
+"Tell agent B about X" selects an independent session in the current daemon.
+Normal peer discovery excludes the calling session and known delegated children.
+Titles, project/cwd and recent activity help selection; exact daemon/thread identity
+is the address. Duplicate independent names require disambiguation before sending.
+Keep a selected identity stable across reads, sends and renewals; never retarget
+because a name was reused or another session became more recent.
+
+| Candidate | Default treatment |
+| --- | --- |
+| Positively loaded independent session, idle or busy | Eligible peer; show status and bounded identifying context. |
+| Known delegated child | Exclude from ordinary matching; expose under its parent on explicit inspection. |
+| Unknown or conflicting delegation metadata | Show classification uncertainty separately; verify before selecting it for an ordinary peer action. |
+| Saved/non-loaded session | Separate from the active peer list; no automatic load/resume. |
+| Independent fork | Eligible when independently classified; copied ancestry alone does not make it a delegated child. |
+| Incomplete inventory or failed read | Return scope, freshness and completeness limits; do not claim the peer does not exist. |
+
+Use native delegation provenance and supported parent/descendant relationships.
+Do not classify by title, model, worker nickname, TUI visibility, a CLI-only origin
+filter, or merely the presence/absence of a fork ancestor. Check the installed schema's
+representations, including review/compact/other subagent kinds. Missing provenance
+does not become proof of independence. Parent-child send/wait/result collection
+continues through native orchestration; this pass adds no replacement child protocol.
+
+An explicit request such as "inspect B's reviewer" may expose the hierarchy. The
+first pass need not provide direct child messaging as a new surface; if used, keep
+the existing native action and show the exact parent/child identities. A child-only
+name match must not silently select that child or redirect the message to its parent.
+
+Watching B observes B's selected evidence. Child activity may inform B's progress
+when native evidence supports that relationship, but child completion does not
+establish B's task outcome and must not generate an automatic follow-up per child.
+
+### Research gates before implementation
+
+Current [official app-server documentation](https://learn.chatgpt.com/docs/app-server)
+describes loaded inventory, non-resuming thread reads, subagent source filters,
+experimental parent/descendant filters and persisted history pagination. Documentation
+and a command-center row do not prove those fields are present in this daemon/tool
+facade. Recheck installed version/schema and owner identity at execution start.
+
+| Gate | Required evidence and decision |
+| --- | --- |
+| Independent/child classification | Identify supported provenance/relationship fields for ordinary sessions, delegated children and independent forks. Use controlled fixtures for ambiguity and unknown fields; use passive native reads only where needed. |
+| Bounded active discovery | Enumerate loaded IDs and resolve bounded metadata with visible pagination/read limits. A facade's recent/non-archived list cannot silently become an exhaustive loaded-session census. |
+| Passive peer read access | Read B through the same frozen daemon without loading it, starting a turn, changing its goal or subscribing via an unqualified resume path. Check status/history/goal access and bounded data retrieval. |
+| Selected observation signals | Map useful progress, new replies/results and input/approval-needed states to available native evidence. Identify cursor/baseline behavior and declare which events can be missed during disconnection. |
+| Message route compatibility | Reuse the already-qualified native queue route or qualify the selected task facade's exact targeting, busy/idle behavior and receipt/correlation fields in one short smoke case. |
+| Source access boundary | Prove a coordinator-owned read adapter can reach the owner through the qualified host path. Native MCP tools are not automatically available to a background command source. |
+
+If a gate fails, finish with the supported discovery/read subset and a specific
+missing-capability report. Do not manufacture independence from heuristics, relax
+global permissions, start a new daemon, or add Observer/fleet infrastructure to
+bypass a failed same-daemon gate.
+
+### Small implementation slices
+
+1. **Discovery and bounded read.** Normalize identity, loaded membership, runtime
+   phase, delegation kind (`independent`, `subagent`, `unknown`), known parent,
+   selection context and freshness/completeness. Reuse native tools when they
+   supply these facts; add a thin local adapter for missing metadata/selection.
+2. **Selected message routing.** Carry an explicit resolved identity into the
+   existing native messaging route. Preserve admission, recipient turn and reply
+   receipts separately. Add correlation conventions or a wrapper only where the
+   selected route lacks the required behavior. Uncertain sends are inspectable
+   and are not automatically replayed.
+3. **Peer observation in the coordinator.** Persist B's frozen observation identity
+   separately from A's frozen delivery identity, with selectable signals, cadence,
+   quiet-initial behavior, lease/event bounds and follow-up. Reuse event admission,
+   status, cancellation, renewal and timers. No second scheduling service is needed.
+4. **Recovery and review.** Persist the observation baseline/cursor with pending
+   events atomically; preserve existing command/watch/wakeup journals on upgrade.
+   Verify no retargeting, duplicate observer, automatic goal resume or ambiguous
+   replay. Record coverage gaps rather than promising a lossless occurrence stream.
+
+Provisional surface: peer list/read, resolved native send, and peer-watch start using
+existing watch status/cancel/renew/ack. Finalize names after the gates; no new skill
+or MCP packaging is required to qualify a working local CLI surface.
+
+The default adapter proposal is a coordinator-owned passive RPC reader through the
+qualified host access path, sharing the event journal and delivery machinery. Current
+native command sources use read-only filesystem policy with network disabled;
+restricted-source Unix access previously failed. Do not put socket operations into
+a shell source and assume that this policy or managed MCP credentials permit them.
+Evaluate push observation only if it is passive and qualified; bounded model-selected
+snapshot/history reads outside inference are a sufficient first implementation.
+
+Peer data remains bounded input, not additional authorization. On receiving an
+observation, A reads fresh state and chooses its next step under the user's scope.
+No automatic acknowledgement ping-pong, repeated status prompts to B, job repair,
+delegation or intervention is added by registering a watch.
+
+### Offline acceptance and short native recipe
+
+Use a synthetic inventory containing independent A and B, a delegated child with
+a colliding B-like name, duplicate independent names, an independent fork, an
+unclassified record and a saved B. Include multiple pages, incomplete reads,
+changing classifications, name reuse and owner replacement. The normal selector
+chooses only verified independent peers; explicit hierarchy inspection labels children.
+
+Observation cases cover selected progress without timestamp/token/delta churn,
+already-satisfied state, a new correlated reply, input-needed, idle without task
+completion, child completion without parent completion, unavailable B, busy or
+goal-held A, cancellation/expiry and coordinator recovery. Separate native turn
+outcomes, explicit task/goal results and peer-reported claims. Status alone must
+not invent a task outcome; missed history retains a coverage-gap receipt.
+
+When native execution is subsequently requested, prepare a fresh private fixture
+with A and B positively loaded in the same existing daemon. The test unit is daemon
+sessions; viewer windows/process count are not its definition. Use task-owned
+sessions/work for active fault cases. Do not message or alter unrelated running work
+to manufacture acceptance. Creating fixture sessions or a child requires that
+execution scope; this planning checkpoint authorizes none. Child collision cases
+can remain offline unless a native fixture is explicitly included in the recipe.
+
+Proposed batch ceiling: **8 follow-up/message admissions and 16 started native test
+turns**, including setup and any continuation. Every watch stays within 120 seconds
+and two observation events; timers, if needed, are one-shot and separately counted.
+Record lifecycle notices, fault attempts and provider failures; unused allowance
+from a closed batch is never reused and failures do not replenish the budget.
+
+| Native case | Acceptance |
+| --- | --- |
+| Discover B, then use the selected messaging route | Verified independent B under the same owner; stable identity and correlated reply. This is an integration smoke check of retained messaging evidence. |
+| A watches B and settles | Quiet observation causes no model turn; one selected useful change wakes A, which reads fresh B state and acknowledges the event. |
+| A is busy while B changes | Follow-up queues behind foreground/human input without interruption; handled input remains correlated. |
+| Explicitly stop A's watch of B | No new observation admission or renewal; B's work, goal, queue and native child orchestration are preserved. |
+| Unavailable peer or coordinator loss | Fresh reads retain unavailable/unknown/gap truth; explicit recovery uses the same frozen identity and does not replay uncertain sends. Keep most faults offline. |
+
+No repeated native transport, broad scheduling or long-duration research is needed.
+Keep private transcripts, identifiers and runtime data outside committed source;
+publish sanitized receipts and limits. Cleanup stops only task-owned adapters,
+coordinators, inputs and fixture clients/sessions under the prepared recipe, while
+preserving the daemon, requesting conversation and unrelated work.
+
+### Finish line, manual acceptance and scope
+
+The proposed unattended finish line is the gate report, reviewed local candidate,
+meaningful regressions, a closed bounded native batch, exact cleanup/preservation
+receipts and prepared manual checklist. If execution is later requested, commit
+validated cohesive slices and keep worker validation separate from peer/watch tests.
+Deliberately update the inventory for new files. Run the relevant tests, full existing
+suite, `scripts/check` and `git diff --check` before handing off the implementation.
+
+Human acceptance still checks natural-language selection of B, understandable
+independent/child presentation, draft preservation and input ordering in A, Esc,
+explicit stop and viewer detach. Prepare it unattended and report it pending until
+performed. The peer-watch integration is the proposed first accessible source case;
+an unrelated real-job pilot is not a prerequisite to this slice, and the earlier
+generic pilot worksheet remains available afterward. Do not claim native `/exit`
+confirmation or daily-use acceptance from protocol checks.
+
+Installation/release, chezmoi apply, cross-daemon or cross-host discovery, Agent
+Observer/Mesh integration, general child management, provider expansion, daemon
+replacement and a long soak remain later scope. The primary owns decisions,
+integration and acceptance; this planning request invokes no worker skill or agents.

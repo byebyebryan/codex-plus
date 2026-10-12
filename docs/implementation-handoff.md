@@ -17,7 +17,39 @@ local surface is now implemented in `codex_plus/` with
 [current evidence](coordinator-loop-results.md) before using it. Published and
 installed worker files remain unchanged; this helper is local source only.
 
-## Next pass after review
+## Current next pass: discovery and peer watches
+
+Bryan's latest planning direction is to use inter-session coordination as the
+next watch acceptance case: **session A observes session B and follows up, with
+both existing, loaded sessions inside the same owning daemon**. Either may be
+idle or busy. This is a planning checkpoint; no new goal, native trial or peer
+message is started by this update. See the
+[discovery and peer-watch plan](codex-plus-plan.md#next-pass-discovery-and-peer-watches).
+
+Carry forward the ordinary-session message/reply evidence. The original follow-up
+note records successful independent-session replies and a discovery correction:
+query the actual daemon's loaded inventory, then bounded metadata, instead of
+searching saved names. The later watch batch also found a CLI-created thread
+reported as `source=vscode`; a CLI-only source filter missed it. The newer native
+task-tool facade was inspected/listed but not fully exercised. Qualify only the
+remaining facade or integration gaps rather than repeating basic transport research.
+
+Ordinary "tell agent B" discovery selects independent sessions. Delegated child
+threads stay out of normal peer matching; explicit hierarchy inspection can show
+them under their parent. Use native delegation provenance/relationships, keep
+unknown classification visible, and distinguish independent forks from delegated
+children. Native parent-child orchestration remains responsible for child results.
+
+The proposed pass first qualifies discovery metadata and passive read access,
+then adds the smallest missing peer adapter over the existing coordinator.
+Current command sources cannot be assumed to access the daemon socket or native
+MCP tools under their restricted policy. Freeze B's observation identity separately
+from A's delivery identity; both must refer to the same positively verified owner.
+Use selected peer progress/result/input-needed evidence, not idle or child completion
+as a universal task-completion signal. Model-selected signals, cadence and follow-up
+remain choices. Human draft/TUI acceptance stays explicitly pending when unattended.
+
+## Completed lifecycle pass after review
 
 Read-only post-loop review reproduced two additional gaps in the current candidate:
 renewing a lost source can leave `replacing` pending beyond expiry, and cancellation
