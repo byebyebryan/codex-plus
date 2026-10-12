@@ -43,8 +43,34 @@ renewal cannot retarget. Cancellation stops the reader without a peer RPC write.
 Message registration is atomic and returns durable IDs even if coordinator startup
 is unavailable. The native delivery path rechecks independent provenance.
 
-All 126 offline tests pass, including thirteen peer-watch/message cases and three
+All 127 offline tests pass, including thirteen peer-watch/message cases and three
 new CLI boundary cases. The 52-file inventory and whitespace checks pass. Existing
 command/watch/wakeup and worker tests remain separate and passing. The capped
 synthetic native batch and final review are next; this is not yet native acceptance
 of the new peer-watch/message surface.
+
+## First native batch and review correction
+
+The first fresh batch is closed at **3 admissions / 6 started turns**. The quiet
+watch case passed: B's message carried its client ID into a completed recipient
+turn/reply; A woke on the selected reply, read B once, acknowledged its exact event
+and completed its response. Initial unchanged observation caused no model turn.
+
+The busy case's harness asserted admission immediately after observing a pending
+journal event, before the next coordinator delivery tick. It therefore failed to
+capture a queue-while-busy window and is not counted as native busy acceptance.
+This was an assertion/timing error, not a provider failure. Cleanup stopped owned
+coordinators, cancelled the pending observation, interrupted only the unfinished
+synthetic A foreground turn and archived the two fixtures. No cleanup errors were
+reported; the original daemon identity was preserved.
+
+Independent review also reproduced reply-window churn: inserting a new active
+turn could evict an older reply and change a multi-reply snapshot without any new
+reply. Reply watches now compare the latest completed final reply, with a regression
+for that case. Snapshot coverage still explicitly permits missed intermediate events.
+
+A separately prepared targeted recipe will check admission-aware busy delivery,
+cancellation and explicit coordinator recovery with new synthetic actors. Its
+ceiling is five admissions/eight turns; all prior usage remains counted against
+the overall pass ceiling of eight admissions/sixteen turns. The closed first batch
+is not reopened, and no provider failure or harness failure replenishes the limit.

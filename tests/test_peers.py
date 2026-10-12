@@ -205,6 +205,19 @@ class PeerTests(unittest.TestCase):
         self.assertTrue(result['coverage']['observation_gap'])
         self.assertLessEqual(len(result['reply'][0]['text'].encode()), 384)
 
+    def test_new_active_turn_evicting_old_history_is_not_a_new_reply(self):
+        replies = [
+            {'id': 'turn-'+str(n), 'status':'completed', 'items':[
+                {'id': 'reply-'+str(n), 'type':'agentMessage',
+                 'phase':'final_answer', 'text':'reply '+str(n)}]}
+            for n in (3, 2, 1)]
+        self.backend.turns = replies
+        first = snapshot(self.reader.read(self.frozen), ['reply'])
+        self.backend.turns = [{'id':'new-active', 'status':'inProgress', 'items':[]}, *replies]
+        second = snapshot(self.reader.read(self.frozen), ['reply'])
+        self.assertEqual(first, second)
+        self.assertEqual(len(first['reply']), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

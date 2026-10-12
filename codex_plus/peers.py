@@ -267,9 +267,10 @@ def snapshot(read, signals, *, gap=False):
                 matches.append({'turn_id': turn['id'], 'turn_status': turn['status'],
                     'item_id': item['id'], 'text': text,
                     'text_truncated': cut or item['text_truncated']})
-            if len(matches) >= 3:
+            maximum = 1 if signal == 'reply' else 3
+            if len(matches) >= maximum:
                 break
-        result[signal] = matches[:3]
+        result[signal] = matches[:maximum]
     result['coverage']['content_truncated'] = any(
         item['text_truncated'] for signal in ('reply', 'progress')
         for item in result.get(signal, []))
