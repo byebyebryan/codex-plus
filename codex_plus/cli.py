@@ -127,7 +127,7 @@ def serve(root: Path):
                 engine.tick()
                 active = any(job['intent'] in ('active', 'replacing') for job in store.jobs())
                 awaiting = any(event['delivery'] == 'pending' or
-                    event['delivery'] == 'native_queued' and event['turn_outcome'] is None and
+                    event['delivery'] == 'native_queued' and event['expires'] > store.clock() and event['turn_outcome'] is None and
                     not event['acknowledged'] for event in store.events())
                 if not active and not awaiting and not engine.sources:
                     idle_since = idle_since or time.monotonic()

@@ -281,6 +281,22 @@ class Store:
             self.db.execute("UPDATE events SET delivery='dispatching' WHERE id=?", (event_id,))
         return True
 
+    def expire_pending_events(self):
+        """Bound delivery windows even when native control cannot be read."""
+        self.db.execute("UPDATE events SET delivery='expired',detail='delivery window ended before admission' WHERE delivery='pending' AND expires<=?", (self.clock(),))
+
+    def reserve_start(self, event_id: str) -> bool:
+        """Recheck cancellation and lease after native queue inspection."""
+        with self.transaction():
+            event = self.event(event_id)
+            job = self.job(event['job_id'])
+            eligible = job['intent'] == 'active' or event['kind'] == 'lifecycle' and job['intent'] == 'expired'
+            if (event['delivery'] != 'native_queued' or event['start_state'] != 'pending'
+                    or event['turn_id'] or not eligible or self.clock() >= event['expires']):
+                return False
+            self.db.execute("UPDATE events SET start_state='starting' WHERE id=?", (event_id,))
+        return True
+
     def admitted(self, event_id: str, native_id: str | None):
         self.db.execute("UPDATE events SET delivery='native_queued',native_id=? WHERE id=?", (native_id, event_id))
 

@@ -29,6 +29,9 @@ Registration returns its ID, frozen destination and effective bounds. Registrati
 is not a source-running or handling receipt. A coordinator starts lazily and is
 reused for that state directory; concurrent launchers cannot acquire its owner lock.
 It exits after ten idle seconds once intent and connected handling work have settled.
+Unobserved admitted input retains its receipt, but does not keep the coordinator
+alive beyond the registration's delivery window. Closing the coordinator does not
+interrupt an already-started native turn.
 
 Every source uses native `readOnly` filesystem policy with network disabled.
 Calling setup requires the qualified host access path; it does not inherit that
@@ -83,7 +86,10 @@ delivery waits; queue-start refuses an active/pending turn and does not jump an
 earlier human input. An explicit message to stop supervision asks the model to
 cancel its selected registrations. Already-admitted or in-flight input has a
 separate receipt; cancellation does not promise retraction. The coordinator tries
-to withdraw only an exact owned entry that is still pending.
+to withdraw only an exact owned entry that is still pending, including after its
+delivery window ends. Pending notices expire even while native control is offline.
+Cancellation is checked again after queue inspection, before reserving a start;
+requests already in flight retain their actual receipt.
 
 Event envelopes include stable event/registration IDs, bounded data and the
 original follow-up. They explicitly retain the existing authorization scope.

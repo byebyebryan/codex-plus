@@ -225,6 +225,50 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(len(self.engine.sources), 1)
         self.assertIn(child, self.engine.sources)
 
+    def test_cancel_during_queue_inspection_prevents_start(self):
+        job = self.store.create('watch', self.spec)
+        event = self.store.emit(job, 'fixture')
+        self.tick()
+        original = self.backend.call
+        def call(method, params):
+            result = original(method, params)
+            if method == 'thread/queue/list':
+                self.store.cancel(job)
+            return result
+        self.backend.call = call
+        self.now += 1; self.tick()
+        self.assertFalse(any(method == 'thread/queue/start' for method, _ in self.backend.calls))
+        self.assertEqual(self.store.event(event)['start_state'], 'withdrawn')
+
+    def test_expired_admission_is_withdrawn_without_losing_receipt(self):
+        timer = self.store.create('wake', {'after': 0, 'duration': 2, 'prompt': 'fixture'})
+        self.tick()
+        event = self.store.events(timer)[0]
+        self.now += 3; self.tick()
+        receipt = self.store.event(event['id'])
+        self.assertEqual(receipt['delivery'], 'native_queued')
+        self.assertEqual(receipt['start_state'], 'withdrawn')
+        self.assertFalse(any(method == 'thread/queue/start' for method, _ in self.backend.calls))
+
+    def test_pending_notice_expires_without_native_connection(self):
+        job = self.store.create('watch', {**self.spec, 'notify_end': True})
+        event = self.store.notice(job, 'source_error')
+        self.engine.client = None
+        self.engine.next_connect = self.now + 1000
+        self.now += 31; self.tick()
+        self.assertEqual(self.store.event(event)['delivery'], 'expired')
+
+    def test_registration_during_native_receive_gets_a_deadline(self):
+        created = []
+        def receive(timeout):
+            created.append(self.store.create('watch', self.spec))
+            raise TimeoutError('fixture receive timeout')
+        self.backend.receive = receive
+        self.engine.tick()
+        self.assertEqual(self.store.job(created[0])['source_state'], 'starting')
+        self.assertIn(created[0], self.engine.sources)
+        self.assertFalse(self.backend.closed)
+
 
 if __name__ == '__main__':
     unittest.main()

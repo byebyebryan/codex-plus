@@ -162,9 +162,24 @@ class StoreTests(unittest.TestCase):
     def test_private_state_rejects_shared_directory(self):
         public = self.root / 'public'
         public.mkdir(mode=0o755)
+        public.chmod(0o755)  # Independent of the CLI's process-wide private umask.
         with self.assertRaises(ValueError):
             Store(public)
         self.assertEqual((self.root / 'state/journal.sqlite3').stat().st_mode & 0o777, 0o600)
+
+    def test_queue_start_reservation_rechecks_intent_and_expiry(self):
+        for stopped in ('cancel', 'expiry'):
+            with self.subTest(stopped=stopped):
+                watch = self.store.create('watch', self.spec)
+                event = self.store.emit(watch, 'fixture')
+                self.store.reserve(event)
+                self.store.admitted(event, 'native-input')
+                if stopped == 'cancel':
+                    self.store.cancel(watch)
+                else:
+                    self.now += 121
+                self.assertFalse(self.store.reserve_start(event))
+                self.assertEqual(self.store.event(event)['delivery'], 'native_queued')
 
 
 if __name__ == '__main__':

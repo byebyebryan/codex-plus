@@ -213,7 +213,8 @@ class Engine:
         if event['start_state'] != 'pending' or not event['native_id']:
             return
         job = self.store.job(event['job_id'])
-        if job['intent'] in ('cancelled', 'replaced', 'replacing'):
+        if (job['intent'] in ('cancelled', 'replaced', 'replacing') or
+                self.store.clock() >= event['expires']):
             self._withdraw(event)
             return
         thread, decision = self._control()
@@ -227,7 +228,11 @@ class Engine:
             return
         if rows[0]['id'] != own['id']:
             return  # Never start past an earlier user input.
-        self.store.db.execute("UPDATE events SET start_state='starting' WHERE id=?", (event['id'],))
+        if not self.store.reserve_start(event['id']):
+            current = self.store.job(event['job_id'])
+            if current['intent'] in ('cancelled', 'replaced', 'replacing') or self.store.clock() >= event['expires']:
+                self._withdraw(self.store.event(event['id']))
+            return
         try:
             result = self.client.call('thread/queue/start', {'threadId': self.binding['thread_id'],
                 'queuedSubmissionId': own['id']})
@@ -254,16 +259,23 @@ class Engine:
             result = self.client.call('thread/queue/delete', {'threadId': self.binding['thread_id'], 'queuedSubmissionId': event['native_id']})
             if result['deleted']:
                 self.store.db.execute("UPDATE events SET start_state='withdrawn',detail='owned pending native input withdrawn' WHERE id=?", (event['id'],))
+        else:
+            self.store.db.execute("UPDATE events SET start_state='not_in_queue' WHERE id=?", (event['id'],))
+
+    def _remember_deadline(self, job):
+        if job['id'] in self.deadlines:
+            return
+        remaining = min(job['spec']['duration'], max(0, job['expires'] - self.store.clock()))
+        self.deadlines[job['id']] = self.monotonic() + remaining
+        if job['kind'] == 'wake':
+            delay = min(job['spec']['after'], max(0, job['due'] - self.store.clock()))
+            self.wake_due[job['id']] = self.monotonic() + delay
 
     def tick(self, *, receive=True):
+        self.store.expire_pending_events()
         jobs = self.store.jobs()
         for job in jobs:
-            if job['id'] not in self.deadlines:
-                remaining = min(job['spec']['duration'], max(0, job['expires'] - self.store.clock()))
-                self.deadlines[job['id']] = self.monotonic() + remaining
-                if job['kind'] == 'wake':
-                    delay = min(job['spec']['after'], max(0, job['due'] - self.store.clock()))
-                    self.wake_due[job['id']] = self.monotonic() + delay
+            self._remember_deadline(job)
             if job['intent'] == 'active' and self.monotonic() >= self.deadlines[job['id']]:
                 self.store.expire(job['id'])
         try:
@@ -276,6 +288,8 @@ class Engine:
                     pass
             self._drain()
             for job in self.store.jobs():
+                # A CLI may register while receive or another native RPC yields.
+                self._remember_deadline(job)
                 if job['intent'] != 'active':
                     self._stop_source(job['id'], job['intent'])
                     if job['intent'] == 'replacing':
