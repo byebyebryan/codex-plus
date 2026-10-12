@@ -1,7 +1,8 @@
 # Implementation handoff
 
 Updated 2026-10-12 for Bryan's continuation on Snap in
-`/home/bryan/code/codex-plus`. Continue planning before implementation.
+`/home/bryan/code/codex-plus`. The agreed research-to-local-candidate loop is complete;
+plan the next acceptance/installation scope before extending it.
 Read this first, then the [implementation plan](codex-plus-plan.md). The plan
 defines milestones; this handoff explains why they were chosen and what the
 research does and does not establish. Recheck live versions, endpoints and Git
@@ -10,7 +11,10 @@ state at the start of implementation.
 The latest [Claude monitoring context](claude-monitoring-context.md) records the
 design correction and selected Snap history inspection. It broadens the earlier
 JSON-snapshot-only proposal into monitoring plus model-controlled wakeups; the
-small operational surface and implementation slices are not finalized.
+local surface is now implemented in `codex_plus/` with
+`scripts/codex-plus-watch`. Read [the candidate guide](watch-candidate.md) and
+[current evidence](coordinator-loop-results.md) before using it. Published and
+installed worker files remain unchanged; this helper is local source only.
 
 ## Accepted direction and preferences
 
@@ -43,7 +47,20 @@ an Observer dependency. Revisit Observer's public discovery/freshness contract
 when coordination or fleet use actually needs it. Keep passive state publication
 separate from operational actions.
 
-## Proposed first deliverable; planning comes first
+## First deliverable and execution history
+
+The completed loop qualified the full-access Linux/native `0.162.1` path and
+delivered a reviewed local coordinator. Native checks cover actual event handling,
+model-selected continuation, goal-held source observation, post-Esc delivery,
+linked renewal, coordinator-crash recovery, explicit cancellation and bounded
+one-shot wakeups. All 64 tests and the explicit 46-file inventory pass. Two batches
+closed at 17 follow-up admissions and 30 started native turns, with no capacity
+failures. Task-owned sources/coordinator/viewer were stopped, the synthetic goal
+and queue cleared, and only the temporary trust entry restored. The original
+daemon and requesting conversation were positively verified preserved.
+
+The paragraphs below retain the research sequence. Their earlier pending claims
+describe those checkpoints; the current report is authoritative for this pass.
 
 On 2026-10-12 Bryan requested a research/spike plan first and selected simulated
 work for initial tests while Claude Code handles the actual work. The plan's
@@ -84,18 +101,18 @@ defines staged qualification, conditional implementation, recovery/review work,
 productive fallback, two finite native batches and the morning report. It permits
 24 follow-up admissions and 40 started native test turns overall, with the existing
 short source/timer/protocol bounds. Bryan subsequently requested execution and
-incremental commits. The ordinary goal is now active; the
+incremental commits. That pass has now delivered the local candidate; the
 [current evidence report](coordinator-loop-results.md) records native results
 and implementation status. The planning/first-spike baseline is committed at
 `8f3b380`; preserve later concurrent changes.
 Human TUI acceptance, real-source supervision and installation remain later scope.
 
-The next step is to execute that agreed contract when requested. The candidate first slice is
+The implemented candidate first slice is
 **one host, one existing Codex thread, a model-selected read-only event source
 and a model-controlled one-shot wakeup**. Deliver useful events and timed
 follow-ups to the same native thread, with status, cancellation, expiry and
-bounded source/delivery errors. Finalize the interface and acceptance scenario
-before implementation.
+bounded source/delivery errors. Direct human TUI acceptance and real-source
+qualification are the next checks, followed by separately scoped installation.
 
 A model-prepared script can decide what to emit. Bounded JSON snapshot projection
 is one helpful mode, not a requirement for every source. Source-specific polling,
@@ -240,10 +257,11 @@ An actual local job and its host-readable status command have not been selected;
 qualify one after the synthetic mechanisms are useful. Do not launch an expensive
 evaluation just to manufacture a pilot.
 
-Finalize the Monitor-style and wakeup surface, source/output modes, configurable
-deadlines and output/time/admission limits, renewal, failure and stop policy during
-planning. Separate runtime invariants from model-selectable task policy. Daily restart/reconnect behavior and
-installed lifecycle are milestone 2/3 work. A separate service does not
+The local surface implements source/output modes, configurable bounds, renewal,
+failure and explicit-stop policy. Runtime invariants remain separate from
+model-selectable task policy. Coordinator recovery has bounded native evidence;
+longer operation, native-daemon restart and installed lifecycle remain later work.
+A separate service does not
 automatically inherit all managed MCP credentials or Codex execution controls.
 
 Company OpenRouter access, rates, sanctioned tools, model-quality parity and
@@ -282,8 +300,8 @@ references, not required local files on Snap:
 
 > Read AGENTS.md, docs/implementation-handoff.md and docs/codex-plus-plan.md.
 > Read docs/claude-monitoring-context.md for the latest direction and evidence.
-> Continue planning on Snap before implementation. Use Claude's model-controlled
+> Review the local candidate and current evidence on Snap. Use Claude's model-controlled
 > monitoring and wakeup choices as the reference, preserving native CLI/TUI
 > ownership and the worker bundle with no initial Agent Observer dependency.
-> Settle the operational surface, lifecycle choices and short acceptance checks.
-> Do not restart the archived research or introduce an overnight gate.
+> Plan the human TUI walkthrough and a cheap accessible real-source pilot.
+> Keep installation separate; do not restart the closed research batches.

@@ -6,13 +6,16 @@ remain available with the same identities and installation paths.
 
 ## Current scope and next step
 
-The implemented bundle is currently the worker agents and skills described below.
-The next capability is **background follow-up**: monitoring and model-controlled
-wakeups into an explicitly selected existing Codex thread. Claude Code's Monitor
+The published/installed bundle remains the worker agents and skills described below.
+This checkout also contains a tested **local watch coordinator candidate** for
+monitoring and model-controlled wakeups into an explicitly selected existing
+Codex thread. See [the candidate guide](docs/watch-candidate.md) and
+[the research and acceptance report](docs/coordinator-loop-results.md).
+Claude Code's Monitor
 and adaptive scheduling, informed by Bryan's actual usage, guide the design.
 Give the model options for sources, scripts, filtering, cadence and renewal;
 bounded JSON snapshot filtering is one useful option. Status, cancellation and
-expiry belong in the first capability. The product runtime is not implemented yet.
+expiry are part of the candidate. It is not released or installed through chezmoi.
 The [initial monitoring spike](docs/monitoring-spike-results.md) records native
 source/queue/timer evidence, a research-only simulator/helper and the remaining
 goal, stop and daily-use acceptance gates.
@@ -25,8 +28,9 @@ The [implementation plan](docs/codex-plus-plan.md) records the proposed runtime,
 same-thread delivery, daily-use acceptance and chezmoi packaging. The
 [Claude monitoring context](docs/claude-monitoring-context.md) captures the latest
 design correction, source-host history findings and open planning decisions.
-Planning continues on Snap before implementation. Codex CLI remains the daily
-interface after reviewing the desktop app's overlap.
+Development continues on Snap. The qualified candidate uses the existing native
+CLI daemon and leaves Codex CLI/TUI as the daily interface. Human TUI acceptance,
+a real-source pilot, longer operation and installation remain subsequent work.
 
 For a new implementation thread, read [AGENTS.md](AGENTS.md) and the
 [implementation handoff](docs/implementation-handoff.md) before the plan. They

@@ -1,7 +1,7 @@
 # Coordinator goal loop: evidence and candidate status
 
 Execution started 2026-10-12 on Snap after Bryan requested the agreed goal loop
-and incremental commits. This report is in progress. Human TUI acceptance,
+and incremental commits. The research-to-local-candidate pass is complete. Human TUI acceptance,
 real-workload supervision and installation remain pending.
 
 The [execution contract](codex-plus-plan.md#large-goal-loop-research-to-a-reviewed-local-candidate)
@@ -57,7 +57,8 @@ The research helper now uses the qualified preflight and direct native queue
 operations with stable event IDs. Its blanket interruption guard is removed.
 Its per-registration worker and stopped-state source suspension remain prototype
 limitations; observation/delivery separation belongs in the candidate. This is
-not yet a claim that the product coordinator is implemented.
+a description of the prototype checkpoint; the extracted coordinator is qualified
+below.
 
 Full-access calling setup is the qualified host starting point from the first
 spike. Read-only native source execution remains a separate policy. Restricted
@@ -99,15 +100,7 @@ recipes. No provider-capacity failure occurred. Candidate/recovery acceptance ha
 its separate allowance of at most 12 admissions and 20 started turns; unused
 integration allowance is not an automatic retry pool.
 
-## Remaining work
-
-The required integration and supervision gates now support extracting the local
-coordinator for the qualified full-access calling context. Test cancellation, renewal,
-truthful receipts and recovery. Preserve capacity failures and in-flight boundaries.
-The morning report will distinguish automated native checks from Bryan's pending
-TUI acceptance and separate installation scope.
-
-## Local implementation checkpoint
+## Local candidate and native acceptance
 
 The source candidate now lives in `codex_plus/` with a direct
 `scripts/codex-plus-watch` entry point. See [the candidate guide](watch-candidate.md).
@@ -115,10 +108,104 @@ It extracts the qualified local transport/control/framing mechanics and adds one
 coordinator owner, private SQLite intent/events, live handling receipts, explicit
 acknowledgement, source/delivery separation, one-shot timers, projection baselines,
 lineage cancellation, stopped-predecessor renewal, explicit source recovery and a
-shutdown preview/confirmation boundary. Native acceptance of this extracted code
-is the next batch; implementation presence is not that acceptance.
+shutdown preview/confirmation boundary. It uses one coordinator connection per
+private state directory and keeps the exact existing daemon and conversation.
 
-Thirty candidate tests cover transactional and lifecycle boundaries, output
-truncation, goal-held observation, admission/start uncertainty, live correlation,
-renewal/cancel races, source recovery and CLI shutdown/status behavior. Existing
-metadata/spike/control tests remain separate.
+| Candidate case | Observed result | Evidence limit |
+| --- | --- | --- |
+| Model-prepared snapshot source | The model wrote its observer and registered selected fields with a quiet initial baseline. Six irrelevant updates produced no admission; progress and terminal events had distinct IDs, explicit acknowledgements and live completed handling turns. | Controlled synthetic data, not real-job outcome acceptance. |
+| Active/paused goal | Source output continued and the event stayed pending while paused. After explicit driver resume, delivery and handling succeeded with the goal objective and finite allowance preserved. | The coordinator never resumed or altered the goal. Goal continuation added separately counted native turns. |
+| Actual Esc | Native TUI Esc interrupted a foreground sleep turn. The candidate source stayed running; a fresh subsequent observation was handled and acknowledged. | Automated owned TUI, not Bryan's direct draft/input walkthrough. |
+| Renewal | A running predecessor stopped before its linked successor began; exactly one Python reader existed. Cancelling the parent later cancelled the successor too. | The native command has wrapper/sandbox processes; those are not separate readers. |
+| Coordinator crash and recovery | Killing only the identity-verified coordinator stopped its owned native command chain. Cached inspection stayed offline and did not restart it. Explicit recovery used a new coordinator generation, preserved projection baseline, suppressed unchanged state and handled a fresh event. | Observation gap remains; no exactly-once log coverage or native-daemon restart claim. |
+| Shutdown preview | An unconfirmed shutdown returned its affected-work preview and preserved the coordinator/work. Confirmed cleanup stopped only its owned resources. | No native `/exit` interception or new TUI confirmation dialog. |
+| Native source failures | A write attempt failed under native read-only policy without creating the file. Malformed selected JSON stopped the source with an error receipt and zero admissions. | Source failure does not establish watched-job failure. |
+| One-shot timer and cancellation | A ten-second timer admitted/handled one event; a fifteen-second timer cancelled before due produced none. Completed timer intent settled. | Finite one-shot scheduling; no recurring backlog or long-duration acceptance. |
+
+The candidate batch is closed at **7 admissions and 11 started native turns**.
+Together with integration, the pass used **17 admissions and 30 started native
+test turns**, with **zero provider-capacity failures**. Failed measurement recipes,
+setup and goal continuations are included; neither batch's spare allowance is
+renewed. The older first-spike batch and its capacity failures remain separately
+recorded in the initial report.
+
+## Review, corrections and validation
+
+Primary review and native checks found and corrected these boundaries:
+
+- Recovery must reconcile the previous owner before accepting a lost-source restart.
+- A submitted source stays `starting` until real native output proves execution.
+- Pending lifecycle notices must expire even when native control is unavailable;
+  admitted receipts remain truthful after their delivery window ends.
+- Cancellation/expiry is checked transactionally after queue inspection, before
+  queue-start reservation. A request already in flight remains a separate receipt.
+- Registrations created while a native receive/RPC yields need deadline
+  initialization before use. The malformed-source recipe exposed this race; it
+  was retained as failed evidence, fixed and rerun under a fresh case name.
+
+The first renewal measurement incorrectly counted native wrapper processes as
+duplicate readers; the corrected measurement counted the Python leaf and retained
+the entire chain for the crash check. An exploratory candidate timer used a
+one-second delay outside the agreed ten-to-thirty-second recipe bounds. It remains
+in accounting; the qualifying timer recipe was repeated at ten seconds. A staged
+whitespace failure was mistakenly committed in the initial candidate slice and
+corrected in the next slice; subsequent commits checked exit status before commit.
+
+All **64 tests** pass: 5 metadata/checker, 13 original spike, 9 control/delivery
+and 37 candidate tests. Candidate tests exercise transactional baseline/event
+rollback, output bounds, stopped/unknown control, admission/start uncertainty,
+live correlation, cancellation races, lease expiry, renewal, recovery, single
+ownership and shutdown/status behavior. They remain separate from worker metadata
+validation. The explicit **46-file inventory**, `git diff --check` and staged
+whitespace checks pass. Reproduce the offline checks from the checkout:
+
+```sh
+rtk proxy scripts/check
+rtk proxy python3 -B -m unittest discover -s tests -p 'test_*.py'
+rtk proxy git diff --check
+```
+
+## Reproduction, cleanup and usage
+
+The [candidate guide](watch-candidate.md) provides the checked CLI forms. For a
+short synthetic walkthrough, create a fresh private simulator fixture with
+`spikes/monitoring/simulator.py`, bind an exact positively loaded native thread,
+and have the model prepare a bounded read-only observer of that fixture. Register
+120 seconds/two events with `status,progress` projection and a quiet initial
+baseline; generate noise, then progress and completion. Inspect each event's
+admission, live turn and explicit acknowledgement separately. A ten-second
+one-shot reassessment exercises the timer path. Use explicit selected cancellation
+and the shutdown preview/confirmation commands to finish. Actual paths, source
+scripts and IDs belong in private state, not committed examples.
+
+Private raw receipts, case recipes, ledger, schemas and transcripts were retained
+outside source, including unsuccessful measurements. Final cleanup verified no
+active candidate intent, native source or coordinator, no pending fixture input
+or synthetic goal, and the owned viewer closed. The task's temporary trust entry
+was removed while preserving all other parsed configuration and bytes. The
+original daemon PID/start identity/executable and requesting thread's positive
+loaded membership matched the saved baseline. Worker agents, skills and legacy
+identities have no changes from the planning checkpoint. Nothing was pushed,
+published, deployed, applied through chezmoi or run against a real workload.
+
+The primary goal tool supplied a pre-report checkpoint of **894,621 tracked
+tokens and 9,520 tracked seconds**. This is that tool's primary-goal accounting,
+not a provider bill or a sum of native test-turn usage. The native ledger records
+the counts above; this pass did not establish a reliable aggregate charge or
+cost advantage.
+
+## Remaining acceptance and next action
+
+Supported scope is a local Linux/Unix candidate on native `0.162.1`, with experimental
+queue methods and the qualified full-access caller path. Restricted calling
+contexts remain unsupported. Longer operation, native-daemon restart, complete
+cursor-based source recovery, fleet discovery and managed installation remain
+unqualified. Agent Observer is not a dependency.
+
+Review it with Bryan in the native TUI: retain a draft/earlier human input,
+interrupt current work, receive a fresh observation, explicitly stop supervision,
+and inspect the destructive-shutdown preview. Then choose an already-accessible,
+cheap real source. An existing short validation run publishing its final exit
+status into private state is a practical pilot; choose its command/status path
+before launching it. Actual Claude work was left alone. Release publication and
+chezmoi revision/checksum/validator changes remain a separate installation pass.

@@ -4,12 +4,16 @@ Draft revised 2026-10-12 with a proposed research/spike pass using simulated wor
 following the 2026-10-11 Claude Code and selected Snap history review.
 Bryan is keeping Codex CLI/TUI as the daily interface. Background monitoring and
 model-controlled wakeups come first, coordination next, and Agent Observer is
-an integration decision for that later stage. Planning continues on Snap before
-implementation. The implemented bundle remains the worker agents and skills.
+an integration decision for that later stage. The research-to-candidate loop has
+now produced a tested local helper on Snap; see the
+[current results](coordinator-loop-results.md) and [candidate guide](watch-candidate.md).
+The published/installed bundle remains the worker agents and skills. Earlier
+draft sections below preserve the planning sequence, not the latest completion state.
 
 Read the [Claude monitoring context](claude-monitoring-context.md) for the latest
 request, evidence and open decisions. The earlier JSON-snapshot-only scope has
-been broadened; source modes, tool names and implementation slices are still draft.
+been broadened. The local CLI now supplies sources, projection, one-shot wakeups,
+renewal, cancellation and explicit recovery; broader integrations remain draft.
 
 ## Product contract
 
@@ -815,19 +819,22 @@ has been requested and started; the completed prior goals remain closed.
 
 ## Immediate next work
 
-Continue planning in `/home/bryan/code/codex-plus` on Snap. Read the handoff and
-Claude context, then review the initial results, the
-[next-spike proposal](#next-spike-conversation-control-and-complete-supervision)
-and the [large-loop execution contract](#large-goal-loop-research-to-a-reviewed-local-candidate).
-Bryan selected research gates followed by a reviewed local candidate if they pass.
-Start a fresh ordinary goal when execution is requested, using the shared allowance
-and staged contract above. Qualify Esc interruption separately from explicit
-supervision cancellation, then complete actual handling/adaptation before
-coordinator extraction and recovery acceptance. Human TUI acceptance, real-source
-qualification and managed installation remain subsequent work.
+The agreed research-to-local-candidate pass is complete in source. Both native
+batches are closed at 17 admissions and 30 started turns overall, below their
+shared limits; all task-owned resources were cleaned up. The
+[current report](coordinator-loop-results.md) records the qualifying checks,
+corrected failures, review, usage checkpoint and preservation evidence.
+
+Review the candidate with Bryan in the native TUI: preserve draft/human input,
+interrupt a foreground turn, handle a fresh observation, explicitly stop selected
+supervision and preview destructive coordinator shutdown. Then select a cheap
+already-accessible real source and qualify its permissions and outcome handling.
+Longer lifetime, native-daemon restart and managed packaging remain separate work.
+No additional trial is authorized by this handoff alone.
 
 The desktop audit is complete for the interface decision. Native scheduling
-overlap is a reference; the model-controlled CLI-owned path still needs qualification.
+overlap remains a reference; the local CLI-owned path has the bounded native
+qualification recorded in the current report.
 
 Planning changes do not launch a service, create a watch, change chezmoi pins,
 activate a worker workflow or restart the closed research goal.
