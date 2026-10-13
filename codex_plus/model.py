@@ -89,6 +89,8 @@ def tool_definitions(max_duration=86400, max_events=1000):
          {'peer': peer, 'message': _string(maximum=4096), 'kind': {'type': 'string', 'enum': ['information', 'request']}, 'duration': _number(max_duration)}, ['peer', 'message']),
         ('message_status', 'Read the cached admission/handling/accepted-or-declined receipt for a sent message. Does not infer an external effect or send another message.',
          {'message': _string('A sent message reference.')}, ['message']),
+        ('message_cancel', 'Cancel your selected outgoing message intent and reconcile pending input. Never interrupt the recipient or retract completed handling; inspect message_status for withdrawal/handling receipts.',
+         {'message': _string('A message reference created by this caller.')}, ['message']),
         ('event_ack', 'Acknowledge the current incoming event using verified native turn context. For a peer request, record accepted/declined after evaluating existing scope; receipt is not execution.',
          {'outcome': {'type': 'string', 'enum': ['received', 'accepted', 'declined']}, 'detail': _string('Brief handling explanation, without claiming unverified effects.', 1024)}, []),
         ('wake_schedule', 'Schedule one bounded future reassessment under the existing request. This is separate from source events; no recurring calendar or automatic task expansion.',
@@ -102,8 +104,8 @@ def tool_definitions(max_duration=86400, max_events=1000):
     # private reference cache; controls create/cancel jobs, send, or record handling.
     return [{'name': name, 'description': description,
              'annotations': {'readOnlyHint': name in reads,
-                             'destructiveHint': name in ('watch_cancel', 'wake_cancel', 'peer_send'),
-                             'idempotentHint': name in reads or name in ('watch_cancel', 'wake_cancel'),
+                             'destructiveHint': name in ('watch_cancel', 'wake_cancel', 'peer_send', 'message_cancel'),
+                             'idempotentHint': name in reads or name in ('watch_cancel', 'wake_cancel', 'message_cancel'),
                              'openWorldHint': False},
              'inputSchema': {'type': 'object', 'properties': properties, 'required': required, 'additionalProperties': False}}
             for name, description, properties, required in definitions]
@@ -390,13 +392,30 @@ class ModelAPI:
         with_store = Store(state)
         try:
             receipt = with_store.event(row['identity'])
+            job = with_store.job(receipt['job_id'])
             exists = with_store.db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='model_responses'").fetchone()
             response = with_store.db.execute('SELECT * FROM model_responses WHERE event_id=?', (row['identity'],)).fetchone() if exists else None
         finally:
             with_store.close()
-        text = row['ref'] + ': ' + receipt['delivery'] + '; turn ' + str(receipt['turn_outcome'] or 'not yet known') + '; handling ' + ('acknowledged' if receipt['acknowledged'] else 'not acknowledged')
+        text = row['ref'] + ': intent ' + job['intent'] + '; ' + receipt['delivery'] + '; withdrawal ' + receipt['withdraw_state'] + '; turn ' + str(receipt['turn_outcome'] or 'not yet known') + '; handling ' + ('acknowledged' if receipt['acknowledged'] else 'not acknowledged')
         if response: text += '; recipient ' + response['outcome'] + ': ' + clean_text(response['detail'], 1024)
         return text + '. Receipt/acceptance does not prove an external effect.'
+
+    def _message_cancel(self, message):
+        self._mutable()
+        row = self._reference('message', message)
+        frozen = json.loads(row['binding'])
+        destination = self.root / frozen['thread_id']
+        if cli.binding(destination) != frozen: raise ValueError('recipient state owner changed')
+        recipient = Store(destination)
+        try:
+            event = recipient.event(row['identity'])
+            job = recipient.job(event['job_id'])
+            if job['kind'] != 'message' or job['spec'].get('sender') != self.frozen:
+                raise ValueError('this caller does not own the outgoing message')
+        finally: recipient.close()
+        self._cli(destination, 'cancel', job['id'])
+        return 'Cancellation requested for ' + row['ref'] + '. Recipient work is preserved; completed handling cannot be retracted. Inspect message_status for exact withdrawal/handling receipts.'
 
     def _event_ack(self, outcome='received', detail=''):
         self.current = self._current_turn()

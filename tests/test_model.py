@@ -255,6 +255,26 @@ class ModelTests(unittest.TestCase):
             self.assertEqual(api.store.jobs()[0]['intent'], 'cancelled')
             self.assertEqual(api.store.events(), [])
 
+    def test_sender_cancels_only_its_outgoing_intent_and_retains_handling_receipts(self):
+        with self.api(allowed={A,B}) as api:
+            self.discover(api)
+            api.call('peer_send', {'peer':'validation','message':'Updated fixture.'})
+            self.assertIn('Cancellation requested',api.call('message_cancel',{'message':'m1'}))
+            self.assertIn('intent cancelled',api.call('message_status',{'message':'m1'}))
+            with closing(Store(self.root/B)) as recipient:
+                self.assertEqual(recipient.jobs()[0]['intent'],'cancelled')
+                self.assertEqual(recipient.events()[0]['delivery'],'cancelled')
+
+    def test_outgoing_cancel_refuses_forged_sender_ownership(self):
+        with self.api(allowed={A,B}) as api:
+            self.discover(api)
+            api.call('peer_send',{'peer':'validation','message':'Updated fixture.'})
+            with closing(Store(self.root/B)) as recipient:
+                job=recipient.jobs()[0];spec=job['spec'];spec['sender']['thread_id']=CHILD
+                recipient.db.execute('UPDATE jobs SET spec=? WHERE id=?',(json.dumps(spec),job['id']))
+            with self.assertRaises(ValueError):api.call('message_cancel',{'message':'m1'})
+            with closing(Store(self.root/B)) as recipient:self.assertEqual(recipient.jobs()[0]['intent'],'active')
+
     def test_cancelled_reminder_callback_cannot_create_a_replacement(self):
         with self.api() as api:
             api.call('wake_schedule', {'after': 1, 'prompt': 'Reassess.'})
@@ -318,7 +338,8 @@ class ProtocolTests(unittest.TestCase):
         tools = replies[1]['result']['tools']
         watch = next(t for t in tools if t['name'] == 'watch_start')
         self.assertEqual(watch['inputSchema']['properties']['duration']['maximum'], 120)
-        self.assertNotIn('caller', json.dumps(tools))
+        for tool in tools:
+            self.assertNotIn('caller', tool['inputSchema']['properties'])
 
     def test_bad_tool_metadata_returns_readable_error_without_native_access(self):
         def forbidden(*args, **kwargs): raise AssertionError('invalid metadata reached native API')

@@ -198,7 +198,8 @@ def mcp_config(prefix, *, enabled=True, allow_peer_send=False, state_root=None,
         if value is not None: args += [option, str(value)]
     args += ['--max-duration', str(max_duration), '--max-events', str(max_events)]
     tools = {name: {'approval_mode': 'approve'} for name in SCOPED_CONTROLS}
-    if allow_peer_send: tools['peer_send'] = {'approval_mode': 'approve'}
+    if allow_peer_send:
+        tools.update({name: {'approval_mode': 'approve'} for name in ('peer_send', 'message_cancel')})
     return {'command': sys.executable, 'args': args, 'enabled': enabled, 'required': False,
             'default_tools_approval_mode': 'writes', 'tools': tools}
 

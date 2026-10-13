@@ -80,6 +80,19 @@ It adds no target identity, polling recipe or new operational authority. Before
 this targeted correction, combined usage was 21 turns / 6 deliveries; the closed
 events were not replayed. Publication remains gated on fresh receipt proof.
 
+Fresh `a632c07` installed/native TUI actors passed information receipt, accepted and
+declined existing-task requests, cached status without ping-pong, reminder fire and
+natural cancellation. During a pending reminder, selecting the earlier immutable
+release and then rolling back preserved the exact running coordinator; the reminder
+was subsequently handled. The fixed receipt hint is visible readable queue input,
+not a hidden native event. Combined usage is now 33 turns / 10 deliveries.
+
+The review additionally closes outgoing message cancellation over the sender's own
+reference. It refuses forged sender ownership and preserves completed handling;
+cached status now shows intent and withdrawal as well as turn/handling outcomes.
+Peer-send opt-in covers this related outgoing control; default write approval is
+retained. Native qualification of this last slice remains pending.
+
 Installed capability loading, relocatable artifact/provenance, active-runtime-safe
 upgrade/rollback, fresh native/TUI acceptance, publication/fetched-byte verification
 and managed rollout preparation remain in progress. Source tests are not proof of
