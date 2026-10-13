@@ -20,6 +20,62 @@ load a cold thread. The model chooses scripts, filtering, cadence and follow-up.
 
 ## Passive peer discovery and inspection
 
+### Session-local model interface
+
+`scripts/codex-plus-model` is a local stdio MCP bridge around the existing
+reader/coordinator. Its tools expose contextual peer discovery/inspection,
+watch setup/list/cancel/renew, information/request sending, handling receipts and
+one-shot reassessment. The model chooses detailed options; ordinary user requests
+do not need exact titles, UUIDs or polling recipes. Use the reusable
+`MODEL_GUIDANCE` in `codex_plus/model.py` as capability guidance once, rather than
+inserting a setup/ack recipe into each prompt or callback.
+
+The qualified attachment is a per-thread app-server configuration, with the existing
+native daemon and ordinary TUI resume. For a separately authorized local fixture,
+set a thread's `config` override as follows, replacing the private placeholders:
+
+```json
+{
+  "mcp_servers.codex_plus": {
+    "command": "/usr/bin/python3",
+    "args": [
+      "-B", "/home/bryan/code/codex-plus/scripts/codex-plus-model",
+      "--state-root", "PRIVATE_STATE_ROOT",
+      "--socket", "EXISTING_UNIX_SOCKET",
+      "--allowlist", "PRIVATE_THREAD_ALLOWLIST",
+      "--max-duration", "120",
+      "--max-events", "2"
+    ]
+  }
+}
+```
+
+The allowlist is a private JSON array of fresh owned thread UUIDs. It restricts
+callers and messaging destinations during experiments; other independent peers
+may still be passive observation sources. These small bounds belong to the native
+recipe, not the user's natural-language request. Source/command observers still
+use the coordinator's read-only filesystem/network policy. The host-side MCP bridge
+does not claim restricted-source socket access from that policy.
+
+Native MCP metadata supplies matching thread/session and turn identities. Tool
+arguments cannot choose the caller. Each operation positively validates the loaded
+independent caller and owning listener, retains immutable private state binding,
+and verifies the calling turn. Peer references/labels survive tool calls and never
+retarget when a name is reused. Children and unknown classification are not ordinary
+peer references. Context reads exclude user prompts and tool outputs.
+
+Routine tool results are readable text. `event_ack` handles the unique incoming
+event in the current native turn and records received/accepted/declined separately.
+An outcome cannot be overwritten, and a conflicting prior consumed-turn receipt
+cannot be relinked. `message_status` reads cached handling outcomes without sending
+replies. No receipt confers task authority or proves an external effect.
+
+This interface is source-only and its full native acceptance is recorded in the
+[current pass report](interaction-pass-results.md). No global MCP configuration,
+managed deployment, cold recovery or native `/exit` interception is implied.
+
+### Low-level source CLI
+
 The local peer helper reads the current existing daemon without loading, resuming
 or subscribing to a peer. It excludes the calling session and known delegated
 children from ordinary peer selection. Unknown classification and incomplete

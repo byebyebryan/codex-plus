@@ -61,3 +61,21 @@ In progress. The selected scope is ordinary watches, peer information and reques
 within existing recipient tasks. A general new-task delegation policy remains a
 separate scope choice. The next checks must use reusable capabilities and natural
 requests without driver-supplied target identities or per-callback recipes.
+
+The source-local model interface now supplies a stdio MCP server and reusable
+capability guidance. It binds caller identity from native thread/session/turn
+metadata, checks the active calling turn, and uses immutable private journal state.
+Contextual discovery returns bounded recent agent/plan content with completeness,
+child exclusion and unknown-classification disclosures. Persisted peer/watch/message
+references avoid user-supplied exact titles and refuse ambiguity or retargeting.
+Tool arguments cannot forge caller identity; a fixture allowlist protects real
+sessions from writes. Current-event acknowledgement uses native client/turn
+correlation, with distinct recipient receipt and accepted/declined outcomes.
+
+All **161 offline tests** and the explicit **59-file inventory** pass at this source
+checkpoint. New regressions cover contextual discovery, alias reuse/ambiguity,
+native owner/caller changes, interrupted calling turns, configured operation bounds,
+read-only peers, request attribution/decline, malformed or unadmitted acknowledgement,
+consumed-turn preservation, cancelled-update action refusal, pending-renewal
+cancellation and MCP metadata/protocol bounds. Full native integration remains the
+next acceptance step; these unit checks do not establish personal UX acceptance.

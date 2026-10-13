@@ -26,6 +26,14 @@ Caller thread/turn metadata was observed; sender identity and acknowledgements m
 use verified native context. Requests within the receiver's existing task are the
 recommended first scope; new-task delegation is a separate pending scope choice.
 
+The source-local interface is implemented in `codex_plus/model.py` and
+`codex_plus/model_server.py`, with `scripts/codex-plus-model` and readable queued
+events. All 161 offline tests and the 59-file inventory pass. Contextual references,
+native caller/turn binding and distinct handling outcomes have regression coverage;
+the full natural-request native recipe is next. See the
+[model interface guide](watch-candidate.md#session-local-model-interface) and current
+pass report for attachment scope. Nothing is installed or globally enabled.
+
 Read this first, then the [implementation plan](codex-plus-plan.md). The plan
 defines milestones; this handoff explains why they were chosen and what the
 research does and does not establish. Recheck live versions, endpoints and Git
