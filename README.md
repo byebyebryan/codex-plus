@@ -6,6 +6,11 @@ remain available with the same identities and installation paths.
 
 ## Current scope and next step
 
+The standalone [HTML report component](docs/html-report-usage.md) now supplies
+immutable static publication, a shared catalog, CLI, skill and optional local MCP.
+Report data and serving are independent of native agent ownership. Fleet hosting
+and installation remain separate from source/package checks.
+
 The existing installed worker agents and skills retain the identities described below.
 The separate [runtime preview v0.1.0-preview.1](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.1)
 is now published and verified. Its managed rollout is prepared; live installation
@@ -198,7 +203,8 @@ infer savings from the number of Luna assignments or from token rates alone.
 
 [HTML report design](docs/html-report-design.md) proposes static report publishing,
 durable browser-accessible URLs and a shared skill/tool surface. It is a design
-draft; report tooling and hosting are not implemented or installed.
+draft; the [usage guide](docs/html-report-usage.md) records the source implementation
+and separate hosting/installation boundary.
 The [v1 implementation plan](docs/html-report-plan.md) defines proposed defaults,
 interfaces, publication recovery and staged acceptance.
 

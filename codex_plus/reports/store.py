@@ -445,17 +445,18 @@ class Store:
         gaps = [{"report_id": r["report_id"], "state": r["state"]} for r in records if r["state"] in ("prepared", "deleting")]
         gaps += [{"report_id": r["report_id"], "state": "missing_snapshot"} for r in records
                  if r["state"] == "published" and not (self.root / "public" / r["report_id"]).is_dir()]
-        for path in (self.root / "public").iterdir():
+        public = self.root / "public"
+        for path in public.iterdir() if public.exists() else []:
             if path.name != "index.html" and not path.name.startswith(".write-") and path.name not in known:
                 gaps.append({"unknown_public_member": path.name})
-        stages = [p.name for p in (self.root / "staging").iterdir()]
+        stages = [p.name for p in (self.root / "staging").iterdir()] if (self.root / "staging").exists() else []
         expected_index = catalog.render([self.flatten(r) for r in records if r["state"] == "published"], self.config.catalog_enabled)
         index = self.root / "public/index.html"
         no_links(index)
         actual_index = index.read_bytes() if index.exists() and index.stat().st_size <= MAX_RECORD else None
         return {"store": "initialized", "data_root": str(self.root), "base_url": self.config.base_url,
                 "published": sum(r["state"] == "published" for r in records), "gaps": gaps,
-                "staging": stages, "trash": [p.name for p in (self.root / "trash").iterdir()],
+                "staging": stages, "trash": [p.name for p in (self.root / "trash").iterdir()] if (self.root / "trash").exists() else [],
                 "catalog": "current" if actual_index == expected_index else "stale"}
 
     def repair(self, *, apply=False):
