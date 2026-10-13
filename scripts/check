@@ -17,6 +17,7 @@ SKILLS = (
     "worker-task",
     "luna-goal-loop",
     "worker-goal-loop",
+    "html-report",
 )
 LEGACY_SKILLS = ("terra-task", "terra-goal-loop")
 EXPLICIT_ADAPTIVE_SKILLS = {"worker-task", "worker-goal-loop"}
@@ -76,6 +77,17 @@ EXPECTED_FILES = {
     "tests/test_model.py",
     "tests/test_package.py",
     "tests/test_native_owner.py",
+    "tests/test_reports.py",
+    "tests/test_report_mcp.py",
+    "codex_plus/reports/__init__.py",
+    "codex_plus/reports/config.py",
+    "codex_plus/reports/catalog.py",
+    "codex_plus/reports/store.py",
+    "codex_plus/reports/hosting.py",
+    "codex_plus/reports/cli.py",
+    "codex_plus/reports/mcp.py",
+    "scripts/codex-plus-report",
+    "scripts/codex-plus-report-mcp",
     "docs/worker-routing-design.md",
     "docs/worker-routing-study.md",
     *AGENTS,
