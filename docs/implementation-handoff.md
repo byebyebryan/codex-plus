@@ -5,7 +5,7 @@ Updated 2026-10-12 for Bryan's continuation on Snap in
 its corrective unattended pass and discovery/peer-watch pass are also complete.
 Human acceptance and installation remain subsequent scope.
 
-The current next-pass priority is
+The completed local interaction pass is
 [natural requests and readable peer communication](codex-plus-plan.md#next-pass-natural-requests-and-readable-peer-communication).
 Bryan has now assessed the controlled walkthrough as hard to follow: watch prompts
 exposed timing/condition recipes, sending depended on an exact destination title,
@@ -13,12 +13,12 @@ and JSON event prompts cluttered the conversation. Technical lifecycle evidence
 stands; everyday interaction acceptance has not passed. Bryan subsequently requested
 execution as an ordinary goal loop with the established incremental-commit practice.
 The [current pass report](interaction-pass-results.md) records qualification,
-implementation progress and the fresh combined experiment allowance.
+implementation, native acceptance and the closed combined experiment allowance.
 
-Qualify a reusable model-facing interface, contextual independent-peer selection,
+The pass qualified a reusable model-facing interface, contextual independent-peer selection,
 readable attributed delivery and separate observation/information/request meaning.
 Installed 0.162.1 schemas include standalone tool output and dynamic tools, but
-native rendering and ordering/control compatibility remain gates before adoption.
+native rendering and ordering/control compatibility were gates before adoption.
 Native qualification now selects a session-local stdio MCP interface and readable
 text through the qualified queue. Standalone tool output joined an active foreground
 turn despite earlier queued human input, so it is not selected for this coordinator.
@@ -28,11 +28,25 @@ recommended first scope; new-task delegation is a separate pending scope choice.
 
 The source-local interface is implemented in `codex_plus/model.py` and
 `codex_plus/model_server.py`, with `scripts/codex-plus-model` and readable queued
-events. All 161 offline tests and the 59-file inventory pass. Contextual references,
-native caller/turn binding and distinct handling outcomes have regression coverage;
-the full natural-request native recipe is next. See the
+events. All 162 offline tests and the 59-file inventory pass. Contextual references,
+native caller/turn binding and distinct handling outcomes have regression coverage.
+Fresh native actors selected a peer from ordinary work context, handled one useful
+watch callback with a fresh read and native-context acknowledgement, preserved an
+unsent draft through readable information delivery, accepted/declined existing-task
+requests, checked cached handling without ping-pong, and stopped a pronoun-selected
+watch. Read-only callers used accurate tool hints and explicit fixture-only approval
+settings; no global configuration or filesystem-sandbox relaxation was required.
+
+The combined recipe closed at 7 deliveries / 24 turns (23 completed, one qualification
+cleanup interruption), with zero provider failures. All eight experimental actors,
+owned sources/coordinators/bridges/viewers are closed; the original owner and this
+requesting conversation remain preserved. The report distinguishes harness errors,
+partial watch-draft capture and carried-forward lifecycle evidence. A
+[primary-driven fresh demonstration](watch-candidate.md#current-primary-driven-interaction-demonstration)
+is prepared for Bryan's assessment; it needs a new allowance and new actors. See the
 [model interface guide](watch-candidate.md#session-local-model-interface) and current
-pass report for attachment scope. Nothing is installed or globally enabled.
+pass report for attachment scope. Nothing is installed or globally enabled; everyday
+UX acceptance and broader new-task delegation remain pending.
 
 Read this first, then the [implementation plan](codex-plus-plan.md). The plan
 defines milestones; this handoff explains why they were chosen and what the

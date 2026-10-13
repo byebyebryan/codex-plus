@@ -71,8 +71,8 @@ advertises truthful read-only hints for discovery/inspection and cached receipts
 watch/message/handling controls remain writes. A read-only caller with `never`
 approval rejected unannotated discovery before the bridge ran. Codex supports
 [per-tool MCP approval settings](https://learn.chatgpt.com/docs/extend/mcp?surface=cli);
-the subsequent native recipe must qualify this session-local configuration rather
-than loosening the caller's filesystem sandbox or relabeling controls as reads.
+the fresh native recipe qualified this session-local configuration while retaining
+the caller's read-only filesystem sandbox. Controls were not relabeled as reads.
 
 Native MCP metadata supplies matching thread/session and turn identities. Tool
 arguments cannot choose the caller. Each operation positively validates the loaded
@@ -354,6 +354,36 @@ and five turns. See the
 and the corrective report for the implemented contracts and evidence limits.
 
 ## Deferred TUI walkthrough and real-source pilot
+
+### Current primary-driven interaction demonstration
+
+The earlier lifecycle walkthrough below is historical preparation. For the next
+shared interaction review, use the current model interface and fresh A/B fixtures;
+closed acceptance actors and their allowances are not reusable. The primary drives
+all prompts, synthetic changes, inspection and cleanup. Bryan watches two native
+TUI panes over SSH/tmux and assesses the replies; no copy/paste protocol is required.
+
+Before launch, recheck the existing daemon/version and select a new bounded
+allowance. Attach the per-thread bridge above, using the reusable `MODEL_GUIDANCE`,
+an owned-actor allowlist and fresh private journals. Open both exact actor UUIDs in
+their ordinary remote-resume TUI through a launcher that inherits `/dev/tty`.
+Identify the windows by A/B role for the viewer; opaque native titles still test
+selection by task context. All deliberate controls and messages target these actors.
+
+| Scene driven by the primary | What Bryan should see |
+| --- | --- |
+| Give B a synthetic validation task, then ask A: "Watch the session validating the samples and tell me when it needs my input." | A identifies the work and acknowledges briefly; no user timing recipe, exact title or UUID. |
+| Leave a draft in A and make B report a choice between strict rejection and normalization. | One readable attributed watch update and the actual decision; draft remains intact. |
+| Ask A: "Stop watching that session. Keep its validation work intact." | Brief stop acknowledgement; B remains available, with no replacement watch. |
+| Ask A: "Tell that session the updated fixture is available." | One readable information message in B and a short send receipt in A. |
+| Ask for a batch size within B's task and then one conflicting with its direct limit. | Distinct accepted/declined handling; direct instructions remain effective. |
+| Ask A whether the request was accepted. | Cached handling receipt without another message or acknowledgement loop. |
+
+Inspect exact private journals and current native history behind each scene. Always
+use the fresh handled event returned by the wait, rather than an earlier pending
+record. Take a TUI capture before closing fixtures. After the shared review, cancel
+owned watch intent, reconcile exact pending input, stop owned bridges/coordinators
+and archive only those actors. Personal UX acceptance is Bryan's assessment.
 
 Bryan requested finishing unattended work before manual steps. This checklist is
 prepared for the next shared session; it is not an executed human acceptance test.

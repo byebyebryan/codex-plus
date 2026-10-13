@@ -24,19 +24,25 @@ complete; [the peer-watch report](peer-watch-results.md) records 128 tests, the
 52-file inventory and two closed native recipes totaling 8 admissions / 14 turns.
 Human TUI acceptance and installation remain subsequent scope.
 
-The current planning priority is
+The latest completed local pass is
 [natural requests and readable peer communication](#next-pass-natural-requests-and-readable-peer-communication).
 The controlled walkthrough passed technical lifecycle checks, but Bryan reported
 verbose watch instructions, exact-title destination requirements and distracting
-JSON prompts. Practical interaction acceptance has not passed. This planning
-update starts no goal loop, fixture, watch or installation.
+JSON prompts. Practical interaction acceptance still requires Bryan's assessment;
+the contract below records the plan subsequently executed by this goal loop.
 
 Bryan subsequently requested execution as an ordinary goal loop. The
 [current pass report](interaction-pass-results.md) records qualification and the
 fresh combined allowance. Session-local MCP tools passed the native TUI gate;
 tool-output delivery failed the ordering gate, selecting readable text through
-the established exact queue route. Personal UX assessment and installation remain
-subsequent scope.
+the established exact queue route. The local candidate now passes 162 tests and
+the 59-file inventory. Ordinary contextual watch setup/callback, readable information
+with a preserved TUI draft, accepted/declined requests, cached receipt and ordinary
+stop passed the bounded native checks. The recipe closed at 7 deliveries / 24 turns,
+with the report retaining harness/capture limits and prior lifecycle evidence.
+All owned experimental resources are stopped; personal UX assessment and installation
+remain subsequent scope. The current [primary-driven demonstration](watch-candidate.md#current-primary-driven-interaction-demonstration)
+uses fresh actors and a new allowance when the shared review is requested.
 
 ## Product contract
 
