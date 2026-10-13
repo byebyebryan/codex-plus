@@ -71,6 +71,15 @@ actual listener process UID, with an adverse-owner regression. All 175 tests pas
 At this checkpoint the closed prototypes used 15 turns / 4 deliveries, including
 the ending notice and undelivered/withdrawn generated events. Allowance is retained.
 
+Fresh receiver tests on `4b27d2d`, including explicit CLI resume configuration,
+still produced a completed chat response without a formal receipt. The shipped
+guidance alone is insufficient for this incoming-information case. The runtime
+event frame now includes one fixed compact receipt instruction naming `event_ack`,
+with received versus accepted/declined meaning and the existing-task scope footer.
+It adds no target identity, polling recipe or new operational authority. Before
+this targeted correction, combined usage was 21 turns / 6 deliveries; the closed
+events were not replayed. Publication remains gated on fresh receipt proof.
+
 Installed capability loading, relocatable artifact/provenance, active-runtime-safe
 upgrade/rollback, fresh native/TUI acceptance, publication/fetched-byte verification
 and managed rollout preparation remain in progress. Source tests are not proof of
