@@ -1687,6 +1687,11 @@ pilot need their own scoped evidence after this release is usable.
 
 ### Problem and intended behavior
 
+Execution was selected as an ordinary goal loop from 8900175. The
+[source-access execution report](source-access-pass-results.md) records current
+implementation, installed acceptance and completed publication/managed distribution.
+The plan below retains the original baseline and bounded execution contract.
+
 Planned 2026-10-13 after Bryan reviewed the published preview and identified
 network access as essential to his ordinary monitoring. Current command sources
 hardcode a read-only filesystem and networkAccess false. The model-facing API

@@ -19,7 +19,11 @@ It qualifies authenticated endpoint observation, native-session MCP access and
 timed model inspection under existing authorization, then exercises actual
 continuation and explicit stop. Synthetic fixtures precede a selected passive
 real-source pilot. This correction changes the planned product contract; the
-published preview still has its original restrictions.
+original v0.1.0-preview.1 retains its restrictions. The selected execution now
+implements session-inherited command access and scheduled native model MCP checks;
+see the [source-access report](source-access-pass-results.md) for qualification and
+limits. These mechanisms cover the studied workflow shapes; a selected real-source
+pilot is still required to establish operational equivalence.
 
 ## Latest request and design tenet
 

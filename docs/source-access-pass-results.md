@@ -45,52 +45,107 @@ Ending notices are enabled by default in the model interface. Peer/MCP observati
 limits produce a notice separately from task outcome, so continuation can be an
 explicit model choice under the existing request.
 
-All 201 offline tests and the deliberately updated source inventory pass at this
-checkpoint. Regression coverage includes caller/grant mismatch, network denial,
-cache permissions, settings revocation/late output, disabled MCP sources,
-inspection backlog/cancellation/recovery, frozen arguments and native-event
-inspection binding. The source-access qualification has used six completed model
-turns and zero automatic deliveries; its actors are closed and original ownership
-is preserved. The fixture HTTP service remains owned for the next stage.
+## Installed workflow acceptance
 
-## Remaining acceptance and distribution gates
+Installed scheduled MCP inspection, a handled successor after model-selected slower
+cadence, and natural stop passed. Authenticated endpoint polling passed quiet
+revision suppression, a useful stall/input callback, actual foreground command
+isolation, earlier human queue ordering, unsent TUI draft preservation and natural
+stop. A timed native wakeup performed an actual configured inspection and recorded
+handling. A prompt-only tool under native never-approval was refused before the
+fixture was called. These are controlled local sources, not real endpoint/auth pilots.
 
-Installed scheduled MCP inspection, an actually handled successor after the
-model selected a slower cadence, and natural stop have now passed. The endpoint
-prototype exposed a misleading interval option: the model supplied interval
-with a one-shot fetch, but command sources ignored it. Command intervals now
-have an explicit periodic execution mode; continuing scripts remain an option.
-Each completed read uses a fresh native process identity and the same verified
-permissions, retaining projection/baseline state without a model turn per poll.
+The endpoint/continuation and ordering scenes used immutable candidates outside
+this checkout. The final guidance refinement adds explicit background wakeup and
+consistent snapshot-field instructions; the command, engine and delivery code are
+unchanged from the candidate that passed foreground/queue/draft acceptance.
+Fresh final-artifact endpoint use passed authenticated observation, quiet filtering,
+handled useful updates and natural stop. In-flight cancellation stopped the owned
+source before its endpoint call, with no active observation intent afterward.
 
-Cross-version qualification also exposed status lookup tied to the importing
-release's wrapper path. The new CLI now recognizes an identity-verified owned
-coordinator from a verified compatible immutable release. New source capability
-registration is held while an older coordinator owns that state. Actual fresh
-rollback acceptance remains pending.
+## Findings corrected or retained
 
-The closed endpoint setup included an unavailable historical tmux session before
-any model turn, followed by a fresh one-shot-source recipe that failed the
-continuing-observer gate. These are harness/interaction findings, not successful
-endpoint acceptance; their turns/deliveries remain counted. All 205 tests pass.
+- One-shot command sources silently ignored generic interval. Periodic commands
+  now use command_interval, preserving their filtering baseline without inference
+  per read. Generic interval on command sources is rejected. Continuing scripts
+  retain control over polling/backoff; unsuccessful short reads stop visibly.
+- New runtime status lookup could not recognize an old release's wrapper. It now
+  verifies exact owned process identity and that immutable release's manifest.
+  Registration/renewal of new source capabilities holds while older code owns
+  the state. Fresh selection/rollback preserved the old coordinator and its
+  pending reminder, which was handled; journals were not migrated.
+- A generated reader selected a diagnostic field it omitted on success. The runtime
+  correctly reported malformed selected snapshots; a too-short harness gate closed
+  before assessing recovery. Later fresh endpoint acceptance passed. Guidance now
+  specifies consistently present projection fields.
+- A natural later-inspection request initially used foreground sleep and one normal
+  tool call. Guidance now explicitly registers a one-shot wakeup and returns. A fresh
+  installed actor used the timer and actually inspected at its callback.
+- A reminder-to-inspect correctly reminded the user rather than inspecting itself.
+  Its handled callback counts as reminder/rollback evidence, not timed MCP inspection.
+- A historical tmux session was absent before any model turn. A fresh owned tmux
+  session provided later TUI acceptance. Failed/partial trial turns remain counted;
+  no closed actor or event was replayed.
 
-The candidate is now version 0.1.0-preview.2 with 19 runtime files plus its
-manifest. Its installer explicitly recognizes the previous preview's declared
-18-file inventory for selection rollback. All 202 tests pass; actual downloaded
-cross-version installation and active-runtime qualification remain subsequent
-gates. Selection does not migrate journals or make newer source modes understood
-by older runtime code.
+All 206 offline tests and the 69-file source inventory pass. Coverage includes
+permission mismatch/denial, cache narrowing, revocation and late output,
+periodic command baseline/cadence, disabled MCP sources, inspection backlog,
+cancellation/recovery, frozen arguments, native-event binding and old-runtime
+registration/renewal holds. Worker files are unchanged against their managed baseline.
 
-Installed model-selected endpoint monitoring, scheduled MCP inspections,
-executed continuation, timed MCP reassessment, busy/earlier-input requalification,
-TUI capture and complete fixture cleanup remain to be completed. Offline tests
-and interface availability are not those acceptance results.
+## Package and managed distribution
 
-A new immutable preview must be built and qualified outside the source checkout,
-then published and fetched/verified. Recreate and reconcile the surviving local
-chezmoi integration commit with current published history and concurrent edits,
-update pins/checksums/validators together, validate supported-host renders and
-scoped dry-run, and push only the owned managed change.
+The final candidate is 0.1.0-preview.2 at source
+`2274f4b54817fae88c3762c39c1284b8b1eb2695`, with 19 runtime files plus its manifest.
+Independent builds are byte-identical. Runtime SHA-256:
+`d4b23b83339f2a59bd12eadc0408695d899b993020d0fa496dc394de9e49ecdf`.
+The fetched 69-file source archive matches committed contents and executable bits,
+with SHA-256 `9ea1a17ad1e5e8c35f799c33d3232f324dc246fc3bc352fedaa5acc6edb994fb`.
+Archive permission normalization differs from runtime modes; contents and executable
+intent are checked separately. The actual previous published preview was downloaded,
+checksum-verified, installed and reselected. Older code does not understand newer
+source registrations; selection is neither journal migration nor daemon restart.
 
-The current published runtime remains v0.1.0-preview.1. No live apply, global
-configuration mutation, daemon restart or operational workload action occurred.
+The surviving local chezmoi integration was reconciled in an isolated worktree from
+current published history. Source/runtime URLs, revisions, checksums, immutable
+selection and validators move together. Concurrent canonical SSH, Claude and Codex
+edits are preserved. The release is [published](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.2).
+Downloaded runtime/checksum bytes match the tested artifact, and its manifest,
+exact inventory and executable modes validate. Component renders and the scoped
+11-target-group dry-run and full dotfiles check passed. The managed change is
+committed and pushed to dotfiles main as `1bac126`. Actual local Codex configuration
+rendering changes only the codex_plus namespace; other settings are unchanged. No live apply, global configuration
+mutation, daemon restart or operational workload action occurred.
+
+Named permission profiles have offline coverage and retain exact native anchors;
+native qualification covered legacy full/read-only policies. Unsupported profile
+narrowing fails explicitly. Existing MCP authentication is used by native calls;
+controlled tests do not qualify real OAuth, expired credentials, provider outages,
+long operation or personal UX. MCP polling uses a model turn per check. HTTP reads
+can be quiet native commands. These source mechanisms cover the studied Claude
+workflow shapes; real-source equivalence remains a separately selected pilot.
+
+## Closed native allowance and cleanup
+
+The combined recipe closed at 31 started native turns (29 completed, two owned
+cleanup interruptions), nine automatic events, 54 authenticated fixture HTTP
+requests and ten controlled MCP fixture calls, including qualification probes.
+There were zero provider-failed turns. All counts include failed/partial scenes;
+none were replayed in a closed actor. These totals are below the 48-turn,
+24-event, 300-HTTP-call and 100-MCP-call ceilings.
+
+All 21 owned actors are archived and absent from loaded inventory. Owned input
+queues were checked during settlement; archived queue reads are unavailable and
+no actor was unarchived to obtain extra evidence. Owned observer processes, MCP
+bridges, coordinators/viewers, the exact HTTP fixture process group and dedicated
+tmux session are closed. Original kernel listener identity and positive loaded
+requester membership remain unchanged. Private raw history, fixture credentials,
+state and captures remain outside committed source.
+
+The seven recorded concurrent canonical files retain their original hashes and
+modes. The canonical dotfiles checkout remains on 271b35d with those unfinished
+edits, while published main includes 1bac126. The clean isolated rollout checkout
+contains that managed change; no branch movement, auto-stash, apply or enablement
+was performed in the active canonical checkout. The next selected live rollout
+must reconcile that checkout and review current source/live drift before scoped
+apply. This is separate from the completed publication/distribution finish.

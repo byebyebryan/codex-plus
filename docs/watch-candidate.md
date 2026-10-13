@@ -3,8 +3,9 @@
 Run `scripts/codex-plus-watch` from this checkout. This is a local Linux/Unix
 candidate for the qualified `0.162.1` native app-server surface. Queue operations
 are experimental. Worker identities and installed paths are unchanged. The separate
-[runtime preview](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.1)
-is published and verified; its managed rollout is prepared, with live apply deferred.
+[runtime preview](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.2)
+is published and verified; its managed wiring is validated/pushed, with live apply
+and enablement deferred. See the [source-access report](source-access-pass-results.md).
 
 Bryan's controlled walkthrough found the current interaction hard to follow:
 detailed watch instructions, exact destination titles and JSON prompts. The CLI

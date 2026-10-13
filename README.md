@@ -7,13 +7,18 @@ remain available with the same identities and installation paths.
 ## Current scope and next step
 
 The existing installed worker agents and skills retain the identities described below.
-The separate [runtime preview v0.1.0-preview.1](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.1)
-is now published and verified. Its managed rollout is prepared; live installation
-and enablement remain deferred. See [the distribution report](docs/distribution-pass-results.md).
-The preview's command observers currently disable networking and have no background
-MCP-tool source. The [next fix/refinement pass](docs/codex-plus-plan.md#next-pass-operational-source-access-and-refinement)
-qualifies those operational sources, effective permissions and continuation
-before daily rollout; local-source checks do not establish Claude-workflow parity.
+The separate [runtime preview v0.1.0-preview.2](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.2)
+supports authenticated endpoint monitoring and scheduled configured MCP inspection.
+Command sources inherit the calling session's effective permissions; read-only and
+network-off options narrow access. Periodic commands can poll quietly without a
+model turn per read. MCP checks use native model turns under normal tool approval
+and authentication, with a model cost per check. See the
+[source-access acceptance report](docs/source-access-pass-results.md).
+Managed rollout stays optional and disabled by default; live installation and
+fresh-session enablement remain deferred. Ordinary requests such as "watch this
+run and tell me if it stalls", "check again later", and "stop watching it" let the
+model choose sources, cadence, filtering and continuation. Real-source pilots and
+long operation remain separate acceptance from controlled fixture qualification.
 This checkout also contains a tested **local watch coordinator candidate** for
 monitoring and model-controlled wakeups into an explicitly selected existing
 Codex thread. See [the candidate guide](docs/watch-candidate.md) and
