@@ -17,7 +17,7 @@ selected. The [runtime distribution guide](runtime-distribution.md) describes
 the new preview artifact and installed capability path under qualification.
 
 The coordinator owns one private state directory and one existing conversation.
-It reuses that conversation's daemon for read-only observation commands and queued
+It reuses that conversation's daemon for permission-verified observation commands and queued
 input. It does not create a daemon, choose a saved session by name or automatically
 load a cold thread. The model chooses scripts, filtering, cadence and follow-up.
 
@@ -64,9 +64,9 @@ set a thread's `config` override as follows, replacing the private placeholders:
 The allowlist is a private JSON array of fresh owned thread UUIDs. It restricts
 callers and messaging destinations during experiments; other independent peers
 may still be passive observation sources. These small bounds belong to the native
-recipe, not the user's natural-language request. Source/command observers still
-use the coordinator's read-only filesystem/network policy. The host-side MCP bridge
-does not claim restricted-source socket access from that policy.
+recipe, not the user's natural-language request. Command observers inherit the exact caller's effective native execution policy.
+Filesystem read-only and network-off choices narrow it; network-required checks an
+existing grant. The host-side MCP bridge verifies caller/owner binding separately.
 
 Approval settings are explicit authorization for this bounded synthetic recipe,
 not a global recommendation or authority supplied by incoming text. The bridge
@@ -222,11 +222,21 @@ Unobserved admitted input retains its receipt, but does not keep the coordinator
 alive beyond the registration's delivery window. Closing the coordinator does not
 interrupt an already-started native turn.
 
-Every source uses native `readOnly` filesystem policy with network disabled.
-Calling setup requires the qualified host access path; it does not inherit that
-read-only source policy. Restricted calling contexts failed the Unix-control probe
-and remain unsupported without a separate host-side tool design. Managed MCP
-credentials are not assumed available to a source.
+Command sources inherit verified session permissions, including existing network
+access and authorized private cache writes. `--source-access read_only` and
+`--network-access off` narrow those permissions. `--network-access required`
+refuses registration if access is absent; it never enables denied networking.
+Permissions are rechecked before each command and native changes stop owned sources.
+Legacy registrations retain their original offline policy.
+
+Use `--command-interval SECONDS` for repeated short reads or a continuing observer
+script for custom polling/backoff. Generic `--interval` belongs to peer/MCP sources.
+A periodic command retains its filtering baseline without a model turn per read;
+a failing read reports an error and stops. Select only fields present in every
+projected JSON snapshot. Configured MCP sources use `--mcp-server`/`--mcp-tool` and
+scheduled native model turns under normal permissions, with a model cost per check.
+The direct MCP RPC is excluded because fixture qualification exposed an approval
+bypass. Credentials stay in configured authentication or authorized private references.
 
 Each nonempty UTF-8 line is an occurrence, including identical repeated lines.
 stdout records are bounded to 4 KiB, cumulative stdout to 64 KiB and diagnostic
