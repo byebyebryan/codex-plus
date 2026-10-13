@@ -5,6 +5,13 @@ Updated 2026-10-12 for Bryan's continuation on Snap in
 its corrective unattended pass and discovery/peer-watch pass are also complete.
 Human acceptance and installation remain subsequent scope.
 
+The review/refinement/packaging/distribution plan has now been selected for an
+ordinary goal loop from `755855e`. The [execution report](distribution-pass-results.md)
+records prioritized findings, refinement and separate release/install gates.
+Selected finish: publish a verified preview and prepare validated managed rollout;
+live apply is deferred. The prior native batches remain closed. Preserve concurrent
+dotfiles edits and use fresh owned actors within the new 24-delivery/48-turn ceiling.
+
 Bryan has now requested planning a substantial **review/refinement/packaging/
 distribution** loop. The [new loop contract](codex-plus-plan.md#next-loop-review-refinement-packaging-and-distribution)
 starts with a prioritized review, completes stoppable model-facing timer controls,

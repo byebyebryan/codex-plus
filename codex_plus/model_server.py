@@ -9,7 +9,7 @@ from pathlib import Path
 import sqlite3
 import sys
 
-from .model import ModelAPI, native_context, tool_definitions
+from .model import MODEL_GUIDANCE, ModelAPI, native_context, tool_definitions
 from .peers import thread_id
 from .presentation import clean_text
 
@@ -29,7 +29,8 @@ class Server:
         if method == 'initialize':
             version = params.get('protocolVersion') if isinstance(params, dict) else None
             result = {'protocolVersion': version if version in ('2024-11-05', '2025-03-26', '2025-06-18') else '2025-06-18',
-                      'capabilities': {'tools': {}}, 'serverInfo': {'name': 'codex-plus', 'version': '0.1.0'}}
+                      'capabilities': {'tools': {}}, 'instructions': MODEL_GUIDANCE,
+                      'serverInfo': {'name': 'codex-plus', 'version': '0.1.0'}}
         elif method == 'ping':
             result = {}
         elif method == 'tools/list':

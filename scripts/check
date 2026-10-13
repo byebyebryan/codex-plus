@@ -43,6 +43,7 @@ EXPECTED_FILES = {
     "docs/coordinator-loop-results.md",
     "docs/peer-watch-results.md",
     "docs/interaction-pass-results.md",
+    "docs/distribution-pass-results.md",
     "docs/watch-candidate.md",
     "spikes/monitoring/native.py",
     "spikes/monitoring/control.py",

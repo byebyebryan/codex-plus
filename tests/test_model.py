@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from codex_plus.model import ModelAPI, native_context, tool_definitions, validate_arguments
+from codex_plus.model import MODEL_GUIDANCE, ModelAPI, native_context, tool_definitions, validate_arguments
 from codex_plus.model_server import Server
 from codex_plus.store import Store
 from test_peers import A, B, CHILD, OWNER, ordinary
@@ -58,10 +58,10 @@ class Backend:
 class ModelTests(unittest.TestCase):
     def test_annotations_distinguish_passive_reads_from_job_and_message_effects(self):
         tools = {t['name']: t for t in tool_definitions()}
-        for name in ('peer_list', 'peer_inspect', 'watch_list', 'message_status'):
+        for name in ('peer_list', 'peer_inspect', 'watch_list', 'message_status', 'wake_list'):
             self.assertTrue(tools[name]['annotations']['readOnlyHint'])
             self.assertFalse(tools[name]['annotations']['destructiveHint'])
-        for name in ('watch_start', 'watch_renew', 'watch_cancel', 'peer_send', 'event_ack', 'wake_schedule'):
+        for name in ('watch_start', 'watch_renew', 'watch_cancel', 'watch_recover', 'peer_send', 'event_ack', 'wake_schedule', 'wake_cancel'):
             self.assertFalse(tools[name]['annotations']['readOnlyHint'])
         self.assertTrue(tools['peer_send']['annotations']['destructiveHint'])
         self.assertTrue(tools['watch_cancel']['annotations']['destructiveHint'])
@@ -244,6 +244,58 @@ class ModelTests(unittest.TestCase):
                 with self.assertRaises(ValueError): api.call('peer_list', args)
             self.assertEqual(api.store.jobs(), [])
 
+    def test_one_shot_reminder_is_inspectable_and_exactly_cancellable(self):
+        with self.api() as api:
+            text = api.call('wake_schedule', {'after': 20, 'prompt': 'Reassess the existing fixture.'})
+            self.assertIn('t1', text)
+            with patch('codex_plus.cli.ensure_coordinator') as start:
+                self.assertIn('Reassess the existing fixture', api.call('wake_list', {}))
+                start.assert_not_called()
+            api.call('wake_cancel', {'wake': 't1'})
+            self.assertEqual(api.store.jobs()[0]['intent'], 'cancelled')
+            self.assertEqual(api.store.events(), [])
+
+    def test_cancelled_reminder_callback_cannot_create_a_replacement(self):
+        with self.api() as api:
+            api.call('wake_schedule', {'after': 1, 'prompt': 'Reassess.'})
+            job = api.store.jobs()[0]
+            event = api.store.emit(job['id'], 'Reassess.', 'wake')
+            api.store.admitted(event, 'native-event'); api.store.link_turn(event, TURN_A)
+            api.store.cancel(job['id'])
+            with self.assertRaises(ValueError): api.call('wake_schedule', {'after': 1, 'prompt': 'Again.'})
+            self.assertEqual(len(api.store.jobs()), 1)
+
+    def test_calling_turn_is_rechecked_after_native_validation_before_intent_write(self):
+        with self.api() as api:
+            with patch('codex_plus.cli.validate_binding', side_effect=lambda root:self.backend.turns[A][0].update(status='interrupted')):
+                with self.assertRaises(ValueError): api.call('wake_schedule', {'after': 1, 'prompt': 'Reassess.'})
+            self.assertEqual(api.store.jobs(), [])
+
+    def test_lost_watch_requires_explicit_recovery_and_preserves_source_and_gap(self):
+        with self.api() as api:
+            self.discover(api)
+            api.call('watch_start', {'peer': 'validation', 'followup': 'watch'})
+            job = api.store.jobs()[0]
+            api.store.source(job['id'], 'lost')
+            with self.assertRaises(ValueError): api.call('watch_renew', {'watch': 'w1'})
+            text = api.call('watch_recover', {'watch': 'w1'})
+            self.assertIn('gap', text)
+            current = api.store.job(job['id'])
+            self.assertTrue(current['recover_requested'])
+            self.assertEqual(current['spec']['peer']['thread_id'], B)
+            self.assertEqual(len(api.store.jobs()), 1)
+
+    def test_coordinator_startup_failure_keeps_one_durable_watch_and_reminder_reference(self):
+        with self.api() as api:
+            self.discover(api)
+            with patch('codex_plus.cli.ensure_coordinator', side_effect=TimeoutError('startup unknown')):
+                watch = api.call('watch_start', {'peer': 'validation', 'followup': 'watch'})
+                wake = api.call('wake_schedule', {'after': 20, 'prompt': 'Reassess.'})
+            for text in (watch, wake): self.assertIn('Do not repeat registration', text)
+            self.assertIn('w1', api.call('watch_list', {}))
+            self.assertIn('t1', api.call('wake_list', {}))
+            self.assertEqual(len(api.store.jobs()), 2)
+
 
 class ProtocolTests(unittest.TestCase):
     def test_native_context_refuses_missing_conflicting_or_body_supplied_identity(self):
@@ -262,6 +314,7 @@ class ProtocolTests(unittest.TestCase):
         server.serve(io.StringIO('\n'.join(json.dumps(r) for r in requests)), output)
         replies = [json.loads(line) for line in output.getvalue().splitlines()]
         self.assertEqual(len(replies), 2)
+        self.assertEqual(replies[0]['result']['instructions'], MODEL_GUIDANCE)
         tools = replies[1]['result']['tools']
         watch = next(t for t in tools if t['name'] == 'watch_start')
         self.assertEqual(watch['inputSchema']['properties']['duration']['maximum'], 120)

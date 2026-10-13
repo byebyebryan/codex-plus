@@ -102,6 +102,15 @@ def ensure_coordinator(root: Path):
         raise TimeoutError('coordinator startup receipt unavailable')
 
 
+def accepted_coordinator(root: Path, result: dict) -> dict:
+    """Keep durable accepted intent distinguishable from a refused operation."""
+    try:
+        ensure_coordinator(root)
+    except (OSError, ValueError, RuntimeError, TimeoutError) as error:
+        result.update(state='registered_coordinator_unavailable', coordinator_error=str(error))
+    return result
+
+
 def serve(root: Path):
     with (root / 'owner.lock').open('a') as owner:
         try:
@@ -230,7 +239,7 @@ def parser():
     return result
 
 
-def main(argv=None) -> int:
+def main(argv=None, *, before_write=None) -> int:
     args = parser().parse_args(argv)
     os.umask(0o077)
     root = private_directory(args.state)
@@ -290,14 +299,15 @@ def main(argv=None) -> int:
             else:
                 spec.update(command=command, cwd=str(Path(args.cwd or os.getcwd()).resolve()))
             if args.operation == 'watch_start':
+                if before_write: before_write()
                 job_id = store.create('watch', spec)
             else:
                 # Startup reconciles a previous owner before accepting renewal.
                 ensure_coordinator(root)
+                if before_write: before_write()
                 job_id = store.request_renewal(args.id, spec)
-            ensure_coordinator(root)
             attempt = store.renewal(job_id) if args.operation == 'renew' else None
-            print(json.dumps({'id': job_id, 'state': 'registered' if attempt is None else 'replacement_' + attempt['state'],
+            result = {'id': job_id, 'state': 'registered' if attempt is None else 'replacement_' + attempt['state'],
                 'renewal': attempt,
                 'predecessor': args.id if args.operation == 'renew' else None,
                 'destination': binding(root), 'effective_bounds': {
@@ -305,7 +315,8 @@ def main(argv=None) -> int:
                     'stdout_bytes': 65536, 'stderr_bytes': 16384, 'lifecycle_notices': int(args.notify_end)},
                 'source_policy': ({'type': 'passivePeerRpc', 'observed_peer': peer,
                                    'resumes_peer': False} if args.peer else
-                                  {'type': 'readOnly', 'networkAccess': False})}))
+                                  {'type': 'readOnly', 'networkAccess': False})}
+            print(json.dumps(accepted_coordinator(root, result)))
         elif args.operation == 'peer_send':
             frozen = validate_binding(root)
             with Client(frozen['requested_socket'], experimental=True) as client:
@@ -316,6 +327,7 @@ def main(argv=None) -> int:
                     'followup': args.message, 'message_kind': args.kind}
             if sender:
                 spec.update(sender=sender, sender_label=sender_label)
+            if before_write: before_write()
             with store.transaction():
                 job_id = store.create('message', spec)
                 event_id = store.emit(job_id, args.message, 'message')
@@ -323,23 +335,18 @@ def main(argv=None) -> int:
                     raise ValueError('message lease ended before registration completed')
             result = {'id': job_id, 'event_id': event_id, 'state': 'registered',
                       'destination': frozen, 'admission_is_not_handling': True}
-            try:
-                ensure_coordinator(root)
-            except (OSError, ValueError, RuntimeError, TimeoutError) as error:
-                # Durable accepted intent must remain inspectable, not look like a
-                # refused send that a caller should repeat with a different ID.
-                result.update(state='registered_coordinator_unavailable', coordinator_error=str(error))
-            print(json.dumps(result))
+            print(json.dumps(accepted_coordinator(root, result)))
         elif args.operation == 'wake_schedule':
             validate_binding(root)
+            if before_write: before_write()
             job_id = store.create('wake', {'after': args.after, 'duration': args.duration,
                 'prompt': args.prompt, 'followup': args.prompt})
-            ensure_coordinator(root)
-            print(json.dumps({'id': job_id, 'state': 'registered', 'after': args.after,
-                'duration': args.duration, 'event_limit': 1, 'destination': binding(root)}))
+            print(json.dumps(accepted_coordinator(root, {'id': job_id, 'state': 'registered', 'after': args.after,
+                'duration': args.duration, 'event_limit': 1, 'destination': binding(root)})))
         elif args.operation in ('status', 'list'):
             print(json.dumps(inspection(store, args.id if args.operation == 'status' else None)))
         elif args.operation == 'cancel':
+            if before_write: before_write()
             result = store.cancel(args.id)
             if coordinator_info(root) is None:
                 Engine(store, binding(root)).close()
@@ -356,6 +363,7 @@ def main(argv=None) -> int:
         elif args.operation == 'recover':
             validate_binding(root)
             ensure_coordinator(root)
+            if before_write: before_write()
             store.request_recovery(args.id)
             print(json.dumps({'id': args.id, 'state': 'recovery_requested',
                 'observation_gap': True, 'uncertain_admissions_will_not_be_replayed': True}))
