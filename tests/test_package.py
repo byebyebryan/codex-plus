@@ -97,6 +97,26 @@ class PackageTests(unittest.TestCase):
             command.assert_not_called()
         self.assertFalse((self.root/'state').exists())
 
+    def test_previous_preview_inventory_supports_upgrade_and_selection_rollback(self):
+        old_files = {name: self.files[name] for name in package.PREVIOUS_RUNTIME_FILES}
+        old_files['codex_plus/__init__.py'] = b"VERSION = '0.1.0-preview.1'\n"
+        old_meta = package.manifest(old_files, '3'*40)
+        old_meta['version'] = '0.1.0-preview.1'
+        prefix = self.root/'installed'
+        old = package.install(self.archive(metadata=old_meta, files=old_files), prefix)
+        new = package.install(self.archive(), prefix)
+        package.activate(prefix, '3'*40)
+        self.assertEqual(package.verify_install(old)['version'], '0.1.0-preview.1')
+        package.activate(prefix, '1'*40)
+        self.assertEqual((prefix/'current').resolve(), new)
+        package.activate(prefix, '3'*40)
+        self.assertEqual((prefix/'current').resolve(), old)
+        with self.assertRaises(ValueError):
+            package.read_archive(self.archive(metadata=old_meta))
+        unsupported = copy.deepcopy(old_meta); unsupported['version'] = 'unknown'
+        with self.assertRaises(ValueError):
+            package.read_archive(self.archive(metadata=unsupported, files=old_files))
+
     def test_release_selection_refuses_shared_writable_prefix_and_invalid_config_bounds(self):
         prefix=self.root/'installed';package.install(self.archive(),prefix)
         prefix.chmod(0o777)

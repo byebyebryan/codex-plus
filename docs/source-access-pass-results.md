@@ -55,6 +55,13 @@ is preserved. The fixture HTTP service remains owned for the next stage.
 
 ## Remaining acceptance and distribution gates
 
+The candidate is now version 0.1.0-preview.2 with 19 runtime files plus its
+manifest. Its installer explicitly recognizes the previous preview's declared
+18-file inventory for selection rollback. All 202 tests pass; actual downloaded
+cross-version installation and active-runtime qualification remain subsequent
+gates. Selection does not migrate journals or make newer source modes understood
+by older runtime code.
+
 Installed model-selected endpoint monitoring, scheduled MCP inspections,
 executed continuation, timed MCP reassessment, busy/earlier-input requalification,
 TUI capture and complete fixture cleanup remain to be completed. Offline tests
