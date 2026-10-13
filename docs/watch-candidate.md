@@ -45,7 +45,15 @@ set a thread's `config` override as follows, replacing the private placeholders:
       "--allowlist", "PRIVATE_THREAD_ALLOWLIST",
       "--max-duration", "120",
       "--max-events", "2"
-    ]
+    ],
+    "tools": {
+      "watch_start": {"approval_mode": "approve"},
+      "watch_cancel": {"approval_mode": "approve"},
+      "watch_renew": {"approval_mode": "approve"},
+      "peer_send": {"approval_mode": "approve"},
+      "event_ack": {"approval_mode": "approve"},
+      "wake_schedule": {"approval_mode": "approve"}
+    }
   }
 }
 ```
@@ -56,6 +64,15 @@ may still be passive observation sources. These small bounds belong to the nativ
 recipe, not the user's natural-language request. Source/command observers still
 use the coordinator's read-only filesystem/network policy. The host-side MCP bridge
 does not claim restricted-source socket access from that policy.
+
+Approval settings are explicit authorization for this bounded synthetic recipe,
+not a global recommendation or authority supplied by incoming text. The bridge
+advertises truthful read-only hints for discovery/inspection and cached receipts;
+watch/message/handling controls remain writes. A read-only caller with `never`
+approval rejected unannotated discovery before the bridge ran. Codex supports
+[per-tool MCP approval settings](https://learn.chatgpt.com/docs/extend/mcp?surface=cli);
+the subsequent native recipe must qualify this session-local configuration rather
+than loosening the caller's filesystem sandbox or relabeling controls as reads.
 
 Native MCP metadata supplies matching thread/session and turn identities. Tool
 arguments cannot choose the caller. Each operation positively validates the loaded

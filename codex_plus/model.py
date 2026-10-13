@@ -81,7 +81,14 @@ def tool_definitions(max_duration=86400, max_events=1000):
         ('wake_schedule', 'Schedule one bounded future reassessment under the existing request. This is separate from source events; no recurring calendar or automatic task expansion.',
          {'after': _number(max_duration, 0), 'duration': _number(max_duration), 'prompt': _string(maximum=4096)}, ['after', 'prompt']),
     ]
+    reads = {'peer_list', 'peer_inspect', 'watch_list', 'message_status'}
+    # These describe effects, not authorization. Reads may maintain the caller's
+    # private reference cache; controls create/cancel jobs, send, or record handling.
     return [{'name': name, 'description': description,
+             'annotations': {'readOnlyHint': name in reads,
+                             'destructiveHint': name in ('watch_cancel', 'peer_send'),
+                             'idempotentHint': name in reads or name == 'watch_cancel',
+                             'openWorldHint': False},
              'inputSchema': {'type': 'object', 'properties': properties, 'required': required, 'additionalProperties': False}}
             for name, description, properties, required in definitions]
 

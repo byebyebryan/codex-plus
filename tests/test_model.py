@@ -56,6 +56,16 @@ class Backend:
 
 
 class ModelTests(unittest.TestCase):
+    def test_annotations_distinguish_passive_reads_from_job_and_message_effects(self):
+        tools = {t['name']: t for t in tool_definitions()}
+        for name in ('peer_list', 'peer_inspect', 'watch_list', 'message_status'):
+            self.assertTrue(tools[name]['annotations']['readOnlyHint'])
+            self.assertFalse(tools[name]['annotations']['destructiveHint'])
+        for name in ('watch_start', 'watch_renew', 'watch_cancel', 'peer_send', 'event_ack', 'wake_schedule'):
+            self.assertFalse(tools[name]['annotations']['readOnlyHint'])
+        self.assertTrue(tools['peer_send']['annotations']['destructiveHint'])
+        self.assertTrue(tools['watch_cancel']['annotations']['destructiveHint'])
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name) / 'model'

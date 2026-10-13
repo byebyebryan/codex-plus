@@ -79,3 +79,12 @@ read-only peers, request attribution/decline, malformed or unadmitted acknowledg
 consumed-turn preservation, cancelled-update action refusal, pending-renewal
 cancellation and MCP metadata/protocol bounds. Full native integration remains the
 next acceptance step; these unit checks do not establish personal UX acceptance.
+
+The first natural-request batch created two fresh read-only caller fixtures. Three
+turns completed, but native Codex rejected `peer_list` because an unannotated MCP
+tool required approval under `never` policy. No bridge state, watch or delivery was
+created. Both actors were archived; the failure remains counted. The source now
+provides accurate read-only annotations and the documented fixture configuration
+explicitly approves the six watch/message/handling controls. This policy attachment
+needs qualification on fresh actors. Combined usage is **3 deliveries / 9 turns**,
+leaving **9 deliveries / 15 turns**; this is not a new allowance.
