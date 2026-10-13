@@ -7,7 +7,10 @@ from urllib.parse import quote
 
 
 def relative_url(record):
-    return record["report_id"] + "/" + "/".join(quote(p, safe="") for p in record["entrypoint"].split("/"))
+    parts = record["entrypoint"].split("/")
+    if parts[-1] == "index.html":
+        return record["report_id"] + "/" + "".join(quote(p, safe="") + "/" for p in parts[:-1])
+    return record["report_id"] + "/" + "/".join(quote(p, safe="") for p in parts)
 
 
 def render(records, enabled=True):

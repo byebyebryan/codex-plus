@@ -73,6 +73,8 @@ class Config:
                 raise ValueError(f"{name} must be a positive integer")
         if self.max_bundle_bytes > self.max_store_bytes:
             raise ValueError("bundle byte limit cannot exceed store byte limit")
+        if self.max_bundle_files > 10000 or self.max_store_reports > 10000:
+            raise ValueError("file/report limits cannot exceed the metadata read bound of 10000")
 
 
 def load(path: Path | None = None, *, data_root: Path | None = None) -> Config:

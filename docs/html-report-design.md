@@ -1,8 +1,10 @@
 # HTML report design and implementation plan
 
-Draft, 2026-10-13. Planning against source `6a04536`; this capability is not
-implemented or installed. The existing watch/peer runtime preview and its
-deployment gates remain independently owned.
+Design baseline, 2026-10-13, against source `6a04536`. The standalone component
+is now implemented and qualified in isolated installations; fleet activation
+remains separate. See the [usage guide](html-report-usage.md) and
+[execution evidence](html-report-results.md). The existing watch/peer runtime
+preview and its deployment gates remain independently owned.
 
 Read the [v1 implementation plan](html-report-plan.md) for concrete configuration,
 interfaces, retry/recovery semantics, proposed limits and execution gates. Its
@@ -47,7 +49,7 @@ for each agent invocation.
 | Agent integration | Shared skill and CLI; a thin, independent report MCP adapter |
 | Distribution | A report component in codex-plus, installed through chezmoi |
 
-These defaults are recommendations for the next implementation pass. The two
+These defaults describe the implementation baseline. The two
 scope selections above are the user's confirmed choices.
 
 ## Consolidation and optional index

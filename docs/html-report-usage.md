@@ -53,11 +53,19 @@ The [implementation plan](html-report-plan.md#configuration-and-serving-ownershi
 shows the supported schema and initial tunable limits.
 
 Serve only the store's `public` subtree at the configured URL prefix. Host profiles
-propose `http://HOST:8787/reports/`; Starship already has a listener on port 8000.
-Short hostnames require working MagicDNS on the viewing desktop. HTTPS with the
-full tailnet hostname is also supported. Provision a persistent Tailscale Serve
+propose `http://HOST.tail223cf3.ts.net:8787/reports/`; Starship already has a listener
+on port 8000. Full names avoid Starship's local loopback alias for its short name.
+Use the actual DNS name reported by each host's Tailscale inventory. Short aliases
+require separately qualified resolution and reachability. HTTPS is also supported.
+Provision a persistent Tailscale Serve
 route through its operator; doctor can inspect and print the proposed command
 without applying it. Preserve existing routes, servers and tailnet settings.
+
+Entrypoints named `index.html` return the containing directory URL. Tailscale
+Serve's file handler redirected an explicit index filename incorrectly during
+qualification; directory URLs passed both delivery and browser checks. Other
+entrypoint filenames remain explicit. Delivery rejects redirects except the same
+origin's exact index-to-directory canonicalization and verifies the returned bytes.
 
 The optional index is generated from public title/project/date/link fields.
 Private source/provenance/hash records are outside the served tree. Disabling the

@@ -15,7 +15,15 @@ from .store import CHUNK, timestamp
 
 
 class NoRedirect(HTTPRedirectHandler):
+    max_redirections = 2
+    max_repeats = 1
+
     def redirect_request(self, request, fp, code, message, headers, newurl):
+        old, new = urlsplit(request.full_url), urlsplit(newurl)
+        if (old.scheme == new.scheme and old.netloc == new.netloc
+                and old.path.endswith("/index.html") and new.path == old.path[:-len("index.html")]
+                and not new.query and not new.fragment):
+            return super().redirect_request(request, fp, code, message, headers, newurl)
         raise ValueError("report delivery redirected instead of returning its entrypoint")
 
 
@@ -37,6 +45,7 @@ def check_delivery(store, receipt, *, timeout=5):
         with build_opener(ProxyHandler({}), NoRedirect()).open(request, timeout=timeout) as response:
             if response.status != 200:
                 raise ValueError("HTTP status was not 200")
+            verified_url = response.geturl()
             while True:
                 remaining = timeout - (time.monotonic() - started)
                 if remaining <= 0:
@@ -53,7 +62,7 @@ def check_delivery(store, receipt, *, timeout=5):
                 digest.update(chunk)
         if total != expected["bytes"] or digest.hexdigest() != expected["sha256"]:
             raise ValueError("HTTP entrypoint bytes do not match the stored report")
-        return {**result, "state": "verified", "http_status": 200, "bytes": total}
+        return {**result, "state": "verified", "http_status": 200, "bytes": total, "verified_url": verified_url}
     except (OSError, ValueError, TimeoutError) as error:
         return {**result, "state": "unavailable", "detail": clean_detail(error)}
 
@@ -76,14 +85,23 @@ def inspect_hosting(config):
         state = json.loads(command.stdout)
         handlers = []
         expected_port = parsed.port or (443 if parsed.scheme == "https" else 80)
-        for authority, server in state.get("Web", {}).items():
-            endpoint = urlsplit("http://" + authority)
-            same_host = endpoint.hostname == parsed.hostname or (
-                "." not in parsed.hostname and endpoint.hostname and endpoint.hostname.split(".")[0] == parsed.hostname)
-            if endpoint.port == expected_port and same_host:
-                handlers += [handler for mount, handler in server.get("Handlers", {}).items()
-                             if mount.rstrip("/") == parsed.path.rstrip("/")]
+        matching_scopes = []
+        scopes = [("persistent", state), *(("foreground", scope) for scope in state.get("Foreground", {}).values())]
+        for scope_name, scope in scopes:
+            transport = scope.get("TCP", {}).get(str(expected_port), {})
+            if not transport.get("HTTPS" if parsed.scheme == "https" else "HTTP"):
+                continue
+            for authority, server in scope.get("Web", {}).items():
+                endpoint = urlsplit("http://" + authority)
+                same_host = endpoint.hostname == parsed.hostname or (
+                    "." not in parsed.hostname and endpoint.hostname and endpoint.hostname.split(".")[0] == parsed.hostname)
+                if endpoint.port == expected_port and same_host:
+                    selected = [handler for mount, handler in server.get("Handlers", {}).items()
+                                if mount.rstrip("/") == parsed.path.rstrip("/")]
+                    handlers += selected
+                    if any(h.get("Path") == str(config.data_root / "public") for h in selected):
+                        matching_scopes.append(scope_name)
         matched = any(handler.get("Path") == str(config.data_root / "public") for handler in handlers)
-        return {**result, "state": "route_present" if matched else "route_missing"}
+        return {**result, "state": "route_present" if matched else "route_missing", "route_scopes": matching_scopes}
     except (OSError, ValueError, subprocess.SubprocessError) as error:
         return {**result, "state": "unavailable", "detail": clean_detail(error)}

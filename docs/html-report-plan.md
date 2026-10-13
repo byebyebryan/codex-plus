@@ -3,7 +3,7 @@
 Planning checkpoint, 2026-10-13, source baseline `6a04536`. Read the
 [design](html-report-design.md) for product intent and the hosting/index choices.
 This plan supplies defaults, interfaces, recovery semantics and execution gates.
-It is not an implementation or deployment record.
+See [execution evidence](html-report-results.md) for implementation and qualification.
 
 ## Scope and finish line
 
@@ -25,7 +25,7 @@ Do not activate the existing watch preview to make report publishing work.
 | --- | --- |
 | Repository | codex-plus; standalone report component |
 | Hosting | One persistent Tailscale Serve endpoint per publishing host |
-| Returned URL | Short MagicDNS HTTP URL, provisionally; never `localhost` |
+| Returned URL | Full reported MagicDNS HTTP hostname, provisionally; never `localhost` |
 | Port/path | Dedicated configured port, proposed 8787; prefix `/reports/` |
 | Catalog | Optional static page; proposed host profile enables it |
 | Storage | XDG user data, default `~/.local/share/codex-plus/reports` |
@@ -54,6 +54,14 @@ Read-only planning checks found:
 - Canonical chezmoi currently selects the worker archive at `56b7158`. The newer
   supervision runtime is a separately published preview with rollout deferred.
 
+Execution found Starship's short hostname resolves to `127.0.1.1` locally while
+its full MagicDNS name resolves to its tailnet address. Use the full reported
+MagicDNS hostname for the candidate profiles. Short aliases remain configurable
+after resolving and reaching them from each viewing desktop. A temporary direct
+Serve route delivered HTTP 200 to Snap and Chrome; a plain Python listener bound
+to the tailnet address did not pass that peer route check. Persistent serving,
+reboot behavior and Carbon remain separate deployment gates.
+
 Use direct file serving in persistent `--bg` mode. No Python server or additional
 web daemon is needed. Current Serve documentation describes HTTP ports, path
 mounts and persistent restart behavior. In upstream 1.104.1 source, the
@@ -76,7 +84,7 @@ profile, not a deployed configuration:
 ```toml
 schema = 1
 data_root = "/home/bryan/.local/share/codex-plus/reports"
-base_url = "http://starship:8787/reports/"
+base_url = "http://starship.tail223cf3.ts.net:8787/reports/"
 catalog_enabled = true
 max_bundle_bytes = 104857600
 max_bundle_files = 2000
@@ -90,6 +98,11 @@ reject excessive inputs clearly and never discard existing reports to fit them.
 Missing configuration is an explicit delivery condition, not permission to invent
 an endpoint. Validate an absolute owned data root and a host-addressed HTTP/HTTPS
 base URL with no embedded credentials, query or fragment.
+
+Metadata has an additional hard bound of 2 MiB per snapshot and 10,000 identities
+including retained deletion records. Inputs/configuration that exceed these bounds
+are refused before unreadable state is stored. These bounds preserve inspectability;
+they do not prune reports or deletion history.
 
 Chezmoi owns code selection, publisher configuration and skill/MCP discovery
 wiring. Provision the host's Serve route as a separate operator action; its

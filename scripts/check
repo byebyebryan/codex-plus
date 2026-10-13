@@ -49,6 +49,7 @@ EXPECTED_FILES = {
     "docs/html-report-design.md",
     "docs/html-report-plan.md",
     "docs/html-report-usage.md",
+    "docs/html-report-results.md",
     "docs/watch-candidate.md",
     "spikes/monitoring/native.py",
     "spikes/monitoring/control.py",

@@ -271,7 +271,10 @@ class Store:
         return result
 
     def save(self, record):
-        atomic_bytes(self.root / "metadata" / (identity(record["report_id"]) + ".json"), canonical(record))
+        data = canonical(record)
+        if len(data) > MAX_RECORD:
+            raise ValueError("report metadata exceeds the 2 MiB read bound")
+        atomic_bytes(self.root / "metadata" / (identity(record["report_id"]) + ".json"), data)
 
     def verify(self, record):
         root = self.root / "public" / record["report_id"]
@@ -315,7 +318,10 @@ class Store:
         return result
 
     def capacity(self, total, report_id):
-        records = [r for r in self.records() if r["state"] != "deleted"]
+        inventory = self.records()
+        if len(inventory) >= 10000 and report_id not in {r["report_id"] for r in inventory}:
+            raise ValueError("report metadata history is full; no new identity was stored")
+        records = [r for r in inventory if r["state"] != "deleted"]
         used = sum(sum(f["bytes"] for f in r["snapshot"]["files"].values()) for r in records)
         reserved = 0; operations = 0
         for path in (self.root / "staging").iterdir():
@@ -333,6 +339,10 @@ class Store:
         source, entrypoint, items, description, total = describe_source(source, entrypoint, self.config)
         snapshot = {"schema": 1, "entrypoint": entrypoint, "title": text(title, 256),
                     "project": text(project, 128, optional=True), "files": description}
+        # Leave room for provenance, URL and deletion state. Never write a
+        # snapshot that subsequent bounded reads cannot inspect or recover.
+        if len(canonical(snapshot)) > MAX_RECORD - 16384:
+            raise ValueError("report metadata exceeds the 2 MiB read bound")
         report_id = hashlib.sha256(canonical(snapshot)).hexdigest()
         operation_id = uuid.uuid4().hex; stage = self.root / "staging" / operation_id
         with self.locked():

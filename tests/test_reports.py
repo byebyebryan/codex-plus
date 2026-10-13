@@ -29,6 +29,7 @@ class ReportTests(unittest.TestCase):
 
     def test_snapshot_survives_source_edits_and_unchanged_retry_reuses_url(self):
         first = self.publish(project="demo"); second = self.publish(project="demo")
+        self.assertTrue(first["url"].endswith(first["report_id"] + "/"))
         self.assertEqual(first["report_id"], second["report_id"])
         self.assertEqual(second["publication"], "reused")
         self.assertEqual(self.store.list()["total"], 1)
@@ -200,6 +201,42 @@ class ReportTests(unittest.TestCase):
         for content in ('schema = true', 'schema = 2', 'schema = 1\nunknown = "x"'):
             path = self.root / "config.toml"; path.write_text(content)
             with self.assertRaises(ValueError): config.load(path)
+
+    def test_delivery_accepts_only_same_origin_static_index_canonicalization(self):
+        from urllib.request import Request
+        handler = hosting.NoRedirect()
+        request = Request('http://starship:8787/reports/abc/index.html')
+        allowed = handler.redirect_request(request, None, 301, 'Moved', {}, 'http://starship:8787/reports/abc/')
+        self.assertEqual(allowed.full_url, 'http://starship:8787/reports/abc/')
+        for target in ['http://other-host/reports/abc/', 'http://starship:8787/private/',
+                       'https://starship:8787/reports/abc/']:
+            with self.assertRaises(ValueError): handler.redirect_request(request, None, 301, 'Moved', {}, target)
+
+    def test_serving_inspection_checks_port_transport_path_and_foreground_scope(self):
+        class Result:
+            stdout = json.dumps({'Foreground': {'owned': {'TCP': {'8787': {'HTTP': True}},
+                'Web': {'starship.tail223cf3.ts.net:8787': {'Handlers': {'/reports/': {'Path': str(self.options.data_root / 'public')}}}}}}}).encode()
+        with patch('shutil.which', return_value='/usr/bin/tailscale'), patch('subprocess.run', return_value=Result()):
+            result = hosting.inspect_hosting(self.options)
+            self.assertEqual(result['state'], 'route_present'); self.assertEqual(result['route_scopes'], ['foreground'])
+            other_port = config.Config(self.options.data_root, 'http://starship:8000/reports/')
+            self.assertEqual(hosting.inspect_hosting(other_port)['state'], 'route_missing')
+
+    def test_metadata_bounds_refuse_unreadable_new_state(self):
+        with self.assertRaises(ValueError):
+            config.Config(self.root / 'other', max_bundle_files=10001)
+        with self.assertRaises(ValueError):
+            config.Config(self.root / 'other', max_store_reports=10001)
+        with patch('codex_plus.reports.store.MAX_RECORD', 16385):
+            with self.assertRaisesRegex(ValueError, 'metadata'):
+                self.publish()
+        self.assertFalse(self.options.data_root.exists())
+        report = self.publish()
+        record = self.store.record(report['report_id'])
+        with patch.object(self.store, 'records', return_value=[record] * 10000):
+            with self.assertRaisesRegex(ValueError, 'history is full'):
+                self.store.capacity(1, 'f' * 64)
+        self.assertEqual(self.store.get(report['report_id'])['state'], 'published')
 
     def test_later_host_configuration_exposes_retained_snapshot_without_rewriting_old_links(self):
         unconfigured = Store(config.Config(self.root / "retained"))
