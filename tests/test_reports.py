@@ -238,6 +238,23 @@ class ReportTests(unittest.TestCase):
                 self.store.capacity(1, 'f' * 64)
         self.assertEqual(self.store.get(report['report_id'])['state'], 'published')
 
+    def test_repair_releases_prepared_capacity_when_no_snapshot_became_public(self):
+        rename = Path.rename
+        def fail_commit(path, target):
+            if path.name == 'bundle':
+                raise OSError('injected failure before public rename')
+            return rename(path, target)
+        with patch.object(Path, 'rename', fail_commit):
+            with self.assertRaises(OSError):
+                self.publish()
+        report_id = self.store.doctor()['gaps'][0]['report_id']
+        self.assertEqual(self.store.record(report_id)['state'], 'prepared')
+        self.assertFalse(self.store.repair()['applied'])
+        result = self.store.repair(apply=True)
+        self.assertIn('unpublished:' + report_id, result['repaired'])
+        self.assertFalse(result['remaining']['gaps'])
+        self.assertEqual(self.publish()['publication'], 'created')
+
     def test_later_host_configuration_exposes_retained_snapshot_without_rewriting_old_links(self):
         unconfigured = Store(config.Config(self.root / "retained"))
         report = unconfigured.publish(self.bundle, "Result")

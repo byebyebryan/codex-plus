@@ -42,7 +42,8 @@ rtk proxy codex-plus-report catalog-rebuild
 
 Repair previews by default. Applying it finishes verified prepared publications,
 retries exact interrupted deletion and removes positively identified abandoned
-staging. Active copy processes and unknown directories are preserved. Catalog
+staging. It also releases an unpublished prepared record when no public snapshot
+or active publisher remains. Active copy processes and unknown directories are preserved. Catalog
 failure leaves the prior index and stored report intact; rebuild repairs it.
 
 ## Configuration and hosting

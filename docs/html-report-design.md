@@ -140,7 +140,7 @@ path or an instruction to inspect conversation history.
 | `report_publish` | Validate and copy one explicit source into a new snapshot; return a publication receipt |
 | `report_get` | Read a selected report's metadata and URL; optionally perform a bounded serving check |
 | `report_list` | Return bounded local inventory, newest first, with title, date and URL |
-| `report_delete` | Remove exactly the selected published snapshot and its registry entry; preserve source files |
+| `report_delete` | Remove exactly the selected published snapshot, retain a private deletion record and preserve source files |
 | CLI `doctor` | Inspect installation, configured route and serving health without changing them |
 
 Listing and metadata reads do not create state, start services or inspect agent

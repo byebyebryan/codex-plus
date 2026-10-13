@@ -479,6 +479,7 @@ class Store:
                 if record["state"] == "prepared" and (self.root / "public" / record["report_id"]).exists():
                     self.verify(record); record["state"] = "published"; self.save(record)
                     repaired.append(record["report_id"])
+            active_reports = set()
             for stage in (self.root / "staging").iterdir():
                 if (re.fullmatch(r"[0-9a-f]{32}", stage.name) and stage.is_dir()
                         and not stage.is_symlink() and not any(stage.iterdir())):
@@ -490,9 +491,20 @@ class Store:
                         or type(operation.get("pid")) is not int or operation["pid"] <= 0
                         or not isinstance(operation.get("process_birth"), str)):
                     raise ValueError("unrecognized staging operation; no cleanup attempted")
+                identity(operation.get("report_id"))
                 if process_birth(operation["pid"]) != operation["process_birth"]:
                     files_under(stage, 10002); shutil.rmtree(stage)
                     repaired.append("staging:" + stage.name)
+                else:
+                    active_reports.add(operation["report_id"])
+            for record in self.records():
+                if (record["state"] == "prepared" and record["report_id"] not in active_reports
+                        and not (self.root / "public" / record["report_id"]).exists()):
+                    # No report became public and no publisher can still commit
+                    # this reservation. Explicit repair releases its capacity.
+                    (self.root / "metadata" / (record["report_id"] + ".json")).unlink()
+                    sync_directory(self.root / "metadata")
+                    repaired.append("unpublished:" + record["report_id"])
             for record in self.records():
                 if record["state"] == "deleted":
                     trash = self.root / "trash" / record["trash_id"]

@@ -13,7 +13,7 @@ Source and isolated-package validation do not mean fleet deployment is complete.
 
 ## Qualification
 
-- The full Python suite passes: 208 tests, including the existing 177 native,
+- The full Python suite passes: 209 tests, including the existing 177 native,
   runtime and worker tests. Report checks cover source edits, concurrent publishers,
   integrity refusal, interrupted publication/deletion, catalog failure, active vs
   abandoned staging, capacity and metadata bounds, path/symlink safety and HTTP
