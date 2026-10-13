@@ -9,9 +9,11 @@ Bryan's controlled walkthrough found the current interaction hard to follow:
 detailed watch instructions, exact destination titles and JSON prompts. The CLI
 examples below expose the current low-level candidate. The
 [next-pass plan](codex-plus-plan.md#next-pass-natural-requests-and-readable-peer-communication)
-targets ordinary requests, contextual peer selection and readable event delivery;
-those changes are not yet implemented. Native tool-output delivery is a research
-option that must preserve existing ordering and cancellation before adoption.
+now has a tested local interface for ordinary requests, contextual peer selection
+and readable event delivery. See the [interaction results](interaction-pass-results.md).
+Native tool-output delivery failed its ordering gate; readable queue input remains
+selected. The [runtime distribution guide](runtime-distribution.md) describes
+the new preview artifact and installed capability path under qualification.
 
 The coordinator owns one private state directory and one existing conversation.
 It reuses that conversation's daemon for read-only observation commands and queued

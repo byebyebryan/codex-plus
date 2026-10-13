@@ -32,6 +32,16 @@ gate is carried forward rather than replayed.
 
 ## Remaining gates
 
+The source now builds a reproducible 18-file runtime artifact plus its manifest,
+with source revision, content hashes, modes and explicit compatibility. Isolated
+installation verifies before extraction, refuses traversal/links/duplicates or
+changed immutable releases, and activates/rolls back only a release-selection
+symlink. Relocated stdio tests load shipped guidance with no source import path;
+disabled configuration needs no installation/native endpoint. Native endpoint
+selection is lazy/status-only and private state is outside the artifact. Default
+approval separates own supervision controls from optional peer-send approval.
+All 174 tests pass; native installed-model activation remains pending.
+
 Installed capability loading, relocatable artifact/provenance, active-runtime-safe
 upgrade/rollback, fresh native/TUI acceptance, publication/fetched-byte verification
 and managed rollout preparation remain in progress. Source tests are not proof of

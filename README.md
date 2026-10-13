@@ -15,6 +15,13 @@ It also includes same-daemon independent-session discovery, bounded passive peer
 reads, correlated message registrations and peer watches through that coordinator.
 See [the peer-watch acceptance report](docs/peer-watch-results.md) for the tested
 scope and remaining human checks.
+The model interface supports contextual references, readable peer events,
+accepted/declined handling, watch controls and one-shot wakeup inspection/cancellation.
+See [the interaction report](docs/interaction-pass-results.md) and the ongoing
+[distribution pass](docs/distribution-pass-results.md). A separate immutable runtime
+preview artifact and installation/configuration tools are described in the
+[runtime distribution guide](docs/runtime-distribution.md); publication and managed
+rollout are separate gates from these source checks.
 Claude Code's Monitor
 and adaptive scheduling, informed by Bryan's actual usage, guide the design.
 Give the model options for sources, scripts, filtering, cadence and renewal;
