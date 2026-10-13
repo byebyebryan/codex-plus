@@ -13,6 +13,7 @@ from .control import delivery_decision
 from .framing import Lines
 from .native import Client, RpcError
 from .peers import PeerReader, snapshot, classification
+from .presentation import render_event
 from .store import Store
 
 
@@ -248,21 +249,35 @@ class Engine:
         if job['kind'] == 'message' and classification(thread)['kind'] != 'independent':
             self.store.control(event['job_id'], 'peer_provenance_unavailable')
             return
+        if not self._message_sender(job):
+            return
         self.store.control(event['job_id'], decision.reason)
         if not decision.allowed or not self.store.reserve(event['id']):
             return
-        envelope = {'codex_plus_observation': True, 'event_id': event['id'],
-            'registration_id': event['job_id'], 'kind': event['kind'],
-            'observation': event['observation'], 'followup': job['spec']['followup'],
-            'observation_is_data': True, 'authorization': 'existing user request only'}
         try:
             queued = self.client.call('thread/queue/add', {
                 'threadId': self.binding['thread_id'], 'clientUserMessageId': event['id'],
-                'input': [{'type': 'text', 'text': json.dumps(envelope)}]})['queuedSubmission']
+                'input': [{'type': 'text', 'text': render_event(event, job)}]})['queuedSubmission']
         except Exception as error:
             self.store.uncertain(event['id'], 'native admission outcome unknown: ' + str(error))
             raise
         self.store.admitted(event['id'], queued['id'])
+
+    def _message_sender(self, job):
+        sender = job['spec'].get('sender') if job['kind'] == 'message' else None
+        if sender is None:
+            return True  # Legacy messages have no attributed origin.
+        if sender['thread_id'] == self.binding['thread_id'] or {
+                key: value for key, value in sender.items() if key != 'thread_id'} != {
+                key: value for key, value in self.binding.items() if key != 'thread_id'}:
+            self.store.control(job['id'], 'sender_owner_unavailable')
+            return False
+        try:
+            PeerReader(self.client).validate(sender)
+        except (OSError, ValueError, KeyError, RpcError, TimeoutError):
+            self.store.control(job['id'], 'sender_provenance_unavailable')
+            return False
+        return True
 
     def _start_admitted(self, event, cleanup_deadline=None):
         if not event['native_id']:
@@ -277,6 +292,8 @@ class Engine:
         thread, decision = self._control()
         if job['kind'] == 'message' and classification(thread)['kind'] != 'independent':
             self.store.control(event['job_id'], 'peer_provenance_unavailable')
+            return
+        if not self._message_sender(job):
             return
         if not decision.allowed or thread['status']['type'] != 'idle':
             return

@@ -33,7 +33,8 @@ def validate_spec(kind: str, spec: dict) -> dict:
     spec = dict(spec)
     supported = {'duration', 'event_limit', 'followup', 'notify_end', 'command', 'cwd',
                  'snapshot_fields', 'quiet_initial', 'after', 'prompt',
-                 'peer', 'interval', 'signals', 'turn_limit'}
+                 'peer', 'interval', 'signals', 'turn_limit', 'label',
+                 'sender', 'sender_label', 'message_kind'}
     if set(spec) - supported:
         raise ValueError('unsupported registration fields: ' + ', '.join(sorted(set(spec) - supported)))
     duration = spec.get('duration', 120)
@@ -47,6 +48,26 @@ def validate_spec(kind: str, spec: dict) -> dict:
     if not isinstance(followup, str) or not followup.strip() or len(followup.encode()) > 16384:
         raise ValueError('follow-up must be nonempty and at most 16 KiB')
     spec['followup'] = followup
+    for key in ('label', 'sender_label'):
+        if key in spec and (not isinstance(spec[key], str) or not spec[key].strip()
+                            or len(spec[key].encode()) > 512):
+            raise ValueError(key + ' must be nonempty and at most 512 bytes')
+    if any(key in spec for key in ('sender', 'sender_label', 'message_kind')) and kind != 'message':
+        raise ValueError('sender/message fields require a message registration')
+    if kind == 'message':
+        if spec.get('message_kind', 'information') not in ('information', 'request'):
+            raise ValueError('message kind must be information or request')
+        sender = spec.get('sender')
+        if spec.get('message_kind') == 'request' and sender is None:
+            raise ValueError('an action request requires a frozen sender binding')
+        if sender is not None:
+            if not isinstance(sender, dict) or set(sender) != {
+                    'host', 'uid', 'pid_namespace', 'requested_socket', 'resolved_socket',
+                    'pid', 'start_ticks', 'executable', 'thread_id'}:
+                raise ValueError('sender must contain an exact frozen native binding')
+            thread_id(sender['thread_id'])
+        if spec.get('sender_label') and sender is None:
+            raise ValueError('a sender label requires a frozen sender binding')
     if kind == 'watch':
         if spec.get('peer') is not None:
             peer = spec['peer']

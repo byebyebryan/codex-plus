@@ -223,8 +223,12 @@ cleanup connection to the positively loaded frozen target. It does not start a
 coordinator, resume a cold thread, restart observation or change a goal. Status
 and list remain entirely cached.
 
-Event envelopes include stable event/registration IDs, bounded data and the
-original follow-up. They explicitly retain the existing authorization scope.
+Queued events now use readable attributed text, with peer facts and message bodies
+quoted as data. Information and action requests have distinct labels; requests
+require a frozen sender, revalidated before admission and queue start. Peer text
+does not confer new authority. Full identities and raw observations remain in the
+journal; compact event references can be used with `ack` only when unambiguous.
+Messages include their body once. Native queue/control behavior is unchanged.
 Native enqueue proves admission. A successful live turn is not an acknowledgement
 or an external-effect receipt; `ack EVENT_ID` records handling only. Unknown or
 unadmitted IDs cannot be acknowledged.

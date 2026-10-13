@@ -47,6 +47,16 @@ loaded membership were freshly verified preserved. Remaining combined allowance:
 
 ## Implementation and acceptance
 
+The first source slice renders compact readable queue input, retaining exact native
+client identities and raw evidence in the journal. Peer snapshots become selected
+facts rather than JSON prompts. Message bodies appear once and carry distinct
+information/request labels. Requests require a frozen sender; the engine validates
+its same-owner independent provenance before admission and before queue start.
+Legacy messages show unavailable origin rather than claiming a sender. Quoting,
+control-character handling, deep/partial data and identity/cancellation boundaries
+have behavioral regression coverage. This is offline source acceptance; the natural
+request/interface integration still needs the subsequent native recipe.
+
 In progress. The selected scope is ordinary watches, peer information and requests
 within existing recipient tasks. A general new-task delegation policy remains a
 separate scope choice. The next checks must use reusable capabilities and natural

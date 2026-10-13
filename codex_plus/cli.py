@@ -18,6 +18,7 @@ from .engine import Engine
 from .native import Client
 from .peers import PeerReader, DEFAULT_SIGNALS
 from .store import Store, private_directory
+from .presentation import compact_ref, label as display_label
 
 
 def process_identity(pid: int) -> dict | None:
@@ -202,6 +203,7 @@ def parser():
         command.add_argument('--duration', type=float, default=120)
         command.add_argument('--limit', type=int, default=2)
         command.add_argument('--followup', default='Inspect this observation under the existing request.')
+        command.add_argument('--label', help='Readable watch context; does not change native identity')
         command.add_argument('--snapshot-fields', help='Comma-separated top-level JSON projection fields')
         command.add_argument('--quiet-initial', action='store_true')
         command.add_argument('--notify-end', action='store_true')
@@ -217,6 +219,8 @@ def parser():
     message = commands.add_parser('peer_send', help='Send one correlated input to this state directory destination')
     message.add_argument('--message', required=True)
     message.add_argument('--duration', type=float, default=120)
+    message.add_argument('--kind', choices=('information', 'request'), default='information')
+    message.add_argument('--sender', help='Exact independent sender UUID; revalidated before delivery')
     for name in ('status', 'cancel', 'ack', 'recover'):
         commands.add_parser(name).add_argument('id')
     commands.add_parser('list')
@@ -271,6 +275,8 @@ def main(argv=None) -> int:
                 'event_limit': args.limit, 'followup': args.followup,
                 'snapshot_fields': args.snapshot_fields.split(',') if args.snapshot_fields else None,
                 'quiet_initial': args.quiet_initial, 'notify_end': args.notify_end}
+            if args.label:
+                spec['label'] = args.label
             if args.peer:
                 if command or args.cwd:
                     raise ValueError('choose --peer or a command/cwd source')
@@ -304,9 +310,14 @@ def main(argv=None) -> int:
             frozen = validate_binding(root)
             with Client(frozen['requested_socket'], experimental=True) as client:
                 PeerReader(client).validate(frozen)
+                sender = PeerReader(client).resolve(target=args.sender, caller=frozen['thread_id']) if args.sender else None
+                sender_label = display_label(client.call('thread/read', {'threadId': args.sender})['thread'].get('name')) if sender else None
+            spec = {'duration': args.duration, 'prompt': args.message,
+                    'followup': args.message, 'message_kind': args.kind}
+            if sender:
+                spec.update(sender=sender, sender_label=sender_label)
             with store.transaction():
-                job_id = store.create('message', {'duration': args.duration,
-                    'prompt': args.message, 'followup': args.message})
+                job_id = store.create('message', spec)
                 event_id = store.emit(job_id, args.message, 'message')
                 if event_id is None:
                     raise ValueError('message lease ended before registration completed')
@@ -335,7 +346,13 @@ def main(argv=None) -> int:
                 result['events'] = [event for event in store.events() if event['job_id'] in result['cancelled']]
             print(json.dumps(result))
         elif args.operation == 'ack':
-            print(json.dumps(store.acknowledge(args.id)))
+            identity = args.id
+            if identity.startswith('e-'):
+                matches = [event['id'] for event in store.events() if compact_ref('e', event['id']) == identity]
+                if len(matches) != 1:
+                    raise ValueError('event reference is missing or ambiguous; inspect its exact identity')
+                identity = matches[0]
+            print(json.dumps(store.acknowledge(identity)))
         elif args.operation == 'recover':
             validate_binding(root)
             ensure_coordinator(root)

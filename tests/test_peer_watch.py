@@ -208,6 +208,39 @@ class PeerWatchTests(unittest.TestCase):
         self.assertEqual(self.store.event(event)['turn_id'], 'turn-' + event)
         self.assertEqual(self.store.job(job)['kind'], 'message')
 
+    def test_readable_delivery_preserves_exact_native_correlation(self):
+        job = self.store.create('message', {'prompt': 'A useful fact', 'followup': 'A useful fact'})
+        event = self.store.emit(job, 'A useful fact', 'message')
+        self.tick()
+        params = next(params for method, params in self.backend.calls if method == 'thread/queue/add')
+        self.assertEqual(params['clientUserMessageId'], event)
+        text = params['input'][0]['text']
+        self.assertEqual(text.count('A useful fact'), 1)
+        self.assertIn('Information from origin unavailable', text)
+        self.assertNotIn('codex_plus_observation', text)
+
+    def test_sender_provenance_change_holds_known_admission_without_replay(self):
+        job = self.store.create('message', {'prompt': 'Use the fixture', 'message_kind': 'request',
+            'sender': {**OWNER, 'thread_id': B}, 'sender_label': 'validation'})
+        event = self.store.emit(job, 'Use the fixture', 'message')
+        self.tick()
+        self.assertEqual(self.store.event(event)['delivery'], 'native_queued')
+        self.backend.peer.update(source={'subAgent': 'review'}, parentThreadId=A)
+        self.advance(1)
+        self.assertEqual(self.store.job(job)['control_reason'], 'sender_provenance_unavailable')
+        self.assertEqual(self.store.event(event)['delivery'], 'native_queued')
+        self.assertFalse(any(method == 'thread/queue/start' for method, _ in self.backend.calls))
+        self.assertEqual(sum(method == 'thread/queue/add' for method, _ in self.backend.calls), 1)
+
+    def test_foreign_or_self_sender_cannot_admit_a_message(self):
+        for sender in ({**OWNER, 'thread_id': A}, {**OWNER, 'pid': 101, 'thread_id': B}):
+            job = self.store.create('message', {'prompt': 'request', 'message_kind': 'request', 'sender': sender})
+            event = self.store.emit(job, 'request', 'message')
+            self.advance(1)
+            self.assertEqual(self.store.event(event)['delivery'], 'pending')
+            self.assertEqual(self.store.job(job)['control_reason'], 'sender_owner_unavailable')
+        self.assertFalse(any(method == 'thread/queue/add' for method, _ in self.backend.calls))
+
     def test_peer_spec_validation_and_existing_journal_reopen_preserve_receipts(self):
         for changes in ({'interval': 0}, {'turn_limit': 11}, {'signals': ['reply', 'reply']},
                         {'signals': ['bad']}, {'command': ['fixture']}, {'peer': {'thread_id': B}}):

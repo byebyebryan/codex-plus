@@ -59,6 +59,31 @@ class CliTests(unittest.TestCase):
         self.assertTrue(result['source_receipts_may_be_stale'])
         native.assert_not_called(); start.assert_not_called()
 
+    def test_compact_ack_requires_unique_known_native_admission(self):
+        job = self.store.create('message', {'prompt': 'hello'})
+        event = self.store.emit(job, 'hello', 'message')
+        with self.assertRaises(ValueError):
+            self.run_cli(['ack', 'e-' + event[:8]])
+        self.assertFalse(self.store.event(event)['acknowledged'])
+        self.store.admitted(event, 'native-exact')
+        with patch('codex_plus.cli.Client') as native:
+            code, result = self.run_cli(['ack', 'e-' + event[:8]])
+        self.assertEqual(code, 0)
+        self.assertEqual(result['id'], event)
+        self.assertTrue(result['acknowledged'])
+        native.assert_not_called()
+
+    def test_ambiguous_compact_ack_changes_no_receipt(self):
+        ids = ['01234567-1111-4111-8111-111111111111', '01234567-2222-4222-8222-222222222222']
+        for identity in ids:
+            job = self.store.create('message', {'prompt': 'hello'})
+            event = self.store.emit(job, 'hello', 'message')
+            self.store.db.execute('UPDATE events SET id=? WHERE id=?', (identity, event))
+            self.store.admitted(identity, 'native-' + identity)
+        with self.assertRaises(ValueError):
+            self.run_cli(['ack', 'e-01234567'])
+        self.assertFalse(any(event['acknowledged'] for event in self.store.events()))
+
     def test_registration_reports_actual_read_only_bounds(self):
         with patch('codex_plus.cli.validate_binding'), patch('codex_plus.cli.ensure_coordinator'):
             code, result = self.run_cli(['watch_start', '--cwd', str(self.root), '--duration', '90',
