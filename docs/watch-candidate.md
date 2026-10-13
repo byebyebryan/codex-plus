@@ -5,6 +5,14 @@ candidate for the qualified `0.162.1` native app-server surface. Queue operation
 are experimental. The published/installed worker bundle is unchanged; this helper
 has not been released or installed through chezmoi.
 
+Bryan's controlled walkthrough found the current interaction hard to follow:
+detailed watch instructions, exact destination titles and JSON prompts. The CLI
+examples below expose the current low-level candidate. The
+[next-pass plan](codex-plus-plan.md#next-pass-natural-requests-and-readable-peer-communication)
+targets ordinary requests, contextual peer selection and readable event delivery;
+those changes are not yet implemented. Native tool-output delivery is a research
+option that must preserve existing ordering and cancellation before adoption.
+
 The coordinator owns one private state directory and one existing conversation.
 It reuses that conversation's daemon for read-only observation commands and queued
 input. It does not create a daemon, choose a saved session by name or automatically

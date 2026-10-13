@@ -190,3 +190,19 @@ installation or publication occurred.
 Technical draft/Esc/stop/detach/shutdown checks passed. Bryan's UX feedback, human
 input-order assessment, native child/fork lifecycle, longer operation and managed
 packaging remain subsequent scope.
+
+## Bryan's walkthrough feedback and next planning pass
+
+Bryan subsequently reported that the demonstration was hard to follow. Watch
+instructions exposed detailed polling/timing/condition recipes; peer messaging
+required an exact destination title; JSON prompts made events difficult to read.
+The current admission implementation serializes one JSON text envelope for both
+watch events and messages. Message text appears in both observation and follow-up.
+The fixture also supplied unusually explicit setup/callback instructions.
+
+These findings leave practical interaction acceptance unmet despite the passing
+technical checks. The next
+[planning pass](codex-plus-plan.md#next-pass-natural-requests-and-readable-peer-communication)
+targets ordinary requests, contextual independent-peer discovery, reusable model
+capabilities and readable events with separate message/authority semantics. No
+runtime change or fresh native recipe is launched by this feedback update.

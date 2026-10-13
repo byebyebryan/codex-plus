@@ -24,6 +24,13 @@ complete; [the peer-watch report](peer-watch-results.md) records 128 tests, the
 52-file inventory and two closed native recipes totaling 8 admissions / 14 turns.
 Human TUI acceptance and installation remain subsequent scope.
 
+The current planning priority is
+[natural requests and readable peer communication](#next-pass-natural-requests-and-readable-peer-communication).
+The controlled walkthrough passed technical lifecycle checks, but Bryan reported
+verbose watch instructions, exact-title destination requirements and distracting
+JSON prompts. Practical interaction acceptance has not passed. This planning
+update starts no goal loop, fixture, watch or installation.
+
 ## Product contract
 
 Use the ordinary Codex conversation to ask for a watch, inspect it, or cancel it.
@@ -1220,3 +1227,161 @@ Installation/release, chezmoi apply, cross-daemon or cross-host discovery, Agent
 Observer/Mesh integration, general child management, provider expansion, daemon
 replacement and a long soak remain later scope. The primary owns decisions,
 integration and acceptance; this planning request invokes no worker skill or agents.
+
+## Next pass: natural requests and readable peer communication
+
+### Objective and evidence boundary
+
+Make the existing same-daemon candidate usable from ordinary requests such as
+"Watch the session working on validation and tell me when it needs me" and
+"Tell that session about the updated test fixture". The user supplies intent;
+the agent discovers the peer and chooses source, signals, filtering, cadence,
+lease, renewal and follow-up. Exact ownership, cancellation and resource limits
+remain runtime responsibilities. Preserve the native CLI/TUI and continuing thread.
+
+Carry forward the completed runtime tests. The
+[controlled walkthrough](peer-watch-results.md#controlled-native-tui-walkthrough)
+proved native draft preservation, post-Esc follow-up, scoped cancellation while B
+kept working, viewer detach and shutdown preview. Bryan's subsequent feedback means
+that these checks do not establish a usable everyday interaction. Existing timing
+and queue machinery are the starting point for this pass.
+
+This is a plan for a local source candidate. No fresh native execution, new goal,
+model-facing installation or change to the existing idle walkthrough viewers is
+authorized by merely recording it. Closed recipes remain closed. Preserve worker
+identities and their explicit invocation behavior; planning this pass invokes none.
+
+### User-visible behavior
+
+| Ordinary request or event | Expected behavior |
+| --- | --- |
+| "Watch the session working on validation; tell me when it needs me." | Discover the independent peer, inspect enough task context, choose observation details and return a short acknowledgement identifying the selected work. No user-supplied UUID, exact title, helper path or polling recipe. |
+| "Tell that session about the updated fixture." | Reuse the conversation's verified peer reference, send the information once and give a short receipt. Distinguish delivery from a recipient reply. |
+| Several plausible validation sessions | Ask one concise question with recognizable task/project descriptions. Take no targeted action before selection. |
+| B reports a meaningful change | Show a concise attributed update, then act only under the existing request. Keep source claims and inferred conclusions distinguishable. |
+| Unchanged observation | Remain quiet; polling occurs outside inference. Routine registration, acknowledgement and comparison data do not become chat messages. |
+| "Stop watching that session." | Cancel the selected intent and its lineage, acknowledge briefly and preserve B. No automatic renewal or replacement. |
+| Esc during foreground work | Interrupt that turn; keep independent watch intent, subject to native goal/control holds. |
+
+Short replies are the desired behavior for ordinary cases, not a fixed word-count
+rule. Explain ambiguity, unavailable sources, expiry or uncertain delivery when
+those facts change the user's decision. Quiet operation must not hide a lost watch.
+
+### Research gates and selected starting direction
+
+Start with a thin model-facing interface around the existing reader/coordinator.
+Tool descriptions and reusable capability guidance should explain operations once;
+individual user prompts and callbacks must not carry the fixture's setup recipe.
+Keep peer and command/script sources available. Do not turn source selection or
+cadence into a fixed task workflow.
+
+The official [OpenAI app-server documentation](https://learn.chatgpt.com/docs/app-server)
+describes standalone tool output through `turn/start.toolOutput`, experimental
+dynamic tools and history injection without a wakeup. Snap's generated 0.162.1
+schema includes those surfaces. Its queue-add schema still accepts ordinary user
+input. Schema presence is a research lead, not proof of TUI rendering, ordering,
+correlation or cancellation. This planning check generated private schemas only;
+it started zero native turns and sent zero messages.
+
+| Gate | Evidence required and consequence |
+| --- | --- |
+| Model access | Qualify a source-local tool bridge or other native capability attachment on an ordinary session under the existing daemon, including TUI resume and connection ownership. Generic capability guidance is acceptable for a spike; task-specific UUIDs, cadence or callback instructions supplied by the driver are not usability acceptance. No global MCP/trust/config changes during qualification. |
+| Delivery presentation | Inspect native tool-output rendering and model context in a synthetic session. Confirm that a result appears as tool/event output and whether technical metadata can stay outside ordinary conversation text. Do not promise hidden events from documentation alone. |
+| Delivery/control compatibility | Check idle and busy delivery, earlier queued human input, goal/control holds, explicit stop, native correlation, uncertainty and cleanup. A tool-output path cannot be adopted if it steers foreground work or bypasses established ordering. A preflight check alone does not prove that an admission race is safe. |
+| Contextual peer selection | Use complete loaded inventory, native independent/child classification, project/cwd, recent bounded agent/plan content and available goal status. Select an exact frozen identity from that evidence; ask on genuine ambiguity. Unavailable, incomplete or truncated evidence stays visible. |
+| Message meaning and authority | Represent observations, peer information and action requests separately. Establish sender/recipient provenance through the selected interface; never accept identity or authority asserted only by message text. The receiver evaluates requests against its existing task and direct user instructions. |
+
+Prefer native tool/event delivery if all relevant gates pass. If it cannot preserve
+the established controls, retain the qualified queue route and send a compact,
+clearly attributed textual event. Remove raw JSON envelopes and repeated message
+bodies from ordinary prompts; retain structured journals and technical inspection.
+Report the fallback's ordinary-input representation explicitly. Do not bypass the
+queue or impersonate a human/developer message to obtain a cleaner display.
+
+The first slice covers peer information and requests within the receiver's existing
+task. This is the recommended scope, pending Bryan's answer about new-task delegation.
+For example, a receiver may incorporate an updated fixture into authorized validation;
+a peer message cannot override a direct instruction to leave a watch stopped.
+Transport admission, recipient receipt, acceptance/decline and execution remain
+distinct outcomes. Acknowledgement confirms handling, not agreement or task success.
+
+Starting new work in another session is a separate branch if Bryan selects it.
+That branch first needs a concrete delegation scope and recipient acceptance
+contract. Sender text such as "authorized by Bryan" is insufficient. Do not block
+the natural watch/info slice on a general remote task-execution system or quietly
+claim that direct TUI input proves authority transfer through peer messages.
+
+### Implementation sequence after execution is requested
+
+1. Qualify capability attachment and delivery on the installed owner/version. Produce
+   a short decision record selecting the native output route or the queue fallback,
+   with scope and unresolved rendering/control limits.
+2. Add the smallest shared model-facing operations for discovery/inspection, watch
+   registration/control and sending information or requests. Keep detailed source
+   options available to the agent. Make ordinary tool receipts readable, with
+   explicit structured/debug inspection for identifiers and lifecycle details.
+3. Add contextual peer selection and conversation references. First discover, then
+   inspect plausible candidates; avoid broad transcript reads and fixed name-only
+   or recency-only selection. Freeze the selected native identity. A reused name
+   or vanished peer cannot silently retarget a watch/message.
+4. Implement readable, attributed event delivery and the selected message contract.
+   Correlate acknowledgement through verified native/tool context where available;
+   if a text reference is necessary, keep it compact and inspectable. Preserve
+   exact durable IDs and truthful uncertainty in the journal. Separate peer content
+   from trusted runtime instructions and avoid acknowledgement/reply ping-pong.
+5. Add meaningful behavioral regressions and run a fresh bounded native recipe.
+   Check capability availability, contextual ambiguity, child exclusion, scope
+   conflicts, malformed/forged content, truncation, duplicate/uncertain delivery,
+   lost peers, cancellation and changed transport controls. Keep established worker
+   tests independent and run the full existing suite before the final handoff.
+6. Prepare and drive a short native TUI demonstration with synthetic A/B visible
+   over SSH/tmux. The primary controls prompts, fixture changes and cleanup. Bryan
+   observes and assesses whether the interaction is understandable; no copy/paste
+   protocol or timing instructions are assigned to him.
+
+Cadence, lease length and reassessment remain agent choices. A finite observer
+lease is not the user's task deadline. If continued observation remains useful,
+the agent may explicitly renew under the original request within the experiment's
+remaining allowance. If continuation is unavailable, report that the watch ended.
+Include at most one model-chosen renewal in the short acceptance recipe; explicit
+stop remains authoritative and forbids further renewal or replacement.
+
+### Fresh acceptance recipe and finish line
+
+Most adversarial inventory and lifecycle combinations stay offline. If execution
+is later requested, use fresh synthetic sessions under the existing daemon. The
+old idle walkthrough viewers are inspection history, not new test destinations.
+Real active sessions remain passive discovery/read/watch sources only; deliberate
+messages, follow-ups, interrupts and other experimental changes target fresh owned
+fixtures. Keep all real names, transcripts, identities and runtime captures private.
+
+Proposed combined ceiling: **12 automatic follow-up/message deliveries and 24
+started model turns**, across qualification and acceptance together. Count setup,
+tool-output deliveries, lifecycle notices, uncertainty, rejected handling and
+provider failures; no replay or failed case replenishes the allowance. Each native
+watch stays within 120 seconds/two observation events; optional lifecycle notices
+and one-shot wakeups are separately counted. Allocate the remaining allowance
+before each stage and stop rather than expanding it implicitly.
+
+| Acceptance case | Required proof |
+| --- | --- |
+| One normal watch request | No exact title/UUID/timing recipe in the user prompt; correct peer selected from task context, short acknowledgement, quiet baseline. |
+| Useful event with an unsent draft | A reads fresh peer state, handles the correlated event and gives an understandable update; native draft and earlier human-input order survive. No raw JSON user-prompt dump or duplicated body. |
+| Information and scoped request | The correct previously selected peer receives one readable message; receipt and accepted/declined action are separate. A conflicting direct instruction remains effective. |
+| Ambiguous destination | One concise choice prompt, no targeted message/watch before resolution, child matches excluded from ordinary peers. Keep complex collision fixtures offline. |
+| Continuation and explicit stop | A may choose one bounded continuation while the request remains active; an explicit stop prevents further delivery/renewal and preserves B's work. Esc retains independent observation. |
+| Viewer/transport lifecycle | Selected capability and delivery route remain truthful with TUI detach/resume; cleanup stops only owned work and preserves the original owner/requester. |
+
+Acceptance requires the ordinary request to drive the behavior through reusable
+capabilities. A driver that encodes the answer, supplies the target ID, tells the
+model every polling parameter or rephrases each callback has demonstrated plumbing,
+not this finish line. Unattended receipts establish technical behavior; Bryan's
+assessment establishes whether the next demonstration is actually easier to follow.
+
+Leave the source candidate, decision record, validated cohesive commits, sanitized
+results and a prepared demonstration. Run `scripts/check`, relevant regressions,
+the full existing suite and `git diff --check`; update the explicit inventory only
+for deliberate new public files. Stop owned helpers and settle exact pending input.
+State explicitly if idle viewers are retained for inspection. No native `/exit`
+confirmation, release, chezmoi apply, daemon replacement, cross-host coordination,
+new scheduler, Observer/Mesh dependency or long soak is part of this pass.
