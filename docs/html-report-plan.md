@@ -25,7 +25,7 @@ Do not activate the existing watch preview to make report publishing work.
 | --- | --- |
 | Repository | codex-plus; standalone report component |
 | Hosting | One persistent Tailscale Serve endpoint per publishing host |
-| Returned URL | Full reported MagicDNS HTTP hostname, provisionally; never `localhost` |
+| Returned URL | User-selected short MagicDNS HTTP hostname; never `localhost` |
 | Port/path | Dedicated configured port, proposed 8787; prefix `/reports/` |
 | Catalog | Optional static page; proposed host profile enables it |
 | Storage | XDG user data, default `~/.local/share/codex-plus/reports` |
@@ -35,9 +35,9 @@ Do not activate the existing watch preview to make report publishing work.
 | Required agent integration | Provider-neutral `html-report` skill and CLI |
 | Optional integration | Report-only local stdio MCP and plugin packaging |
 
-The user confirmed static bundles and manual local opening. URL mode and revision
-semantics were asked as optional preferences; the table records the recommended
-assumptions until those answers arrive. Remaining entries are implementation
+The user confirmed static bundles, manual local opening and short HTTP hostnames
+for the Snap/Starship mesh. Immutable revision semantics remain the recommended
+baseline. Remaining entries are implementation
 defaults for review, not claims that deployment has been approved.
 
 ## Current host evidence and prerequisites
@@ -54,10 +54,11 @@ Read-only planning checks found:
 - Canonical chezmoi currently selects the worker archive at `56b7158`. The newer
   supervision runtime is a separately published preview with rollout deferred.
 
-Execution found Starship's short hostname resolves to `127.0.1.1` locally while
-its full MagicDNS name resolves to its tailnet address. Use the full reported
-MagicDNS hostname for the candidate profiles. Short aliases remain configurable
-after resolving and reaching them from each viewing desktop. A temporary direct
+Initial execution found Starship's short hostname resolved to `127.0.1.1` locally
+while its full MagicDNS name resolved to its tailnet address. The user subsequently
+selected short HTTP URLs. Starship's local host mapping selects its Tailscale
+address; short names must resolve and reach the endpoint on publishing and viewing
+hosts. This host-side mapping remains outside chezmoi. A temporary direct
 Serve route delivered HTTP 200 to Snap and Chrome; a plain Python listener bound
 to the tailnet address did not pass that peer route check. Persistent serving,
 reboot behavior and Carbon remain separate deployment gates.
@@ -84,7 +85,7 @@ profile, not a deployed configuration:
 ```toml
 schema = 1
 data_root = "/home/bryan/.local/share/codex-plus/reports"
-base_url = "http://starship.tail223cf3.ts.net:8787/reports/"
+base_url = "http://starship:8787/reports/"
 catalog_enabled = true
 max_bundle_bytes = 104857600
 max_bundle_files = 2000

@@ -42,6 +42,21 @@ Source and isolated-package validation do not mean fleet deployment is complete.
 Local evidence directory:
 `~/.local/state/codex-plus/report-goal/20261013T204043Z/`.
 
+The user subsequently selected short HTTP URLs for Snap/Starship use. Candidate
+profiles now return `http://HOST:8787/reports/`. Starship's single local hostname
+mapping was changed from loopback to its Tailscale address, with a guarded backup,
+so its local browser and delivery probes can use the same short URL. Original
+returned URLs remain unchanged; no existing reports were republished.
+
+With owned temporary Serve routes on port 8787, exact HTTP 200 fixture bytes were
+verified on all four routes: Starship local, Snap local, Snap to Starship and
+Starship to Snap. The installed publisher's short-URL delivery probe and route
+inspection passed. Both temporary routes were removed, restoring each host's
+original empty Serve state. `localhost` still resolves to loopback. Follow-up
+evidence is under `~/.local/state/codex-plus/report-url/20261013-short-http/` on
+each host; Starship's root-owned hosts backup is
+`/var/backups/codex-plus-report/20261013-short-http/hosts`.
+
 ## Deployment boundary
 
 Chezmoi integration is prepared in a separate `feat/html-report-install` worktree.

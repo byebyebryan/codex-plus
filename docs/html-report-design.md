@@ -223,24 +223,26 @@ conversation label does not create an isolated security principal.
 Every returned URL names the publishing host, including when the agent and
 browser currently run on that same host. Do not switch published links to
 `localhost` based on the current viewer: it would change meaning when opened from
-another desktop. Recommended HTTPS shape:
+another desktop. The selected short-hostname HTTP shape is:
 
 ```text
-https://<publishing-host>.<tailnet>.ts.net/reports/<report-id>/index.html
+http://starship:8787/reports/                 # optional catalog
+http://starship:8787/reports/<report-id>/     # index.html entrypoint
+http://snap:8787/reports/<report-id>/         # report published on Snap
 ```
 
-The short-hostname HTTP form is also a valid configured choice:
+Full-name HTTPS remains a configurable option:
 
 ```text
-http://starship:8000/reports/                         # optional catalog
-http://starship:8000/reports/<report-id>/index.html   # one report
+https://<publishing-host>.<tailnet>.ts.net/reports/<report-id>/
 ```
 
 Use a browser-resolvable hostname. Tailscale MagicDNS provides machine names and
 fully qualified names; an alias that exists only in SSH configuration is not
 browser DNS. Prefer the reported Tailscale name over guessing from the operating
-system hostname. A live check on Snap resolved `starship` to `100.84.31.64` during
-this planning pass. [MagicDNS naming](https://tailscale.com/docs/features/magicdns).
+system hostname. Starship's earlier local loopback alias was changed to its
+Tailscale address so the same short URL works on both publishing and viewing
+hosts. [MagicDNS naming](https://tailscale.com/docs/features/magicdns).
 
 Tailscale Serve supports HTTPS file/directory serving and a configured path mount.
 It also supports an HTTP port with short MagicDNS names. HTTPS mode requires
@@ -252,10 +254,8 @@ server. [Serve reference](https://tailscale.com/docs/reference/tailscale-cli/ser
 Changing a URL alone cannot expose a service bound only to loopback. The selected
 serving endpoint must accept traffic over the tailnet, and the viewing desktop
 must resolve/reach it. A loopback address is fine for an internal proxy backend;
-the user-facing URL remains host-addressed. Port 8000 above is an example, not a
-reserved endpoint; a later check found an existing Starship listener on that port,
-so the implementation plan proposes dedicated port 8787. Roaming preserves the
-URL as the
+the user-facing URL remains host-addressed. The host profiles use dedicated port
+8787; Starship already has an unrelated listener on port 8000. Roaming preserves the URL as the
 viewing device changes networks or desktops; it does not make an offline
 publishing host available.
 

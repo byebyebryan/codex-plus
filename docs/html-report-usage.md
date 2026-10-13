@@ -54,10 +54,13 @@ The [implementation plan](html-report-plan.md#configuration-and-serving-ownershi
 shows the supported schema and initial tunable limits.
 
 Serve only the store's `public` subtree at the configured URL prefix. Host profiles
-propose `http://HOST.tail223cf3.ts.net:8787/reports/`; Starship already has a listener
-on port 8000. Full names avoid Starship's local loopback alias for its short name.
-Use the actual DNS name reported by each host's Tailscale inventory. Short aliases
-require separately qualified resolution and reachability. HTTPS is also supported.
+select `http://HOST:8787/reports/`, using `starship`, `snap` and `carbon`; Starship
+already has a listener on port 8000. Short names must resolve to the serving host's
+Tailscale address from both the publishing host and viewing desktops. Starship's
+local host mapping addresses its earlier loopback alias. This host-side setting
+stays outside chezmoi and needs rechecking after re-enrollment. Full MagicDNS URLs
+remain configurable. HTTPS is supported and requires the full MagicDNS hostname
+when using Tailscale-managed certificates.
 Provision a persistent Tailscale Serve
 route through its operator; doctor can inspect and print the proposed command
 without applying it. Preserve existing routes, servers and tailnet settings.
