@@ -10,15 +10,20 @@ The current next-pass priority is
 Bryan has now assessed the controlled walkthrough as hard to follow: watch prompts
 exposed timing/condition recipes, sending depended on an exact destination title,
 and JSON event prompts cluttered the conversation. Technical lifecycle evidence
-stands; everyday interaction acceptance has not passed. This planning request
-starts no new goal, native fixture, watch or installation.
+stands; everyday interaction acceptance has not passed. Bryan subsequently requested
+execution as an ordinary goal loop with the established incremental-commit practice.
+The [current pass report](interaction-pass-results.md) records qualification,
+implementation progress and the fresh combined experiment allowance.
 
 Qualify a reusable model-facing interface, contextual independent-peer selection,
 readable attributed delivery and separate observation/information/request meaning.
 Installed 0.162.1 schemas include standalone tool output and dynamic tools, but
 native rendering and ordering/control compatibility remain gates before adoption.
-The qualified queue route is a fallback with compact event text and detailed
-structured inspection. Requests within the receiver's existing task are the
+Native qualification now selects a session-local stdio MCP interface and readable
+text through the qualified queue. Standalone tool output joined an active foreground
+turn despite earlier queued human input, so it is not selected for this coordinator.
+Caller thread/turn metadata was observed; sender identity and acknowledgements must
+use verified native context. Requests within the receiver's existing task are the
 recommended first scope; new-task delegation is a separate pending scope choice.
 
 Read this first, then the [implementation plan](codex-plus-plan.md). The plan

@@ -31,6 +31,13 @@ verbose watch instructions, exact-title destination requirements and distracting
 JSON prompts. Practical interaction acceptance has not passed. This planning
 update starts no goal loop, fixture, watch or installation.
 
+Bryan subsequently requested execution as an ordinary goal loop. The
+[current pass report](interaction-pass-results.md) records qualification and the
+fresh combined allowance. Session-local MCP tools passed the native TUI gate;
+tool-output delivery failed the ordering gate, selecting readable text through
+the established exact queue route. Personal UX assessment and installation remain
+subsequent scope.
+
 ## Product contract
 
 Use the ordinary Codex conversation to ask for a watch, inspect it, or cancel it.
