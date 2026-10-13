@@ -55,6 +55,25 @@ is preserved. The fixture HTTP service remains owned for the next stage.
 
 ## Remaining acceptance and distribution gates
 
+Installed scheduled MCP inspection, an actually handled successor after the
+model selected a slower cadence, and natural stop have now passed. The endpoint
+prototype exposed a misleading interval option: the model supplied interval
+with a one-shot fetch, but command sources ignored it. Command intervals now
+have an explicit periodic execution mode; continuing scripts remain an option.
+Each completed read uses a fresh native process identity and the same verified
+permissions, retaining projection/baseline state without a model turn per poll.
+
+Cross-version qualification also exposed status lookup tied to the importing
+release's wrapper path. The new CLI now recognizes an identity-verified owned
+coordinator from a verified compatible immutable release. New source capability
+registration is held while an older coordinator owns that state. Actual fresh
+rollback acceptance remains pending.
+
+The closed endpoint setup included an unavailable historical tmux session before
+any model turn, followed by a fresh one-shot-source recipe that failed the
+continuing-observer gate. These are harness/interaction findings, not successful
+endpoint acceptance; their turns/deliveries remain counted. All 205 tests pass.
+
 The candidate is now version 0.1.0-preview.2 with 19 runtime files plus its
 manifest. Its installer explicitly recognizes the previous preview's declared
 18-file inventory for selection rollback. All 202 tests pass; actual downloaded

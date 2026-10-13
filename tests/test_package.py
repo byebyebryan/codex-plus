@@ -2,6 +2,7 @@ import copy
 import gzip
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -12,6 +13,7 @@ from unittest.mock import patch
 
 from codex_plus import package
 from codex_plus.model_server import Server, existing_socket
+from codex_plus.cli import coordinator_info
 
 
 class PackageTests(unittest.TestCase):
@@ -116,6 +118,22 @@ class PackageTests(unittest.TestCase):
         unsupported = copy.deepcopy(old_meta); unsupported['version'] = 'unknown'
         with self.assertRaises(ValueError):
             package.read_archive(self.archive(metadata=unsupported, files=old_files))
+
+    def test_coordinator_from_previous_verified_release_is_recognized_by_new_runtime(self):
+        old_files = {name: self.files[name] for name in package.PREVIOUS_RUNTIME_FILES}
+        old_meta = package.manifest(old_files, '3'*40); old_meta['version'] = '0.1.0-preview.1'
+        release = package.install(self.archive(metadata=old_meta, files=old_files), self.root/'old-prefix')
+        state = self.root/'private-state'; state.mkdir()
+        identity = {'pid': 123456, 'start_ticks': 'fixture', 'executable': '/usr/bin/python3'}
+        (state/'coordinator.json').write_text(json.dumps({**identity, 'state': str(state), 'generation': 'fixture'}))
+        argv = b'\0'.join([b'python3', str(release/'scripts/codex-plus-watch').encode(), b'--state', str(state).encode(), b'serve'])
+        original = Path.read_bytes
+        def read_bytes(path):
+            return argv if str(path)=='/proc/123456/cmdline' else original(path)
+        with patch('codex_plus.cli.process_identity', return_value=identity), patch.object(Path,'read_bytes',read_bytes):
+            self.assertEqual(coordinator_info(state)['runtime_version'], '0.1.0-preview.1')
+            (release/'LICENSE').write_text('tampered')
+            self.assertIsNone(coordinator_info(state))
 
     def test_release_selection_refuses_shared_writable_prefix_and_invalid_config_bounds(self):
         prefix=self.root/'installed';package.install(self.archive(),prefix)

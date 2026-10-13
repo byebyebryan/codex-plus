@@ -35,10 +35,10 @@ def validate_spec(kind: str, spec: dict) -> dict:
     supported = {'duration', 'event_limit', 'followup', 'notify_end', 'command', 'cwd',
                  'snapshot_fields', 'quiet_initial', 'after', 'prompt',
                  'peer', 'interval', 'signals', 'turn_limit', 'label',
-                 'sender', 'sender_label', 'message_kind', 'execution', 'mcp'}
+                 'sender', 'sender_label', 'message_kind', 'execution', 'mcp', 'command_interval'}
     if set(spec) - supported:
         raise ValueError('unsupported registration fields: ' + ', '.join(sorted(set(spec) - supported)))
-    if kind != 'watch' and any(spec.get(key) is not None for key in ('execution', 'mcp')):
+    if kind != 'watch' and any(spec.get(key) is not None for key in ('execution', 'mcp', 'command_interval')):
         raise ValueError('source execution permissions require a command watch')
     duration = spec.get('duration', 120)
     limit = spec.get('event_limit', 2)
@@ -119,10 +119,15 @@ def validate_spec(kind: str, spec: dict) -> dict:
                 raise ValueError('source cwd must be an existing absolute directory')
             if spec.get('execution') is not None:
                 validate_grant(spec['execution'], cwd)
+            interval = spec.get('command_interval')
+            if interval is not None and (isinstance(interval, bool) or not isinstance(interval, (int, float)) or not 1 <= interval <= 3600):
+                raise ValueError('periodic command interval must be 1 through 3600 seconds')
         if spec.get('peer') is not None and spec.get('execution') is not None:
             raise ValueError('command execution permissions do not apply to a peer')
         if spec.get('peer') is not None and spec.get('mcp') is not None:
             raise ValueError('choose a peer or MCP inspection source')
+        if (spec.get('peer') is not None or spec.get('mcp') is not None) and spec.get('command_interval') is not None:
+            raise ValueError('periodic command interval requires a command source')
         fields = spec.get('snapshot_fields')
         if fields is not None and (not isinstance(fields, list) or not fields or
                 any(not isinstance(field, str) or not field for field in fields) or

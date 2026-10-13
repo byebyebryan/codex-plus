@@ -42,6 +42,7 @@ class Engine:
         self.sources: dict[str, Source] = {}
         self.peer_polls: dict[str, dict] = {}
         self.inspections: dict[str, dict] = {}
+        self.command_due: dict[str, float] = {}
         self.deadlines: dict[str, float] = {}
         self.wake_due: dict[str, float] = {}
         self.renewal_deadlines: dict[str, float] = {}
@@ -77,6 +78,7 @@ class Engine:
         self.sources.clear()
         self.peer_polls.clear()
         self.inspections.clear()
+        self.command_due.clear()
         self.store.reconcile()
         self.next_connect = self.monotonic() + 2
 
@@ -128,7 +130,7 @@ class Engine:
             self.store.source(job['id'], 'lost', str(error), self.generation)
             self.store.notice(job['id'], 'source_permissions_unavailable: ' + str(error))
             return
-        process_id = 'codex-plus-' + job['id']
+        process_id = 'codex-plus-' + job['id'] + '-' + str(uuid.uuid4())
         command = spec['command']
         if command[0] != 'rtk':
             command = ['rtk', 'proxy', *command]
@@ -142,6 +144,11 @@ class Engine:
         self.store.db.execute('UPDATE jobs SET recover_requested=0 WHERE id=?', (job['id'],))
 
     def _stop_source(self, job_id, reason, deadline=None):
+        if job_id in self.command_due:
+            self.command_due.pop(job_id)
+            self.store.source(job_id, 'stopped', reason, self.generation)
+            if reason == 'event_limit_reached':
+                self.store.notice(job_id, reason)
         if self.store.job(job_id)['spec'].get('mcp'):
             self.inspections.pop(job_id, None)
             self.store.source(job_id, 'stopped', reason, self.generation)
@@ -166,6 +173,8 @@ class Engine:
         timeout = 10 if deadline is None else self._remaining(deadline)
         self.client.call('command/exec/terminate', {'processId': source.process_id}, timeout=timeout)
         self.store.source(job_id, 'stop_requested', reason, self.generation)
+        if reason == 'event_limit_reached':
+            self.store.notice(job_id, reason)
 
     def _poll_peer(self, job):
         poll = self.peer_polls[job['id']]
@@ -295,8 +304,14 @@ class Engine:
                     detail = 'source exit ' + str(result['exitCode'])
                     if state == 'error' and source.stderr_tail:
                         detail += ': ' + source.stderr_tail.decode('utf-8', errors='replace')
-                    self.store.source(job_id, state, detail, self.generation)
-                    self.store.notice(job_id, 'completed' if state == 'completed' else detail)
+                    job = self.store.job(job_id)
+                    interval = job['spec'].get('command_interval')
+                    if state == 'completed' and interval is not None and job['intent'] == 'active' and job['event_count'] < job['spec']['event_limit']:
+                        self.command_due[job_id] = self.monotonic() + interval
+                        self.store.source(job_id, 'running', 'periodic read completed; waiting for next read', self.generation)
+                    else:
+                        self.store.source(job_id, state, detail, self.generation)
+                        self.store.notice(job_id, 'event_limit_reached' if state == 'completed' and interval is not None else 'completed' if state == 'completed' else detail)
                 else:
                     state = 'error' if source.stop_reason.startswith('source_error:') else 'stopped'
                     self.store.source(job_id, state, source.stop_reason, self.generation)
@@ -499,8 +514,11 @@ class Engine:
                     if self.monotonic() >= self.wake_due[job['id']]:
                         self.store.emit(job['id'], job['spec']['prompt'], 'wake')
                 elif job['source_state'] == 'pending' or job['source_state'] == 'lost' and job['recover_requested']:
-                    if len(self.sources) + len(self.peer_polls) + len(self.inspections) < 16:
+                    if len(self.sources) + len(self.peer_polls) + len(self.inspections) + len(self.command_due) < 16:
                         self._start_source(job)
+                elif job['id'] in self.command_due and self.monotonic() >= self.command_due[job['id']]:
+                    self.command_due.pop(job['id'])
+                    self._start_source(job)
                 elif job['id'] in self.sources or job['id'] in self.peer_polls or job['id'] in self.inspections:
                     if job['event_count'] >= job['spec']['event_limit']:
                         self._stop_source(job['id'], 'event_limit_reached')
@@ -534,6 +552,8 @@ class Engine:
             for job_id in list(self.peer_polls):
                 self._stop_source(job_id, 'coordinator_shutdown', deadline)
             for job_id in list(self.inspections):
+                self._stop_source(job_id, 'coordinator_shutdown', deadline)
+            for job_id in list(self.command_due):
                 self._stop_source(job_id, 'coordinator_shutdown', deadline)
             events = [event for event in self.store.events() if event['delivery'] == 'native_queued' and
                       self.store.job(event['job_id'])['intent'] in ('cancelled', 'replaced', 'replacing', 'expired')]

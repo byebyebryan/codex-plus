@@ -20,6 +20,7 @@ from .peers import PeerReader, DEFAULT_SIGNALS
 from .store import Store, private_directory
 from .presentation import compact_ref, label as display_label
 from .access import resolve as source_permissions, mcp_spec, configured_mcp
+from . import VERSION
 
 
 def process_identity(pid: int) -> dict | None:
@@ -39,9 +40,19 @@ def coordinator_info(root: Path) -> dict | None:
             return None
         argv = (Path('/proc') / str(info['pid']) / 'cmdline').read_bytes().split(b'\0')
         wrapper = str(Path(__file__).resolve().parents[1] / 'scripts/codex-plus-watch').encode()
-        if wrapper not in argv or b'serve' not in argv or str(root).encode() not in argv:
+        if b'serve' not in argv or str(root).encode() not in argv or info.get('state') != str(root):
             return None
-        return info
+        runtime_version = VERSION
+        if wrapper not in argv:
+            candidates = [Path(arg.decode()) for arg in argv if arg.endswith(b'/scripts/codex-plus-watch')]
+            if len(candidates) != 1:
+                return None
+            release = candidates[0].parent.parent
+            from .package import verify_install
+            if not release.is_absolute() or release.stat().st_uid != os.getuid() or release.stat().st_mode & 0o022:
+                return None
+            runtime_version = verify_install(release)['version']
+        return {**info, 'runtime_version': runtime_version}
     except (OSError, ValueError, KeyError, TypeError):
         return None
 
@@ -141,7 +152,7 @@ def serve(root: Path):
                 awaiting = any(event['delivery'] == 'pending' or
                     event['delivery'] == 'native_queued' and event['expires'] > store.clock() and event['turn_outcome'] is None and
                     event['withdraw_state'] != 'withdrawn' and not event['acknowledged'] for event in store.events())
-                if not active and not awaiting and not engine.sources and not engine.peer_polls and not engine.inspections:
+                if not active and not awaiting and not engine.sources and not engine.peer_polls and not engine.inspections and not engine.command_due:
                     idle_since = idle_since or time.monotonic()
                     if time.monotonic() - idle_since >= 10:
                         break
@@ -226,6 +237,7 @@ def parser():
         command.add_argument('--mcp-server')
         command.add_argument('--mcp-tool')
         command.add_argument('--mcp-arguments', default='{}')
+        command.add_argument('--command-interval', type=float)
         command.add_argument('command', nargs=argparse.REMAINDER)
     wake = commands.add_parser('wake_schedule')
     wake.add_argument('--after', type=float, required=True)
@@ -314,11 +326,18 @@ def main(argv=None, *, before_write=None) -> int:
                 with Client(frozen['requested_socket'], experimental=True) as client:
                     configured_mcp(client, frozen, spec['mcp'])
             else:
+                if args.interval is not None:
+                    raise ValueError('use --command-interval for a periodic command, or provide a continuing observer script')
                 spec.update(command=command, cwd=str(Path(args.cwd or os.getcwd()).resolve()))
+                if args.command_interval is not None:
+                    spec['command_interval'] = args.command_interval
                 with Client(frozen['requested_socket'], experimental=True) as client:
                     spec['execution'] = source_permissions(client, frozen, spec['cwd'],
                         args.source_access, args.network_access)
             if args.operation == 'watch_start':
+                active = coordinator_info(root)
+                if active and active['runtime_version'] != VERSION:
+                    raise ValueError('an older runtime owns this conversation\'s supervision; settle that owned work before registering new source capabilities')
                 if before_write: before_write()
                 job_id = store.create('watch', spec)
             else:

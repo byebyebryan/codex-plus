@@ -21,6 +21,10 @@ MODEL_GUIDANCE = """Codex Plus supplies session-local peer, watch and one-shot w
 Command sources inherit verified native session permissions, including networking
 and authorized cache paths. source_access=read_only narrows filesystem access;
 network_access=required checks an existing grant, never enables missing access.
+For endpoint polling, choose command_interval for repeated short commands, or
+prepare a continuing observer script that owns its polling/filtering/backoff.
+A one-shot command without command_interval completes after one fetch; it is
+not a continuing watch. interval applies to peer/MCP checks, not commands.
 For configured MCP inspection, use watch_start with mcp_server, mcp_tool and
 mcp_arguments, or choose a one-shot wakeup for later reasoning. MCP watches
 schedule native model turns; each check has model cost. They never invoke the
@@ -81,7 +85,8 @@ def tool_definitions(max_duration=86400, max_events=1000):
         'command': {'type': 'array', 'items': _string(maximum=4096), 'minItems': 1, 'maxItems': 64},
         'cwd': _string('Existing absolute command-source working directory.', 4096),
         'duration': _number(max_duration), 'event_limit': _number(max_events, 1, True),
-        'interval': _number(3600, 1),
+        'interval': {**_number(3600, 1), 'description': 'Cadence for peer or scheduled MCP checks; command sources use command_interval or a continuing script.'},
+        'command_interval': {**_number(3600, 1), 'description': 'Repeat a completed short command after this delay. Omit for a continuing script. Each run retains native permissions; no model turn per read.'},
         'signals': {'type': 'array', 'items': {'type': 'string', 'enum': ['phase', 'needs_input', 'goal', 'reply', 'progress', 'turn']}, 'minItems': 1, 'maxItems': 6},
         'turn_limit': _number(10, 1, True), 'quiet_initial': {'type': 'boolean'},
         'notify_end': {'type': 'boolean'}, 'followup': _string('Brief existing user intent for deciding useful follow-up. Shared acknowledgement, scope and monitoring mechanics are already in server guidance; do not repeat a full setup recipe.', 16384),
@@ -323,7 +328,7 @@ class ModelAPI:
     def _watch_start(self, followup, peer=None, label=None, command=None, cwd=None, duration=None,
                      event_limit=None, interval=None, signals=None, turn_limit=3, quiet_initial=True,
                      notify_end=True, snapshot_fields=None, source_access='session', network_access='inherit',
-                     mcp_server=None, mcp_tool=None, mcp_arguments=None):
+                     mcp_server=None, mcp_tool=None, mcp_arguments=None, command_interval=None):
         self._mutable()
         duration = min(120, self.max_duration) if duration is None else duration
         event_limit = min(2, self.max_events) if event_limit is None else event_limit
@@ -333,6 +338,8 @@ class ModelAPI:
         if peer is not None:
             if source_access != 'session' or network_access != 'inherit':
                 raise ValueError('command source access choices do not apply to peer observation')
+            if command_interval is not None:
+                raise ValueError('periodic command interval does not apply to peer observation')
             if command is not None or cwd is not None or snapshot_fields is not None or mcp_server is not None:
                 raise ValueError('choose a peer source or a command/cwd/projection source')
             row, frozen, info = self._peer(peer)
@@ -340,6 +347,8 @@ class ModelAPI:
             self._remember('peer', frozen['thread_id'], frozen, display)
             args += ['--peer', frozen['thread_id'], '--interval', str(interval if interval is not None else 5), '--signals', ','.join(signals or ['reply', 'needs_input', 'goal']), '--turn-limit', str(turn_limit)]
         elif mcp_server is not None:
+            if command_interval is not None:
+                raise ValueError('periodic command interval does not apply to MCP inspection')
             if command is not None or cwd is not None or snapshot_fields is not None or signals is not None or turn_limit != 3 or source_access != 'session' or network_access != 'inherit':
                 raise ValueError('choose a scheduled MCP inspection or command/peer source')
             from .access import mcp_spec
@@ -349,10 +358,14 @@ class ModelAPI:
                 '--mcp-arguments', json.dumps(selected['arguments'], allow_nan=False),
                 '--interval', str(interval if interval is not None else 30)]
         else:
+            if interval is not None:
+                raise ValueError('use command_interval for periodic endpoint reads, or a continuing observer script')
             if not command or not cwd or not Path(cwd).is_absolute():
                 raise ValueError('a command source needs argv and an existing absolute cwd')
             display = label or 'registered source'
             args += ['--cwd', cwd, '--source-access', source_access, '--network-access', network_access]
+            if command_interval is not None:
+                args += ['--command-interval', str(command_interval)]
             if snapshot_fields: args += ['--snapshot-fields', ','.join(snapshot_fields)]
         args += ['--label', display]
         if quiet_initial: args += ['--quiet-initial']
@@ -419,19 +432,23 @@ class ModelAPI:
         if spec.get('quiet_initial'): args += ['--quiet-initial']
         if spec.get('notify_end'): args += ['--notify-end']
         if spec.get('peer'):
-            if any(key in options for key in ('source_access', 'network_access')):
+            if any(key in options for key in ('source_access', 'network_access', 'command_interval')):
                 raise ValueError('command access options do not apply to peer observation')
             args += ['--peer', spec['peer']['thread_id'], '--interval', str(spec['interval']), '--signals', ','.join(spec['signals']), '--turn-limit', str(spec['turn_limit'])]
         elif spec.get('mcp'):
-            if any(key in options for key in ('source_access', 'network_access', 'signals', 'turn_limit')):
+            if any(key in options for key in ('source_access', 'network_access', 'signals', 'turn_limit', 'command_interval')):
                 raise ValueError('command/peer options do not apply to MCP inspection')
             args += ['--mcp-server', spec['mcp']['server'], '--mcp-tool', spec['mcp']['tool'],
                 '--mcp-arguments', json.dumps(spec['mcp']['arguments'], allow_nan=False),
                 '--interval', str(spec['interval'])]
         else:
+            if 'interval' in options:
+                raise ValueError('command renewal cadence uses command_interval or the observer script')
             grant = spec.get('execution')
             args += ['--cwd', spec['cwd'], '--source-access', options.get('source_access', grant['source_access'] if grant else 'read_only'),
                      '--network-access', options.get('network_access', grant['network_access'] if grant else 'off')]
+            if spec.get('command_interval') is not None:
+                args += ['--command-interval', str(spec['command_interval'])]
             if spec.get('snapshot_fields'): args += ['--snapshot-fields', ','.join(spec['snapshot_fields'])]
             args += ['--', *spec['command']]
         result = self._cli(self.state, *args)

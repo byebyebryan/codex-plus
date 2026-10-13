@@ -211,6 +211,38 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(notice['kind'], 'lifecycle')
         self.assertEqual(json.loads(notice['observation'])['watched_job_outcome'], 'unknown')
 
+    def test_periodic_command_waits_between_runs_and_preserves_snapshot_baseline(self):
+        job = self.store.create('watch', {**self.spec, 'command_interval': 5,
+            'quiet_initial': True, 'snapshot_fields': ['progress'], 'notify_end': True})
+        self.tick()
+        first_id, first = self.backend.commands[-1]
+        self.backend.output(first['processId'], b'{"progress":0,"revision":0}\n')
+        self.backend.responses[first_id] = {'exitCode': 0}
+        self.tick()
+        self.assertEqual(self.store.events(job), [])
+        self.assertEqual(self.store.job(job)['source_state'], 'running')
+        self.now = 104; self.tick()
+        self.assertEqual(len(self.backend.commands), 1)
+        self.now = 105; self.tick()
+        second_id, second = self.backend.commands[-1]
+        self.assertNotEqual(first['processId'], second['processId'])
+        self.backend.output(second['processId'], b'{"progress":1,"revision":1}\n')
+        self.backend.responses[second_id] = {'exitCode': 0}
+        self.tick()
+        self.assertEqual(len(self.store.events(job)), 1)
+        self.assertEqual(self.store.events(job)[0]['kind'], 'source')
+        self.store.cancel(job); self.now = 110; self.tick()
+        self.assertEqual(len(self.backend.commands), 2)
+
+    def test_periodic_command_failure_stops_without_retry_or_model_poll(self):
+        job = self.store.create('watch', {**self.spec, 'command_interval': 5})
+        self.tick()
+        rid = self.backend.commands[-1][0]
+        self.backend.responses[rid] = {'exitCode': 1}
+        self.tick(); self.now = 110; self.tick()
+        self.assertEqual(self.store.job(job)['source_state'], 'error')
+        self.assertEqual(len(self.backend.commands), 1)
+
     def test_timeout_after_submission_is_uncertain_and_not_replayed(self):
         job = self.store.create('watch', self.spec)
         event = self.store.emit(job, 'fixture')
