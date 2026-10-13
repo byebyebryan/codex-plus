@@ -44,11 +44,13 @@ All owned experimental resources are stopped; personal UX assessment and install
 remain subsequent scope. The current [primary-driven demonstration](watch-candidate.md#current-primary-driven-interaction-demonstration)
 uses fresh actors and a new allowance when the shared review is requested.
 
-The next proposed substantial loop is
+The subsequent substantial loop is
 [review, refinement, packaging and distribution](#next-loop-review-refinement-packaging-and-distribution).
-Its default finish line is a published, verified preview release and a validated
-managed-rollout change; live apply is deferred unless Bryan chooses the deployment
-finish line. This planning checkpoint does not start that loop or publish/apply it.
+Its default finish line has been achieved: published verified runtime preview
+`v0.1.0-preview.1` at `f4db934`, with prepared isolated dotfiles commit `1c17dd5`.
+The [final report](distribution-pass-results.md) records 177 tests, artifact checks,
+42 turns / 12 deliveries and native limits. Live apply remains deferred; the
+contract below retains the plan that was subsequently executed.
 
 ## Product contract
 

@@ -2,8 +2,9 @@
 
 Run `scripts/codex-plus-watch` from this checkout. This is a local Linux/Unix
 candidate for the qualified `0.162.1` native app-server surface. Queue operations
-are experimental. The published/installed worker bundle is unchanged; this helper
-has not been released or installed through chezmoi.
+are experimental. Worker identities and installed paths are unchanged. The separate
+[runtime preview](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.1)
+is published and verified; its managed rollout is prepared, with live apply deferred.
 
 Bryan's controlled walkthrough found the current interaction hard to follow:
 detailed watch instructions, exact destination titles and JSON prompts. The CLI
@@ -89,9 +90,12 @@ An outcome cannot be overwritten, and a conflicting prior consumed-turn receipt
 cannot be relinked. `message_status` reads cached handling outcomes without sending
 replies. No receipt confers task authority or proves an external effect.
 
-This interface is source-only and its full native acceptance is recorded in the
-[current pass report](interaction-pass-results.md). No global MCP configuration,
-managed deployment, cold recovery or native `/exit` interception is implied.
+The same interface is included in the immutable runtime preview. Its installed
+qualification is recorded in the [distribution report](distribution-pass-results.md),
+with the earlier [interaction evidence](interaction-pass-results.md) retained.
+Use the [runtime guide](runtime-distribution.md) for installation/configuration;
+the examples here remain low-level source diagnostics. Managed live deployment,
+cold recovery and native `/exit` interception are not implied.
 
 ### Low-level source CLI
 

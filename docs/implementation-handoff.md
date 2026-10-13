@@ -5,6 +5,24 @@ Updated 2026-10-12 for Bryan's continuation on Snap in
 its corrective unattended pass and discovery/peer-watch pass are also complete.
 Human acceptance and installation remain subsequent scope.
 
+The review/refinement/packaging/distribution loop is now complete. The
+[final report](distribution-pass-results.md) records the published
+[v0.1.0-preview.1 runtime](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.1)
+at `f4db934`, 177 passing tests and 65-file source inventory, verified fetched
+runtime/source bytes, 12 deliveries / 42 native turns (40 completed, two cleanup
+interruptions) and the retained native requalification limits. The runtime includes
+formal event receipts, outgoing message cancellation and complete timer controls.
+Its readable event frame retains one compact receipt hint; native hidden-output
+delivery remains unqualified for the established ordering contract.
+
+The isolated dotfiles rollout is prepared as `1c17dd5` on local branch
+`codex-plus-preview-n91wsqir`, with full/component validators and scoped dry-run
+passing. It is not merged/applied; the runtime is optional and disabled by default,
+preserving local preferences. All 17 experimental actors/helpers/viewers are closed,
+and the original daemon/requester are preserved. The final report separates current
+release facts from the historical checkpoints below. The runtime artifact/tag stays
+at `f4db934`; subsequent main-branch handoff edits do not repin tested runtime bytes.
+
 The review/refinement/packaging/distribution plan has now been selected for an
 ordinary goal loop from `755855e`. The [execution report](distribution-pass-results.md)
 records prioritized findings, refinement and separate release/install gates.

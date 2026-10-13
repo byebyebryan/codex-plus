@@ -6,6 +6,12 @@ paths. It requires an already running owning daemon and loaded independent
 sessions; it never starts a daemon or cold-resumes a target. Long production
 operation, native owner replacement and personal UX acceptance remain separate.
 
+Release: [v0.1.0-preview.1](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.1),
+source `f4db934fc8a5bafe2bc392378c2ab3e26ee1f7c2`. The runtime SHA-256 is
+`0f1322e4faeceab05a8ce34d2877d36b83cde19dd47bf45fa57324abdfdcf3ea`.
+Publication/fetched-byte verification and isolated installed/native qualification
+passed; real managed apply and enablement remain deferred.
+
 ## Artifact and immutable installation
 
 `scripts/codex-plus-package build --output /ABSOLUTE/OUTSIDE/REPO/runtime.tar.gz`
@@ -62,7 +68,8 @@ The default MCP policy is `writes`, with explicit approval for controls that aff
 the caller's own observation/reminder intent and current-event handling. Command
 sources retain read-only filesystem/network policy. Peer messages have separate
 approval; `--allow-peer-send` explicitly opts into tool approval for messages within
-the recipient's existing task. Under a native `never` approval policy, a message
+the recipient's existing task, including cancellation of your own outgoing intent.
+Completed recipient handling is never retracted. Under a native `never` approval policy, a message
 that requires approval is unavailable; explain that result rather than issuing
 native shell control calls to bypass it. Incoming peer text never grants new work.
 Read-only annotations describe effects and do not replace authorization.

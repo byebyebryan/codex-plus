@@ -6,7 +6,10 @@ remain available with the same identities and installation paths.
 
 ## Current scope and next step
 
-The published/installed bundle remains the worker agents and skills described below.
+The existing installed worker agents and skills retain the identities described below.
+The separate [runtime preview v0.1.0-preview.1](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.1)
+is now published and verified. Its managed rollout is prepared; live installation
+and enablement remain deferred. See [the distribution report](docs/distribution-pass-results.md).
 This checkout also contains a tested **local watch coordinator candidate** for
 monitoring and model-controlled wakeups into an explicitly selected existing
 Codex thread. See [the candidate guide](docs/watch-candidate.md) and
@@ -18,7 +21,7 @@ scope and remaining human checks.
 The model interface supports contextual references, readable peer events,
 accepted/declined handling, watch controls and one-shot wakeup inspection/cancellation.
 See [the interaction report](docs/interaction-pass-results.md) and the ongoing
-[distribution pass](docs/distribution-pass-results.md). A separate immutable runtime
+[distribution report](docs/distribution-pass-results.md). A separate immutable runtime
 preview artifact and installation/configuration tools are described in the
 [runtime distribution guide](docs/runtime-distribution.md); publication and managed
 rollout are separate gates from these source checks.
@@ -26,7 +29,7 @@ Claude Code's Monitor
 and adaptive scheduling, informed by Bryan's actual usage, guide the design.
 Give the model options for sources, scripts, filtering, cadence and renewal;
 bounded JSON snapshot filtering is one useful option. Status, cancellation and
-expiry are part of the candidate. It is not released or installed through chezmoi.
+expiry are part of the preview. It has not been applied through chezmoi.
 The [initial monitoring spike](docs/monitoring-spike-results.md) records native
 source/queue/timer evidence, a research-only simulator/helper and the remaining
 goal, stop and daily-use acceptance gates.

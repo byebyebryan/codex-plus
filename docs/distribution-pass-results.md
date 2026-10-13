@@ -7,6 +7,82 @@ allowance: 24 automatic deliveries / 48 acceptance turns, including failures and
 cleanup; each watch is at most 120 seconds/two observations and the whole recipe
 allows at most one model-chosen renewal.
 
+## Final status
+
+The loop is complete at **12 deliveries / 42 started acceptance turns**: 40 completed
+and two prototype turns interrupted during exact cleanup, with zero provider failures.
+Failed harness cases and unacknowledged completed replies remain counted. Released
+runtime: **v0.1.0-preview.1**, source `f4db934fc8a5bafe2bc392378c2ab3e26ee1f7c2`.
+[Published preview](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.1).
+
+The fetched runtime is byte-identical to the accepted reproducible artifact:
+SHA-256 `0f1322e4faeceab05a8ce34d2877d36b83cde19dd47bf45fa57324abdfdcf3ea`.
+Its 18 files plus manifest have exact declared modes. The fetched source archive
+contains all 65 matching source files and executable flags, SHA-256
+`c2ba0ce93d8eb0f3e881bbe969f120a22f9b513024becdc0832c25a3a787b323`.
+GitHub's source tar uses 0664/0775 rather than checkout 0644/0755; source acceptance
+checks content and Git executable flags, while runtime acceptance verifies full
+0644/0755 modes. Worker files are unchanged across the entire release diff.
+
+All **177 tests**, the 65-file inventory and whitespace checks pass. Final native
+checks qualified explicit same-owner remaining-lease recovery, cached offline status
+without restart, outgoing cancellation preserving completed handling, and default
+cross-session approval refusal with no message. Earlier installed checks qualified
+shipped guidance, contextual watch/stop with TUI draft capture, information/request
+receipts, reminder fire/cancel and active-runtime selection/rollback. The final
+runtime uses one compact fixed receipt hint in readable queue input; server guidance
+alone did not reliably cause incoming-information receipts.
+
+The new foreground/earlier-human-input matrix was not successfully requalified:
+its driver missed the running-command notification and waited on persisted history.
+The unchanged queue implementation retains prior runtime/regression evidence;
+this pass does not promote that driver failure into a new acceptance claim. A
+model-chosen renewal, full daemon-incarnation recovery, long production operation
+and personal UX assessment were not newly qualified. The preview does not claim
+universal daily reliability or new-task/cross-host authority.
+
+## Managed rollout prepared, live apply deferred
+
+An isolated checkout from published dotfiles base `0598363` holds focused commit
+**`1c17dd5`** on local branch `codex-plus-preview-n91wsqir`. It updates the seven
+worker-source pins and adds the separate immutable runtime pin, stable entry/
+selection symlinks, optional host configuration, policy-preserving merge and a
+focused validator/rollout guide. The branch is not merged into canonical source or
+applied. Its canonical unpublished desktop commit and concurrent edits are excluded.
+One canonical `scripts/check` change advanced independently during this loop; it
+was not restored or edited by this work.
+
+The full dotfiles validator passes. Focused tests cover Snap/Starship and unknown
+hosts, disabled/enabled settings, explicit machine opt-in, and preservation of MCP
+approval/disable, plugin, project and skill preferences. The preview is disabled by
+default, with availability distinct from starting a watch. Cross-session sends and
+outgoing cancellation retain separate approval/explicit opt-in.
+
+A scoped chezmoi dry-run passed for 11 intended package/worker/runtime/config target
+groups. Rendering the current live Codex config produced only the new owned MCP
+namespace, with zero other semantic changes; output was kept private. Render and
+dry-run are not installed/live acceptance on Snap or Starship. No live apply, global
+config mutation or daemon restart occurred. Rollback restores the previous pin/owned
+wiring and preserves journals and active native work.
+
+## Cleanup and next shared review
+
+All 17 owned experimental actors have zero loaded membership. Each stage inspected
+queues while its actors were still loaded, then archived only those actors. Owned
+native viewers, MCP bridges and coordinators are stopped; final process/identity
+checks found none. The original listener and this requesting conversation's positive
+loaded membership remain preserved. Older walkthrough viewers are untouched.
+Private state/captures and real discovery context are not release content.
+
+The primary-driven A/B walkthrough is ready using the published runtime and fresh
+owned actors under a new allowance. Bryan observes ordinary watch, readable update,
+message/handling and stop; the primary drives prompts/transitions and cleanup. The
+last loop's unused allowance is not a reopened recipe. Live deployment/enablement
+and personal UX feedback are the remaining selected next steps.
+
+The sections below retain implementation checkpoints and corrections in order;
+their pending-gate statements are historical, not the final status above.
+
 ## Baseline and prioritized review
 
 Codex still reports 0.162.1. The existing listener and requesting conversation
