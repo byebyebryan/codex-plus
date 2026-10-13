@@ -44,6 +44,12 @@ All owned experimental resources are stopped; personal UX assessment and install
 remain subsequent scope. The current [primary-driven demonstration](watch-candidate.md#current-primary-driven-interaction-demonstration)
 uses fresh actors and a new allowance when the shared review is requested.
 
+The next proposed substantial loop is
+[review, refinement, packaging and distribution](#next-loop-review-refinement-packaging-and-distribution).
+Its default finish line is a published, verified preview release and a validated
+managed-rollout change; live apply is deferred unless Bryan chooses the deployment
+finish line. This planning checkpoint does not start that loop or publish/apply it.
+
 ## Product contract
 
 Use the ordinary Codex conversation to ask for a watch, inspect it, or cancel it.
@@ -1398,3 +1404,272 @@ for deliberate new public files. Stop owned helpers and settle exact pending inp
 State explicitly if idle viewers are retained for inspection. No native `/exit`
 confirmation, release, chezmoi apply, daemon replacement, cross-host coordination,
 new scheduler, Observer/Mesh dependency or long soak is part of this pass.
+
+## Next loop: review, refinement, packaging and distribution
+
+### Objective and finish line
+
+Turn the reviewed local candidate into a release whose installed files, model
+capabilities, guidance, configuration and lifecycle behavior are independently
+verified. Cover background watches, one-shot reassessment, independent-peer
+information and requests within the recipient's existing task. Preserve native
+Codex CLI/TUI, the existing daemon, continuing threads and worker identities.
+
+Bryan requested planning this loop after checking distribution readiness. Baseline
+on 2026-10-12: clean local candidate `01c1c70`, 162 passing tests, 59-file inventory;
+live GitHub main and this host's chezmoi externals/checker select `56b7158`.
+The existing archive is managed at `~/.local/share/codex-worker-kit`, with two
+materialized worker agents and four skills. New runtime tools are source-local.
+The natural-request batch is closed at 7 deliveries / 24 turns; it is not reusable.
+
+The default proposed finish is **published and prepared for managed rollout**:
+verified release bytes plus a focused dotfiles change, validator results, rendered
+configuration, scoped dry-run and rollback instructions. No live apply is assumed.
+If Bryan selects **publish and deploy**, extend the same loop through Snap first,
+then Starship after its gates pass. If he selects **local package only**, stop with
+the inspected artifact and release/rollout changes ready for later publication.
+Selecting and executing this plan supplies its stated scope; do not repeatedly
+ask for steps already authorized. This turn records the plan only.
+
+Call the first distributed runtime a preview until Bryan assesses the refined
+interaction. Successful unattended checks can qualify a controlled preview;
+they cannot declare personal UX acceptance or blanket daily reliability. Failures
+leave a concrete candidate and gate report rather than a misleading release claim.
+
+### Stage sequence and gates
+
+| Stage | Work and reviewable output | Gate before advancing |
+| --- | --- | --- |
+| 1. Baseline and full review | Recheck versions, owning listener, source/remote history, managed pins, installed bytes and concurrent changes. Review reader, journal/coordinator, presentation, model API, protocol, permissions and wrappers; record defects and prioritize them. | Separate current facts from earlier evidence. No blind reset, replacement daemon, reused closed actor or changes to unrelated sessions. |
+| 2. Targeted refinement | Fix confirmed correctness/UX gaps, add meaningful regressions, complete stoppable timer controls and reconcile documentation. Keep source/script/filter/cadence/follow-up choices with the model. | Existing suite, `scripts/check` and whitespace checks pass. Exact ownership, cancellation, uncertainty, peer scope and worker invocation behavior remain intact. |
+| 3. Installed capability attachment | Select and prove the smallest supported way to ship tools plus reusable guidance. Define executable paths, dependencies, state/socket selection, host enablement and truthful tool approval policy. | A fresh native session loads the shipped tools and guidance without driver-injected capability instructions, task-specific identities or polling recipes. Unsupported attachment fails visibly. |
+| 4. Artifact and installation | Produce a declared runtime artifact/inventory and version/provenance metadata. Extract into an isolated install prefix; verify executable modes, imports, dependencies, private-state separation, upgrade and rollback. | All invoked code resolves from that installed artifact. No checkout imports, host-specific source paths or undisclosed dependencies; active runtime ownership survives upgrades or the update is explicitly held. |
+| 5. Native acceptance and final refinement | Run the fresh bounded recipe below from installed files; inspect actual native history, TUI captures, receipts and exact cleanup. Fix concrete failures within the remaining allowance. | Ordinary requests, correct independent-peer discovery, complete cancellation/handling controls and readable updates pass. Preserve drafts/input order and existing native controls; retain unsupported cases explicitly. |
+| 6. Publish and verify | Review the complete release diff and history, commit cohesive slices, publish the selected release and fetch its exact archive/files. Compare content, modes, manifest and checksums with the reviewed candidate. | Fetched published bytes match the accepted artifact. Publishing does not include unrelated work or substitute source checks for artifact acceptance. |
+| 7. Prepare managed distribution | In an isolated dotfiles checkout, update external URLs/revision/checksums, runtime launch/config wiring and checker expectations together. Render supported hosts, preserve machine-local state, validate scope and prepare rollback. | All selected entries agree on the verified release. Scoped dry-run changes only intended targets; no unrelated Codex setting, skill preference, hook hash or local drift is included. |
+| 8. Apply when selected; hand off | For the deployment finish line, apply scoped targets on Snap, verify installed bytes and fresh-session capability use, then repeat on Starship. Otherwise leave the validated rollout change ready. | Report publication, managed source, installation and activation separately per host. Exact owned resources are settled, and the original daemon/requester are preserved. |
+
+Commit validated cohesive slices as work proceeds. The primary owns decisions,
+integration and acceptance. An ordinary goal loop does not activate worker skills
+or authorize subagent delegation. Manual UX feedback is deferred while independent
+engineering work remains; leave a primary-driven A/B walkthrough ready for Bryan.
+
+### Review and refinement targets
+
+Audit behavior across all interfaces rather than treating passing tests as a full
+product review. Carry forward the proven queue route; standalone native tool output
+already failed the foreground/earlier-input ordering gate and is not reopened as
+a packaging requirement.
+
+- Make every created intent inspectable and cancellable from the model interface.
+  `wake_schedule` currently has no matching model-facing wakeup list/cancel tool;
+  close this gap using existing coordinator controls, without adding cron/calendar
+  infrastructure. Check how lost-source recovery is exposed: offer explicit
+  recovery where qualified, or a truthful held/unavailable result, never silent
+  restart or replacement.
+- Check active calling-turn verification, immutable caller/source/sender bindings,
+  native event correlation, receipt immutability, accepted/declined scope and
+  forged/replayed/truncated content. Keep peer information, requests and observation
+  distinct; receipt does not establish execution or a completed task.
+- Check ordinary independent-peer selection, child exclusion, incomplete context,
+  genuine ambiguity, alias reuse, vanished peers and name reuse. An ambiguous
+  destination should produce one useful question and no targeted action.
+- Review lease expiry and explicit renewal, owner/source loss, helper restart,
+  already-admitted cancellation, queue races and resource cleanup. An ending lease
+  is not task completion. Explicit stop forbids renewal or replacement; Esc still
+  interrupts foreground work independently of registered observation.
+- Reduce routine chat noise while keeping failure, gap, ending and uncertainty
+  visible. Native tool inspection may remain structured. Do not disguise queued
+  input as a hidden native event or suppress evidence to make the demo look clean.
+- Reconcile README, candidate guide and handoff status. The candidate guide's
+  opening still says the natural interface is unimplemented despite the completed
+  report. Mark historical plans/results as history, and document the real supported
+  installation/activation path and version limits.
+
+### Capability attachment decision
+
+Prefer the existing local stdio MCP interface with generic server instructions
+and accurate tool metadata if the installed client honors them. Official OpenAI
+documentation says initialization can carry shared `instructions` used alongside
+tool metadata; this is a compatibility lead for the installed client, not native
+proof. Put scope/cancellation/receipt essentials first and qualify actual model
+availability on the selected version.
+[MCP server guidance](https://developers.openai.com/plugins/build/mcp-server).
+
+If that path cannot supply the required guidance, evaluate a focused companion
+skill or supported local plugin packaging rather than custom per-trial developer
+instructions. A plugin can package skills and MCP configuration, but does not by
+itself prove local executable deployment, native caller metadata or activation.
+Select one tested route; no public plugin-directory submission, remote MCP hosting
+or account/API-key setup is required for this same-host runtime.
+[Plugin packaging](https://developers.openai.com/plugins/build/plugins).
+
+Preserve existing worker skill names, enablement and explicit invocation behavior.
+Any new capability guidance must preserve model choice of source, strategy and
+follow-up. Make tools available in enabled fresh sessions without requiring a
+worker/goal workflow or starting a watch automatically. Initialization/tool listing
+must not start a native daemon, load a cold target, poll sources or create work.
+
+Declare a narrow MCP approval policy for the actual effects. Read-only hints are
+descriptive, not authorization; controls remain writes. Do not copy the synthetic
+allowlist or blanket tool approvals into general deployment without defining the
+configured scope. Preserve caller filesystem policy and existing MCP preferences.
+Qualified configuration is distinct from successful tool execution under it.
+[Codex MCP configuration](https://learn.chatgpt.com/docs/extend/mcp?surface=cli).
+
+### Artifact, state and upgrade contract
+
+Declare supported OS/native versions and required Python, Codex and RTK facilities
+from the chosen code path. Keep MCP stdout protocol-clean; shell/runtime wrappers
+must not insert banners or capture/reformat its protocol. Fail missing dependencies
+or unavailable metadata clearly while preserving ordinary coding access.
+
+Retain the existing worker archive/installation paths. Use stable runtime entry
+points that resolve the accepted package rather than the development checkout.
+Choose the smallest layout that also protects active coordinators from archive
+replacement. If mutable archive replacement can change code beneath owned running
+work, use an additive immutable runtime release root or hold the update; do not
+rename/migrate worker targets or kill active work to force an upgrade through.
+
+Default private state to an appropriate per-user persistent location, partitioned
+by verified caller/owner. Resolve an existing endpoint from explicit configuration
+or positively verified discovery; do not guess a daemon or create a new one.
+Keep private permissions, immutable bindings, journals and migration compatibility.
+Runtime state, allowlists, captured sessions and credentials are not release files.
+Any fixture allowlist is private test data, not a permanent set of thread UUIDs.
+
+Prove start/list/cancel, one-shot wakeup controls, message handling and diagnostic
+errors from a relocated installation. An offline client/protocol smoke check
+must pass without native mutation. A native smoke check must use that artifact's
+entry point and ordinary fresh client configuration. Remove the checkout from
+import/search paths and record actual executable/module resolution.
+
+Treat installed-but-disabled as a valid configuration state, separately from
+enabled activation proof. User disable preferences remain effective. Upgrade and
+rollback must preserve caller/source identity, intent, pending uncertainty and
+unrelated state; migrations need explicit compatibility checks. Do not delete an
+older release while any owned runtime still depends on it.
+
+### Fresh native acceptance and resource allowance
+
+Execute only after this plan is selected for a new goal loop. Use fresh owned
+synthetic sessions under the existing daemon; old walkthroughs and closed batches
+remain closed. Real sessions can supply passive discovery/read/watch observations,
+but all experimental input, messages, interruptions and goal/control changes target
+owned synthetic actors. Do not restart or replace the existing daemon to make
+configuration loading work. Defer any required manual restart and continue work
+that does not depend on it.
+
+Proposed combined ceiling: **24 automatic deliveries / 48 started native acceptance
+turns**, covering attachment, refinement, installed-path testing and any selected
+host deployment checks. Count setup, lifecycle notices, scheduled wakeups,
+uncertainty, failed/provider-rejected turns and cleanup turns. No replay or failed
+case replenishes allowance. Each watch is at most 120 seconds/two observations;
+include at most one model-chosen renewal across this recipe. Offline checks have
+no model-turn cost. Do not turn this into a long production or overnight workload.
+
+| Allocation | Delivery ceiling | Turn ceiling |
+| --- | ---: | ---: |
+| Capability attachment and approval qualification | 2 | 6 |
+| Natural interaction, ambiguity and queue/control checks | 10 | 20 |
+| Renewal, timer cancellation and owned coordinator recovery | 6 | 10 |
+| Installed/published artifact and selected host activation | 4 | 8 |
+| Reserve for one named unresolved gate | 2 | 4 |
+| Combined maximum | 24 | 48 |
+
+Before each stage, record remaining allowance and reserve capacity for cleanup.
+Unused allocations can move between stages without increasing the combined
+ceiling. Reserve is not automatic retry permission: identify the new evidence a
+fresh targeted actor would establish. Read fresh handled event records and full
+native history; prior stale-record/summary-history harness mistakes must not recur.
+Keep peer content private and validate exact bodies rather than model phrasing.
+
+Acceptance needs these observable cases:
+
+1. Fresh installed session discovers the shipped capabilities and receives their
+   generic guidance without bespoke driver injection. A normal watch request
+   selects the correct peer from task context, returns a short honest receipt,
+   and remains quiet until a useful change.
+2. A useful peer change produces readable queued input, one fresh read and a
+   correlated acknowledgement. Capture the native TUI with an unsent draft after
+   handling, closing the previous watch-capture gap. Earlier submitted human input
+   keeps its order; foreground work is not steered or interrupted by delivery.
+3. Two plausible independent peers cause clarification before targeting. Ordinary
+   selection excludes children; complex provenance/adversarial combinations stay
+   offline unless a specific native gap remains.
+4. "Tell that session" sends information once. An existing-task request can be
+   accepted or declined against direct instructions; cached status sends no
+   acknowledgement loop and makes no external-effect claim.
+5. A bounded lease ending supports one model-chosen renewal under original intent,
+   or a clear ending result if continuation is unavailable. Explicit stop prevents
+   later renewal/replacement. Esc interrupts the current turn without blanket
+   monitor cancellation. One-shot reassessment can fire, be listed and be cancelled
+   naturally; a cancelled timer produces no later automatic input.
+6. Native viewer detach/resume and an owned coordinator restart preserve honest
+   cached/lost-source/uncertainty receipts. Do not restart the daemon or silently
+   recover lost sources. Archive only owned actors, after stopping their work and
+   inspecting exact pending input while still loaded.
+
+### Publication, managed rollout and rollback
+
+Prepare release notes and compatibility/upgrade instructions before publication.
+Recheck remote divergence and review the source and artifact inventory. Publish
+only the accepted candidate when the execution finish line includes publication.
+Fetch the exact published source/runtime artifacts, compute hashes from fetched
+bytes, and compare contents/modes with the accepted installation. If bytes differ,
+fix or withhold the rollout rather than repinning an unverified artifact.
+
+The canonical chezmoi source is `/home/bryan/.local/share/chezmoi`. Its current
+external manifest and validator both select `56b7158`. Concurrent edits were
+present in the portable Codex template, `scripts/check`, Claude configuration and
+SSH-related files during planning. Recheck at execution; work in an isolated
+checkout and stage only the release/config integration. Preserve these edits,
+local commits, live state and both integrations' unrelated settings.
+
+Update all selected external revision/URL/checksum entries and matching validator
+expectations together. Add selected runtime entry points and capability wiring
+through their declared managed owner. Do not edit installed managed files directly.
+Render Snap and Starship host cases, disabled/missing-runtime cases and an unknown
+host. Preserve machine-local overrides, MCP/skill/plugin preferences, hook hashes,
+projects and local disable state in the current config merge.
+
+Run Codex Plus `scripts/check`, the appropriate existing/full regression suite,
+`git diff --check`, and dotfiles validation for the actual changed wiring. Review
+scoped chezmoi status/diff and dry-run. A full config-target apply is unsuitable if
+it would include concurrent/unrelated semantic changes; isolate the owned change
+or leave that apply pending with the exact reason. Publishing pins is not live
+installation or activation proof.
+
+For the selected deployment finish line, apply only reviewed package/worker/runtime
+targets on Snap first. Verify fetched/installed byte identity, executable modes,
+preserved worker metadata/preferences and capability use in fresh owned sessions.
+Then perform the same host-specific checks on Starship. Distributing the same
+package to two hosts does not authorize cross-host messaging or fleet controls.
+If a host cannot load new configuration without interrupting real sessions or a
+daemon restart, record that activation gate and leave it for the appropriate manual
+step; do not silently restart, retry endlessly or call that host accepted.
+
+Record the previous published pin, package/config state and any selected enablement
+before rollout. Rollback restores the prior manifest/checker and scoped owned
+wiring, preserves private journals and does not kill unrelated native work. Qualify
+rollback against the isolated installation before relying on a live-host rollback.
+
+### Final handoff and scope limits
+
+Leave the prioritized review and resolved/unresolved findings, validated commits,
+artifact inventory/provenance, published IDs and fetched checksums where applicable,
+focused dotfiles changes, per-host source/install/activation results, rollback and
+sanitized native evidence. Include counts and exact owned cleanup. Report partial
+gates individually rather than calling a dry-run "deployed" or tool listing "usable".
+
+Prepare the primary-driven A/B TUI walkthrough over SSH/tmux. Bryan observes the
+ordinary request, useful update, message/handling and stop; the primary controls
+prompts, fixture transitions and cleanup. Personal UX feedback remains distinct
+from unattended receipts and need not block engineering or an honestly labeled
+preview release.
+
+No new-task delegation, cross-host coordinator, Observer/Mesh dependency, recurring
+scheduler, native `/exit` interception, workload/fleet recovery or general daemon
+restart is part of this loop. Shipping capability does not grant observations or
+peer messages new operational authority. Broader reliability and a real-source
+pilot need their own scoped evidence after this release is usable.

@@ -5,6 +5,23 @@ Updated 2026-10-12 for Bryan's continuation on Snap in
 its corrective unattended pass and discovery/peer-watch pass are also complete.
 Human acceptance and installation remain subsequent scope.
 
+Bryan has now requested planning a substantial **review/refinement/packaging/
+distribution** loop. The [new loop contract](codex-plus-plan.md#next-loop-review-refinement-packaging-and-distribution)
+starts with a prioritized review, completes stoppable model-facing timer controls,
+qualifies installed guidance/tool loading, and verifies the package independently
+of this checkout before publication. Default finish: published preview plus a
+validated managed-rollout change; live apply is deferred unless the deployment
+finish line is selected. This is a planning checkpoint, not a new execution goal.
+
+Current local candidate is `01c1c70`; freshly queried GitHub main and this host's
+chezmoi manifest/checker still select `56b7158`. Preserve the existing archive and
+worker identities. Concurrent dotfiles edits include the portable Codex template
+and validator, so isolate release work and preserve unrelated source/live drift.
+The proposed fresh native ceiling is 24 deliveries / 48 turns across all stages;
+the previous 7-delivery/24-turn batch remains closed. Runtime upgrade protection,
+installed-path activation and rollback are explicit gates. Real sessions remain
+read-only sources; experimental writes use fresh owned actors.
+
 The completed local interaction pass is
 [natural requests and readable peer communication](codex-plus-plan.md#next-pass-natural-requests-and-readable-peer-communication).
 Bryan has now assessed the controlled walkthrough as hard to follow: watch prompts
