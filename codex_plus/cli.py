@@ -19,6 +19,7 @@ from .native import Client
 from .peers import PeerReader, DEFAULT_SIGNALS
 from .store import Store, private_directory
 from .presentation import compact_ref, label as display_label
+from .access import resolve as source_permissions, mcp_spec, configured_mcp
 
 
 def process_identity(pid: int) -> dict | None:
@@ -140,7 +141,7 @@ def serve(root: Path):
                 awaiting = any(event['delivery'] == 'pending' or
                     event['delivery'] == 'native_queued' and event['expires'] > store.clock() and event['turn_outcome'] is None and
                     event['withdraw_state'] != 'withdrawn' and not event['acknowledged'] for event in store.events())
-                if not active and not awaiting and not engine.sources and not engine.peer_polls:
+                if not active and not awaiting and not engine.sources and not engine.peer_polls and not engine.inspections:
                     idle_since = idle_since or time.monotonic()
                     if time.monotonic() - idle_since >= 10:
                         break
@@ -217,9 +218,14 @@ def parser():
         command.add_argument('--quiet-initial', action='store_true')
         command.add_argument('--notify-end', action='store_true')
         command.add_argument('--peer', help='Exact independent peer UUID in the same daemon; replaces command source')
-        command.add_argument('--interval', type=float, default=5)
+        command.add_argument('--interval', type=float)
         command.add_argument('--signals', default=','.join(DEFAULT_SIGNALS))
         command.add_argument('--turn-limit', type=int, default=3)
+        command.add_argument('--source-access', choices=('session', 'read_only'), default='session')
+        command.add_argument('--network-access', choices=('inherit', 'off', 'required'), default='inherit')
+        command.add_argument('--mcp-server')
+        command.add_argument('--mcp-tool')
+        command.add_argument('--mcp-arguments', default='{}')
         command.add_argument('command', nargs=argparse.REMAINDER)
     wake = commands.add_parser('wake_schedule')
     wake.add_argument('--after', type=float, required=True)
@@ -278,8 +284,10 @@ def main(argv=None, *, before_write=None) -> int:
         if args.operation in ('watch_start', 'renew'):
             frozen = validate_binding(root)
             command = args.command[1:] if args.command[:1] == ['--'] else args.command
-            if not command and not args.peer:
+            if not command and not args.peer and not args.mcp_server:
                 raise ValueError('source argv is required after --')
+            if args.peer and args.mcp_server:
+                raise ValueError('choose one observation source')
             spec = {'duration': args.duration,
                 'event_limit': args.limit, 'followup': args.followup,
                 'snapshot_fields': args.snapshot_fields.split(',') if args.snapshot_fields else None,
@@ -294,10 +302,22 @@ def main(argv=None, *, before_write=None) -> int:
                 if {key: value for key, value in peer.items() if key != 'thread_id'} != {
                         key: value for key, value in frozen.items() if key != 'thread_id'}:
                     raise ValueError('peer owner changed before registration')
-                spec.update(peer=peer, interval=args.interval,
+                spec.update(peer=peer, interval=args.interval if args.interval is not None else 5,
                             signals=args.signals.split(','), turn_limit=args.turn_limit)
+            elif args.mcp_server:
+                if command or args.cwd or args.snapshot_fields or args.peer:
+                    raise ValueError('choose a command, peer or scheduled MCP inspection')
+                if args.source_access != 'session' or args.network_access != 'inherit':
+                    raise ValueError('command access choices do not apply to MCP inspection')
+                spec.update(mcp=mcp_spec(args.mcp_server, args.mcp_tool, json.loads(args.mcp_arguments)),
+                    interval=args.interval if args.interval is not None else 30)
+                with Client(frozen['requested_socket'], experimental=True) as client:
+                    configured_mcp(client, frozen, spec['mcp'])
             else:
                 spec.update(command=command, cwd=str(Path(args.cwd or os.getcwd()).resolve()))
+                with Client(frozen['requested_socket'], experimental=True) as client:
+                    spec['execution'] = source_permissions(client, frozen, spec['cwd'],
+                        args.source_access, args.network_access)
             if args.operation == 'watch_start':
                 if before_write: before_write()
                 job_id = store.create('watch', spec)
@@ -315,7 +335,9 @@ def main(argv=None, *, before_write=None) -> int:
                     'stdout_bytes': 65536, 'stderr_bytes': 16384, 'lifecycle_notices': int(args.notify_end)},
                 'source_policy': ({'type': 'passivePeerRpc', 'observed_peer': peer,
                                    'resumes_peer': False} if args.peer else
-                                  {'type': 'readOnly', 'networkAccess': False})}
+                                  {'type': 'nativeModelInspection', 'server': spec['mcp']['server'],
+                                   'tool': spec['mcp']['tool'], 'uses_model_turn': True} if spec.get('mcp') else
+                                  spec['execution']['request'])}
             print(json.dumps(accepted_coordinator(root, result)))
         elif args.operation == 'peer_send':
             frozen = validate_binding(root)

@@ -31,6 +31,14 @@ All earlier native allowances are closed, including the subsequent 13-turn,
 four-delivery primary-driven walkthrough. New execution needs fresh owned actors
 and the new bounded recipe; real active sessions remain passive sources.
 
+Bryan subsequently selected this plan for an ordinary goal loop with incremental
+commits. The [execution report](source-access-pass-results.md) records native source
+permission qualification and the direct-MCP approval bypass. The implementation
+selects verified caller command permissions and scheduled native model MCP
+inspections; installed workflow/release/distribution gates remain in progress.
+The selected finish includes pushing validated chezmoi integration, with live
+apply/enablement deferred.
+
 The sections below retain completed-pass and historical planning evidence.
 
 The review/refinement/packaging/distribution loop is now complete. The

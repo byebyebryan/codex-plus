@@ -14,6 +14,7 @@ from .framing import Lines
 from .native import Client, RpcError
 from .peers import PeerReader, snapshot, classification
 from .presentation import render_event
+from .access import current as current_source_permissions, snapshot as permission_snapshot, configured_mcp
 from .store import Store
 
 
@@ -40,6 +41,7 @@ class Engine:
         self.generation = str(uuid.uuid4())
         self.sources: dict[str, Source] = {}
         self.peer_polls: dict[str, dict] = {}
+        self.inspections: dict[str, dict] = {}
         self.deadlines: dict[str, float] = {}
         self.wake_due: dict[str, float] = {}
         self.renewal_deadlines: dict[str, float] = {}
@@ -74,6 +76,7 @@ class Engine:
             self.store.source(job_id, 'lost', reason, self.generation)
         self.sources.clear()
         self.peer_polls.clear()
+        self.inspections.clear()
         self.store.reconcile()
         self.next_connect = self.monotonic() + 2
 
@@ -85,6 +88,22 @@ class Engine:
         return thread, delivery_decision(self.binding['thread_id'], thread, goal)
 
     def _start_source(self, job):
+        if job['spec'].get('mcp'):
+            try:
+                configured_mcp(self.client, self.binding, job['spec']['mcp'])
+            except (ValueError, RpcError, TimeoutError, OSError) as error:
+                self.store.source(job['id'], 'lost', str(error), self.generation)
+                self.store.notice(job['id'], 'MCP inspection unavailable: ' + str(error))
+                return
+            if self.store.source(job['id'], 'running', 'scheduled native model inspection; each check uses a model turn', self.generation):
+                pending = [event for event in self.store.events(job['id']) if event['kind'] == 'source'
+                    and event['delivery'] in ('pending', 'native_queued') and event['turn_outcome'] is None
+                    and event['withdraw_state'] != 'withdrawn' and event['expires'] > self.store.clock()]
+                delay = job['spec']['interval'] if job['spec'].get('quiet_initial', True) else 0
+                self.inspections[job['id']] = {'due': self.monotonic() + delay,
+                    'event': pending[-1]['id'] if pending else None}
+                self.store.db.execute('UPDATE jobs SET recover_requested=0 WHERE id=?', (job['id'],))
+            return
         if job['spec'].get('peer') is not None:
             peer = job['spec']['peer']
             if peer['thread_id'] == self.binding['thread_id'] or {
@@ -102,6 +121,13 @@ class Engine:
         if not self.store.source(job['id'], 'starting', generation=self.generation):
             return
         spec = job['spec']
+        try:
+            request = current_source_permissions(self.client, self.binding, spec['execution'], spec['cwd']) if spec.get('execution') else {
+                'sandboxPolicy': {'type': 'readOnly', 'networkAccess': False}}
+        except (ValueError, RpcError, TimeoutError, OSError) as error:
+            self.store.source(job['id'], 'lost', str(error), self.generation)
+            self.store.notice(job['id'], 'source_permissions_unavailable: ' + str(error))
+            return
         process_id = 'codex-plus-' + job['id']
         command = spec['command']
         if command[0] != 'rtk':
@@ -109,16 +135,24 @@ class Engine:
         remaining = max(0.001, self.deadlines[job['id']] - self.monotonic())
         request_id = self.client.submit('command/exec', {
             'command': command, 'cwd': spec['cwd'],
-            'sandboxPolicy': {'type': 'readOnly', 'networkAccess': False},
+            **request,
             'processId': process_id, 'streamStdoutStderr': True,
             'timeoutMs': max(1, int(remaining * 1000)), 'outputBytesCap': STDOUT_BYTES})
         self.sources[job['id']] = Source(request_id, process_id)
         self.store.db.execute('UPDATE jobs SET recover_requested=0 WHERE id=?', (job['id'],))
 
     def _stop_source(self, job_id, reason, deadline=None):
+        if self.store.job(job_id)['spec'].get('mcp'):
+            self.inspections.pop(job_id, None)
+            self.store.source(job_id, 'stopped', reason, self.generation)
+            if reason == 'event_limit_reached':
+                self.store.notice(job_id, reason)
+            return
         if self.store.job(job_id)['spec'].get('peer') is not None:
             self.peer_polls.pop(job_id, None)
             self.store.source(job_id, 'stopped', reason, self.generation)
+            if reason == 'event_limit_reached':
+                self.store.notice(job_id, reason)
             return
         source = self.sources.get(job_id)
         if source is None:
@@ -166,6 +200,20 @@ class Engine:
         self._stop_source(job_id, 'source_error: ' + reason)
         self.store.notice(job_id, 'source_error: ' + reason)
 
+    def _inspect(self, job):
+        state = self.inspections[job['id']]
+        if state['event']:
+            event = self.store.event(state['event'])
+            if (event['turn_outcome'] == 'completed' and event['acknowledged']) or event['turn_outcome'] == 'interrupted':
+                state.update(event=None, due=self.monotonic() + job['spec']['interval'])
+            elif event['turn_outcome'] is not None:
+                self.inspections.pop(job['id'], None)
+                self.store.source(job['id'], 'lost', 'inspection handling unavailable; explicit recovery required', self.generation)
+                self.store.notice(job['id'], 'inspection handling unavailable')
+            return
+        if self.monotonic() >= state['due']:
+            state['event'] = self.store.emit(job['id'], 'Inspect the selected configured MCP tool under the existing request.')
+
     def _source_output(self, params):
         match = next(((job_id, source) for job_id, source in self.sources.items()
                       if source.process_id == params.get('processId')), None)
@@ -202,6 +250,22 @@ class Engine:
             self._source_output(params)
             return
         if params.get('threadId') != self.binding['thread_id']:
+            return
+        if method == 'thread/settings/updated':
+            settings = params.get('threadSettings', {})
+            for job_id in list(self.sources):
+                grant = self.store.job(job_id)['spec'].get('execution')
+                if grant is None:
+                    continue
+                try:
+                    value = permission_snapshot({'sandbox': settings.get('sandboxPolicy'),
+                        'activePermissionProfile': settings.get('activePermissionProfile'),
+                        'cwd': settings.get('cwd')})
+                    changed = value != grant['native']
+                except ValueError:
+                    changed = True
+                if changed:
+                    self._source_error(job_id, 'native source permissions changed')
             return
         if method in ('item/started', 'item/completed'):
             item = params.get('item', {})
@@ -435,13 +499,15 @@ class Engine:
                     if self.monotonic() >= self.wake_due[job['id']]:
                         self.store.emit(job['id'], job['spec']['prompt'], 'wake')
                 elif job['source_state'] == 'pending' or job['source_state'] == 'lost' and job['recover_requested']:
-                    if len(self.sources) + len(self.peer_polls) < 16:
+                    if len(self.sources) + len(self.peer_polls) + len(self.inspections) < 16:
                         self._start_source(job)
-                elif job['id'] in self.sources or job['id'] in self.peer_polls:
+                elif job['id'] in self.sources or job['id'] in self.peer_polls or job['id'] in self.inspections:
                     if job['event_count'] >= job['spec']['event_limit']:
                         self._stop_source(job['id'], 'event_limit_reached')
                     elif job['id'] in self.peer_polls:
                         self._poll_peer(job)
+                    elif job['id'] in self.inspections:
+                        self._inspect(job)
             self._drain()
             if self.monotonic() >= self.next_delivery:
                 self.next_delivery = self.monotonic() + 1
@@ -466,6 +532,8 @@ class Engine:
         events = []
         try:
             for job_id in list(self.peer_polls):
+                self._stop_source(job_id, 'coordinator_shutdown', deadline)
+            for job_id in list(self.inspections):
                 self._stop_source(job_id, 'coordinator_shutdown', deadline)
             events = [event for event in self.store.events() if event['delivery'] == 'native_queued' and
                       self.store.job(event['job_id'])['intent'] in ('cancelled', 'replaced', 'replacing', 'expired')]

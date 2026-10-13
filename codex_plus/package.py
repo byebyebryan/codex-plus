@@ -22,7 +22,7 @@ import uuid
 from . import VERSION
 
 RUNTIME_FILES = (
-    'LICENSE', 'codex_plus/__init__.py', 'codex_plus/native.py',
+    'LICENSE', 'codex_plus/__init__.py', 'codex_plus/native.py', 'codex_plus/access.py',
     'codex_plus/control.py', 'codex_plus/framing.py', 'codex_plus/store.py',
     'codex_plus/engine.py', 'codex_plus/cli.py', 'codex_plus/peers.py',
     'codex_plus/peer_cli.py', 'codex_plus/presentation.py', 'codex_plus/model.py',
