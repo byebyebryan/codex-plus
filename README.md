@@ -196,6 +196,12 @@ infer savings from the number of Luna assignments or from token rates alone.
 
 ## Design notes
 
+[HTML report design](docs/html-report-design.md) proposes static report publishing,
+durable browser-accessible URLs and a shared skill/tool surface. It is a design
+draft; report tooling and hosting are not implemented or installed.
+The [v1 implementation plan](docs/html-report-plan.md) defines proposed defaults,
+interfaces, publication recovery and staged acceptance.
+
 [Worker routing design](docs/worker-routing-design.md) records selective Luna
 delegation, the separate purpose of Sol workers, and the rollout plan.
 [Worker routing research](docs/worker-routing-study.md) reviews the evidence,
