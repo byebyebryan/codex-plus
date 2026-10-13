@@ -5,6 +5,26 @@ an implemented watch service or a new research trial. Read it with the
 [implementation handoff](implementation-handoff.md) and
 [draft plan](codex-plus-plan.md).
 
+## Product gap correction: 2026-10-13
+
+Bryan clarified that ordinary monitoring commonly polls an endpoint or calls MCP
+tooling. The packaged preview's blanket offline command policy is therefore a
+material source-access gap. The histories below informed scripts, filtering,
+renewal and wakeups; they do not establish that local-source qualification
+fulfills the same operational workflow.
+
+The [operational source-access pass](codex-plus-plan.md#next-pass-operational-source-access-and-refinement)
+separates filesystem permissions, network access and configured MCP capabilities.
+It qualifies authenticated endpoint observation, native-session MCP access and
+timed model inspection under existing authorization, then exercises actual
+continuation and explicit stop. Synthetic fixtures precede a selected passive
+real-source pilot. This correction changes the planned product contract; the
+original v0.1.0-preview.1 retains its restrictions. The selected execution now
+implements session-inherited command access and scheduled native model MCP checks;
+see the [source-access report](source-access-pass-results.md) for qualification and
+limits. These mechanisms cover the studied workflow shapes; a selected real-source
+pilot is still required to establish operational equivalence.
+
 ## Latest request and design tenet
 
 Bryan asked to plan properly before implementation, then requested capturing

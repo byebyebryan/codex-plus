@@ -21,7 +21,7 @@ import uuid
 
 from . import VERSION
 
-RUNTIME_FILES = (
+PREVIOUS_RUNTIME_FILES = (
     'LICENSE', 'codex_plus/__init__.py', 'codex_plus/native.py',
     'codex_plus/control.py', 'codex_plus/framing.py', 'codex_plus/store.py',
     'codex_plus/engine.py', 'codex_plus/cli.py', 'codex_plus/peers.py',
@@ -30,6 +30,7 @@ RUNTIME_FILES = (
     'scripts/codex-plus-watch', 'scripts/codex-plus-peer',
     'scripts/codex-plus-model', 'scripts/codex-plus-package',
 )
+RUNTIME_FILES = (*PREVIOUS_RUNTIME_FILES, 'codex_plus/access.py')
 COMPATIBILITY = {'os': 'linux', 'python': '>=3.11', 'codex': '0.162.1',
                  'rtk': 'required', 'transport': 'existing local Unix daemon'}
 SCOPED_CONTROLS = ('watch_start', 'watch_cancel', 'watch_renew', 'watch_recover',
@@ -62,6 +63,14 @@ def manifest(files, source_revision):
                       for name, data in sorted(files.items())}}
 
 
+def version_files(version):
+    if version == VERSION:
+        return RUNTIME_FILES
+    if version == '0.1.0-preview.1':
+        return PREVIOUS_RUNTIME_FILES
+    raise ValueError('unsupported runtime package/version')
+
+
 def build(root, output):
     root, output = Path(root).resolve(), Path(output).absolute()
     if output.is_relative_to(root): raise ValueError('write artifacts outside the source checkout')
@@ -86,10 +95,11 @@ def build(root, output):
 def validate_manifest(metadata, files, modes):
     if not isinstance(metadata, dict) or set(metadata) != {'schema', 'name', 'version', 'source_revision', 'compatibility', 'files'}:
         raise ValueError('invalid runtime manifest')
-    if metadata['schema'] != 1 or metadata['name'] != 'codex-plus-runtime' or metadata['version'] != VERSION:
+    if metadata['schema'] != 1 or metadata['name'] != 'codex-plus-runtime':
         raise ValueError('unsupported runtime package/version')
+    expected = version_files(metadata['version'])
     revision(metadata['source_revision'])
-    if metadata['compatibility'] != COMPATIBILITY or set(files) != set(RUNTIME_FILES) or set(metadata['files']) != set(RUNTIME_FILES):
+    if metadata['compatibility'] != COMPATIBILITY or set(files) != set(expected) or set(metadata['files']) != set(expected):
         raise ValueError('runtime inventory or compatibility does not match this installer')
     for name, data in files.items():
         if metadata['files'][name] != {'sha256': sha(data), 'mode': file_mode(name)} or modes[name] != file_mode(name):
@@ -123,13 +133,17 @@ def read_archive(archive_path, expected_sha=None):
 def verify_install(root):
     root = Path(root)
     if root.is_symlink() or not root.is_dir(): raise ValueError('release root must be a real directory')
+    metadata = json.loads((root / 'runtime.json').read_text())
+    if not isinstance(metadata, dict):
+        raise ValueError('invalid installed manifest')
+    expected = version_files(metadata.get('version'))
     paths = [p for p in root.rglob('*') if not p.is_dir() or p.is_symlink()]
-    if any(p.is_symlink() for p in paths) or {p.relative_to(root).as_posix() for p in paths} != {*RUNTIME_FILES, 'runtime.json'}:
+    if any(p.is_symlink() for p in paths) or {p.relative_to(root).as_posix() for p in paths} != {*expected, 'runtime.json'}:
         raise ValueError('installed inventory differs from the artifact')
-    files = {name: (root / name).read_bytes() for name in RUNTIME_FILES}
-    modes = {name: stat.S_IMODE((root / name).stat().st_mode) for name in RUNTIME_FILES}
+    files = {name: (root / name).read_bytes() for name in expected}
+    modes = {name: stat.S_IMODE((root / name).stat().st_mode) for name in expected}
     if stat.S_IMODE((root / 'runtime.json').stat().st_mode) != 0o644: raise ValueError('installed manifest mode mismatch')
-    return validate_manifest(json.loads((root / 'runtime.json').read_text()), files, modes)
+    return validate_manifest(metadata, files, modes)
 
 
 def install(archive_path, prefix, expected_sha=None):

@@ -6,11 +6,21 @@ paths. It requires an already running owning daemon and loaded independent
 sessions; it never starts a daemon or cold-resumes a target. Long production
 operation, native owner replacement and personal UX acceptance remain separate.
 
-Release: [v0.1.0-preview.1](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.1),
-source `f4db934fc8a5bafe2bc392378c2ab3e26ee1f7c2`. The runtime SHA-256 is
-`0f1322e4faeceab05a8ce34d2877d36b83cde19dd47bf45fa57324abdfdcf3ea`.
-Publication/fetched-byte verification and isolated installed/native qualification
-passed; real managed apply and enablement remain deferred.
+Release: [v0.1.0-preview.2](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.2),
+source `2274f4b54817fae88c3762c39c1284b8b1eb2695`. Runtime SHA-256:
+`d4b23b83339f2a59bd12eadc0408695d899b993020d0fa496dc394de9e49ecdf`.
+The artifact contains 19 declared runtime files plus its manifest. The
+[source-access report](source-access-pass-results.md) separates source, artifact,
+installed native qualification and managed wiring from live apply/enablement.
+
+Command sources inherit verified native session permissions, including existing
+networking and authorized cache writes. Filesystem read-only and network-off are
+narrowing choices; network-required verifies an existing grant. Periodic short
+commands or continuing observer scripts can poll authenticated endpoints quietly.
+Configured MCP inspection uses scheduled native model turns under normal approval
+and authentication, with a model cost per check. The direct MCP RPC is excluded
+because controlled qualification exposed an approval bypass. Real-source/auth and
+long-operation acceptance remain separate from local fixture results.
 
 ## Artifact and immutable installation
 
@@ -66,7 +76,9 @@ part of a release or a managed `exact` archive.
 
 The default MCP policy is `writes`, with explicit approval for controls that affect
 the caller's own observation/reminder intent and current-event handling. Command
-sources retain read-only filesystem/network policy. Peer messages have separate
+sources retain the caller's effective permissions unless explicitly narrowed.
+Legacy jobs without an execution grant retain their earlier offline policy.
+Peer messages have separate
 approval; `--allow-peer-send` explicitly opts into tool approval for messages within
 the recipient's existing task, including cancellation of your own outgoing intent.
 Completed recipient handling is never retracted. Under a native `never` approval policy, a message

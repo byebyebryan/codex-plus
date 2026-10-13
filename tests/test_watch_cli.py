@@ -21,6 +21,13 @@ class CliTests(unittest.TestCase):
         self.store = Store(self.state)
         (self.state / 'binding.json').write_text(json.dumps({'thread_id': 'fixture-thread'}))
         self.spec = {'command': ['rtk', 'proxy', 'true'], 'cwd': str(self.root), 'duration': 120}
+        grant = {'native': {'sandbox': {'type': 'readOnly', 'networkAccess': False},
+                 'profile': None, 'cwd': str(self.root)},
+                 'request': {'sandboxPolicy': {'type': 'readOnly', 'networkAccess': False}},
+                 'source_access': 'session', 'network_access': 'inherit'}
+        for p in (patch('codex_plus.cli.source_permissions', return_value=grant),
+                  patch('codex_plus.cli.Client')):
+            p.start(); self.addCleanup(p.stop)
 
     def tearDown(self):
         self.store.close()
@@ -91,7 +98,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(result['effective_bounds']['duration'], 90)
         self.assertEqual(result['effective_bounds']['source_events'], 1)
-        self.assertEqual(result['source_policy'], {'type': 'readOnly', 'networkAccess': False})
+        self.assertEqual(result['source_policy'], {'sandboxPolicy': {'type': 'readOnly', 'networkAccess': False}})
 
     def test_renew_options_are_not_swallowed_as_source_argv(self):
         watch = self.store.create('watch', self.spec)

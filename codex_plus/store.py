@@ -11,6 +11,7 @@ import time
 import uuid
 
 from .peers import DEFAULT_SIGNALS, SIGNALS, thread_id
+from .access import validate_grant, mcp_spec
 
 
 MAX_DURATION = 86400
@@ -34,9 +35,11 @@ def validate_spec(kind: str, spec: dict) -> dict:
     supported = {'duration', 'event_limit', 'followup', 'notify_end', 'command', 'cwd',
                  'snapshot_fields', 'quiet_initial', 'after', 'prompt',
                  'peer', 'interval', 'signals', 'turn_limit', 'label',
-                 'sender', 'sender_label', 'message_kind'}
+                 'sender', 'sender_label', 'message_kind', 'execution', 'mcp', 'command_interval'}
     if set(spec) - supported:
         raise ValueError('unsupported registration fields: ' + ', '.join(sorted(set(spec) - supported)))
+    if kind != 'watch' and any(spec.get(key) is not None for key in ('execution', 'mcp', 'command_interval')):
+        raise ValueError('source execution permissions require a command watch')
     duration = spec.get('duration', 120)
     limit = spec.get('event_limit', 2)
     if isinstance(duration, bool) or not isinstance(duration, (int, float)) or not 0 < duration <= MAX_DURATION:
@@ -92,6 +95,17 @@ def validate_spec(kind: str, spec: dict) -> dict:
                 raise ValueError('peer projection is defined by selected signals')
             spec.update(interval=interval, signals=list(signals), turn_limit=turns,
                         snapshot_fields=fields)
+        elif spec.get('mcp') is not None:
+            value = spec['mcp']
+            if not isinstance(value, dict) or set(value) != {'server', 'tool', 'arguments'}:
+                raise ValueError('invalid configured MCP inspection source')
+            spec['mcp'] = mcp_spec(value['server'], value['tool'], value['arguments'])
+            if any(spec.get(key) is not None for key in ('command', 'cwd', 'execution', 'snapshot_fields', 'signals', 'turn_limit')):
+                raise ValueError('MCP inspection cannot mix command, projection or peer options')
+            interval = spec.get('interval', 30)
+            if isinstance(interval, bool) or not isinstance(interval, (int, float)) or not 1 <= interval <= 3600:
+                raise ValueError('MCP inspection interval must be 1 through 3600 seconds')
+            spec['interval'] = interval
         else:
             if any(key in spec for key in ('interval', 'signals', 'turn_limit')):
                 raise ValueError('peer options require a peer binding')
@@ -103,6 +117,17 @@ def validate_spec(kind: str, spec: dict) -> dict:
             cwd = spec.get('cwd')
             if not isinstance(cwd, str) or not Path(cwd).is_absolute() or not Path(cwd).is_dir():
                 raise ValueError('source cwd must be an existing absolute directory')
+            if spec.get('execution') is not None:
+                validate_grant(spec['execution'], cwd)
+            interval = spec.get('command_interval')
+            if interval is not None and (isinstance(interval, bool) or not isinstance(interval, (int, float)) or not 1 <= interval <= 3600):
+                raise ValueError('periodic command interval must be 1 through 3600 seconds')
+        if spec.get('peer') is not None and spec.get('execution') is not None:
+            raise ValueError('command execution permissions do not apply to a peer')
+        if spec.get('peer') is not None and spec.get('mcp') is not None:
+            raise ValueError('choose a peer or MCP inspection source')
+        if (spec.get('peer') is not None or spec.get('mcp') is not None) and spec.get('command_interval') is not None:
+            raise ValueError('periodic command interval requires a command source')
         fields = spec.get('snapshot_fields')
         if fields is not None and (not isinstance(fields, list) or not fields or
                 any(not isinstance(field, str) or not field for field in fields) or
@@ -435,6 +460,8 @@ class Store:
             spec = validate_spec('watch', spec)
             if parent['spec'].get('peer') != spec.get('peer'):
                 raise ValueError('renewal cannot change the observed peer identity or source type')
+            if parent['spec'].get('mcp') != spec.get('mcp'):
+                raise ValueError('renewal cannot change the configured MCP inspection source')
             final = parent['source_state'] in ('stopped', 'completed', 'error')
             now = self.clock()
             deadline = now + 10 if final else min(parent['expires'], now + 10)

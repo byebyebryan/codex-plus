@@ -1,11 +1,55 @@
 # Implementation handoff
 
-Updated 2026-10-12 for Bryan's continuation on Snap in
-`/home/bryan/code/codex-plus`. The agreed research-to-local-candidate loop is complete;
-its corrective unattended pass and discovery/peer-watch pass are also complete.
-Human acceptance and installation remain subsequent scope.
+Updated 2026-10-13 for Bryan's continuation on Snap in
+`/home/bryan/code/codex-plus`. The operational source-access/refinement loop is
+complete, including published preview and pushed managed distribution. Live apply,
+enablement, real-source pilot and personal UX acceptance remain subsequent scope.
 
-The review/refinement/packaging/distribution loop is now complete. The
+## Current source-access and distribution pass
+
+Bryan selected an ordinary goal loop from 8900175 to remove the blanket offline
+restriction and qualify his endpoint/MCP monitoring workflows. The
+[execution report](source-access-pass-results.md) records permission tests,
+installed native acceptance, corrected findings and separate distribution gates.
+Workers retain their identities and explicit invocation; no worker skill was
+activated and no delegation was used.
+
+Command sources inherit the exact loaded caller's effective native permissions,
+including existing networking and authorized private cache writes. Read-only and
+network-off choices narrow access; network-required checks an existing grant.
+Periodic short commands and continuing scripts can observe without inference per
+poll. MCP checks use scheduled native model turns under normal tool permissions;
+direct calls are excluded after controlled qualification exposed an approval bypass.
+Each MCP check therefore has model cost.
+
+Installed endpoint acceptance passed authenticated reads, quiet filtering, useful
+handling, foreground/earlier-human ordering, draft preservation and natural stop.
+Scheduled MCP acceptance passed an executed slower-cadence successor and stop.
+Timed reassessment performed an actual configured inspection. Missing approval and
+in-flight cancellation have explicit native evidence. Named profiles retain offline
+coverage; real authentication/provider failures and long operation remain separate.
+
+The final runtime candidate is v0.1.0-preview.2 at
+`2274f4b54817fae88c3762c39c1284b8b1eb2695`, with 19 files plus its manifest.
+All 206 offline tests and the 69-file inventory pass. Publication and fetched-byte
+verification passed. Focused chezmoi wiring is
+validated and pushed as 1bac126, including full/component checks and scoped dry-run.
+All 21 owned actors/helpers/viewers/fixture services are closed; the combined batch
+used 31 turns (29 completed, two cleanup interruptions), nine automatic events,
+54 HTTP fixture calls and ten MCP fixture calls. Original owner/requester remain
+preserved. Canonical dotfiles stay at 271b35d with seven concurrent files unchanged;
+published main has the rollout, and the clean isolated checkout is available.
+The selected finish leaves live apply/enablement deferred. The source/tag revision
+identifies qualified runtime bytes; later documentation commits do not repin them.
+
+The isolated dotfiles worktree reconciles the surviving 1c17dd5 integration onto
+current published history 271b35d. Preserve concurrent canonical SSH, Claude and
+Codex edits. Existing real conversations and the original daemon remain untouched;
+experimental writes use fresh owned actors. Earlier native allowances remain closed.
+
+The sections below retain completed-pass and historical planning evidence.
+
+The earlier review/refinement/packaging/distribution loop completed. Its
 [final report](distribution-pass-results.md) records the published
 [v0.1.0-preview.1 runtime](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.1)
 at `f4db934`, 177 passing tests and 65-file source inventory, verified fetched

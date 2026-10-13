@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from codex_plus.engine import Engine
 from codex_plus.native import RpcError, Client
 from codex_plus.store import Store
+from codex_plus.access import resolve as source_permissions
 
 
 class Backend:
@@ -22,6 +23,8 @@ class Backend:
         self.runtime = {'type': 'idle'}
         self.add_error = None
         self.start_error = None
+        self.source_sandbox = {'type': 'dangerFullAccess'}
+        self.source_cwd = '/'
 
     def bind(self, thread, timeout=None):
         return self.binding
@@ -34,6 +37,9 @@ class Backend:
 
     def call(self, method, params, timeout=None):
         self.calls.append((method, params))
+        if method == 'thread/resume':
+            return {'thread': {'id': self.binding['thread_id']}, 'sandbox': self.source_sandbox,
+                    'cwd': self.source_cwd, 'activePermissionProfile': None}
         if method == 'thread/read':
             return {'thread': {'id': self.binding['thread_id'], 'canAcceptDirectInput': True, 'status': self.runtime}}
         if method == 'thread/goal/get':
@@ -134,6 +140,41 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(self.store.job(job)['source_state'], 'running')
         self.assertEqual(self.store.events(job), [])
 
+    def test_command_exec_uses_resolved_native_permission_request(self):
+        self.backend.source_cwd = str(self.root)
+        grant = source_permissions(self.backend, self.binding, str(self.root), 'read_only', 'required')
+        job = self.store.create('watch', {**self.spec, 'execution': grant})
+        self.tick()
+        self.assertEqual(self.backend.commands[-1][1]['sandboxPolicy'],
+                         {'type': 'readOnly', 'networkAccess': True})
+        self.assertEqual(self.store.job(job)['source_state'], 'starting')
+
+    def test_revoked_grant_before_start_holds_only_that_source(self):
+        self.backend.source_cwd = str(self.root)
+        grant = source_permissions(self.backend, self.binding, str(self.root))
+        job = self.store.create('watch', {**self.spec, 'execution': grant})
+        self.backend.source_sandbox = {'type': 'readOnly', 'networkAccess': False}
+        self.tick()
+        self.assertEqual(self.backend.commands, [])
+        self.assertEqual(self.store.job(job)['source_state'], 'lost')
+        self.assertFalse(self.backend.closed)
+
+    def test_permission_change_stops_source_and_ignores_late_output(self):
+        self.backend.source_cwd = str(self.root)
+        grant = source_permissions(self.backend, self.binding, str(self.root))
+        job = self.store.create('watch', {**self.spec, 'execution': grant})
+        self.tick()
+        process = self.backend.commands[-1][1]['processId']
+        self.backend.events.append({'method': 'thread/settings/updated', 'params': {
+            'threadId': self.binding['thread_id'], 'threadSettings': {
+                'sandboxPolicy': {'type': 'readOnly', 'networkAccess': False},
+                'cwd': str(self.root), 'activePermissionProfile': None}}})
+        self.backend.output(process, b'late observation\n')
+        self.tick()
+        self.assertEqual(self.store.events(job), [])
+        self.assertTrue(any(method == 'command/exec/terminate' for method, _ in self.backend.calls))
+        self.assertFalse(any(method == 'turn/interrupt' for method, _ in self.backend.calls))
+
     def test_output_truncation_terminates_source_explicitly(self):
         job, process = self.source()
         self.backend.output(process, b'partial', cap=True)
@@ -169,6 +210,38 @@ class EngineTests(unittest.TestCase):
         notice = self.store.events(job)[0]
         self.assertEqual(notice['kind'], 'lifecycle')
         self.assertEqual(json.loads(notice['observation'])['watched_job_outcome'], 'unknown')
+
+    def test_periodic_command_waits_between_runs_and_preserves_snapshot_baseline(self):
+        job = self.store.create('watch', {**self.spec, 'command_interval': 5,
+            'quiet_initial': True, 'snapshot_fields': ['progress'], 'notify_end': True})
+        self.tick()
+        first_id, first = self.backend.commands[-1]
+        self.backend.output(first['processId'], b'{"progress":0,"revision":0}\n')
+        self.backend.responses[first_id] = {'exitCode': 0}
+        self.tick()
+        self.assertEqual(self.store.events(job), [])
+        self.assertEqual(self.store.job(job)['source_state'], 'running')
+        self.now = 104; self.tick()
+        self.assertEqual(len(self.backend.commands), 1)
+        self.now = 105; self.tick()
+        second_id, second = self.backend.commands[-1]
+        self.assertNotEqual(first['processId'], second['processId'])
+        self.backend.output(second['processId'], b'{"progress":1,"revision":1}\n')
+        self.backend.responses[second_id] = {'exitCode': 0}
+        self.tick()
+        self.assertEqual(len(self.store.events(job)), 1)
+        self.assertEqual(self.store.events(job)[0]['kind'], 'source')
+        self.store.cancel(job); self.now = 110; self.tick()
+        self.assertEqual(len(self.backend.commands), 2)
+
+    def test_periodic_command_failure_stops_without_retry_or_model_poll(self):
+        job = self.store.create('watch', {**self.spec, 'command_interval': 5})
+        self.tick()
+        rid = self.backend.commands[-1][0]
+        self.backend.responses[rid] = {'exitCode': 1}
+        self.tick(); self.now = 110; self.tick()
+        self.assertEqual(self.store.job(job)['source_state'], 'error')
+        self.assertEqual(len(self.backend.commands), 1)
 
     def test_timeout_after_submission_is_uncertain_and_not_replayed(self):
         job = self.store.create('watch', self.spec)

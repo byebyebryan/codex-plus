@@ -89,6 +89,11 @@ def render_event(event: dict, job: dict) -> str:
     elif job['kind'] == 'wake':
         title = 'Scheduled follow-up'
         body = event['observation']
+    elif spec.get('mcp'):
+        title = 'Scheduled inspection: ' + label(spec.get('label'), spec['mcp']['server'] + '.' + spec['mcp']['tool'])
+        body = ('Use watch_inspect for this current watch\'s configured tool and exact arguments, '
+                'then inspect through your normal MCP tools and permission checks. '
+                'This check uses a model turn. If access is unavailable, report it and stop this watch.')
     else:
         title = 'Watch update: ' + label(spec.get('label'), 'peer session' if spec.get('peer') else 'registered source')
         body = observation_text(event['observation'], peer=spec.get('peer') is not None)
