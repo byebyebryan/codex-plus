@@ -42,6 +42,35 @@ selection is lazy/status-only and private state is outside the artifact. Default
 approval separates own supervision controls from optional peer-send approval.
 All 174 tests pass; native installed-model activation remains pending.
 
+## Installed qualification and targeted corrections
+
+The `1df7a72` artifact builds reproducibly and installs outside the source checkout.
+A fresh native session quoted its shipped guidance and called `watch_list` and
+`wake_list` without driver-injected capability instructions. Automatic status-only
+endpoint resolution found the existing owner. No registration was created.
+
+The initial ambiguity fixture emitted a concise baseline/alternate choice and
+created no watch, but its driver timed out waiting for turn completion and closed
+the actors. The next driver incorrectly expected an in-progress command in persisted
+history; the finite foreground pause had already completed. Its watch lease ending
+notice remains counted. Neither closed fixture was resumed or replayed.
+
+A fresh core pair established a quiet contextual watch and handled a useful update
+with one fresh peer read/current-event acknowledgement. A native TUI capture shows
+readable watch input with the unsent draft preserved, closing the earlier capture
+gap. Ordinary stop cancelled its selected lineage. This evidence does not establish
+the failed new foreground/earlier-human-input ordering fixture.
+
+The information receiver then completed a chat response without calling `event_ack`.
+That is a genuine receipt-guidance gap, not successful formal handling. The generic
+server instructions now explicitly require one acknowledgement for every watch,
+lifecycle, reminder and peer-message event, distinguishing received from request
+acceptance/decline. Native requalification uses fresh actors. The owner audit also
+found that the native listener UID was assumed from the caller; it now verifies the
+actual listener process UID, with an adverse-owner regression. All 175 tests pass.
+At this checkpoint the closed prototypes used 15 turns / 4 deliveries, including
+the ending notice and undelivered/withdrawn generated events. Allowance is retained.
+
 Installed capability loading, relocatable artifact/provenance, active-runtime-safe
 upgrade/rollback, fresh native/TUI acceptance, publication/fetched-byte verification
 and managed rollout preparation remain in progress. Source tests are not proof of

@@ -73,6 +73,7 @@ EXPECTED_FILES = {
     "tests/test_presentation.py",
     "tests/test_model.py",
     "tests/test_package.py",
+    "tests/test_native_owner.py",
     "docs/worker-routing-design.md",
     "docs/worker-routing-study.md",
     *AGENTS,

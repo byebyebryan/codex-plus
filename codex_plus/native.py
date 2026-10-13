@@ -38,6 +38,8 @@ def listener_identity(requested: str) -> dict[str, Any]:
                 except OSError:
                     continue
             if owned:
+                if process.stat().st_uid != os.getuid():
+                    raise RpcError('native listener is not owned by this user')
                 # Start ticks distinguish PID reuse; executable alone does not.
                 stat_tail = (process / 'stat').read_text().rsplit(')', 1)[1].split()
                 owners.append({'pid': int(process.name), 'start_ticks': stat_tail[19],
