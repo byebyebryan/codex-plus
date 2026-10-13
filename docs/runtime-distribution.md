@@ -12,6 +12,13 @@ source `f4db934fc8a5bafe2bc392378c2ab3e26ee1f7c2`. The runtime SHA-256 is
 Publication/fetched-byte verification and isolated installed/native qualification
 passed; real managed apply and enablement remain deferred.
 
+Current source-access limit: command observers explicitly disable networking,
+and the runtime has no background MCP-tool source. Same-daemon peer observation
+and local sources are qualified; endpoint/MCP operational monitoring is not.
+The [fix/refinement plan](codex-plus-plan.md#next-pass-operational-source-access-and-refinement)
+addresses this gap before daily rollout. Interface availability alone is not
+permission/authentication or end-to-end acceptance.
+
 ## Artifact and immutable installation
 
 `scripts/codex-plus-package build --output /ABSOLUTE/OUTSIDE/REPO/runtime.tar.gz`
@@ -66,7 +73,7 @@ part of a release or a managed `exact` archive.
 
 The default MCP policy is `writes`, with explicit approval for controls that affect
 the caller's own observation/reminder intent and current-event handling. Command
-sources retain read-only filesystem/network policy. Peer messages have separate
+sources use a read-only filesystem with network access disabled. Peer messages have separate
 approval; `--allow-peer-send` explicitly opts into tool approval for messages within
 the recipient's existing task, including cancellation of your own outgoing intent.
 Completed recipient handling is never retracted. Under a native `never` approval policy, a message

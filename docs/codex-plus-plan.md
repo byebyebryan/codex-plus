@@ -54,6 +54,13 @@ contract below retains the plan that was subsequently executed.
 
 ## Product contract
 
+The current next pass is
+[operational source access and refinement](#next-pass-operational-source-access-and-refinement).
+Bryan's 2026-10-13 correction makes network polling and MCP-backed inspection
+first-class requirements. Earlier offline source restrictions below describe the
+qualified preview, not a permanent product boundary. The model must be able to
+choose suitable access within the session's existing authorized scope.
+
 Use the ordinary Codex conversation to ask for a watch, inspect it, or cancel it.
 Keep native planning, goals, approvals, context handling and TUI access. The model
 chooses the task strategy and what deserves attention.
@@ -1675,3 +1682,202 @@ scheduler, native `/exit` interception, workload/fleet recovery or general daemo
 restart is part of this loop. Shipping capability does not grant observations or
 peer messages new operational authority. Broader reliability and a real-source
 pilot need their own scoped evidence after this release is usable.
+
+## Next pass: operational source access and refinement
+
+### Problem and intended behavior
+
+Planned 2026-10-13 after Bryan reviewed the published preview and identified
+network access as essential to his ordinary monitoring. Current command sources
+hardcode a read-only filesystem and networkAccess false. The model-facing API
+has no MCP observation source. Those limitations exclude endpoint polling and
+configured tools used in the Claude monitoring workflows we studied.
+
+Ordinary requests such as "Watch this backfill and tell me if throughput stalls"
+or "Use the metrics tool to keep an eye on this run" should let the model select
+an accessible endpoint/script, configured MCP tool, or timed reassessment. The
+model chooses filtering, cadence, thresholds, lifetime, continuation and useful
+follow-up. Registration reports actual source access and effective bounds.
+Observation and authorized intervention remain separate decisions under the
+existing task; incoming output never grants new operational authority.
+
+Success means a representative operational loop works from installed release
+files: authenticated observation, quiet waiting, meaningful change, fresh
+inspection, a scoped decision/action, continued observation, explicit stop and
+an accurate final handoff. Synthetic controls supply the action in unattended
+acceptance; they do not operate a real workload. A real read-only pilot is
+separate evidence when an already accessible source is selected.
+
+### Baseline and proposed finish
+
+Source main is 6a04536. Runtime preview v0.1.0-preview.1 remains at f4db934.
+Installed native Codex is 0.162.1. Offline generated schemas expose read-only
+command execution with a separate networkAccess boolean, permissionProfile,
+and thread-scoped mcpServer/tool/call. These are interface evidence; permission,
+authentication, approval and cancellation behavior need native qualification.
+See the [official app-server API](https://learn.chatgpt.com/docs/app-server#api-overview).
+Omitting command policy uses server configuration; it must not be assumed to
+inherit the calling thread's effective permissions.
+
+Proposed finish: a reviewed candidate, independently verified updated preview,
+and integrated/validated/pushed chezmoi wiring. Preserve existing enable/disable
+preferences and leave new capability disabled by default. Live apply and
+activation are separate finish-line choices; source, publication, managed pins,
+installed bytes and fresh-session use each need their own acceptance.
+
+The prior dotfiles commit 1c17dd5 survives on its local branch; its temporary
+worktree does not. Recreate a clean isolated checkout, compare current history
+and concurrent edits, and integrate its relevant wiring without unrelated work.
+No runtime archive or source pin changes merely for these planning edits.
+
+This plan creates no execution goal, actor, observer, MCP call or live deployment.
+A later ordinary goal loop executes the selected scope with incremental commits.
+It does not activate worker skills or delegate to subagents.
+
+### Stage sequence and gates
+
+| Stage | Work | Acceptance before advancing |
+| --- | --- | --- |
+| 1. Review access and usage | Map one endpoint/script case and one MCP-based case to the sanitized Claude history. Review current permission, source, journal, approval and credential paths. Resolve the exact current native interfaces with short offline checks. | Explain the source mechanism and permission boundary for each case; local fixtures alone cannot count as real-source parity. |
+| 2. Qualify native routes | Use fresh private authenticated fixtures and owned sessions to test network-enabled command observation, configured MCP reads, and scheduled native model checks. Exercise restrictive and unavailable cases. | Working calls retain the correct owner/session and existing authorization. Missing access is explicit; no credential/config copying or privileged fallback. |
+| 3. Implement source access | Replace the blanket offline rule with validated effective source permissions. Add the qualified MCP observation route and expose appropriate model options. Retain the existing journal/coordinator/delivery machinery. | Model tools, CLI receipts and executed policy agree. No arbitrary caller-selected permission escalation or change to global/native policy. |
+| 4. Refine lifecycle and interaction | Handle source failures, backoff, in-flight calls, leases, continuation, status and explicit stop. Make ordinary acknowledgements and useful updates concise. | Stop prevents replacement and later admission; unfinished external calls are reported honestly. Expiry cannot silently masquerade as task completion. |
+| 5. Installed workflow acceptance | Build/install outside the checkout and run the bounded operational recipe below using shipped guidance and natural requests. Prepare a primary-driven native TUI walkthrough. | Actual endpoint and MCP access, handling, continuation and cleanup pass from installed files. No driver-injected polling/ack recipes or UUID prompts. |
+| 6. Review, release and distribute | Run appropriate regressions, review the complete diff, publish a new immutable preview, fetch/verify it, integrate current chezmoi wiring and validators, and push the focused managed change. | Published bytes match the accepted artifact; pins and validators agree; supported-host renders and scoped dry-run pass. Deferred installation is reported separately. |
+
+Commit validated cohesive slices. The primary retains decisions, integration and
+acceptance. Complete independent work before any manual feedback or access step.
+
+### Source and permission decisions
+
+**Command sources.** Filesystem permissions and network access are independent.
+Read-only local observation remains an option; approved endpoint/SSH polling must
+also be available. Derive the source's effective permissions from verified
+session configuration/requirements and existing grants, not a task-text assertion
+or the app server's unrelated default. Determine whether a named permission
+profile or explicit policy is the supported representation. Sources may need
+authorized cache/temp access for authentication or client operation; do not
+reintroduce offline-only behavior by denying every necessary filesystem path.
+Keep expiry, output and owned-process bounds, and report the executed policy.
+Where the interface cannot enforce the derived scope, hold that source visibly.
+
+**MCP sources.** Prefer the owning session's configured server/tool connection
+and native authentication. Qualify direct background calls before selecting them:
+effective tool enablement, approvals, auth/elicitation, caller context and
+permission revocation must remain meaningful outside a model turn. Tool names
+or read-only annotations alone do not authorize a call. The registration freezes
+the selected session/server/tool and arguments; status and recovery must not
+retarget them. Preserve secrets in native/private configuration, using references
+instead of copied credentials in source, prompts, release files or public receipts.
+
+**Timed model checks.** Keep wakeups as a first-class alternative when inspection
+requires reasoning, dynamic tool choices or the native model approval path.
+Exercise an actual MCP inspection after a wakeup, followed by a useful decision
+and chosen continuation. Count intentional reassessment turns separately from
+source events. If direct MCP observation cannot preserve the necessary controls,
+select this route explicitly and disclose its model-turn cost and delivery timing;
+do not claim it proves inference-free background MCP polling.
+
+**Policy changes and uncertainty.** Define what existing-source access retains
+and what must be revalidated when configuration/grants change. A revoked
+capability produces held/lost/unavailable source health and an actionable receipt,
+not broader permissions. An uncertain request outcome is not automatically
+reissued. Distinguish observer cancellation from cancellation of an external
+request: late results must not create a new follow-up after stop/expiry, even if
+the underlying request cannot be interrupted. Do not stop the observed task,
+recipient turn, native daemon or shared MCP server to stop a watch.
+
+### Meaningful regression and native checks
+
+| Case | Required result |
+| --- | --- |
+| Authorized endpoint access | An authenticated network read succeeds under the selected source policy; irrelevant changes stay quiet and useful changes reach the bound conversation. |
+| Network/filesystem restriction | A restrictive caller cannot request broader source permissions by changing tool arguments. Denial or required approval remains visible. Authorized source access does not imply unrelated writable paths. |
+| Effective MCP permissions | A configured permitted inspection tool works; disabled/approval-required/unauthorized tools remain unavailable as appropriate. Controlled mutation-tool invocation count stays zero during observation. |
+| Authentication or source failure | Missing/expired auth, timeout, connection loss or malformed output produce source-health evidence, bounded retries/backoff where authorized, and no false claim that the watched job failed. |
+| Cancel during an in-flight read | No later event is admitted or replacement started. Status distinguishes a withdrawn update from an external call whose completion remains uncertain. |
+| Lease and continuation | A requested continuing watch exposes ending/remaining bounds. At least one model-chosen continuation is actually executed under the existing request; explicit stop forbids further continuation. |
+| Timed MCP reassessment | The scheduled native turn uses the configured MCP tool, evaluates the result, records handling and chooses its next step without manufactured task authority. |
+| Busy/input/draft behavior | New source events use the retained qualified queue route. Verify a specifically observed busy turn, earlier human input and draft preservation without relying on stale persisted command status. |
+| Quiet observation | Background source polling creates no model turns until useful changes; scheduled model checks are counted separately. Snapshot deduplication and occurrence streams keep their distinct semantics. |
+
+Use existing tests for unchanged worker behavior. Add regressions for the actual
+access, authorization, timeout and cancellation combinations; do not duplicate
+implementation-only assertions. Run scripts/check, appropriate existing/full
+tests and git diff --check. Update the explicit inventory deliberately if source
+modules, tests or runtime artifact files are added.
+
+### Bounded unattended acceptance
+
+All earlier native batches are closed, including the latest 13-turn/four-delivery
+shared walkthrough. Before new execution, verify native version/owner, current
+Git and managed pins, and declare private fixture/actor identities. Real active
+sessions remain read-only sources; experimental prompts, messages, interruptions,
+goal changes and fixture actions target fresh owned sessions only.
+
+The new recipe has a combined ceiling of **24 automatic deliveries / 48 started
+native turns**, including failed cases and cleanup. Reserve at least four turns
+for settlement. Each fixture observer lasts at most five minutes and emits at
+most four source events. Allow at most two model-chosen continuations across the
+recipe and at most thirty minutes of aggregate active fixture observation.
+Combined source-call ceilings are 300 endpoint requests and 100 MCP calls;
+declare/count the relevant calls before each fixture. These are test limits,
+not normal product defaults, model strategy or authorization to operate a job.
+
+Start with private authenticated endpoint and MCP fixtures using disposable
+credentials and controlled mutations. Their controls simulate progress, noise,
+stalls, source errors and recovery; source reads do not mutate their workload.
+Use natural requests corresponding to the studied backfill/evaluation pattern:
+observe useful progress, detect a stall/input need, inspect, record a scoped
+decision, continue and stop. Record exact runtime/native receipts, called tool
+identities, handling and cleanup; never promote interface availability into proof.
+
+At one named provider-capacity failure, settle that attempt without replay.
+At a second distinct provider-capacity failure, stop native inference for this
+pass and continue offline review/packaging only where its gates remain valid.
+Missing authentication or approval is an access result, not a reason to bypass
+policy or keep retrying. Use short waits and give regular progress updates.
+
+An already accessible real endpoint/MCP source can later supply a short passive
+pilot under its existing read authorization. Selection, actual source access and
+remaining manual authentication requirements are recorded explicitly. Do not
+launch production jobs, change capacity, repair workloads or mutate real peers.
+Complete the unattended fixture acceptance and concrete handoff first; lack of
+a selected real source does not invalidate the controlled proof or establish
+production acceptance.
+
+After each stage inspect exact pending native input, stop owned sources/helpers,
+archive only the owned actors, and verify the original daemon/requester remain
+preserved. Private captures, session data, fixture tokens and journals stay out of
+committed source and release assets.
+
+### Publication, managed rollout and final review
+
+Publish a new preview only after its claimed endpoint/MCP routes pass installed
+acceptance; retain unresolved route limits prominently. Verify reproducibility,
+fetched artifact checksum/content/modes, active-runtime-safe selection/rollback,
+and existing worker bytes. Preserve the prior release and journals.
+
+Recreate the isolated dotfiles integration from current source/history, reconcile
+the old prepared commit, and preserve concurrent edits. Prepare revised URLs,
+full revisions, fetched checksums and validator expectations together. Render
+Snap, Starship, unknown hosts, disabled configuration and explicit opt-in while
+preserving existing MCP/tool, plugin, project and skill preferences. Run focused
+and full validation plus scoped diff/dry-run before committing/pushing the owned
+change. Do not call a local branch, published pin or dry-run live deployment.
+
+If live installation/activation is selected later, apply scoped targets on Snap
+first, verify installed bytes and fresh owned-session use, and preserve all real
+native work. Starship requires its own selected host acceptance. A needed daemon
+restart or unrelated config-target change remains a separate concrete gate.
+
+The final report maps each studied workflow function to implemented, controlled
+native, installed, managed and actual-use evidence. It includes source-access
+decisions, executed continuation, model-turn cost, resolved/unresolved findings,
+resource counts, cleanup, verified release/pins and remaining manual steps.
+Prepare a primary-driven walkthrough for Bryan to judge whether the request,
+update, decision, continuation and stop are easy to follow.
+
+This pass does not add a fleet coordinator, Observer/Mesh dependency, recurring
+cron service, new-task delegation, automatic workload repair, generalized owner
+replacement or native /exit interception.

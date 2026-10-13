@@ -1,9 +1,37 @@
 # Implementation handoff
 
-Updated 2026-10-12 for Bryan's continuation on Snap in
+Updated 2026-10-13 for Bryan's continuation on Snap in
 `/home/bryan/code/codex-plus`. The agreed research-to-local-candidate loop is complete;
 its corrective unattended pass and discovery/peer-watch pass are also complete.
 Human acceptance and installation remain subsequent scope.
+
+## Current next pass: operational source access
+
+Bryan identified the runtime's blanket network prohibition as a material gap:
+his normal monitoring polls endpoints and may call MCP tools. The first
+coordinator hardcoded read-only filesystem execution with network disabled;
+packaging carried that restriction forward. The earlier Claude history comparison
+does not establish operational equivalence while those sources are unavailable.
+Filesystem, network and MCP access are separate capabilities under the existing
+task and execution permissions.
+
+The [fix/refinement plan](codex-plus-plan.md#next-pass-operational-source-access-and-refinement)
+qualifies effective source permissions, authenticated endpoint polling, MCP access
+through the existing native session, timed model reassessment, continuation and
+readable follow-up. This is planning only. The published preview remains unchanged.
+Proposed finish: a verified updated preview and validated, pushed chezmoi
+integration; live installation/activation is a separate finish-line choice.
+Worker identities and ordinary explicit invocation remain intact.
+
+Baseline source is 6a04536 and installed Codex is 0.162.1. The local dotfiles branch
+codex-plus-preview-n91wsqir still retains commit 1c17dd5, but its temporary rollout
+checkout is gone. Recreate an isolated checkout and reconcile current dotfiles
+history/drift before integrating it; do not assume its old dry-run is current.
+All earlier native allowances are closed, including the subsequent 13-turn,
+four-delivery primary-driven walkthrough. New execution needs fresh owned actors
+and the new bounded recipe; real active sessions remain passive sources.
+
+The sections below retain completed-pass and historical planning evidence.
 
 The review/refinement/packaging/distribution loop is now complete. The
 [final report](distribution-pass-results.md) records the published

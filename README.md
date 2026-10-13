@@ -10,6 +10,10 @@ The existing installed worker agents and skills retain the identities described 
 The separate [runtime preview v0.1.0-preview.1](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.1)
 is now published and verified. Its managed rollout is prepared; live installation
 and enablement remain deferred. See [the distribution report](docs/distribution-pass-results.md).
+The preview's command observers currently disable networking and have no background
+MCP-tool source. The [next fix/refinement pass](docs/codex-plus-plan.md#next-pass-operational-source-access-and-refinement)
+qualifies those operational sources, effective permissions and continuation
+before daily rollout; local-source checks do not establish Claude-workflow parity.
 This checkout also contains a tested **local watch coordinator candidate** for
 monitoring and model-controlled wakeups into an explicitly selected existing
 Codex thread. See [the candidate guide](docs/watch-candidate.md) and
