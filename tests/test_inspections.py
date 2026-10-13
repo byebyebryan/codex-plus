@@ -190,6 +190,20 @@ class InspectionModelTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'cancelled supervision'):
                 api.call('watch_renew', {'watch': 'w1'})
 
+    def test_old_coordinator_holds_registration_and_renewal_without_new_intent(self):
+        source = {'mcp_server': 'metrics', 'mcp_tool': 'inspect',
+                  'followup': 'Report useful changes'}
+        with self.api() as api:
+            api.call('watch_start', source)
+            with patch('codex_plus.cli.coordinator_info', return_value={
+                    'runtime_version': '0.1.0-preview.1'}):
+                for name, arguments in (('watch_start', source),
+                                        ('watch_renew', {'watch': 'w1'})):
+                    with self.assertRaisesRegex(ValueError, 'older runtime'):
+                        api.call(name, arguments)
+            self.assertEqual(len(api.store.jobs()), 1)
+            self.assertEqual(api.store.renewals(), [])
+
 
 if __name__ == '__main__':
     unittest.main()

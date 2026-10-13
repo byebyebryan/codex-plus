@@ -300,6 +300,8 @@ def main(argv=None, *, before_write=None) -> int:
                 raise ValueError('source argv is required after --')
             if args.peer and args.mcp_server:
                 raise ValueError('choose one observation source')
+            if (args.peer or args.mcp_server) and args.command_interval is not None:
+                raise ValueError('--command-interval applies only to command sources')
             spec = {'duration': args.duration,
                 'event_limit': args.limit, 'followup': args.followup,
                 'snapshot_fields': args.snapshot_fields.split(',') if args.snapshot_fields else None,
@@ -334,10 +336,10 @@ def main(argv=None, *, before_write=None) -> int:
                 with Client(frozen['requested_socket'], experimental=True) as client:
                     spec['execution'] = source_permissions(client, frozen, spec['cwd'],
                         args.source_access, args.network_access)
+            active = coordinator_info(root)
+            if active and active['runtime_version'] != VERSION:
+                raise ValueError('an older runtime owns this conversation\'s supervision; settle that owned work before registering or renewing source capabilities')
             if args.operation == 'watch_start':
-                active = coordinator_info(root)
-                if active and active['runtime_version'] != VERSION:
-                    raise ValueError('an older runtime owns this conversation\'s supervision; settle that owned work before registering new source capabilities')
                 if before_write: before_write()
                 job_id = store.create('watch', spec)
             else:
