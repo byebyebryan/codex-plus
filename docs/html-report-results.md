@@ -14,10 +14,16 @@ or other native setting was changed. Both existing daemons and report servers
 remain running; canonical dirty bytes and local history are preserved.
 
 On each host, a fresh ordinary native TUI session loaded all four tools from
-managed configuration and successfully called report_list. A second fresh session
-changed only report arguments to select an isolated fixture store, retaining the
-managed approval policy; report_publish, report_get, report_delete and report_list
-all executed successfully. Real reports were not published/deleted by acceptance.
+managed configuration and successfully called report_list. A second fresh session requested report-argument overrides for an isolated store,
+but native receipts show the override was not applied: the prepared synthetic
+report was published in each normal configured catalog. All four tools executed
+successfully under the managed policy. Only the new synthetic report was deleted,
+using its exact returned identity; no pre-existing report was selected for deletion.
+Before/after inventory counts match and the pre-existing sampled reports remain.
+The shared servers were reused. This corrects the initial claim of isolated native
+writes; configured-store write acceptance passed, and private-store isolation was
+not proved by that launch. The unused private config also lacked schema=1, caught
+by a subsequent CLI check. No additional trial or global reload was used.
 The four owned test actors are archived with no pending input or viewers.
 
 Both canonical chezmoi checkouts also received targeted local integration commits,

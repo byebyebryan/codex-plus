@@ -34,8 +34,11 @@ Bryan subsequently selected default report-MCP availability. Managed dotfiles
 965f041 enables it on supported hosts, preserves explicit opt-outs/custom policies,
 and adds explicit publish/delete approvals. A report-only config apply on Snap and
 Starship preserved all other live settings and both existing native owners. Fresh
-TUI sessions loaded and called report_list; isolated native publication/get/delete
-checks passed under the managed policy on both hosts. All four test actors are
+TUI sessions loaded and called report_list; native publication/get/delete checks
+passed under the managed policy on both hosts. The intended private-store override
+was not applied; receipts prove only a new synthetic report was created/deleted in
+each normal catalog, with pre-existing reports preserved. This limitation and the
+corrected store attribution are recorded in the report results. All four test actors are
 closed. See the [report results](html-report-results.md#managed-mcp-default-2026-10-14).
 No report release was rebuilt, no real report was deleted and no daemon/global
 refresh occurred.
