@@ -28,7 +28,7 @@ FILES = (
     "codex_plus/reports/config.py", "codex_plus/reports/catalog.py",
     "codex_plus/reports/store.py", "codex_plus/reports/hosting.py",
     "codex_plus/reports/cli.py", "codex_plus/reports/mcp.py", "codex_plus/reports/package.py", "codex_plus/reports/server.py",
-    "scripts/codex-plus-report", "scripts/codex-plus-report-mcp", "scripts/codex-plus-report-package", "scripts/code-report-server",
+    "scripts/codex-plus-report", "scripts/codex-plus-report-mcp", "scripts/codex-plus-report-package", "scripts/codex-report-server",
     "skills/html-report/SKILL.md", "skills/html-report/agents/openai.yaml",
 )
 COMPATIBILITY = {"os": "linux", "python": ">=3.11", "agent_owner": "not required",

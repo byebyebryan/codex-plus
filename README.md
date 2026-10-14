@@ -9,7 +9,7 @@ remain available with the same identities and installation paths.
 The standalone [HTML report component](docs/html-report-usage.md) now supplies
 immutable static publication, a shared catalog, CLI, skill and optional local MCP.
 Report data and serving are independent of native agent ownership. The separate
-`code-report-server` command runs plain HTTP in its named tmux session; delivery
+`codex-report-server` command runs plain HTTP in its named tmux session; delivery
 checks work with any HTTP server. Fleet activation has its own deployment checks.
 
 The existing installed worker agents and skills retain the identities described below.

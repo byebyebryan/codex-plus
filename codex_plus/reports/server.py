@@ -24,8 +24,8 @@ from . import VERSION
 from .config import absolute_path, config_path, load
 from .store import Store, canonical, no_links, owned_directory, process_birth
 
-SESSION = "code-report-server"
-OWNER_OPTION = "@code_report_server_owner"
+SESSION = "codex-report-server"
+OWNER_OPTION = "@codex_report_server_owner"
 
 
 def settings(config):
@@ -143,7 +143,7 @@ class Controller:
     def locked(self):
         parent = self.config.data_root.parent
         owned_directory(parent, create=True)
-        fd = os.open(parent / '.code-report-server.lock', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+        fd = os.open(parent / '.codex-report-server.lock', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
         try:
             s = os.fstat(fd)
             if not stat.S_ISREG(s.st_mode) or s.st_uid != os.getuid():
@@ -159,7 +159,7 @@ class Controller:
         if sid is None: return None
         raw = self.tmux('show-options', '-qv', '-t', sid, OWNER_OPTION)
         if not raw or len(raw) > 16384:
-            raise ValueError('the existing code-report-server session is not owned by this launcher')
+            raise ValueError('the existing codex-report-server session is not owned by this launcher')
         owner = json.loads(raw)
         if (owner.get('schema') != 1 or owner.get('component') != SESSION
                 or owner.get('fingerprint') != fingerprint(self.config)
@@ -212,7 +212,7 @@ class Controller:
             store = Store(self.config)
             with store.locked(): store.rebuild()
             token = uuid.uuid4().hex
-            script = Path(__file__).resolve().parents[2] / 'scripts/code-report-server'
+            script = Path(__file__).resolve().parents[2] / 'scripts/codex-report-server'
             argv = [sys.executable, '-B', str(script), '--config', str(self.path), 'serve', '--instance', token]
             sid = self.tmux('new-session', '-d', '-P', '-F', '#{session_id}', '-s', SESSION, '-n', 'http', *argv)
             marker = {'schema': 1, 'component': SESSION, 'fingerprint': fingerprint(self.config), 'instance': token, 'argv': argv}
@@ -226,7 +226,7 @@ class Controller:
                     time.sleep(0.05); continue
                 if result['state'] == 'running': return {**result, 'reused': False}
                 time.sleep(0.05)
-            raise ValueError('HTTP server did not become ready; attach to code-report-server to inspect its output')
+            raise ValueError('HTTP server did not become ready; attach to codex-report-server to inspect its output')
 
 
 def main(argv=None):

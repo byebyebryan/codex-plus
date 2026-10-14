@@ -24,7 +24,7 @@ Do not activate the existing watch preview to make report publishing work.
 | Decision | Baseline |
 | --- | --- |
 | Repository | codex-plus; standalone report component |
-| Hosting | One plain HTTP server in the `code-report-server` tmux session per host |
+| Hosting | One plain HTTP server in the `codex-report-server` tmux session per host |
 | Returned URL | User-selected short MagicDNS HTTP hostname; never `localhost` |
 | Port/path | Dedicated configured port, proposed 8787; prefix `/reports/` |
 | Catalog | Optional static page; proposed host profile enables it |
@@ -63,7 +63,7 @@ Serve route delivered HTTP 200 to Snap and Chrome; a plain Python listener bound
 to the tailnet address did not pass that peer route check. Persistent serving,
 reboot behavior and Carbon remain separate deployment gates.
 
-The user subsequently selected a plain HTTP server in tmux. `code-report-server`
+The user subsequently selected a plain HTTP server in tmux. `codex-report-server`
 owns the foreground Python server and explicit start/status/attach/restart/stop
 controls for the same-named detached session. Publishing and HTTP health checks
 are independent of Tailscale Serve. SSH/terminal closure preserves the session;

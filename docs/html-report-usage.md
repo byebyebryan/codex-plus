@@ -2,7 +2,7 @@
 
 The source implementation supplies durable static snapshots, a static catalog,
 standalone CLI, provider-neutral skill and optional local report MCP. Publishing
-does not start Codex, a browser or a web server. The separate `code-report-server`
+does not start Codex, a browser or a web server. The separate `codex-report-server`
 command supplies plain HTTP hosting in an explicitly named tmux session.
 
 ## Publish and find reports
@@ -64,22 +64,22 @@ when using Tailscale-managed certificates. The publisher and HTTP server do not
 require Tailscale; these machine names use the existing mesh's DNS/network.
 
 ```sh
-rtk proxy code-report-server start
-rtk proxy code-report-server status
-rtk proxy tmux attach -t code-report-server
-rtk proxy code-report-server restart
-rtk proxy code-report-server stop
+rtk proxy codex-report-server start
+rtk proxy codex-report-server status
+rtk proxy tmux attach -t codex-report-server
+rtk proxy codex-report-server restart
+rtk proxy codex-report-server stop
 ```
 
 `start` initializes an owned store if needed and starts one detached tmux session
-named **code-report-server**, window **http**. A repeated start reuses the healthy
+named **codex-report-server**, window **http**. A repeated start reuses the healthy
 owned server. HTTP reads the public subtree at the URL prefix; publishing new
 reports needs no server restart. The bind address defaults to the configured URL
 hostname; `server_bind` can select another local address. Only HTTP is built in;
 HTTPS can use an external server.
 
 The session survives TUI closure, SSH disconnect and terminal closure. Tmux does
-not survive host reboot: run `code-report-server start` after reboot. Chezmoi's
+not survive host reboot: run `codex-report-server start` after reboot. Chezmoi's
 scoped installation starts it through an idempotent apply script. `stop` and
 `restart` revalidate the owned session, configuration and actual process; foreign
 same-named sessions and added user panes are refused. Stopping preserves reports.

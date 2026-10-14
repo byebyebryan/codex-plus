@@ -39,7 +39,7 @@ for each agent invocation.
 | Decision | Proposed first-version behavior |
 | --- | --- |
 | Source | One HTML file or an explicitly prepared report directory |
-| Hosting | One plain HTTP server per host in the code-report-server tmux session |
+| Hosting | One plain HTTP server per host in the codex-report-server tmux session |
 | Network | Host-addressed tailnet URLs; v1 URL mode is recorded in the implementation plan |
 | Publication | A separate immutable snapshot and URL for each publish |
 | Retention | Keep snapshots until explicitly deleted |
@@ -58,7 +58,7 @@ Use one shared serving endpoint on each host for all projects and agent sessions
 Project A and project B publish into separate report directories under the same
 store and serving route. Publication does not allocate a port, create a server
 process or tie report availability to its originating session. The detached
-code-report-server tmux session supplies the selected plain HTTP serving process.
+codex-report-server tmux session supplies the selected plain HTTP serving process.
 The optional built-in server uses Python and tmux; external HTTP/HTTPS servers
 can serve the same public directory.
 

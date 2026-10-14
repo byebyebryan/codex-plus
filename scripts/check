@@ -95,7 +95,7 @@ EXPECTED_FILES = {
     "codex_plus/reports/mcp.py",
     "codex_plus/reports/package.py",
     "codex_plus/reports/server.py",
-    "scripts/code-report-server",
+    "scripts/codex-report-server",
     "tests/test_report_server.py",
     "scripts/codex-plus-report",
     "scripts/codex-plus-report-mcp",
