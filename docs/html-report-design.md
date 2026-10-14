@@ -39,7 +39,7 @@ for each agent invocation.
 | Decision | Proposed first-version behavior |
 | --- | --- |
 | Source | One HTML file or an explicitly prepared report directory |
-| Hosting | One shared report endpoint per host; Tailscale Serve can serve files directly |
+| Hosting | One plain HTTP server per host in the code-report-server tmux session |
 | Network | Host-addressed tailnet URLs; v1 URL mode is recorded in the implementation plan |
 | Publication | A separate immutable snapshot and URL for each publish |
 | Retention | Keep snapshots until explicitly deleted |
@@ -57,10 +57,10 @@ scope selections above are the user's confirmed choices.
 Use one shared serving endpoint on each host for all projects and agent sessions.
 Project A and project B publish into separate report directories under the same
 store and serving route. Publication does not allocate a port, create a server
-process or tie report availability to its originating session. With direct
-Tailscale file serving, the existing Tailscale daemon supplies the serving process.
-An ordinary managed static server could fulfill the same contract if a different
-backend is selected later.
+process or tie report availability to its originating session. The detached
+code-report-server tmux session supplies the selected plain HTTP serving process.
+The optional built-in server uses Python and tmux; external HTTP/HTTPS servers
+can serve the same public directory.
 
 Existing per-project development servers remain relevant to live applications.
 They are independently owned; adopting the report publisher is not permission to
@@ -98,13 +98,13 @@ flowchart LR
     M[Optional report MCP tools] --> P[Shared publisher core]
     C --> P
     P --> D[Durable report snapshots]
-    T[Tailscale Serve] --> D
+    T[HTTP server in tmux] --> D
     B[Local desktop browser] --> T
 ```
 
 The publisher core owns bundle validation, snapshot creation, metadata, listing
-and removal. CLI and MCP adapters use the same implementation. Tailscale owns
-the configured HTTP/HTTPS endpoint and serving lifetime. There is no background
+and removal. CLI and MCP adapters use the same implementation. The separately started HTTP server owns
+the configured endpoint and serving lifetime. There is no background
 report coordinator or model turn needed to keep a static report available.
 
 The existing `model_server.py` calls `native_context`, resolves an existing Codex
@@ -244,12 +244,11 @@ system hostname. Starship's earlier local loopback alias was changed to its
 Tailscale address so the same short URL works on both publishing and viewing
 hosts. [MagicDNS naming](https://tailscale.com/docs/features/magicdns).
 
-Tailscale Serve supports HTTPS file/directory serving and a configured path mount.
-It also supports an HTTP port with short MagicDNS names. HTTPS mode requires
-tailnet HTTPS setup; tailnet access rules apply to serving. This makes it a
-candidate for a durable per-host report route without a separate application
-server. [Serve reference](https://tailscale.com/docs/reference/tailscale-cli/serve),
-[HTTPS and access prerequisites](https://tailscale.com/docs/features/tailscale-serve).
+The selected plain HTTP server reads the public subtree, mounts the configured
+URL prefix and disables directory listings and symlink traversal. Explicit tmux
+start/status/attach/restart/stop controls revalidate their owned session/process.
+Generic delivery and hosting checks execute HTTP requests, not Tailscale commands.
+External HTTP/HTTPS hosting can use the same directory and base URL contract.
 
 Changing a URL alone cannot expose a service bound only to loopback. The selected
 serving endpoint must accept traffic over the tailnet, and the viewing desktop
@@ -259,32 +258,13 @@ the user-facing URL remains host-addressed. The host profiles use dedicated port
 viewing device changes networks or desktops; it does not make an offline
 publishing host available.
 
-Configure the serving route once as an operator/deployment action. Ordinary
-publish calls read its configuration and write report data; they never run
-`tailscale serve reset`, overwrite unrelated routes, enable Funnel, change ACLs
-or trigger account-wide HTTPS setup. Coexistence with existing Serve routes is
-an installation check. Starship's read-only Serve inspection returned an empty
-configuration during this planning pass; Snap and Carbon still need current
-deployment inspection.
-
-Per-host hosting avoids introducing a central upload service. It also means a
-report cannot be fetched while its publishing host is asleep, offline or retired.
-Stored files survive a reboot; serving depends on the host and Tailscale returning.
-If reports must remain available while laptops are off, a central always-on report
-host becomes a separate selected backend and adds upload/ownership work.
-
-Reachability and browser launching remain distinct. Codex 0.162.1's ordinary
-transcript click invokes the browser opener on the TUI host. Kitty's existing
-Ctrl+Shift+left-click opens the link on the desktop running Kitty, including when
-an application grabs mouse input. Visible URL hints provide a keyboard route.
-The returned link should therefore include visible URL text, with a concise
-modifier-click hint only when useful. [Matching Codex issue](https://github.com/openai/codex/issues/52766),
-[Kitty mouse actions](https://sw.kovidgoyal.net/kitty/conf/#mouse-actions).
-
-Automatic opening is deferred. A future desktop relay would need explicit
-destination selection or pairing; neither SSH environment variables nor a remote
-MCP process identify the intended browser reliably. Multiple desktops and nested
-SSH must not result in broadcasting browser-open requests.
+Start the server once through the explicit deployment/controller command.
+Ordinary publication never starts or stops it. Inspect port/bind and firewall
+requirements first, retaining unrelated rules and project servers. The named tmux
+session persists across SSH/terminal closure; host reboot requires starting it
+again. Report files survive independently. Existing project server retirement is
+a separate migration because project navigation refresh or live behavior may
+need preserving.
 
 ## Lifetime and removal
 
@@ -332,7 +312,7 @@ changing the already published preview artifact/tag.
 Qualify skill and MCP loading in each intended client. Plugin manifests are thin
 distribution wrappers around the same skill/core, not alternative implementations.
 For the fleet, chezmoi owns installed code selection, skill discovery wiring and
-per-host application configuration. Tailnet HTTPS/access policy and Serve-route
+per-host application configuration. Host firewall and HTTP server
 ownership need an explicit deployment step after inspection; report publication
 must not perform that setup. Preserve unrelated source and live configuration.
 
@@ -343,7 +323,7 @@ must not perform that setup. Preserve unrelated source and live configuration.
    reports, concurrent publishers/index updates, interrupted copies, path escapes,
    capacity failure and deletion that preserves sources/other reports. No native daemon
    or MCP dependency is allowed in these tests.
-2. **One-host hosting qualification.** Inspect Serve/HTTPS prerequisites and route
+2. **One-host hosting qualification.** Inspect bind/port/firewall and tmux session
    ownership. Use isolated report content to qualify the configured route, relative
    assets, hostname resolution, configured HTTP/HTTPS mode, optional index behavior,
    exact fetched bytes and persistence after publisher/client exit. Installing

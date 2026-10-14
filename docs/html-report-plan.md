@@ -24,7 +24,7 @@ Do not activate the existing watch preview to make report publishing work.
 | Decision | Baseline |
 | --- | --- |
 | Repository | codex-plus; standalone report component |
-| Hosting | One persistent Tailscale Serve endpoint per publishing host |
+| Hosting | One plain HTTP server in the `code-report-server` tmux session per host |
 | Returned URL | User-selected short MagicDNS HTTP hostname; never `localhost` |
 | Port/path | Dedicated configured port, proposed 8787; prefix `/reports/` |
 | Catalog | Optional static page; proposed host profile enables it |
@@ -63,13 +63,12 @@ Serve route delivered HTTP 200 to Snap and Chrome; a plain Python listener bound
 to the tailnet address did not pass that peer route check. Persistent serving,
 reboot behavior and Carbon remain separate deployment gates.
 
-Use direct file serving in persistent `--bg` mode. No Python server or additional
-web daemon is needed. Current Serve documentation describes HTTP ports, path
-mounts and persistent restart behavior. In upstream 1.104.1 source, the
-interactive certificate-enable path is conditional on HTTPS, so HTTP provisioning
-does not need that HTTPS flow. Actual route qualification still remains a gate.
-[Serve reference](https://tailscale.com/docs/reference/tailscale-cli/serve),
-[1.104.1 mode handling](https://github.com/tailscale/tailscale/blob/v1.104.1/cmd/tailscale/cli/serve_v2.go#L462).
+The user subsequently selected a plain HTTP server in tmux. `code-report-server`
+owns the foreground Python server and explicit start/status/attach/restart/stop
+controls for the same-named detached session. Publishing and HTTP health checks
+are independent of Tailscale Serve. SSH/terminal closure preserves the session;
+host reboot requires starting it again. Existing project servers remain separate
+until their content and project-specific behavior are deliberately migrated.
 
 HTTP supports ordinary rendering and client-side controls. Some browser APIs,
 including `navigator.clipboard.writeText`, require a secure context; use a usable
@@ -105,13 +104,12 @@ including retained deletion records. Inputs/configuration that exceed these boun
 are refused before unreadable state is stored. These bounds preserve inspectability;
 they do not prune reports or deletion history.
 
-Chezmoi owns code selection, publisher configuration and skill/MCP discovery
-wiring. Provision the host's Serve route as a separate operator action; its
-privilege, HTTPS/account prerequisites and existing routes are checked first.
-Do not set a global operator user, reset Serve or change unrelated network policy
-as part of publication. Save existing route configuration and identify precisely
-the route owned by this feature before installation/rollback. Tailscale state
-itself is not copied into dotfiles.
+Chezmoi owns code selection, publisher configuration, server entry point and
+skill/MCP discovery wiring. Scoped installation starts the owned tmux server
+explicitly; ordinary publish calls never start or stop it. Inspect the selected
+bind/port and existing firewall before activation. Any necessary firewall opening
+is a precise host-side deployment action, preserving unrelated rules. Tailscale
+Serve state and network policy are not copied into report artifacts.
 
 The route maps `/reports/` to the store's `public` directory. Dedicated port
 ownership isolates the report origin from unrelated host web applications.

@@ -62,10 +62,15 @@ class Config:
     max_bundle_files: int = 2000
     max_store_bytes: int = 5 * 1024 * 1024 * 1024
     max_store_reports: int = 1000
+    server_bind: str | None = None
 
     def __post_init__(self):
         object.__setattr__(self, "data_root", absolute_path(self.data_root))
         object.__setattr__(self, "base_url", base_url(self.base_url))
+        if self.server_bind is not None and (not isinstance(self.server_bind, str)
+                or not self.server_bind or len(self.server_bind) > 256
+                or any(c.isspace() or ord(c) < 32 or c in '/\\' for c in self.server_bind)):
+            raise ValueError("server_bind must be an IP address or hostname")
         if type(self.catalog_enabled) is not bool:
             raise ValueError("catalog_enabled must be boolean")
         for name in ("max_bundle_bytes", "max_bundle_files", "max_store_bytes", "max_store_reports"):

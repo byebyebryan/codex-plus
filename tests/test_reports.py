@@ -212,15 +212,10 @@ class ReportTests(unittest.TestCase):
                        'https://starship:8787/reports/abc/']:
             with self.assertRaises(ValueError): handler.redirect_request(request, None, 301, 'Moved', {}, target)
 
-    def test_serving_inspection_checks_port_transport_path_and_foreground_scope(self):
-        class Result:
-            stdout = json.dumps({'Foreground': {'owned': {'TCP': {'8787': {'HTTP': True}},
-                'Web': {'starship.tail223cf3.ts.net:8787': {'Handlers': {'/reports/': {'Path': str(self.options.data_root / 'public')}}}}}}}).encode()
-        with patch('shutil.which', return_value='/usr/bin/tailscale'), patch('subprocess.run', return_value=Result()):
-            result = hosting.inspect_hosting(self.options)
-            self.assertEqual(result['state'], 'route_present'); self.assertEqual(result['route_scopes'], ['foreground'])
-            other_port = config.Config(self.options.data_root, 'http://starship:8000/reports/')
-            self.assertEqual(hosting.inspect_hosting(other_port)['state'], 'route_missing')
+    def test_hosting_inspection_of_absent_store_is_readonly_without_external_commands(self):
+        with patch('subprocess.run', side_effect=AssertionError('no hosting subprocess expected')):
+            self.assertEqual(hosting.inspect_hosting(self.options)['state'], 'store_absent')
+        self.assertFalse(self.options.data_root.exists())
 
     def test_metadata_bounds_refuse_unreadable_new_state(self):
         with self.assertRaises(ValueError):

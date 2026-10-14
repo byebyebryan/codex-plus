@@ -64,9 +64,21 @@ It is disabled until a published artifact URL is selected with its exact revisio
 and checksum. Local fixture rendering/dry-run checks qualify that integration;
 they do not replace a published release or a scoped fleet apply.
 
+The user then selected plain HTTP in tmux instead of Tailscale Serve. This edition
+includes `code-report-server` start/status/attach/restart/stop, generic HTTP hosting
+inspection and separate lifecycle controls. The session is explicitly named
+code-report-server, with an http window, and does not attach or start a native agent.
+HTTP and isolated tmux tests cover assets, HEAD/Unicode/nested index URLs, private
+path and symlink refusal, parallel idempotent starts, launcher-exit persistence,
+owned restart/stop, foreign named sessions and added user panes. Tailscale is not
+required by publishing, HTTP serving or hosting checks.
+The combined source suite passes 244 tests after incorporating the separately
+published upstream runtime work; the 67 unrelated native/runtime/worker files
+match the post-merge protected hashes. Source inventory and whitespace gates pass.
+
 Pending deployment gates: publish the reviewed component, choose/enable the exact
-artifact pin, scoped chezmoi apply, provision the owned persistent Serve route,
-recheck port/DNS/access on each host and qualify persistence after restart. Carbon
+artifact pin, scoped chezmoi apply, start the owned HTTP tmux server,
+recheck port/DNS/access on each host and qualify persistence after launcher exit. Carbon
 was offline and is not qualified. Native terminal modifier-click and user desktop
 acceptance remain separate from browser automation. HTTP controls needing secure
 browser APIs must retain fallbacks or use a separately configured HTTPS profile.

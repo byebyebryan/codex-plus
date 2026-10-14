@@ -1,9 +1,9 @@
 # Using the HTML report component
 
 The source implementation supplies durable static snapshots, a static catalog,
-standalone CLI, provider-neutral skill and optional local report MCP. It does not
-start Codex, a browser or a web server. Real fleet installation/serving is separate
-from source and isolated package validation.
+standalone CLI, provider-neutral skill and optional local report MCP. Publishing
+does not start Codex, a browser or a web server. The separate `code-report-server`
+command supplies plain HTTP hosting in an explicitly named tmux session.
 
 ## Publish and find reports
 
@@ -60,15 +60,37 @@ Tailscale address from both the publishing host and viewing desktops. Starship's
 local host mapping addresses its earlier loopback alias. This host-side setting
 stays outside chezmoi and needs rechecking after re-enrollment. Full MagicDNS URLs
 remain configurable. HTTPS is supported and requires the full MagicDNS hostname
-when using Tailscale-managed certificates.
-Provision a persistent Tailscale Serve
-route through its operator; doctor can inspect and print the proposed command
-without applying it. Preserve existing routes, servers and tailnet settings.
+when using Tailscale-managed certificates. The publisher and HTTP server do not
+require Tailscale; these machine names use the existing mesh's DNS/network.
 
-Entrypoints named `index.html` return the containing directory URL. Tailscale
-Serve's file handler redirected an explicit index filename incorrectly during
-qualification; directory URLs passed both delivery and browser checks. Other
-entrypoint filenames remain explicit. Delivery rejects redirects except the same
+```sh
+rtk proxy code-report-server start
+rtk proxy code-report-server status
+rtk proxy tmux attach -t code-report-server
+rtk proxy code-report-server restart
+rtk proxy code-report-server stop
+```
+
+`start` initializes an owned store if needed and starts one detached tmux session
+named **code-report-server**, window **http**. A repeated start reuses the healthy
+owned server. HTTP reads the public subtree at the URL prefix; publishing new
+reports needs no server restart. The bind address defaults to the configured URL
+hostname; `server_bind` can select another local address. Only HTTP is built in;
+HTTPS can use an external server.
+
+The session survives TUI closure, SSH disconnect and terminal closure. Tmux does
+not survive host reboot: run `code-report-server start` after reboot. Chezmoi's
+scoped installation starts it through an idempotent apply script. `stop` and
+`restart` revalidate the owned session, configuration and actual process; foreign
+same-named sessions and added user panes are refused. Stopping preserves reports.
+`--config` supports another explicit configuration; `--tmux-socket` isolates tests
+from regular sessions. HTTP hosting needs the chosen port reachable through the
+host's firewall. `doctor --check-hosting` verifies HTTP catalog bytes with any
+configured server and executes no Tailscale commands.
+
+Entrypoints named `index.html` return the containing directory URL. The built-in
+server supports both explicit index filenames and directory URLs, including
+nested reports. Other entrypoint filenames remain explicit. Delivery rejects redirects except the same
 origin's exact index-to-directory canonicalization and verifies the returned bytes.
 
 The optional index is generated from public title/project/date/link fields.

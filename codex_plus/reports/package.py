@@ -27,12 +27,12 @@ FILES = (
     "LICENSE", "codex_plus/__init__.py", "codex_plus/reports/__init__.py",
     "codex_plus/reports/config.py", "codex_plus/reports/catalog.py",
     "codex_plus/reports/store.py", "codex_plus/reports/hosting.py",
-    "codex_plus/reports/cli.py", "codex_plus/reports/mcp.py", "codex_plus/reports/package.py",
-    "scripts/codex-plus-report", "scripts/codex-plus-report-mcp", "scripts/codex-plus-report-package",
+    "codex_plus/reports/cli.py", "codex_plus/reports/mcp.py", "codex_plus/reports/package.py", "codex_plus/reports/server.py",
+    "scripts/codex-plus-report", "scripts/codex-plus-report-mcp", "scripts/codex-plus-report-package", "scripts/code-report-server",
     "skills/html-report/SKILL.md", "skills/html-report/agents/openai.yaml",
 )
 COMPATIBILITY = {"os": "linux", "python": ">=3.11", "agent_owner": "not required",
-                 "hosting": "configured static HTTP/HTTPS endpoint"}
+                 "hosting": "configured static HTTP/HTTPS endpoint", "server_control": "optional tmux >=2.9"}
 MAX_FILE = 2 * 1024 * 1024
 MAX_ARCHIVE = 8 * 1024 * 1024
 
