@@ -1900,7 +1900,10 @@ Read-only checks found neither host has a selected monitoring runtime, the model
 launcher or a live codex_plus MCP entry. Both run Codex 0.162.1 and Python 3.14.8.
 Snap's canonical source is clean at 5806533. Starship's source is at 5524ce1 with
 divergent history and local Codex/Claude/checker, SSH and Kitty edits. These are
-host-specific snapshots, to be rechecked before execution.
+host-specific snapshots, to be rechecked before execution. A further patch audit
+found nine local commits equivalent upstream and one distinct Observer selection
+commit (0c5ce39). Do not discard or blindly rebase that distinct revision during
+this rollout; keep it outside the installation scope.
 
 Use the existing published v0.1.0-preview.2 runtime from source
 2274f4b54817fae88c3762c39c1284b8b1eb2695, SHA-256

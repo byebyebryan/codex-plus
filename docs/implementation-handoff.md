@@ -13,7 +13,8 @@ uses the existing preview.2 artifact, publishes host-scoped availability/policy,
 applies five reviewed target groups on Snap first, then qualifies Starship.
 Neither host currently has a selected monitoring runtime or live codex_plus entry.
 Snap's source is clean; Starship has divergent/local work, including Kitty edits,
-so use a clean pinned source checkout there and preserve its canonical tree.
+and a distinct Observer selection commit, so use a clean pinned source checkout
+there and preserve its canonical tree.
 
 Planned scope includes watches/reminders and existing-task peer messaging, with
 fresh-session loading and actual installed use as gates. Do not globally refresh
