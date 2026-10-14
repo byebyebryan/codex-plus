@@ -13,6 +13,9 @@ Report data and serving are independent of native agent ownership. The separate
 checks work with any HTTP server. Fleet activation has its own deployment checks.
 With `server_autostart = true`, publishing starts or reuses that shared server
 and leaves it running. Read-only report commands do not start it.
+Management uses the shared default tmux socket even from another attached client.
+Interrupted deletion keeps its cleanup identity and capacity reservation until
+the selected delete or explicit repair finishes.
 
 The existing installed worker agents and skills retain the identities described below.
 The separate [runtime preview v0.1.0-preview.2](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.2)

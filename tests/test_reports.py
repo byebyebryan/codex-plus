@@ -118,6 +118,72 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(self.store.list()["total"], 1)
         self.assertNotIn(first["report_id"], (self.store.root / "public/index.html").read_text())
 
+    def interrupted_trash_removal(self):
+        report = self.publish()
+        with patch('codex_plus.reports.store.shutil.rmtree', side_effect=OSError('interrupted trash removal')):
+            with self.assertRaises(OSError): self.store.delete(report['report_id'])
+        record = self.store.record(report['report_id'])
+        self.assertEqual(record['state'], 'deleted')
+        self.assertTrue((self.store.root / 'trash' / record['trash_id']).is_dir())
+        return report, record
+
+    def test_republication_preserves_pending_trash_identity_until_explicit_repair(self):
+        report, deleted = self.interrupted_trash_removal()
+        other = self.store.publish(self.bundle, 'Other retained report')
+        with self.assertRaisesRegex(ValueError, 'trash cleanup'):
+            self.publish()
+        self.assertEqual(self.store.record(report['report_id']), deleted)
+        self.assertTrue(Path(other['snapshot_path']).is_dir())
+        self.assertTrue(self.bundle.is_dir())
+        repaired = self.store.repair(apply=True)
+        self.assertEqual(repaired['remaining']['trash'], [])
+        restored = self.publish()
+        self.assertEqual(restored['report_id'], report['report_id'])
+        self.assertTrue(Path(restored['snapshot_path']).is_dir())
+
+    def test_repeated_delete_finishes_trash_cleanup_without_changing_other_reports(self):
+        report, deleted = self.interrupted_trash_removal()
+        other = self.store.publish(self.bundle, 'Other retained report')
+        result = self.store.delete(report['report_id'])
+        self.assertEqual(result['state'], 'deleted')
+        self.assertFalse((self.store.root / 'trash' / deleted['trash_id']).exists())
+        self.assertTrue(Path(other['snapshot_path']).is_dir())
+        self.assertTrue(self.bundle.is_dir())
+        self.assertEqual(self.publish()['report_id'], report['report_id'])
+
+    def test_unfinished_deletion_keeps_payload_capacity_reserved_until_cleanup(self):
+        bounded = Store(config.Config(self.root / 'bounded-trash', max_bundle_bytes=1000,
+                                     max_store_bytes=1000, max_store_reports=1))
+        report = bounded.publish(self.bundle, 'First')
+        with patch('codex_plus.reports.store.shutil.rmtree', side_effect=OSError('interrupted trash removal')):
+            with self.assertRaises(OSError): bounded.delete(report['report_id'])
+        with self.assertRaisesRegex(ValueError, 'capacity'):
+            bounded.publish(self.bundle, 'Second')
+        self.assertEqual(bounded.repair(apply=True)['remaining']['trash'], [])
+        self.assertEqual(bounded.publish(self.bundle, 'Second')['publication'], 'created')
+
+    def test_commit_rechecks_deletion_that_completed_while_another_copy_was_active(self):
+        from codex_plus.reports import store as module
+        real_read = module.read_file
+        injected = {}
+        def race(path, maximum, destination=None):
+            result = real_read(path, maximum, destination)
+            if destination is not None and not injected:
+                injected['started'] = True
+                report = self.publish()
+                with patch('codex_plus.reports.store.shutil.rmtree', side_effect=OSError('interrupted trash removal')):
+                    with self.assertRaises(OSError): self.store.delete(report['report_id'])
+                injected['deleted'] = self.store.record(report['report_id'])
+            return result
+        with patch.object(module, 'read_file', side_effect=race):
+            with self.assertRaisesRegex(ValueError, 'trash cleanup'):
+                self.publish()
+        deleted = injected['deleted']
+        self.assertEqual(self.store.record(deleted['report_id']), deleted)
+        self.assertEqual(self.store.doctor()['staging'], [])
+        self.assertEqual(self.store.repair(apply=True)['remaining']['trash'], [])
+        self.assertEqual(self.publish()['report_id'], deleted['report_id'])
+
     def test_mutated_existing_snapshot_is_never_overwritten(self):
         report = self.publish(); target = Path(report["snapshot_path"]) / "index.html"
         target.write_text("changed outside the publisher")

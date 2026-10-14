@@ -321,7 +321,14 @@ class Store:
         inventory = self.records()
         if len(inventory) >= 10000 and report_id not in {r["report_id"] for r in inventory}:
             raise ValueError("report metadata history is full; no new identity was stored")
-        records = [r for r in inventory if r["state"] != "deleted"]
+        records = []
+        for record in inventory:
+            if record['state'] == 'deleted':
+                trash = self.root / 'trash' / record['trash_id']
+                no_links(trash)
+                if not trash.exists():
+                    continue
+            records.append(record)
         used = sum(sum(f["bytes"] for f in r["snapshot"]["files"].values()) for r in records)
         reserved = 0; operations = 0
         for path in (self.root / "staging").iterdir():
@@ -331,6 +338,23 @@ class Store:
             reserved += operation["reserved_bytes"]; operations += 1
         if used + reserved + total > self.config.max_store_bytes or len(records) + operations + 1 > self.config.max_store_reports:
             raise ValueError("report store capacity exceeded; explicitly remove reports or change configured limits")
+
+    def check_republication(self, record):
+        if record['state'] == 'deleting':
+            raise ValueError("this report has an interrupted deletion; inspect repair")
+        if record['state'] == 'deleted':
+            trash = self.root / 'trash' / record['trash_id']
+            no_links(trash)
+            if trash.exists():
+                raise ValueError("this report has unfinished trash cleanup; retry deletion or apply repair before republishing")
+
+    def remove_trash(self, record):
+        trash = self.root / 'trash' / record['trash_id']
+        no_links(trash)
+        if trash.exists():
+            files_under(trash, 10000)
+            shutil.rmtree(trash)
+            sync_directory(trash.parent)
 
     def publish(self, source, title, *, entrypoint=None, project=None):
         source = absolute_path(source)
@@ -349,12 +373,11 @@ class Store:
             path = self.root / "metadata" / (report_id + ".json")
             if path.exists():
                 existing = self.record(report_id)
+                self.check_republication(existing)
                 if existing["state"] in ("published", "prepared") and (self.root / "public" / report_id).exists():
                     self.verify(existing)
                     existing["state"] = "published"; self.save(existing)
                     return self.receipt(existing, "reused", self.catalog_result())
-                if existing["state"] == "deleting":
-                    raise ValueError("this report has an interrupted deletion; inspect repair")
             elif (self.root / "public" / report_id).exists():
                 raise ValueError("unregistered snapshot exists; inspect doctor/repair")
             self.capacity(total, report_id)
@@ -377,10 +400,10 @@ class Store:
             with self.locked():
                 target = self.root / "public" / report_id
                 path = self.root / "metadata" / (report_id + ".json")
+                if path.exists():
+                    self.check_republication(self.record(report_id))
                 if target.exists():
                     existing = self.record(report_id); self.verify(existing)
-                    if existing["state"] == "deleting":
-                        raise ValueError("report deletion is in progress")
                     existing["state"] = "published"; self.save(existing)
                     return self.receipt(existing, "reused", self.catalog_result())
                 record = {"schema": 1, "report_id": report_id, "snapshot": snapshot,
@@ -430,6 +453,7 @@ class Store:
         with self.locked():
             record = self.record(report_id)
             if record["state"] == "deleted":
+                self.remove_trash(record)
                 return {"report_id": report_id, "state": "deleted", "catalog": self.catalog_result()}
             if record["state"] not in ("published", "deleting"):
                 raise ValueError("uncommitted report needs explicit repair before deletion")
@@ -443,8 +467,7 @@ class Store:
                     raise ValueError("ambiguous public/trash deletion state")
                 public.rename(trash); sync_directory(public.parent)
             record.update(state="deleted", deleted_at=timestamp()); self.save(record)
-            if trash.exists():
-                no_links(trash); shutil.rmtree(trash)
+            self.remove_trash(record)
             return {"report_id": report_id, "state": "deleted", "catalog": self.catalog_result()}
 
     def doctor(self):
@@ -508,8 +531,8 @@ class Store:
             for record in self.records():
                 if record["state"] == "deleted":
                     trash = self.root / "trash" / record["trash_id"]
-                    if trash.exists():
-                        files_under(trash, 10000); shutil.rmtree(trash)
+                    if trash.exists() or trash.is_symlink():
+                        self.remove_trash(record)
                         repaired.append("trash:" + record["trash_id"])
             catalog_state = self.catalog_result()
         # Deletion retries take their own lock and preserve exact selected identity.

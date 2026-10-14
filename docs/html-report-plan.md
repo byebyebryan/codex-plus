@@ -297,3 +297,14 @@ separately. This task changes documentation and inventory only. Before execution
 recheck upstream/dirty work, chosen URL/revision defaults and serving prerequisites.
 Live apply, service changes, daemon restarts and source publication are not implied
 by completing this planning document.
+
+## Review refinement
+
+Report preview 5 selects the default tmux socket explicitly, independent of the
+calling client attachment, and uses the controller attach command for inspection.
+An interrupted physical deletion preserves its trash identity and capacity until
+explicit delete retry or repair completes; both publication admission and final
+commit recheck that state. Completed snapshot files may use `.write-*` names;
+HTTP hides temporary index files only at the public root. Regression coverage
+includes alternate socket callers, deletion racing a copy, exact cleanup retry,
+capacity release, and entrypoint/asset delivery.

@@ -78,7 +78,8 @@ def make_server(config, *, port=None, instance=None):
             if not decoded.startswith(prefix) or '\\' in decoded:
                 raise ValueError('outside report URL prefix')
             parts = decoded[len(prefix):].rstrip('/').split('/') if decoded != prefix else []
-            if any(not p or p in ('.', '..') or p.startswith('.write-') or any(ord(c) < 32 for c in p) for p in parts):
+            if (any(not p or p in ('.', '..') or any(ord(c) < 32 for c in p) for p in parts)
+                    or (parts and parts[0].startswith('.write-'))):
                 raise ValueError('invalid report path')
             target = root.joinpath(*parts)
             no_links(target)
@@ -130,10 +131,15 @@ def make_server(config, *, port=None, instance=None):
 class Controller:
     def __init__(self, config, path, *, socket_path=None):
         self.config, self.path = config, absolute_path(path)
-        self.command = ['tmux'] + (['-S', str(absolute_path(socket_path)), '-f', '/dev/null'] if socket_path else [])
+        self.command = ['tmux'] + (['-S', str(absolute_path(socket_path)), '-f', '/dev/null']
+                                   if socket_path else ['-L', 'default'])
+        self.environment = dict(os.environ)
+        self.environment.pop('TMUX', None)
+        self.environment.pop('TMUX_PANE', None)
 
     def tmux(self, *args, optional=False):
-        result = subprocess.run([*self.command, *map(str, args)], capture_output=True, text=True, timeout=5)
+        result = subprocess.run([*self.command, *map(str, args)], env=self.environment,
+                                capture_output=True, text=True, timeout=5)
         if result.returncode:
             if optional: return None
             raise ValueError('tmux: ' + result.stderr.strip()[:1024])
@@ -252,7 +258,8 @@ def main(argv=None):
         elif args.action == 'attach':
             owner = controller.owned()
             if owner is None: raise ValueError('the report server is not running')
-            os.execvp('tmux', [*controller.command, 'attach-session', '-t', owner['session_id']])
+            os.execvpe('tmux', [*controller.command, 'attach-session', '-t', owner['session_id']],
+                      controller.environment)
         else: result = controller.status()
         print(json.dumps(result) if args.json else f'{SESSION}: {result["state"]}\n{result.get("url") or "Hosting is unconfigured."}')
         return 0 if result['state'] != 'unhealthy' else 1

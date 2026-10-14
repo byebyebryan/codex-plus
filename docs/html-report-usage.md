@@ -49,6 +49,11 @@ retries exact interrupted deletion and removes positively identified abandoned
 staging. It also releases an unpublished prepared record when no public snapshot
 or active publisher remains. Active copy processes and unknown directories are preserved. Catalog
 failure leaves the prior index and stored report intact; rebuild repairs it.
+If physical trash removal is interrupted, retry the same delete or apply repair
+to finish that exact cleanup. Republishing that identity is refused until cleanup
+finishes, including when deletion completes during another copy. Remaining trash
+continues to reserve payload/report capacity. Source files and other reports are
+preserved.
 
 ## Configuration and hosting
 
@@ -70,7 +75,7 @@ require Tailscale; these machine names use the existing mesh's DNS/network.
 ```sh
 rtk proxy codex-report-server start
 rtk proxy codex-report-server status
-rtk proxy tmux attach -t codex-report-server
+rtk proxy codex-report-server attach
 rtk proxy codex-report-server restart
 rtk proxy codex-report-server stop
 ```
@@ -81,6 +86,10 @@ owned server. HTTP reads the public subtree at the URL prefix; publishing new
 reports needs no server restart. The bind address defaults to the configured URL
 hostname; `server_bind` can select another local address. Only HTTP is built in;
 HTTPS can use an external server.
+Management explicitly selects tmux's default socket and clears inherited client
+attachment variables. Starting, inspecting or attaching from another tmux socket
+therefore manages the same shared server. The explicit `--tmux-socket` option
+continues to select a separate socket for isolated checks.
 
 `server_autostart` defaults to false for standalone/external installations.
 Chezmoi enables it on this fleet. Publish starts a missing server, reuses a healthy
@@ -103,6 +112,8 @@ Entrypoints named `index.html` return the containing directory URL. The built-in
 server supports both explicit index filenames and directory URLs, including
 nested reports. Other entrypoint filenames remain explicit. Delivery rejects redirects except the same
 origin's exact index-to-directory canonicalization and verifies the returned bytes.
+Completed snapshot files and directories may use `.write-*` names. Only the
+store's own temporary index files at the public root are hidden over HTTP.
 
 The optional index is generated from public title/project/date/link fields.
 Private source/provenance/hash records are outside the served tree. Disabling the

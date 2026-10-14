@@ -99,3 +99,22 @@ starting the server again after host reboot.
 
 Live evidence and browser screenshot:
 `~/.local/state/codex-plus/report-http/20261013-tmux/` on the participating hosts.
+
+## Review gap closure
+
+Preview 5 closes the three reproduced review findings. Ordinary management pins
+tmux's default socket and clears inherited attachment variables, including for
+attach. Completed snapshot entrypoints and asset directories may use `.write-*`
+names, while root index-write temporaries remain hidden over HTTP.
+
+Deletion retains its exact trash identity until physical cleanup finishes.
+Publication checks that state before admission and again after copying, so a
+concurrent completed-but-uncleaned deletion cannot be overwritten. Exact delete
+retry and explicit repair share the cleanup path; remaining trash reserves both
+payload and report capacity. The source suite passes 253 tests, including six new
+regression cases for the review findings and their recovery/quota consequences.
+
+The refined source preserves the unrelated worker/runtime files. Its artifact,
+upstream integration and live rollout have separate qualification records under
+`~/.local/state/codex-plus/report-goal-closure/20261013/`. Carbon's live rollout
+still requires the offline host to become reachable.

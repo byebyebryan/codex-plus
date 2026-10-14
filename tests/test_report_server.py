@@ -76,6 +76,24 @@ class ServerTests(unittest.TestCase):
             self.assertEqual(failure.exception.code, 404, path)
             failure.exception.close()
 
+    def test_http_serves_write_prefixed_snapshot_files_but_hides_store_temporaries(self):
+        source = self.root / 'reserved-export'; source.mkdir()
+        (source / '.write-report.html').write_text('<h1>Complete report</h1>')
+        (source / '.write-assets').mkdir()
+        (source / '.write-assets/data.json').write_text('{"complete":true}')
+        report = self.store.publish(source, 'Reserved names', entrypoint='.write-report.html')
+        url = self.web() + '/reports/'
+        for name, body in [('.write-report.html', b'Complete report'),
+                           ('.write-assets/data.json', b'"complete":true')]:
+            with self.opener.open(url + report['report_id'] + '/' + name, timeout=3) as response:
+                self.assertEqual(response.status, 200)
+                self.assertIn(body, response.read())
+        (self.store.root / 'public/.write-uncommitted').write_text('private partial index')
+        with self.assertRaises(HTTPError) as failure:
+            self.opener.open(url + '.write-uncommitted', timeout=3)
+        self.assertEqual(failure.exception.code, 404)
+        failure.exception.close()
+
     def test_hosting_check_is_generic_http_without_tailscale_or_tmux(self):
         self.publish(); self.web()
         resolve = socket.getaddrinfo
@@ -199,6 +217,28 @@ class ServerTests(unittest.TestCase):
         self.assertEqual(controller.status()['state'], 'stopped')
         self.assertTrue(controller.tmux('display-message', '-p', '-t', '=unrelated-test:', '#{session_id}').startswith('$'))
         self.assertTrue(Path(report['snapshot_path']).is_dir())
+
+    @unittest.skipUnless(shutil.which('tmux'), 'tmux control is optional')
+    def test_default_controller_uses_shared_socket_from_an_alternate_tmux_client(self):
+        private_root = self.root / 'tmux-root'; private_root.mkdir(mode=0o700)
+        with patch.dict(os.environ, {'TMUX_TMPDIR': str(private_root)}):
+            shared = server.Controller(self.options, self.config)
+        self.addCleanup(lambda: shared.tmux('kill-server', optional=True))
+        first = shared.start()
+        alternate_socket = self.root / 'alternate.sock'
+        alternate = server.Controller(self.options, self.config, socket_path=alternate_socket)
+        self.addCleanup(lambda: alternate.tmux('kill-server', optional=True))
+        alternate.tmux('new-session', '-d', '-s', 'unrelated-client', 'sleep', '60')
+        alternate_pid = alternate.tmux('display-message', '-p', '-t', '=unrelated-client:', '#{pid}')
+        with patch.dict(os.environ, {'TMUX_TMPDIR': str(private_root),
+                'TMUX': f'{alternate_socket},{alternate_pid},0', 'TMUX_PANE': '%0'}):
+            from_client = server.Controller(self.options, self.config)
+            reused = from_client.start()
+            self.assertTrue(reused['reused'])
+            self.assertEqual(reused['pid'], first['pid'])
+            with from_client.locked(): from_client.stop_owned()
+        self.assertEqual(shared.status()['state'], 'stopped')
+        self.assertTrue(alternate.tmux('display-message', '-p', '-t', '=unrelated-client:', '#{session_id}').startswith('$'))
 
     @unittest.skipUnless(shutil.which('tmux'), 'tmux control is optional')
     def test_tmux_refuses_foreign_named_session_and_additional_user_panes(self):
