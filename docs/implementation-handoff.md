@@ -2,26 +2,30 @@
 
 Updated 2026-10-13 for Bryan's continuation on Snap in
 `/home/bryan/code/codex-plus`. The operational source-access/refinement loop is
-complete, including published preview and pushed managed distribution. Live apply,
-enablement, real-source pilot and personal UX acceptance remain subsequent scope.
+complete, including published preview and pushed managed distribution. The two-host managed rollout is now executing; a real-source pilot and personal
+UX acceptance remain separate scope.
 
-## Next planned pass: managed activation on both hosts
+## Current pass: managed activation on both hosts
 
-Bryan asked to plan actual chezmoi installation and activation on Snap and
-Starship. The [two-host rollout plan](codex-plus-plan.md#next-pass-managed-installation-and-activation-on-snap-and-starship)
-uses the existing preview.2 artifact, publishes host-scoped availability/policy,
-applies five reviewed target groups on Snap first, then qualifies Starship.
-Neither host currently has a selected monitoring runtime or live codex_plus entry.
-Snap's source is clean; Starship has divergent/local work, including Kitty edits,
-and a distinct Observer selection commit, so use a clean pinned source checkout
-there and preserve its canonical tree.
+Bryan selected the [two-host rollout plan](codex-plus-plan.md#next-pass-managed-installation-and-activation-on-snap-and-starship)
+and required preserving active work with no daemon restart. Host-scoped managed
+availability and nine control approvals are published as dotfiles fa6c9c0. A tested
+`codexPlusOnly` apply option preserves unrelated live config values, including
+Starship's pending legacy cleanup. Full/component validators passed.
 
-Planned scope includes watches/reminders and existing-task peer messaging, with
-fresh-session loading and actual installed use as gates. Do not globally refresh
-MCP connections or restart busy daemons as an activation shortcut. Writes and
-interruptions in acceptance target fresh owned synthetic actors only. The new
-combined recipe is 12 deliveries / 32 turns across both hosts; prior allowances
-remain closed. This is planning only; no live apply or enablement has started.
+The five runtime/config target groups are installed on Snap and Starship from the
+existing preview.2 release. Both payloads match the fetched checksum, manifest,
+19-file inventory and modes. Ordinary fresh native TUI sessions found all 15 tools
+and successfully called the installed watch_list without per-thread MCP injection,
+a global reload or owner replacement. Snap's pre-existing state root required
+permissions narrowed from 0755 to 0700; its contents were preserved.
+
+Acceptance writes target fresh owned synthetic actors only. Snap's first broader
+batch stopped at a provider-capacity error before messaging or observation began;
+its two actors and fixture process were closed without replay. Starship's independent
+bounded scenes are in progress. Its canonical divergent/dirty checkout remains
+outside the clean pinned deployment worktree. New concurrent Snap Observer edits
+are preserved. No prior allowance or closed study actor is reused.
 
 ## Current source-access and distribution pass
 
