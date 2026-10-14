@@ -6,6 +6,16 @@ are complete. Monitoring preview.2 and report preview.7 are installed; both
 optional MCP surfaces are enabled on Snap and Starship. Real-source soak and
 personal UX remain separate acceptance.
 
+## Public guide publication through GitHub Pages
+
+Bryan requested publishing the HTML guides to GitHub Pages using the personal
+byebyebryan account on github.com. The prepared [Pages contract](pages-deployment.md)
+publishes the interactive landing page and five rendered guides through a pinned
+workflow. Personal API identity and SSH ownership are checked; enterprise/work
+hosts are not used. Initial deployment/browser qualification is in progress.
+Runtime/worker files, managed pins, live configs and active native work remain
+outside this publication. The existing Snap report snapshots/hosting are retained.
+
 ## Completed documentation and presentation pass
 
 Bryan requested an ordinary goal loop for consistent current docs, a natural

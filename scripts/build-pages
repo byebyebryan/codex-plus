@@ -1,0 +1,229 @@
+#!/usr/bin/env python3
+"""Build the public guides outside the checkout using GitHub's GFM renderer."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import html
+from html.parser import HTMLParser
+import json
+from pathlib import Path
+import re
+import shutil
+import subprocess
+from urllib.parse import unquote, urlsplit
+
+
+ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY = "byebyebryan/codex-plus"
+SITE = "https://dev.byebyebryan.com/codex-plus/"
+SOURCE = f"https://github.com/{REPOSITORY}/blob/main/docs/"
+GUIDES = {
+    "daily-use.md": ("daily-use", "Daily use"),
+    "architecture.md": ("architecture", "How it works"),
+    "soak-checklist.md": ("soak-checklist", "Daily trial"),
+    "html-report-usage.md": ("reports", "Reporting"),
+    "runtime-distribution.md": ("installation", "Installation"),
+}
+STYLE = """
+:root{color-scheme:light;--paper:#f6f4ee;--ink:#202e2c;--teal:#185b50;--line:#d7ddd4}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 system-ui,sans-serif}
+a{color:var(--teal);text-underline-offset:3px}:focus-visible{outline:3px solid #b04e29;outline-offset:4px}
+header,main,footer{max-width:980px;margin:auto;padding:24px}header{border-bottom:1px solid var(--line)}
+.brand{font-size:22px;font-weight:800;text-decoration:none}nav{display:flex;flex-wrap:wrap;gap:9px 20px;margin-top:13px;font-size:14px}
+nav a[aria-current]{font-weight:750}main{padding-top:32px}h1{font-size:38px;line-height:1.2;letter-spacing:-1px}
+h2{margin-top:38px;line-height:1.3;font-size:25px}h3{margin-top:28px}p,li{overflow-wrap:anywhere}
+pre{overflow:auto;border:1px solid var(--line);background:#fffefa;border-radius:9px;padding:16px;font-size:13px;line-height:1.6}
+code{font-family:ui-monospace,Consolas,monospace;font-size:.88em}p code,td code{background:#e7eee7;padding:2px 4px;border-radius:3px}
+.table-scroll{overflow-x:auto;max-width:100%}table{border-collapse:collapse;width:100%;font-size:14px;background:#fffefa}
+th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#e7eee7}
+figure{margin:24px 0}figure img{display:block;width:100%;height:auto}figcaption{color:#586760;font-size:13px;margin-top:8px}
+.source,.mesh-note{font-size:13px;color:#586760}.source{margin-bottom:25px}footer{border-top:1px solid var(--line);font-size:13px;color:#586760}
+@media(max-width:600px){header,main,footer{padding:18px}h1{font-size:31px}h2{font-size:23px}th,td{padding:9px}figure{overflow-x:auto}figure img{min-width:650px}}
+"""
+
+
+def rewrite_link(url: str, prefix: str) -> str:
+    parsed = urlsplit(url)
+    fragment = "#" + parsed.fragment if parsed.fragment else ""
+    if parsed.scheme:
+        if not url.startswith(SOURCE):
+            return url
+        name = unquote(parsed.path).split("/docs/", 1)[1]
+    else:
+        if not parsed.path or parsed.path.startswith("/"):
+            return url
+        name = unquote(parsed.path)
+    if name in GUIDES:
+        return prefix + GUIDES[name][0] + "/" + fragment
+    if name in {"presentation.md", "presentation/index.html"}:
+        return prefix + fragment
+    if not parsed.scheme and name.endswith(".md"):
+        return SOURCE + name + fragment
+    return url
+
+
+class Links(HTMLParser):
+    def __init__(self, prefix: str):
+        super().__init__(convert_charrefs=False)
+        self.prefix = prefix
+        self.parts: list[str] = []
+
+    def tag(self, tag, attrs, suffix):
+        rendered = []
+        for key, value in attrs:
+            if key == "href" and value:
+                value = rewrite_link(value, self.prefix)
+            rendered.append(key if value is None else f'{key}="{html.escape(value, quote=True)}"')
+        self.parts.append("<" + tag + (" " if rendered else "") + " ".join(rendered) + suffix)
+
+    def handle_starttag(self, tag, attrs):
+        self.tag(tag, attrs, ">")
+
+    def handle_startendtag(self, tag, attrs):
+        self.tag(tag, attrs, " />")
+
+    def handle_endtag(self, tag):
+        self.parts.append(f"</{tag}>")
+
+    def handle_data(self, data):
+        self.parts.append(data)
+
+    def handle_entityref(self, name):
+        self.parts.append("&" + name + ";")
+
+    def handle_charref(self, name):
+        self.parts.append("&#" + name + ";")
+
+    def handle_comment(self, data):
+        self.parts.append("<!--" + data + "-->")
+
+    def handle_decl(self, declaration):
+        self.parts.append("<!" + declaration + ">")
+
+
+def links(text: str, prefix: str) -> str:
+    parser = Links(prefix)
+    parser.feed(text)
+    parser.close()
+    return "".join(parser.parts)
+
+
+def headings(text: str) -> str:
+    seen: dict[str, int] = {}
+
+    def replace(match):
+        title = html.unescape(re.sub(r"<[^>]+>", "", match[3])).lower()
+        slug = re.sub(r"[^\w\s-]", "", title)
+        slug = re.sub(r"\s", "-", slug)
+        number = seen.get(slug, 0)
+        seen[slug] = number + 1
+        identifier = slug if not number else f"{slug}-{number}"
+        return f'<h{match[1]} id="{identifier}"{match[2]}>{match[3]}</h{match[1]}>'
+
+    return re.sub(r"<h([1-6])([^>]*)>(.*?)</h\1>", replace, text, flags=re.S)
+
+
+def render(markdown: str) -> str:
+    command = ["gh", "api", "--hostname", "github.com", "markdown", "--method", "POST", "--input", "-"]
+    if shutil.which("rtk"):
+        command = ["rtk", "proxy", *command]
+    result = subprocess.run(command, input=json.dumps({"text": markdown, "mode": "gfm", "context": REPOSITORY}),
+                            capture_output=True, text=True, timeout=60)
+    if result.returncode:
+        raise RuntimeError("GitHub Markdown rendering failed: " + result.stderr.strip())
+    return result.stdout
+
+
+def architecture_diagram(text: str, markdown: str) -> str:
+    code = re.search(r"```mermaid\n(.*?)\n```", markdown, re.S)
+    if not code:
+        raise ValueError("architecture diagram source is missing")
+    svg = (ROOT / "docs/presentation/architecture.svg").read_text()
+    digest = hashlib.sha256(code[1].encode()).hexdigest()
+    if f'data-source-sha256="{digest}"' not in svg:
+        raise ValueError("update the authored SVG alongside the architecture diagram source")
+    figure = ('<figure><img src="../assets/architecture.svg" alt="Requests, bounded sources and timers return to the native conversation; MCP calls use normal native approval and reports are independent.">'
+              '<figcaption>Observation and native follow-up. <a href="' + SOURCE + 'architecture.md#observation-and-follow-up">Diagram source on GitHub</a>.</figcaption></figure>')
+    text, count = re.subn(r'<section\b[^>]*data-type="mermaid"[^>]*>.*?</section>', figure, text, flags=re.S)
+    if count != 1 or 'data-type="mermaid"' in text:
+        raise ValueError("unexpected GitHub Mermaid rendering; refusing incomplete diagram")
+    return text
+
+
+def guide_page(name: str, route: str, title: str, body: str, icon: str) -> str:
+    nav = '<a href="../">Walkthrough</a>' + "".join(
+        f'<a href="../{slug}/"' + (' aria-current="page"' if route == slug else "") + f'>{html.escape(label)}</a>'
+        for slug, label in GUIDES.values())
+    body = body.replace("<table>", '<div class="table-scroll"><table>').replace("</table>", "</table></div>")
+    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+            f'<title>{html.escape(title)} — Codex Plus</title>{icon}<style>{STYLE}</style></head><body>'
+            f'<header><a class="brand" href="../">Codex Plus /</a><nav aria-label="Public guides">{nav}</nav></header>'
+            f'<main><p class="source">Current preview guide · <a href="{SOURCE}{name}">Source on GitHub</a></p>{body}</main>'
+            '<footer>Codex Plus · Documentation updates do not repin installed runtime artifacts. '
+            '<a href="../">Return to the walkthrough</a></footer></body></html>')
+
+
+def validate(output: Path) -> int:
+    count = 0
+    for path in output.rglob("*.html"):
+        text = path.read_text()
+        for url in re.findall(r'\b(?:href|src)="([^"]+)"', text):
+            parsed = urlsplit(html.unescape(url))
+            if parsed.scheme or parsed.netloc:
+                continue
+            target = (path.parent / unquote(parsed.path)).resolve() if parsed.path else path
+            if target.is_dir():
+                target /= "index.html"
+            if not target.is_relative_to(output) or not target.is_file():
+                raise ValueError(f"broken site link in {path.relative_to(output)}: {url}")
+            if parsed.fragment and target.suffix in {".html", ".svg"}:
+                identifiers = set(re.findall(r'\bid="([^"]+)"', target.read_text()))
+                if unquote(parsed.fragment) not in identifiers:
+                    raise ValueError(f"broken site anchor in {path.relative_to(output)}: {url}")
+            count += 1
+    return count
+
+
+def build(output: Path) -> None:
+    output = output.resolve()
+    if output == ROOT or output.is_relative_to(ROOT):
+        raise ValueError("Pages output must be outside the source checkout")
+    if output.exists() and any(output.iterdir()):
+        raise ValueError("Pages output must be empty")
+    output.mkdir(parents=True, exist_ok=True)
+    original = (ROOT / "docs/presentation/index.html").read_text()
+    icon = re.search(r'<link rel="icon"[^>]+>', original)
+    if not icon:
+        raise ValueError("presentation icon is missing")
+    landing = links(original, "./")
+    # Preserve internal snapshot references with an explicit reachability label.
+    landing = re.sub(r'(<a href="http://(?:snap|starship):[^\"]+">)(.*?)(</a>)',
+                     r'\1\2 (mesh access)\3', landing)
+    (output / "index.html").write_text(landing)
+    (output / "assets").mkdir()
+    shutil.copyfile(ROOT / "docs/presentation/architecture.svg", output / "assets/architecture.svg")
+    for name, (route, title) in GUIDES.items():
+        markdown = (ROOT / "docs" / name).read_text()
+        body = render(markdown)
+        if name == "architecture.md":
+            body = architecture_diagram(body, markdown)
+        body = links(headings(body), "../")
+        page = output / route
+        page.mkdir()
+        (page / "index.html").write_text(guide_page(name, route, title, body, icon[0]))
+    (output / ".nojekyll").write_text("")
+    count = validate(output)
+    print(f"Built walkthrough + {len(GUIDES)} guides; {count} local links/assets/anchors verified: {output}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", required=True, type=Path)
+    args = parser.parse_args()
+    build(args.output)
+
+
+if __name__ == "__main__":
+    main()

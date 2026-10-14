@@ -23,6 +23,10 @@ Read the [daily-use guide](docs/daily-use.md), open the
 [browser walkthrough](docs/presentation.md), or see
 [how the package works](docs/architecture.md).
 
+The [public HTML guides](https://dev.byebyebryan.com/codex-plus/) publish the
+walkthrough and five readable guides through GitHub Pages. See the
+[Pages deployment guide](docs/pages-deployment.md) for source/build details.
+
 ## Current status
 
 As of 2026-10-14, the monitoring runtime **v0.1.0-preview.2** and reporting

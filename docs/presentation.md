@@ -1,7 +1,11 @@
 # Browser walkthrough
 
-[Open the published browser walkthrough](http://snap:8787/reports/293fdc3828d80409edd88861719fa5d376df1afa4bbdf5fae6a569d8f12aaa17/). It is hosted on Snap and
-requires access to that host’s report endpoint. The [Codex Plus project catalog](http://snap:8787/reports/#project=codex-plus)
+[Open the public browser walkthrough](https://dev.byebyebryan.com/codex-plus/).
+GitHub Pages also serves the daily-use, architecture, soak, reporting and
+installation guides. See the [Pages deployment guide](pages-deployment.md).
+
+The [immutable report edition](http://snap:8787/reports/293fdc3828d80409edd88861719fa5d376df1afa4bbdf5fae6a569d8f12aaa17/)
+is retained on Snap and requires access to its report endpoint. The [Codex Plus project catalog](http://snap:8787/reports/#project=codex-plus)
 contains related reports. Publication, HTTP-byte checks from both hosts and
 browser interaction/layout checks passed; see the
 [documentation pass results](documentation-pass-results.md).
