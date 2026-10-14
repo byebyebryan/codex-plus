@@ -13,6 +13,7 @@ With the component installed on PATH:
 ```sh
 rtk proxy codex-plus-report --json publish --source /absolute/report-export --title "Run comparison" --project "descent-lab" --check-delivery
 rtk proxy codex-plus-report list
+rtk proxy codex-plus-report --json list --project "descent-lab"
 rtk proxy codex-plus-report get FULL_REPORT_ID --check-delivery
 rtk proxy codex-plus-report doctor --check-hosting
 ```
@@ -36,6 +37,29 @@ immutable link. Files are copied into XDG data, default
 `~/.local/share/codex-plus/reports`; deleting/moving the source does not affect
 the published copy. Reports remain stored until selected deletion, subject to
 configured capacity limits that refuse new reports rather than evict old ones.
+
+The catalog groups reports by project, with counts and publication dates. Groups
+with the latest activity come first, and reports within each group are newest
+first. The project selector and title/project search combine; Clear filters
+returns to the complete library. Labels are exact and case-sensitive. Use the
+same stable repository name across sessions and hosts. Omitted labels appear
+under Uncategorized; the publisher does not infer a label from an export path.
+
+Project views have shareable URLs such as
+`http://starship:8787/reports/#project=cubey`. Search state is also stored in the
+fragment, so bookmarks and browser Back restore the view. Missing projects show
+zero results, and `#uncategorized=1` selects unlabeled reports without reserving
+that name as a real project. CLI/MCP publication, get and list receipts add
+`catalog_url` and `project_url`; both are null when hosting is unconfigured or
+the catalog is disabled. They identify a current mutable catalog view, while
+`url` still identifies the immutable report. Existing snapshots are not moved
+or rewritten, and older report links remain valid. Catalogs cover their own host.
+
+For an update, use project-filtered inventory to find relevant prior reports and
+include their descriptive links in the new HTML. Return its project catalog link
+when useful. Open earlier and later reports in separate browser tabs to compare
+them. A shared label groups related work; it does not imply an automatic revision
+chain or select one report as its replacement.
 
 ```sh
 rtk proxy codex-plus-report delete FULL_REPORT_ID

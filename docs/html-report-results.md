@@ -1,5 +1,16 @@
 # HTML report implementation evidence
 
+Current project-browsing edition: preview 6 adds counted project groups, combined
+project/search filters, bookmarkable navigation and project catalog links in
+CLI/MCP receipts. The skill uses stable labels and links relevant earlier reports
+when presenting updates. Existing snapshot files, identities and URLs are
+unchanged. Validation and rollout evidence for this edition is under
+`~/.local/state/codex-plus/report-projects/20261013/`; historical qualification
+records below retain their original release/test counts.
+The complete suite passes 258 tests, including five project history, catalog
+escaping, receipt and provider-neutral MCP regressions. Skill and source gates
+pass; browser acceptance and fleet installation have separate evidence records.
+
 2026-10-13. Source lives on `feat/html-report`, separate from Snap's scheduling
 and communication checkout. The report component has no native Codex owner,
 daemon, thread, watch or peer dependencies. Existing worker/runtime files remain

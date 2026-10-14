@@ -22,6 +22,8 @@ def readable(value):
             output.append("Report stored; server startup failed: " + value["server"]["detail"])
         if value["catalog"]["state"] == "stale":
             output.append("Report stored; catalog update failed: " + value["catalog"]["detail"])
+        if value.get("project_url"):
+            output.append("Project reports: " + value["project_url"])
         output.append("Report ID: " + value["report_id"])
         return "\n".join(output)
     if "reports" in value:

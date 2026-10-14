@@ -70,7 +70,10 @@ endpoint when created through this capability.
 Recommend a small optional index at the report service's root, `/reports/`:
 
 - Descriptive title, optional project label, publication date and report link.
-- Newest first, with client-side search/filtering when useful.
+- Project sections with counts, newest first within each. Sections with recent
+  publications lead; a project selector and text search combine.
+- Shareable fragment views restore project/search state through browser
+  navigation. Unlabeled reports have a distinct Uncategorized view.
 - Generated from committed report metadata on publish/delete, using a host-local
   lock and atomic index replacement so concurrent publishers do not lose entries.
 - A host setting controls whether the catalog is shown. Direct report links
@@ -134,6 +137,11 @@ HTML is authored into files using the agent's ordinary tools; the call carries
 paths and metadata, rather than embedding the whole report in tool arguments.
 An optional project label is display metadata for the index, not a filesystem
 path or an instruction to inspect conversation history.
+Use a stable repository name or a user's existing label across sessions/hosts.
+Receipts expose current `catalog_url` and `project_url` views when enabled;
+immutable report URLs remain unchanged. Agents can link relevant earlier reports
+in a new result after inspecting exact project-filtered inventory. Project
+membership does not imply an automatic revision or replacement relationship.
 
 | Operation | Behavior |
 | --- | --- |

@@ -52,6 +52,28 @@ class ReportMCPTests(unittest.TestCase):
             self.assertTrue(self.call(name, arguments)["isError"])
         self.assertFalse(self.store.exists())
 
+    def test_project_filtered_history_returns_catalog_links_without_native_state(self):
+        options = self.root / 'report.toml'
+        options.write_text('schema=1\nbase_url="http://starship:8787/reports/"\n')
+        server = Server(options, self.store)
+        source = self.root / 'report.html'; source.write_text('<h1>Earlier</h1>')
+        def invoke(name, arguments):
+            return server.handle({'jsonrpc': '2.0', 'id': 1, 'method': 'tools/call',
+                                  'params': {'name': name, 'arguments': arguments}})['result']['structuredContent']
+        with patch('subprocess.run', side_effect=AssertionError('no native process expected')):
+            first = invoke('report_publish', {'source': str(source), 'title': 'Earlier',
+                                               'project': 'demo', 'check_delivery': False})
+            source.write_text('<h1>Later</h1>')
+            later = invoke('report_publish', {'source': str(source), 'title': 'Later',
+                                               'project': 'demo', 'check_delivery': False})
+            invoke('report_publish', {'source': str(source), 'title': 'Other project',
+                                      'project': 'other', 'check_delivery': False})
+            inventory = invoke('report_list', {'project': 'demo'})
+        self.assertEqual([r['report_id'] for r in inventory['reports']], [later['report_id'], first['report_id']])
+        self.assertEqual(inventory['total'], 2)
+        self.assertEqual(first['project_url'], 'http://starship:8787/reports/#project=demo')
+        self.assertEqual(inventory['reports'][0]['project_url'], first['project_url'])
+
     def test_cli_stdio_is_protocol_clean_and_keeps_working_without_codex_on_path(self):
         script = Path(__file__).resolve().parents[1] / "scripts/codex-plus-report-mcp"
         requests = [json.dumps({"jsonrpc": "2.0", "id": i, "method": method}) for i, method in enumerate(("initialize", "tools/list"), 1)]

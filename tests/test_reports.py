@@ -2,6 +2,7 @@
 
 from concurrent.futures import ThreadPoolExecutor
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from html.parser import HTMLParser
 import json
 from pathlib import Path
 import shutil
@@ -9,9 +10,43 @@ import tempfile
 from threading import Thread
 import unittest
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlsplit
 
-from codex_plus.reports import config, hosting
+from codex_plus.reports import catalog, config, hosting
 from codex_plus.reports.store import Store, canonical
+
+
+class CatalogPage(HTMLParser):
+    def __init__(self, html):
+        super().__init__()
+        self.groups = {}; self.options = {}; self.group = None; self.row = None
+        self.option = None; self.scripts = 0; self.tags = []
+        self.feed(html)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs); self.tags.append(tag)
+        if tag == 'script': self.scripts += 1
+        if tag == 'section' and 'data-project' in attrs:
+            self.group = {'rows': [], 'view': None}
+            self.groups[attrs['data-project']] = self.group
+        elif tag == 'option':
+            self.option = attrs['value']; self.options[self.option] = ''
+        elif tag == 'li' and self.group is not None:
+            self.row = {'href': None, 'search': attrs.get('data-search')}
+            self.group['rows'].append(self.row)
+        elif tag == 'a' and self.group is not None:
+            if self.row is not None: self.row['href'] = attrs['href']
+            else: self.group['view'] = attrs['href']
+        elif tag == 'time' and self.row is not None:
+            self.row['datetime'] = attrs.get('datetime')
+
+    def handle_endtag(self, tag):
+        if tag == 'section': self.group = None
+        if tag == 'li': self.row = None
+        if tag == 'option': self.option = None
+
+    def handle_data(self, value):
+        if self.option is not None: self.options[self.option] += value
 
 
 class ReportTests(unittest.TestCase):
@@ -65,6 +100,63 @@ class ReportTests(unittest.TestCase):
         self.assertNotIn(report["report_id"], page)
         self.assertEqual(report["catalog"]["state"], "disabled")
         self.assertTrue((Path(report["snapshot_path"]) / "index.html").is_file())
+        self.assertIsNone(report['catalog_url']); self.assertIsNone(report['project_url'])
+
+    def test_project_catalog_retains_older_links_and_groups_by_recent_activity(self):
+        older = self.publish(project='demo')
+        record = self.store.record(older['report_id']); record['created_at'] = '2026-01-01T00:00:00+00:00'
+        self.store.save(record)
+        (self.bundle / 'index.html').write_text('<h1>Updated result</h1>')
+        newer = self.publish(project='demo')
+        unlabeled = self.store.publish(self.bundle, 'Without a project')
+        named = self.store.publish(self.bundle, 'Named project', project='Uncategorized')
+        page = CatalogPage((self.store.root / 'public/index.html').read_text())
+        self.assertEqual(list(page.groups), ['p:Uncategorized', 'u:', 'p:demo'])
+        self.assertEqual(page.options[''], 'All projects (4)')
+        self.assertEqual(page.options['p:demo'], 'demo (2)')
+        self.assertEqual(page.options['u:'], 'Uncategorized (no project) (1)')
+        self.assertEqual([r['href'] for r in page.groups['p:demo']['rows']],
+                         [newer['report_id'] + '/', older['report_id'] + '/'])
+        self.assertEqual(page.groups['p:demo']['rows'][-1]['datetime'], record['created_at'])
+        self.assertEqual(page.groups['u:']['view'], '#uncategorized=1')
+        self.assertEqual(page.groups['p:Uncategorized']['view'], '#project=Uncategorized')
+        self.assertNotEqual(unlabeled['project_url'], named['project_url'])
+        self.assertTrue((Path(older['snapshot_path']) / 'index.html').is_file())
+
+    def test_project_labels_and_fragment_links_escape_unicode_and_html(self):
+        project = 'réview + & ?/#"><img src=x>'
+        report = self.store.publish(self.bundle, '<script>title</script>', project=project)
+        html = (self.store.root / 'public/index.html').read_text()
+        page = CatalogPage(html)
+        self.assertEqual(page.options['p:' + project], project + ' (1)')
+        self.assertEqual(page.scripts, 1)
+        self.assertNotIn('img', page.tags)
+        self.assertEqual(parse_qs(page.groups['p:' + project]['view'][1:]), {'project': [project]})
+        self.assertEqual(parse_qs(urlsplit(report['project_url']).fragment), {'project': [project]})
+        self.assertEqual(report['catalog_url'], self.options.base_url)
+        self.assertEqual(self.store.list(project=project)['reports'][0]['project_url'], report['project_url'])
+        self.assertNotIn(str(self.bundle), html)
+
+    def test_project_views_are_stable_across_snapshots_and_disabled_when_unconfigured(self):
+        first = self.publish(project='demo')
+        (self.bundle / 'index.html').write_text('<h1>Later result</h1>')
+        later = self.publish(project='demo')
+        self.assertNotEqual(first['url'], later['url'])
+        self.assertEqual(first['project_url'], later['project_url'])
+        self.assertEqual(self.store.get(first['report_id'])['url'], first['url'])
+        self.assertEqual(self.store.get(first['report_id'])['project_url'], first['project_url'])
+        unconfigured = Store(config.Config(self.root / 'unconfigured'))
+        report = unconfigured.publish(self.bundle, 'Retained locally', project='demo')
+        self.assertIsNone(report['catalog_url']); self.assertIsNone(report['project_url'])
+
+    def test_empty_and_disabled_catalogs_reveal_no_project_inventory(self):
+        empty = CatalogPage(catalog.render([]).decode())
+        self.assertEqual(empty.options, {'': 'All projects (0)'})
+        self.assertEqual(empty.groups, {})
+        report = self.publish(project='private-label')
+        disabled = CatalogPage(catalog.render(self.store.list()['reports'], False).decode())
+        self.assertEqual(disabled.options, {}); self.assertEqual(disabled.groups, {})
+        self.assertNotIn(report['report_id'], catalog.render(self.store.list()['reports'], False).decode())
 
     def test_new_store_concurrent_publications_keep_every_snapshot_and_index_entry(self):
         def publish(number):
