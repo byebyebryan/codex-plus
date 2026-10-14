@@ -1886,3 +1886,138 @@ update, decision, continuation and stop are easy to follow.
 This pass does not add a fleet coordinator, Observer/Mesh dependency, recurring
 cron service, new-task delegation, automatic workload repair, generalized owner
 replacement or native /exit interception.
+
+## Next pass: managed installation and activation on Snap and Starship
+
+### Requested outcome and current baseline
+
+Bryan requested planning actual installation through chezmoi on both hosts after
+clarifying that publication/distributed source and isolated acceptance installs
+were not everyday installation. This section plans execution; it does not start
+a goal, apply files, enable tools, refresh MCP connections or restart a daemon.
+
+Read-only checks found neither host has a selected monitoring runtime, the model
+launcher or a live codex_plus MCP entry. Both run Codex 0.162.1 and Python 3.14.8.
+Snap's canonical source is clean at 5806533. Starship's source is at 5524ce1 with
+divergent history and local Codex/Claude/checker, SSH and Kitty edits. These are
+host-specific snapshots, to be rechecked before execution.
+
+Use the existing published v0.1.0-preview.2 runtime from source
+2274f4b54817fae88c3762c39c1284b8b1eb2695, SHA-256
+d4b23b83339f2a59bd12eadc0408695d899b993020d0fa496dc394de9e49ecdf.
+No runtime rebuild or new release is required unless qualification discovers a
+defect. HTML reports have their own release, configuration, data and hosting;
+their installation does not constitute monitoring activation.
+
+Finish: published host-scoped chezmoi enablement, verified installed payloads on
+Snap and Starship, actual capability loading/use in fresh independent sessions
+within each host's existing daemon, bounded synthetic acceptance, cleanup and a
+host-by-host handoff. Installation, configuration and native activation must be
+reported separately. Two installed hosts do not introduce cross-host messaging.
+
+### Managed configuration and scope
+
+Proposed capability scope is watches, reminders, passive peer discovery/inspection
+and user-directed peer messages within the receiver's existing task. Add explicit
+peer_send/message_cancel approval settings so the intended communication surface
+is usable under native never-approval, alongside the existing own-watch/reminder
+controls. This grants tool availability, not new tasks or authority from incoming
+observations. Existing explicit opt-outs, disabled tools and custom approval
+preferences remain effective and must be reported if they hold activation.
+
+Make default availability host-scoped to Snap and Starship in managed source;
+unknown hosts receive no automatic MCP entry. Update component/full validators
+for the selected enablement and messaging policy, preserving local overrides,
+projects, hooks, plugin settings and worker/skill preferences. Keep required=false
+so an unavailable optional component does not prevent ordinary Codex startup.
+Tool availability starts no observation, reminder or peer input.
+
+Publish the reviewed managed change before host deployment. Use that exact clean
+source revision for both applies. On Starship use an isolated checkout instead
+of rebasing, stashing or discarding its active canonical work as part of this
+rollout. Any unique local history requires a separate reconciliation; it is not
+a prerequisite for a scoped apply from the verified source.
+
+Scope live apply to five groups: the immutable runtime release directory, current
+selection, model launcher, package launcher and reviewed Codex configuration.
+Exclude apply scripts and unrelated targets. Existing worker bytes are verified;
+their metadata, enablement and invocation policy do not change. Private journals,
+report snapshots/hosting, Kitty, SSH, Claude and Observer/Mesh targets stay outside
+this live apply. Review semantic config differences as well as textual dry-run:
+an unrelated difference inside the shared config target is held or reconciled
+before applying it, not silently included because the filename is in scope.
+
+### Stages and acceptance gates
+
+| Stage | Work | Gate |
+| --- | --- | --- |
+| 1. Protect and prepare | Recheck host versions, source/live drift, local overrides, current selections and exact existing daemon ownership. Retain private rollback/recovery copies. Prepare and publish host-scoped enablement and validators. | Source revision, release URL/hash, policy and host renders agree; no real session was changed. |
+| 2. Install on Snap | Review scoped status/diff/dry-run, then apply only the five groups with scripts excluded. | Installed manifest, 19-file payload plus manifest, modes, revision, symlinks and resulting MCP policy verify against fetched bytes; unrelated state is preserved. |
+| 3. Activate and qualify Snap | Open fresh owned sessions through the ordinary native CLI/TUI and inspect actual server/tool startup. Run the bounded scenes below from installed code. | Default managed configuration loads the real installed tools; useful handling, stop and cleanup pass under the existing daemon. |
+| 4. Install and qualify Starship | Repeat from the same published source and artifact using a clean isolated source checkout. Preserve its canonical edits and independently qualify its daemon/tool loading. | Starship has its own installed and native acceptance, rather than inheriting Snap's result. |
+| 5. Close and review | Settle exact owned pending input, close owned sources/viewers/actors, verify owner preservation and record results. | Both hosts have truthful installation/configuration/activation outcomes; no experiment remains active; manual gaps are explicit. |
+
+Fresh-session tool loading is a substantive gate. Do not inject a per-thread
+codex_plus configuration and call that proof of default managed activation.
+Fixture-only source/allowlist/bound overrides can be used after the default
+attachment is proved, and their evidence is labeled separately.
+
+Do not invoke a global MCP refresh as an automatic shortcut. The current native
+schema exposes config/mcpServer/reload without a thread target; the
+[official app-server documentation](https://learn.chatgpt.com/docs/app-server#api-overview)
+says it queues refresh for loaded threads. Qualify ordinary fresh-session loading
+first. If activation requires a refresh or daemon restart affecting existing
+work, leave that step held with a concrete diagnosis for a selected maintenance
+window. Installation is not falsely reported as fully activated in that case.
+The separately managed one-hour unload setting is not a reason to restart a
+busy daemon during this rollout.
+
+### Bounded native acceptance
+
+Use fresh owned synthetic sessions and fixtures on each host; all prior study
+actors, events and allowances remain closed. Real active sessions can supply
+passive reads only. No peer messages, interruption, goals or task changes target
+real sessions. No coding-worker skill or delegation is activated by this loop.
+
+Use one combined ceiling of 12 automatic deliveries and 32 started model turns
+across both hosts, reserving four turns for settlement. Count partial/failed
+scenes as well as successful ones. Each observation lease is at most three
+minutes and two source events; the fixture harness closes admission at the
+combined ceiling. Limit model-selected continuation to one successor per host.
+Keep aggregate observation under ten minutes, HTTP fixture calls under 240 and
+MCP fixture calls under 40. These are experimental bounds, not everyday defaults
+or verbose user-facing polling instructions.
+
+Drive natural requests and controlled fixture transitions centrally, with no
+user copy/paste of UUIDs, JSON, cadence or acknowledgement recipes. Each host's
+scenes cover installed tool use, two independent active sessions in its daemon,
+contextual discovery, one attributed message/receipt, a useful watch follow-up,
+an authenticated endpoint read/update, a timed or scheduled configured MCP
+inspection, and explicit stop preserving the observed work. Reuse earlier
+foreground/queue/draft and permission-matrix evidence unless a new failure or
+changed implementation justifies repeating it. Capture actual native handling
+and installed-code identity rather than equating registration with success.
+
+Under a provider/access failure, settle without automatic replay or privileged
+fallback. At a second distinct provider-capacity failure stop inference for this
+pass. Prefer remaining offline/installation work whose gates still hold. Finish
+unattended fixture qualification before asking for a real credential, endpoint
+choice or personal UX step. A selected already-accessible endpoint can support a
+short real read-only pilot; absence of such a source is not manufactured into a
+production trial and does not prove real authentication/long operation.
+
+### Rollback and final handoff
+
+Retain the prior verified selection when present. Since neither checked host has
+a prior selected monitoring runtime, rollback can disable its new optional MCP
+entry through the configuration owner and remove only newly owned wiring if
+needed. Preserve journals, immutable releases, report data/hosting and all native
+work. Stop only positively identified observation resources created by this pass;
+rollback does not retract handled messages or interrupt a consumed turn.
+
+The final matrix records each host's managed source revision, artifact identity,
+installed verification, enablement/approval policy, actual fresh-session use,
+handled watch/message/MCP receipts, resource counts, cleanup and remaining manual
+steps. A later primary-driven walkthrough is personal UX acceptance, separate
+from unattended installation/native proof. Commit validated slices as execution
+proceeds; keep live proof and private host/session data outside committed source.
