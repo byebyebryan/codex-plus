@@ -37,8 +37,9 @@ validated and pushed as 1bac126, including full/component checks and scoped dry-
 All 21 owned actors/helpers/viewers/fixture services are closed; the combined batch
 used 31 turns (29 completed, two cleanup interruptions), nine automatic events,
 54 HTTP fixture calls and ten MCP fixture calls. Original owner/requester remain
-preserved. Canonical dotfiles stay at 271b35d with seven concurrent files unchanged;
-published main has the rollout, and the clean isolated checkout is available.
+preserved. At that pass's finish, canonical dotfiles stayed at 271b35d with seven
+concurrent files unchanged; published main contained the rollout. The subsequent
+checkout reconciliation below supersedes that working-checkout state.
 The selected finish leaves live apply/enablement deferred. The source/tag revision
 identifies qualified runtime bytes; later documentation commits do not repin them.
 
@@ -46,6 +47,27 @@ The isolated dotfiles worktree reconciles the surviving 1c17dd5 integration onto
 current published history 271b35d. Preserve concurrent canonical SSH, Claude and
 Codex edits. Existing real conversations and the original daemon remain untouched;
 experimental writes use fresh owned actors. Earlier native allowances remain closed.
+
+## Checkout reconciliation after HTML report integration
+
+Bryan subsequently requested reconciling published HTML-report work and the
+canonical checkouts' pending edits. Source main was fast-forwarded to bad5565,
+which includes both report PRs and all earlier monitoring work. The watch runtime
+files, existing worker files and immutable preview.2 pins remain unchanged.
+
+Canonical chezmoi main was rebased onto published history. All five local report
+commits were skipped because equivalent patches were already upstream. The pending
+Observer/Mesh selection and launcher edits matched published main and resolved
+without a residual diff. Original commits and pending-file recovery copies were
+retained privately before reconciliation.
+
+The remaining source changes are committed and pushed separately: e5d5842 manages
+shared SSH COLORTERM forwarding while preserving local config, and 5806533 retains
+idle Codex threads for one hour and enables Claude's left-arrow agent navigation.
+The SSH validator is included in the full dotfiles check. Full/component checks,
+SSH parsing/preservation checks and scoped status/diff/dry-run passed. No live apply
+or daemon restart was performed. Codex/SSH live targets remained unchanged; active
+Claude runtime state was preserved rather than restored from a stale snapshot.
 
 The sections below retain completed-pass and historical planning evidence.
 
