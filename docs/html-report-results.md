@@ -76,9 +76,26 @@ The combined source suite passes 244 tests after incorporating the separately
 published upstream runtime work; the 67 unrelated native/runtime/worker files
 match the post-merge protected hashes. Source inventory and whitespace gates pass.
 
-Pending deployment gates: publish the reviewed component, choose/enable the exact
-artifact pin, scoped chezmoi apply, start the owned HTTP tmux server,
-recheck port/DNS/access on each host and qualify persistence after launcher exit. Carbon
-was offline and is not qualified. Native terminal modifier-click and user desktop
-acceptance remain separate from browser automation. HTTP controls needing secure
-browser APIs must retain fallbacks or use a separately configured HTTPS profile.
+Live rollout completed on Starship and Snap using the published
+`reports-v0.1.0-preview.2` artifact at source `c36e9f1`. The published/downloaded
+archive matched the reproduced SHA-256
+`1da07c2193a0dbdc9b11aa816657e6c083b8cf5cb25c8919200731d06011208b`.
+Canonical chezmoi installs only report code/links/config/skill and starts the
+code-report-server tmux session. Installed payload checks, source/target
+convergence and local catalog/report HTTP byte checks passed on both hosts.
+All five sample HTML/CSS/JS/JSON/SVG files matched in each peer direction.
+Chrome opened the live Snap catalog/report, loaded the relative assets, filtered
+rows and exercised the HTTP copy fallback. The launcher and SSH command exited
+while both detached servers continued running.
+
+The only firewall changes were runtime/permanent IPv4 TCP 8787 allowances from
+100.64.0.0/10 in Starship's public zone and Snap's tailscale zone. Existing rules
+were retained; no firewall reload, Serve reset or native daemon restart occurred.
+Both existing project servers and Snap's Codex Plus checkout remained untouched.
+The 138 unrelated source files and prior check-script edits on each host retained
+their protected bytes. Carbon was offline and is not activated. Native terminal
+modifier-click remains user acceptance beyond browser automation. Tmux requires
+starting the server again after host reboot.
+
+Live evidence and browser screenshot:
+`~/.local/state/codex-plus/report-http/20261013-tmux/` on the participating hosts.
