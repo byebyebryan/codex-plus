@@ -106,7 +106,10 @@ rtk proxy codex-report-server stop
 
 `start` initializes an owned store if needed and starts one detached tmux session
 named **codex-report-server**, window **http**. A repeated start reuses the healthy
-owned server. HTTP reads the public subtree at the URL prefix; publishing new
+owned server. The session starts in the configured report data root, consistently
+across callers and hosts. This display directory does not determine publication
+or serving: the publisher uses `data_root`, and HTTP serves its `public` subtree.
+HTTP reads the public subtree at the URL prefix; publishing new
 reports needs no server restart. The bind address defaults to the configured URL
 hostname; `server_bind` can select another local address. Only HTTP is built in;
 HTTPS can use an external server.

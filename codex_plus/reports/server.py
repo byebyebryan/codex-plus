@@ -220,7 +220,8 @@ class Controller:
             token = uuid.uuid4().hex
             script = Path(__file__).resolve().parents[2] / 'scripts/codex-report-server'
             argv = [sys.executable, '-B', str(script), '--config', str(self.path), 'serve', '--instance', token]
-            sid = self.tmux('new-session', '-d', '-P', '-F', '#{session_id}', '-s', SESSION, '-n', 'http', *argv)
+            sid = self.tmux('new-session', '-d', '-P', '-F', '#{session_id}', '-s', SESSION,
+                            '-n', 'http', '-c', self.config.data_root, *argv)
             marker = {'schema': 1, 'component': SESSION, 'fingerprint': fingerprint(self.config), 'instance': token, 'argv': argv}
             self.tmux('set-option', '-t', sid, OWNER_OPTION, json.dumps(marker))
             self.tmux('set-option', '-t', sid, 'remain-on-exit', 'on')

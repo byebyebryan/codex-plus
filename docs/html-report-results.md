@@ -1,5 +1,10 @@
 # HTML report implementation evidence
 
+Preview 7 explicitly starts the report tmux session in its configured data root.
+The displayed directory is consistent across launch contexts; publication and
+the HTTP public root continue to use the existing configured paths. This change
+is isolated from the concurrent native runtime work and preserves report URLs.
+
 Current project-browsing edition: preview 6 adds counted project groups, combined
 project/search filters, bookmarkable navigation and project catalog links in
 CLI/MCP receipts. The skill uses stable labels and links relevant earlier reports
