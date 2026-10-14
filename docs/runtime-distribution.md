@@ -71,15 +71,20 @@ Private journals default to `$XDG_STATE_HOME/codex-plus`, or
 `~/.local/state/codex-plus`, partitioned by verified caller UUID. `--state-root`
 selects another absolute private root. Frozen native bindings are retained: a
 native daemon incarnation change does not silently rebind old intent. Existing
-private state must be owned by the user and private. State/allowlists are never
+private state must be owned by the user and mode 0700. A pre-existing 0755 root
+is rejected; scoped rollout may narrow only that owned root without deleting or
+changing its journals. State/allowlists are never
 part of a release or a managed `exact` archive.
 
 The default MCP policy is `writes`, with explicit approval for controls that affect
 the caller's own observation/reminder intent and current-event handling. Command
 sources retain the caller's effective permissions unless explicitly narrowed.
 Legacy jobs without an execution grant retain their earlier offline policy.
-Peer messages have separate
-approval; `--allow-peer-send` explicitly opts into tool approval for messages within
+Peer messages have separate approval. Bryan's Snap/Starship managed policy enables
+the optional server and explicitly approves peer_send/message_cancel alongside the
+seven watch/reminder controls while preserving existing explicit preferences.
+For generated configurations, `--allow-peer-send` explicitly opts into tool approval
+for messages within
 the recipient's existing task, including cancellation of your own outgoing intent.
 Completed recipient handling is never retracted. Under a native `never` approval policy, a message
 that requires approval is unavailable; explain that result rather than issuing
@@ -105,6 +110,7 @@ The managed rollout must keep release URLs, revisions, fetched checksums, runtim
 entry/config wiring and validator expectations together. Render supported and
 unknown hosts, disabled settings and preservation of unrelated config state. A
 scoped dry-run is not a live installation, and installed-but-disabled is not proof
-of fresh-session activation. The default execution finish leaves live apply
-deferred. Fresh owned native acceptance must run from the installed artifact with
-the shipped instructions, independent of this checkout.
+of fresh-session activation. The managed installation pass applies only the selected
+runtime/wiring and Codex Plus configuration; its host evidence is recorded in the
+implementation handoff. Fresh owned native acceptance must run from the installed
+artifact with the shipped instructions, independent of this checkout.

@@ -5,27 +5,28 @@ Updated 2026-10-13 for Bryan's continuation on Snap in
 complete, including published preview and pushed managed distribution. The two-host managed rollout is now executing; a real-source pilot and personal
 UX acceptance remain separate scope.
 
-## Current pass: managed activation on both hosts
+## Completed pass: managed activation on both hosts
 
 Bryan selected the [two-host rollout plan](codex-plus-plan.md#next-pass-managed-installation-and-activation-on-snap-and-starship)
-and required preserving active work with no daemon restart. Host-scoped managed
-availability and nine control approvals are published as dotfiles fa6c9c0. A tested
-`codexPlusOnly` apply option preserves unrelated live config values, including
-Starship's pending legacy cleanup. Full/component validators passed.
+and required preserving active work with no daemon restart. The
+[execution report](managed-activation-results.md) records completed installation,
+default native loading, bounded host-specific acceptance and cleanup.
 
-The five runtime/config target groups are installed on Snap and Starship from the
-existing preview.2 release. Both payloads match the fetched checksum, manifest,
-19-file inventory and modes. Ordinary fresh native TUI sessions found all 15 tools
-and successfully called the installed watch_list without per-thread MCP injection,
-a global reload or owner replacement. Snap's pre-existing state root required
-permissions narrowed from 0755 to 0700; its contents were preserved.
+Host-scoped managed availability and nine control approvals are published as
+fa6c9c0; a tested codexPlusOnly apply option preserves unrelated live configuration.
+The existing preview.2 payload is installed and verified on Snap and Starship.
+Ordinary fresh native TUI sessions load all 15 tools and execute installed tools
+without per-thread MCP injection, global refresh or owner replacement. Independent
+peer messaging/receipts, useful watch handling/stop, authenticated endpoint changes
+and actual timed configured MCP inspections passed independently on both hosts.
 
-Acceptance writes target fresh owned synthetic actors only. Snap's first broader
-batch stopped at a provider-capacity error before messaging or observation began;
-its two actors and fixture process were closed without replay. Starship's independent
-bounded scenes are in progress. Its canonical divergent/dirty checkout remains
-outside the clean pinned deployment worktree. New concurrent Snap Observer edits
-are preserved. No prior allowance or closed study actor is reused.
+The pass used 32 native turns, ten deliveries, 23 HTTP calls and two MCP calls.
+All 18 owned actors and helpers are closed; both original daemon incarnations,
+worker bytes and unrelated live configuration remain preserved. Starship's original
+history/dirty bytes remain intact in its canonical tree; concurrent report and
+Observer work was retained. One capacity failure and private-harness corrections
+are recorded separately from passing runtime evidence. Real-source and personal UX
+acceptance remain separate; everyday installation and activation are now complete.
 
 ## Current source-access and distribution pass
 

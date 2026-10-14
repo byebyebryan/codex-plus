@@ -46,6 +46,7 @@ EXPECTED_FILES = {
     "docs/interaction-pass-results.md",
     "docs/distribution-pass-results.md",
     "docs/source-access-pass-results.md",
+    "docs/managed-activation-results.md",
     "docs/runtime-distribution.md",
     "docs/html-report-design.md",
     "docs/html-report-plan.md",

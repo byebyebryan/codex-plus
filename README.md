@@ -25,8 +25,10 @@ network-off options narrow access. Periodic commands can poll quietly without a
 model turn per read. MCP checks use native model turns under normal tool approval
 and authentication, with a model cost per check. See the
 [source-access acceptance report](docs/source-access-pass-results.md).
-Managed rollout stays optional and disabled by default; live installation and
-fresh-session enablement remain deferred. Ordinary requests such as "watch this
+The optional runtime is installed and enabled through chezmoi on Snap and Starship.
+Fresh native TUI sessions load the installed tools under each existing daemon,
+without a restart or global MCP reload. Existing explicit opt-outs remain effective. See the
+[two-host activation report](docs/managed-activation-results.md). Ordinary requests such as "watch this
 run and tell me if it stalls", "check again later", and "stop watching it" let the
 model choose sources, cadence, filtering and continuation. Real-source pilots and
 long operation remain separate acceptance from controlled fixture qualification.
