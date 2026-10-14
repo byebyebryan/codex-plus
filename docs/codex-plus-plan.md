@@ -1,65 +1,49 @@
 # Codex Plus implementation plan
 
-Draft revised 2026-10-12 with a proposed research/spike pass using simulated work,
-following the 2026-10-11 Claude Code and selected Snap history review.
-Bryan is keeping Codex CLI/TUI as the daily interface. Background monitoring and
-model-controlled wakeups come first, coordination next, and Agent Observer is
-an integration decision for that later stage. The research-to-candidate loop has
-now produced a tested local helper on Snap; see the
-[current results](coordinator-loop-results.md) and [candidate guide](watch-candidate.md).
-The published/installed bundle remains the worker agents and skills. Earlier
-draft sections below preserve the planning sequence, not the latest completion state.
+Updated 2026-10-14. Codex CLI/TUI remains the daily interface and its existing
+native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
+and reporting are implemented; the qualified monitoring/report artifacts are
+installed and enabled on Snap and Starship. Current sources are reconciled.
+Real-source soak and personal UX acceptance remain separate from synthetic proof.
 
-Read the [Claude monitoring context](claude-monitoring-context.md) for the latest
-request, evidence and open decisions. The earlier JSON-snapshot-only scope has
-been broadened. The local CLI now supplies sources, projection, one-shot wakeups,
-renewal, cancellation and explicit recovery; broader integrations remain draft.
+Read the [implementation handoff](implementation-handoff.md) for current state,
+[managed activation](managed-activation-results.md) for host-specific acceptance,
+and [Claude context](claude-monitoring-context.md) for the historical design input.
 
-The completed next-pass contract is
-[discovery and peer watches](#next-pass-discovery-and-peer-watches): two existing,
-loaded independent sessions inside the same owning daemon. Carry forward the
-earlier message/reply evidence, resolve independent-session discovery first, and
-use A watching B as the integrated acceptance case. The subsequent goal loop is
-complete; [the peer-watch report](peer-watch-results.md) records 128 tests, the
-52-file inventory and two closed native recipes totaling 8 admissions / 14 turns.
-Human TUI acceptance and installation remain subsequent scope.
+## Selected pass: documentation, presentation and daily-use readiness
 
-The latest completed local pass is
-[natural requests and readable peer communication](#next-pass-natural-requests-and-readable-peer-communication).
-The controlled walkthrough passed technical lifecycle checks, but Bryan reported
-verbose watch instructions, exact-title destination requirements and distracting
-JSON prompts. Practical interaction acceptance still requires Bryan's assessment;
-the contract below records the plan subsequently executed by this goal loop.
+Bryan selected an ordinary goal loop to complete the documentation/presentation
+plan while retaining qualified runtime pins, active work and explicit worker
+invocation. No worker skill or delegation is activated. No real watches, reminders,
+peer messages, daemon restarts or managed live applies belong to this pass.
 
-Bryan subsequently requested execution as an ordinary goal loop. The
-[current pass report](interaction-pass-results.md) records qualification and the
-fresh combined allowance. Session-local MCP tools passed the native TUI gate;
-tool-output delivery failed the ordering gate, selecting readable text through
-the established exact queue route. The local candidate now passes 162 tests and
-the 59-file inventory. Ordinary contextual watch setup/callback, readable information
-with a preserved TUI draft, accepted/declined requests, cached receipt and ordinary
-stop passed the bounded native checks. The recipe closed at 7 deliveries / 24 turns,
-with the report retaining harness/capture limits and prior lifecycle evidence.
-All owned experimental resources are stopped; personal UX assessment and installation
-remain subsequent scope. The current [primary-driven demonstration](watch-candidate.md#current-primary-driven-interaction-demonstration)
-uses fresh actors and a new allowance when the shared review is requested.
+| Slice | Deliverable | Acceptance |
+| --- | --- | --- |
+| 1. Current story | README, handoff and technical guides agree on installed preview status; history is labeled. | Claims traced to code, installed identities and named acceptance reports. |
+| 2. Daily use | Short natural-language guide with setup, useful follow-up, status and stop examples. | No routine UUID/JSON/polling recipe; actual tool surface supports each request. |
+| 3. Package explanation | Component map, source/permission/cost routes, discovery, receipts, lifecycle and Claude-workflow comparison. | Coverage and unresolved real-use/transport/exit limits are distinct. |
+| 4. Presentation | Self-contained browser walkthrough with three illustrative scenes and public evidence links. | Desktop/mobile rendering and scene, keyboard, copy/download controls pass; published HTTP bytes and actual browser delivery verify. |
+| 5. Soak handoff | Small private-note template and review criteria for ordinary use. | No completed-soak claim or automatic trial; private data stays outside published source/reports. |
 
-The subsequent substantial loop is
-[review, refinement, packaging and distribution](#next-loop-review-refinement-packaging-and-distribution).
-Its default finish line has been achieved: published verified runtime preview
-`v0.1.0-preview.1` at `f4db934`, with prepared isolated dotfiles commit `1c17dd5`.
-The [final report](distribution-pass-results.md) records 177 tests, artifact checks,
-42 turns / 12 deliveries and native limits. Live apply remains deferred; the
-contract below retains the plan that was subsequently executed.
+Commit and push validated slices. Update the explicit inventory for new files;
+run `rtk proxy scripts/check`, the existing metadata tests, `git diff --check`,
+and local-link checks. Browser validation uses only fresh owned tooling; it never
+operates an active session or shared browser profile. Publish through the shared
+report component and leave its existing host/server running. Keep publication,
+HTTP delivery and browser acceptance separate. Record completion in the
+[documentation pass report](documentation-pass-results.md).
+
+A documentation update does not rebuild or repin preview.2/preview.7. The soak
+checklist supports later real-use evidence; completing this pass does not qualify
+long unattended operation, provider recovery or personal UX.
 
 ## Product contract
 
-The current next pass is
-[operational source access and refinement](#next-pass-operational-source-access-and-refinement).
-Bryan's 2026-10-13 correction makes network polling and MCP-backed inspection
-first-class requirements. Earlier offline source restrictions below describe the
-qualified preview, not a permanent product boundary. The model must be able to
-choose suitable access within the session's existing authorized scope.
+The [operational source-access pass](source-access-pass-results.md) and
+[two-host managed activation](managed-activation-results.md) are complete.
+Endpoint polling and MCP-backed inspection are implemented within the session's
+existing authorized scope. Earlier offline restrictions below belong to historical
+contracts and preview.1; they are not the current product boundary.
 
 Use the ordinary Codex conversation to ask for a watch, inspect it, or cancel it.
 Keep native planning, goals, approvals, context handling and TUI access. The model
@@ -80,6 +64,14 @@ reasoning is needed later. Count scheduled wakeups separately from watch events.
 
 The watcher owns observation and notification. It does not restart the watched
 job, repair code, change capacity or grant new action permissions.
+
+## Historical implementation contracts
+
+The remaining sections preserve the research and execution sequence, including
+formerly pending installation and earlier offline limitations. Read each with its
+named results report. Their budgets, launch recipes and actor IDs are closed;
+they do not authorize new experiments. Current status and the selected pass are
+recorded above and in the implementation handoff.
 
 ## Proposed first scope and source options
 

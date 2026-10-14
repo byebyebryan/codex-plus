@@ -1,21 +1,19 @@
-# Local watch coordinator candidate
+# Watch runtime technical reference
 
-Run `scripts/codex-plus-watch` from this checkout. This is a local Linux/Unix
-candidate for the qualified `0.162.1` native app-server surface. Queue operations
-are experimental. Worker identities and installed paths are unchanged. The separate
-[runtime preview](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.2)
-is published and verified; its managed wiring is validated/pushed, with live apply
-and enablement deferred. See the [source-access report](source-access-pass-results.md).
+The Linux/Unix monitoring runtime is installed and enabled on Snap and Starship
+as [v0.1.0-preview.2](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.2),
+qualified against the `0.162.1` native app-server surface. Queue operations are
+experimental. Worker identities and invocation behavior are unchanged. See
+[managed activation](managed-activation-results.md) for installed/default-loading
+proof and the [daily guide](daily-use.md) for ordinary requests.
 
-Bryan's controlled walkthrough found the current interaction hard to follow:
-detailed watch instructions, exact destination titles and JSON prompts. The CLI
-examples below expose the current low-level candidate. The
-[next-pass plan](codex-plus-plan.md#next-pass-natural-requests-and-readable-peer-communication)
-now has a tested local interface for ordinary requests, contextual peer selection
-and readable event delivery. See the [interaction results](interaction-pass-results.md).
-Native tool-output delivery failed its ordering gate; readable queue input remains
-selected. The [runtime distribution guide](runtime-distribution.md) describes
-the new preview artifact and installed capability path under qualification.
+This page retains low-level source CLI diagnostics and historical owned-fixture
+recipes. They are not routine setup instructions or authorization to replay old
+trials. Bryan's earlier walkthrough exposed verbose recipes, exact-title
+requirements and JSON prompts; the [interaction pass](interaction-pass-results.md)
+qualified contextual selection and readable events. Default managed fresh-session
+loading subsequently passed on both hosts. Native tool-output delivery failed
+its ordering gate, so readable queued input remains selected.
 
 The coordinator owns one private state directory and one existing conversation.
 It reuses that conversation's daemon for permission-verified observation commands and queued
@@ -34,8 +32,10 @@ do not need exact titles, UUIDs or polling recipes. Use the reusable
 `MODEL_GUIDANCE` in `codex_plus/model.py` as capability guidance once, rather than
 inserting a setup/ack recipe into each prompt or callback.
 
-The qualified attachment is a per-thread app-server configuration, with the existing
-native daemon and ordinary TUI resume. For a separately authorized local fixture,
+Daily use loads the installed MCP interface from managed configuration in a fresh
+ordinary native session. The earlier qualification used a per-thread override
+within the existing daemon; the JSON below is retained only for a separately
+authorized owned fixture. For that historical attachment recipe,
 set a thread's `config` override as follows, replacing the private placeholders:
 
 ```json
@@ -95,8 +95,8 @@ The same interface is included in the immutable runtime preview. Its installed
 qualification is recorded in the [distribution report](distribution-pass-results.md),
 with the earlier [interaction evidence](interaction-pass-results.md) retained.
 Use the [runtime guide](runtime-distribution.md) for installation/configuration;
-the examples here remain low-level source diagnostics. Managed live deployment,
-cold recovery and native `/exit` interception are not implied.
+the examples here remain low-level source diagnostics. Managed deployment is proved separately in the activation report;
+cold recovery and native `/exit` interception remain outside the preview.
 
 ### Low-level source CLI
 
@@ -360,9 +360,12 @@ reproduced by this pass.
 
 ## Acceptance boundary
 
-See [the goal-loop evidence](coordinator-loop-results.md) for tested behavior and
-current limitations. Human draft/input/stop acceptance, an accessible real-source
-pilot, longer operation and managed installation remain subsequent checks.
+The early [goal-loop evidence](coordinator-loop-results.md) is historical.
+Subsequent [source-access qualification](source-access-pass-results.md) and
+[managed activation](managed-activation-results.md) completed installed/default
+native use on Snap and Starship. The [daily guide](daily-use.md) is the normal
+entry point. Personal UX, an accessible real-source pilot and longer operation
+remain separate acceptance; installation is complete.
 
 Post-loop review found renewal/cancellation gaps. The corrective unattended pass
 resolved them with 94 passing tests and a fresh native batch of four admissions
@@ -380,9 +383,12 @@ closed acceptance actors and their allowances are not reusable. The primary driv
 all prompts, synthetic changes, inspection and cleanup. Bryan watches two native
 TUI panes over SSH/tmux and assesses the replies; no copy/paste protocol is required.
 
-Before launch, recheck the existing daemon/version and select a new bounded
-allowance. Attach the per-thread bridge above, using the reusable `MODEL_GUIDANCE`,
-an owned-actor allowlist and fresh private journals. Open both exact actor UUIDs in
+For a separately selected future walkthrough, recheck the existing daemon/version
+and select a new bounded allowance. Qualify ordinary installed/default tool
+loading first; use only the selected owned-fixture overrides for experimental
+isolation. The earlier per-thread bridge above is a historical recipe, not daily
+setup. Keep reusable `MODEL_GUIDANCE`, an owned-actor allowlist and fresh private
+journals. Open both exact actor UUIDs in
 their ordinary remote-resume TUI through a launcher that inherits `/dev/tty`.
 Identify the windows by A/B role for the viewer; opaque native titles still test
 selection by task context. All deliberate controls and messages target these actors.

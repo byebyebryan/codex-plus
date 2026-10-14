@@ -22,6 +22,20 @@ and authentication, with a model cost per check. The direct MCP RPC is excluded
 because controlled qualification exposed an approval bypass. Real-source/auth and
 long-operation acceptance remain separate from local fixture results.
 
+## Current managed state
+
+Preview.2 is installed and enabled through chezmoi on Snap and Starship.
+Ordinary fresh native TUI sessions loaded all 15 tools and used installed code
+under each existing daemon, with no restart or global MCP reload. The
+[managed activation report](managed-activation-results.md) records each host's
+acceptance; the earlier source-access report's deferred-live-apply checkpoint is
+historical. Start with the [daily guide](daily-use.md) for normal usage.
+
+The separate report component is installed as preview.7, with report MCP enabled
+by default on supported managed hosts and explicit opt-outs preserved. See
+[report usage](html-report-usage.md). Report publication/hosting is independent of
+the monitoring runtime. Later documentation commits do not repin either artifact.
+
 ## Artifact and immutable installation
 
 `scripts/codex-plus-package build --output /ABSOLUTE/OUTSIDE/REPO/runtime.tar.gz`

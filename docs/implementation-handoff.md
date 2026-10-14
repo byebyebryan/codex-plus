@@ -1,9 +1,31 @@
 # Implementation handoff
 
-Updated 2026-10-13 for Bryan's continuation on Snap in
-`/home/bryan/code/codex-plus`. The operational source-access/refinement loop is
-complete, including published preview and pushed managed distribution. The two-host managed rollout is now executing; a real-source pilot and personal
-UX acceptance remain separate scope.
+Updated 2026-10-14 for continuation on Snap in `/home/bryan/code/codex-plus`.
+The source-access pass, published distribution and two-host managed activation
+are complete. Monitoring preview.2 and report preview.7 are installed; both
+optional MCP surfaces are enabled on Snap and Starship. Real-source soak and
+personal UX remain separate acceptance.
+
+## Selected documentation and presentation pass
+
+Bryan requested an ordinary goal loop for consistent current docs, a natural
+[daily-use guide](daily-use.md), [package/Claude-workflow explanation](architecture.md),
+[browser walkthrough](presentation.md) and [soak checklist](soak-checklist.md).
+The [selected contract](codex-plus-plan.md#selected-pass-documentation-presentation-and-daily-use-readiness)
+keeps runtime pins, native owners, active sessions and worker invocation unchanged.
+Publishing one new presentation is authorized; real watches/messages and live
+configuration apply are outside this pass. No delegation or worker skill is used.
+See the [pass report](documentation-pass-results.md) for final checks and delivery.
+
+## Current checkout reconciliation
+
+Canonical chezmoi sources on Snap and Starship were reconciled and pushed at
+c3b0041. All local ancestry was preserved through merges. Already published
+Observer, dashboard, SSH, Claude and Codex changes were absorbed; the residual
+Kitty cursor-trail preference was committed. Recovery branches/private copies
+retain the previous source and pending bytes. Both canonical working trees are
+clean. Full/focused checks and scoped dry runs passed without live apply, daemon
+restart or report-server replacement. Existing deployed drift remains separate.
 
 ## Completed pass: managed activation on both hosts
 
@@ -22,9 +44,10 @@ and actual timed configured MCP inspections passed independently on both hosts.
 
 The pass used 32 native turns, ten deliveries, 23 HTTP calls and two MCP calls.
 All 18 owned actors and helpers are closed; both original daemon incarnations,
-worker bytes and unrelated live configuration remain preserved. Starship's original
-history/dirty bytes remain intact in its canonical tree; concurrent report and
-Observer work was retained. One capacity failure and private-harness corrections
+worker bytes and unrelated live configuration remain preserved. At that checkpoint,
+Starship's original history/dirty bytes remained in its canonical tree; concurrent
+report and Observer work was retained. The checkout reconciliation above now
+supersedes that source state. One capacity failure and private-harness corrections
 are recorded separately from passing runtime evidence. Real-source and personal UX
 acceptance remain separate; everyday installation and activation are now complete.
 
@@ -43,7 +66,13 @@ closed. See the [report results](html-report-results.md#managed-mcp-default-2026
 No report release was rebuilt, no real report was deleted and no daemon/global
 refresh occurred.
 
-## Current source-access and distribution pass
+## Earlier implementation history
+
+The sections below retain completed-pass snapshots and historical planning. Their
+formerly deferred installation statements are superseded by the activation and
+report-MCP sections above. Closed actor budgets/recipes grant no new authority.
+
+## Source-access and distribution pass
 
 Bryan selected an ordinary goal loop from 8900175 to remove the blanket offline
 restriction and qualify his endpoint/MCP monitoring workflows. The
@@ -78,7 +107,8 @@ used 31 turns (29 completed, two cleanup interruptions), nine automatic events,
 preserved. At that pass's finish, canonical dotfiles stayed at 271b35d with seven
 concurrent files unchanged; published main contained the rollout. The subsequent
 checkout reconciliation below supersedes that working-checkout state.
-The selected finish leaves live apply/enablement deferred. The source/tag revision
+At that pass's finish, live apply/enablement was deferred; the subsequent
+two-host activation above completed it. The source/tag revision
 identifies qualified runtime bytes; later documentation commits do not repin them.
 
 The isolated dotfiles worktree reconciles the surviving 1c17dd5 integration onto
@@ -390,7 +420,8 @@ incremental commits. That pass has now delivered the local candidate; the
 [current evidence report](coordinator-loop-results.md) records native results
 and implementation status. The planning/first-spike baseline is committed at
 `8f3b380`; preserve later concurrent changes.
-Human TUI acceptance, real-source supervision and installation remain later scope.
+At that checkpoint, human TUI acceptance, real-source supervision and installation
+were later scope. The completed two-host activation above supersedes installation.
 
 The implemented candidate first slice is
 **one host, one existing Codex thread, a model-selected read-only event source
@@ -529,7 +560,9 @@ and any newer concurrent edits. Bryan requested
 source/doc synchronization to Snap, including
 updating and moving its clean old `codex-worker-kit` checkout to `codex-plus`.
 Continue in that checkout; a fresh clone or worktree based only on published
-main will not contain these drafts. Recheck status and bytes on the current host.
+main would not yet contain those drafts at that source-transfer checkpoint.
+The drafts were subsequently committed and published; current main contains the
+implementation and reviewed guides. Recheck status and bytes on the current host.
 
 The explicit inventory checker now includes these documents. Adding runtime
 files requires deliberate inventory updates; keep worker metadata validation

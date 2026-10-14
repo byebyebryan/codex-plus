@@ -1,80 +1,79 @@
 # Codex Plus
 
-Small augmentations around native Codex conversations and the TUI. This repository
-was previously published as Codex Worker Kit; its existing worker agents and skills
-remain available with the same identities and installation paths.
+Watches, later checks, peer communication and browser reports around the native
+Codex CLI/TUI. Keep your continuing conversation and its existing daemon; ask
+for useful follow-up in ordinary language.
 
-## Current scope and next step
+## Start here
 
-The standalone [HTML report component](docs/html-report-usage.md) now supplies
-immutable static publication, a shared catalog, CLI, skill and local MCP.
-Managed report MCP is enabled by default on supported hosts, preserving explicit
-opt-outs and custom tool policies.
-Report data and serving are independent of native agent ownership. The separate
-`codex-report-server` command runs plain HTTP in its named tmux session; delivery
-checks work with any HTTP server. Fleet activation has its own deployment checks.
-With `server_autostart = true`, publishing starts or reuses that shared server
-and leaves it running. Read-only report commands do not start it.
-Management uses the shared default tmux socket even from another attached client.
-Interrupted deletion keeps its cleanup identity and capacity reservation until
-the selected delete or explicit repair finishes.
+Open a fresh ordinary Codex session on Snap or Starship and say, for example:
 
-The existing installed worker agents and skills retain the identities described below.
-The separate [runtime preview v0.1.0-preview.2](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.2)
-supports authenticated endpoint monitoring and scheduled configured MCP inspection.
-Command sources inherit the calling session's effective permissions; read-only and
-network-off options narrow access. Periodic commands can poll quietly without a
-model turn per read. MCP checks use native model turns under normal tool approval
-and authentication, with a model cost per check. See the
-[source-access acceptance report](docs/source-access-pass-results.md).
-The optional runtime is installed and enabled through chezmoi on Snap and Starship.
-Fresh native TUI sessions load the installed tools under each existing daemon,
-without a restart or global MCP reload. Existing explicit opt-outs remain effective. See the
-[two-host activation report](docs/managed-activation-results.md). Ordinary requests such as "watch this
-run and tell me if it stalls", "check again later", and "stop watching it" let the
-model choose sources, cadence, filtering and continuation. Real-source pilots and
-long operation remain separate acceptance from controlled fixture qualification.
-This checkout also contains a tested **local watch coordinator candidate** for
-monitoring and model-controlled wakeups into an explicitly selected existing
-Codex thread. See [the candidate guide](docs/watch-candidate.md) and
-[the research and acceptance report](docs/coordinator-loop-results.md).
-It also includes same-daemon independent-session discovery, bounded passive peer
-reads, correlated message registrations and peer watches through that coordinator.
-See [the peer-watch acceptance report](docs/peer-watch-results.md) for the tested
-scope and remaining human checks.
-The model interface supports contextual references, readable peer events,
-accepted/declined handling, watch controls and one-shot wakeup inspection/cancellation.
-See [the interaction report](docs/interaction-pass-results.md) and the ongoing
-[distribution report](docs/distribution-pass-results.md). A separate immutable runtime
-preview artifact and installation/configuration tools are described in the
-[runtime distribution guide](docs/runtime-distribution.md); publication and managed
-rollout are separate gates from these source checks.
-Claude Code's Monitor
-and adaptive scheduling, informed by Bryan's actual usage, guide the design.
-Give the model options for sources, scripts, filtering, cadence and renewal;
-bounded JSON snapshot filtering is one useful option. Status, cancellation and
-expiry are part of the preview. It has not been applied through chezmoi.
-The [initial monitoring spike](docs/monitoring-spike-results.md) records native
-source/queue/timer evidence, a research-only simulator/helper and the remaining
-goal, stop and daily-use acceptance gates.
+- “Watch the session doing the packaging work and tell me when it is ready.”
+- “Tell that session the handoff should include the risks.”
+- “Watch this run and tell me if it stalls or fails.”
+- “Check this endpoint again later.”
+- “Stop watching it.”
+- “Make a browser report of what we learned.”
 
-Same-daemon peer coordination now builds on watches without an Agent Observer
-dependency. Reassess Observer's discovery/freshness contract when cross-host
-coordination is needed.
+The model selects the source, filtering, cadence and continuation. It discovers
+independent peers from context and clarifies ambiguity; no UUID, exact title,
+JSON prompt or polling recipe is required from you.
 
-The [implementation plan](docs/codex-plus-plan.md) records the proposed runtime,
-same-thread delivery, daily-use acceptance and chezmoi packaging. The
-[Claude monitoring context](docs/claude-monitoring-context.md) captures the latest
-design correction, source-host history findings and open planning decisions.
-Development continues on Snap. The qualified candidate uses the existing native
-CLI daemon and leaves Codex CLI/TUI as the daily interface. Human TUI acceptance,
-longer operation and installation remain subsequent work. Existing active sessions
-have supplied passive observation evidence; all experimental messaging and delivery
-used synthetic sessions.
+Read the [daily-use guide](docs/daily-use.md), open the
+[browser walkthrough](docs/presentation.md), or see
+[how the package works](docs/architecture.md).
 
-For a new implementation thread, read [AGENTS.md](AGENTS.md) and the
-[implementation handoff](docs/implementation-handoff.md) before the plan. They
-summarize research evidence, reuse boundaries, distribution and local draft state.
+## Current status
+
+As of 2026-10-14, the monitoring runtime **v0.1.0-preview.2** and reporting
+component **v0.1.0-preview.7** are installed on Snap and Starship through chezmoi.
+Both optional MCP servers are enabled by default there; explicit opt-outs and
+custom approval policies remain effective. Fresh native TUI sessions loaded and
+used installed tools without a daemon restart or global MCP reload.
+
+| Capability | What is available |
+| --- | --- |
+| Watches | Quiet command/script observation, authenticated endpoint access, passive peer reads and configured MCP inspection. |
+| Later checks | One-shot reassessment and model-selected continuation, with status and cancellation. |
+| Peer coordination | Contextual independent-session discovery, attributed information/requests and handling receipts within one daemon. |
+| Browser reports | Immutable static HTML, project catalog, four report MCP tools, a report skill and independent HTTP hosting. |
+| Workers | Existing two agents and four worker workflows, with unchanged identities and explicit invocation. |
+
+Command polling can stay quiet without a model turn per read. Configured MCP
+checks use scheduled native model turns under normal authentication/approval;
+each check has model cost. Explicit stop cancels selected observation without
+stopping the observed work. Esc interrupts the foreground turn and leaves
+independent registrations within their bounds.
+
+The preview is ready for daily-use trials. Bounded synthetic native qualification
+is separate from real-source reliability, credential/provider recovery, long
+unattended operation and personal UX acceptance. Cross-host native messaging,
+a recurring calendar and native `/exit` confirmation interception are outside
+this preview. Use the [soak checklist](docs/soak-checklist.md) to collect actual-use
+evidence without manufacturing workloads.
+
+## Guides and evidence
+
+| Read this | For |
+| --- | --- |
+| [Daily use](docs/daily-use.md) | Natural requests, expected follow-up, stopping and reports. |
+| [Architecture and Claude-workflow coverage](docs/architecture.md) | Components, permissions, costs, discovery, receipts and limits. |
+| [Browser walkthrough](docs/presentation.md) | Three illustrative scenes and the published presentation. |
+| [Runtime distribution](docs/runtime-distribution.md) | Immutable monitoring artifact, loading, managed installation and rollback. |
+| [HTML report usage](docs/html-report-usage.md) | Publication, catalog, storage and separate hosting. |
+| [Managed activation results](docs/managed-activation-results.md) | Independent installed/native acceptance on Snap and Starship. |
+| [Source-access results](docs/source-access-pass-results.md) | Endpoint/MCP permissions, executed continuation and stop evidence. |
+| [Technical watch reference](docs/watch-candidate.md) | Low-level CLI diagnostics and historical synthetic recipes. |
+| [Implementation handoff](docs/implementation-handoff.md) | Current continuation state and earlier implementation history. |
+
+This repository was previously Codex Worker Kit. Compatible agent/skill paths
+remain in place. Current GitHub documentation tracks main; documentation changes
+do not repin qualified installed artifacts or update managed source archives.
+The [implementation plan](docs/codex-plus-plan.md) labels completed contracts and
+current work; [Claude context](docs/claude-monitoring-context.md) retains the
+historical usage study. Active sessions supplied passive evidence; experimental
+messaging/delivery used owned synthetic sessions. Agent Observer is not a runtime
+dependency.
 
 ## Existing worker bundle
 
@@ -138,7 +137,8 @@ new evidence call for primary diagnosis rather than repeated worker cycling.
 
 ## Installation
 
-Clone the repository and install the two current custom agents and four skills:
+For the worker bundle, clone the repository and install its two custom agents
+and skills (four worker workflows plus the additional HTML report skill):
 
 ```sh
 git clone https://github.com/byebyebryan/codex-plus.git
@@ -146,6 +146,10 @@ mkdir -p ~/.codex/agents ~/.agents/skills
 cp codex-plus/agents/*.toml ~/.codex/agents/
 cp -R codex-plus/skills/. ~/.agents/skills/
 ```
+
+This copy example installs agents/skills, not the monitoring or reporting
+runtimes. Follow the [runtime guide](docs/runtime-distribution.md) and
+[report guide](docs/html-report-usage.md) for those separate components.
 
 The example uses `~/.codex/agents` for custom agents and `~/.agents/skills`
 for user skills. If your client supports another personal skills directory,
@@ -191,12 +195,12 @@ checksums; do not point a deployment at an unpublished checkout.
 
 ## Validation and tuning
 
-Run `scripts/check` after changing the kit. It validates the default and legacy
+Run `rtk proxy scripts/check` after changing the kit. It validates the default and legacy
 inventory, agent model/effort selections, skill metadata, and explicit-only
 adaptive invocation policies. It does not prove
 routing quality or runtime model availability.
 
-Run `python3 -B tests/test_check.py` for metadata regression checks. The validator
+Run `rtk proxy python3 -B tests/test_check.py` for metadata regression checks. The validator
 accepts the kit's two-level `interface` and `policy` mappings, quoted strings,
 and lowercase booleans. Unsupported YAML forms are rejected; extend the validator
 deliberately before adding other metadata formats or fields.
@@ -218,14 +222,13 @@ Compare total primary-plus-worker usage, corrections, elapsed time, and accepted
 results on representative tasks. Use runtime cost data when available; do not
 infer savings from the number of Luna assignments or from token rates alone.
 
-## Design notes
+## Historical design references
 
-[HTML report design](docs/html-report-design.md) proposes static report publishing,
-durable browser-accessible URLs and a shared skill/tool surface. It is a design
-draft; the [usage guide](docs/html-report-usage.md) records the source implementation
-and separate hosting/installation boundary.
-The [v1 implementation plan](docs/html-report-plan.md) defines proposed defaults,
-interfaces, publication recovery and staged acceptance.
+[HTML report design](docs/html-report-design.md) and the
+[v1 implementation plan](docs/html-report-plan.md) retain the original defaults,
+interfaces, publication recovery and staged acceptance. The implemented and
+installed behavior is described in the [usage guide](docs/html-report-usage.md)
+and [report results](docs/html-report-results.md).
 
 [Worker routing design](docs/worker-routing-design.md) records selective Luna
 delegation, the separate purpose of Sol workers, and the rollout plan.

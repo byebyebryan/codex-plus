@@ -1,9 +1,12 @@
 # Claude monitoring context and Snap continuation
 
-Captured 2026-10-11 for continuation on Snap. This is a planning handoff, not
-an implemented watch service or a new research trial. Read it with the
-[implementation handoff](implementation-handoff.md) and
-[draft plan](codex-plus-plan.md).
+Historical context captured 2026-10-11; status clarified 2026-10-14. The sampled
+histories and original planning decisions below are reference evidence, not a new
+trial. Monitoring is now implemented and installed on Snap and Starship. See the
+[current handoff](implementation-handoff.md), [daily guide](daily-use.md) and
+[workflow comparison](architecture.md#coverage-of-the-studied-claude-workflow).
+The original planning checkpoints and source-transfer instructions below are
+historical; their closed recipes do not authorize new execution.
 
 ## Product gap correction: 2026-10-13
 
@@ -25,7 +28,7 @@ see the [source-access report](source-access-pass-results.md) for qualification 
 limits. These mechanisms cover the studied workflow shapes; a selected real-source
 pilot is still required to establish operational equivalence.
 
-## Latest request and design tenet
+## Original request and continuing design tenet
 
 Bryan asked to plan properly before implementation, then requested capturing
 the context here and moving development to Snap. The next conversation should
@@ -164,7 +167,7 @@ reassessment is a separate choice, so count its wakeups separately. Persist
 intent and pending events outside model context, and expose uncertain delivery.
 Do not promise exactly-once processing or automatically override a human stop.
 
-## Planning still to finish on Snap
+## Historical planning checkpoint on Snap
 
 1. Walk through one representative real-use scenario and a short, bounded pilot.
    Choose a source that is already accessible; do not launch an expensive job.
@@ -177,7 +180,7 @@ Do not promise exactly-once processing or automatically override a human stop.
 5. Set short offline and native acceptance checks, then agree on implementation
    slices. Python plus native queued delivery is a candidate, not a frozen API.
 
-## Source transfer and reference availability
+## Historical source transfer and reference availability
 
 Continue in `/home/bryan/code/codex-plus` on Snap. Its old development checkout
 was `/home/bryan/code/codex-worker-kit`, clean on `main` at `ee9894f`, with the
