@@ -172,4 +172,13 @@ the shared skill. The skill needs the installed CLI or independently configured
 report MCP. The generated MCP config selects the installed stdio entry point and
 retains write approval policy. There are four tools: publish, get, list and delete.
 They require no native thread metadata; discovery creates no store or daemon.
+
+Bryan's managed configuration enables report MCP by default on supported hosts
+when the report component is enabled. It keeps required=false and explicitly
+approves report_publish/report_delete under the current never-approval policy.
+Tool availability does not authorize publication or deletion without user intent.
+Existing explicit opt-outs, disabled tools and custom approval preferences are
+preserved. A report-only Codex-config apply uses `htmlReportOnly=true` to preserve
+unrelated settings. Fresh native sessions load the tools without restarting or
+globally refreshing active daemons.
 Plugin hosting/browser behavior still depends on the configured report endpoint.

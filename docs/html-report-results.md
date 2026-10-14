@@ -1,5 +1,36 @@
 # HTML report implementation evidence
 
+## Managed MCP default: 2026-10-14
+
+Bryan selected enabling report MCP by default. Published dotfiles 965f041 changes
+supported-host availability and explicitly approves report_publish/report_delete
+under the existing never-approval policy. Existing explicit opt-outs, disabled
+and enabled tool lists, custom approval tables and machine overrides are tested
+and preserved. A tested htmlReportOnly apply mode changes only this MCP entry.
+
+The config-only change was applied on Snap and Starship from the same clean
+published source. No report/runtime release, data, hosting configuration, worker
+or other native setting was changed. Both existing daemons and report servers
+remain running; canonical dirty bytes and local history are preserved.
+
+On each host, a fresh ordinary native TUI session loaded all four tools from
+managed configuration and successfully called report_list. A second fresh session
+changed only report arguments to select an isolated fixture store, retaining the
+managed approval policy; report_publish, report_get, report_delete and report_list
+all executed successfully. Real reports were not published/deleted by acceptance.
+The four owned test actors are archived with no pending input or viewers.
+
+Both canonical chezmoi checkouts also received targeted local integration commits,
+so their older off default cannot undo activation on a later apply. Their existing
+branch history and unrelated pending edits were preserved; only the new report
+fixture hunk was staged from Starship's already modified full validator. The
+authoritative managed policy is published on main as 965f041.
+
+Full dotfiles and component validators, source inventory and six report-MCP tests
+passed. Runtime/artifact pins remain unchanged. A fresh session sees the new
+capabilities; no daemon restart or global MCP refresh was performed.
+
+
 Preview 7 explicitly starts the report tmux session in its configured data root.
 The displayed directory is consistent across launch contexts; publication and
 the HTTP public root continue to use the existing configured paths. This change

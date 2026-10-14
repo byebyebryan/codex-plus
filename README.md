@@ -7,7 +7,9 @@ remain available with the same identities and installation paths.
 ## Current scope and next step
 
 The standalone [HTML report component](docs/html-report-usage.md) now supplies
-immutable static publication, a shared catalog, CLI, skill and optional local MCP.
+immutable static publication, a shared catalog, CLI, skill and local MCP.
+Managed report MCP is enabled by default on supported hosts, preserving explicit
+opt-outs and custom tool policies.
 Report data and serving are independent of native agent ownership. The separate
 `codex-report-server` command runs plain HTTP in its named tmux session; delivery
 checks work with any HTTP server. Fleet activation has its own deployment checks.
