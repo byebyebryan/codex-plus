@@ -6,7 +6,7 @@ are complete. Monitoring preview.2 and report preview.7 are installed; both
 optional MCP surfaces are enabled on Snap and Starship. Real-source soak and
 personal UX remain separate acceptance.
 
-## Selected documentation and presentation pass
+## Completed documentation and presentation pass
 
 Bryan requested an ordinary goal loop for consistent current docs, a natural
 [daily-use guide](daily-use.md), [package/Claude-workflow explanation](architecture.md),
@@ -15,7 +15,15 @@ The [selected contract](codex-plus-plan.md#selected-pass-documentation-presentat
 keeps runtime pins, native owners, active sessions and worker invocation unchanged.
 Publishing one new presentation is authorized; real watches/messages and live
 configuration apply are outside this pass. No delegation or worker skill is used.
-See the [pass report](documentation-pass-results.md) for final checks and delivery.
+The guides and authored browser presentation are complete and validated.
+[Open the published walkthrough](http://snap:8787/reports/293fdc3828d80409edd88861719fa5d376df1afa4bbdf5fae6a569d8f12aaa17/). The 99-file source inventory, five
+metadata tests, local links and published browser controls/layouts pass. Both
+hosts’ live config/selections and native/report process identities remain unchanged;
+all 48 protected runtime/worker/skill source files match the baseline. Two new
+presentation snapshots were retained after fixing an inline-icon omission; existing
+reports were preserved and the server was reused. No native trials or live apply
+were run. See the [pass report](documentation-pass-results.md) for final checks and
+delivery. The next acceptance is normal daily use using the soak checklist.
 
 ## Current checkout reconciliation
 

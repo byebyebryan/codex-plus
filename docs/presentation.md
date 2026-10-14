@@ -1,10 +1,15 @@
 # Browser walkthrough
 
-The [self-contained walkthrough](presentation/index.html) explains current
-capabilities with three illustrative scenes: an endpoint watch, coordination
-between independent sessions, and a later MCP inspection followed by a report.
-Open the HTML locally or use the published browser link recorded in the
+[Open the published browser walkthrough](http://snap:8787/reports/293fdc3828d80409edd88861719fa5d376df1afa4bbdf5fae6a569d8f12aaa17/). It is hosted on Snap and
+requires access to that host’s report endpoint. The [Codex Plus project catalog](http://snap:8787/reports/#project=codex-plus)
+contains related reports. Publication, HTTP-byte checks from both hosts and
+browser interaction/layout checks passed; see the
 [documentation pass results](documentation-pass-results.md).
+
+The [self-contained authoring file](presentation/index.html) also opens locally.
+It explains current capabilities with three illustrative scenes: an endpoint
+watch, coordination between independent sessions, and a later MCP inspection
+followed by a report.
 
 The scene controls reveal a request, setup, useful update and stop/handoff. They
 only change the page; they do not run commands, create watches, send messages or

@@ -37,6 +37,11 @@ A documentation update does not rebuild or repin preview.2/preview.7. The soak
 checklist supports later real-use evidence; completing this pass does not qualify
 long unattended operation, provider recovery or personal UX.
 
+This selected pass is complete: guides and the browser presentation were
+published and verified. The [pass report](documentation-pass-results.md) records
+source checks, actual HTTP/browser delivery, fixes and preservation. Real-use soak
+is the next evidence step; no new automatic trials are authorized by this plan.
+
 ## Product contract
 
 The [operational source-access pass](source-access-pass-results.md) and
