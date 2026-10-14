@@ -315,6 +315,10 @@ class Store:
                                                if self.config.base_url else None),
                       catalog=catalog_state or {"state": "unchecked"},
                       delivery={"state": "unchecked"})
+        catalog_url = self.config.base_url if self.config.catalog_enabled else None
+        result.update(catalog_url=catalog_url,
+                      project_url=catalog_url + catalog.project_fragment(record["snapshot"]["project"])
+                      if catalog_url else None)
         return result
 
     def capacity(self, total, report_id):
@@ -442,7 +446,8 @@ class Store:
             offset = matches[0] + 1
         rows = records[offset:offset + limit]
         for row in rows:
-            row["url"] = self.receipt(self.record(row["report_id"]))["url"]
+            receipt = self.receipt(self.record(row["report_id"]))
+            row.update({key: receipt[key] for key in ("url", "catalog_url", "project_url")})
         return {"reports": rows, "next_cursor": rows[-1]["report_id"] if rows and offset + limit < len(records) else None,
                 "total": len(records)}
 
