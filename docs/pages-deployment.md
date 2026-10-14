@@ -5,8 +5,13 @@ The personal `byebyebryan` account on github.com owns this repository and site;
 enterprise/work authentication is not used for repository settings or publication.
 GitHub Pages inherits the personal account’s existing dev.byebyebryan.com domain;
 this project enables HTTPS without changing DNS or the parent site.
-Initial deployment is being qualified; the current source workflow/build is the
-publication contract below.
+Initial deployment passed on 2026-10-14 from be401d7. The
+[Pages workflow](https://github.com/byebyebryan/codex-plus/actions/runs/38640319833)
+completed successfully; the HTTPS landing page, all five guide routes and the
+diagram returned HTTP 200 with bytes matching the local candidate. Browser checks
+passed all 12 scene states and controls, five guide pages, desktop/mobile layouts
+and diagram loading, with zero browser errors. The github.io project URL redirects
+to the inherited domain. The publication contract follows.
 
 ## Site contents
 

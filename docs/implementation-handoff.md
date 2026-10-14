@@ -11,8 +11,12 @@ personal UX remain separate acceptance.
 Bryan requested publishing the HTML guides to GitHub Pages using the personal
 byebyebryan account on github.com. The prepared [Pages contract](pages-deployment.md)
 publishes the interactive landing page and five rendered guides through a pinned
-workflow. Personal API identity and SSH ownership are checked; enterprise/work
-hosts are not used. Initial deployment/browser qualification is in progress.
+workflow. Personal API identity and SSH ownership were verified as byebyebryan; enterprise/work
+hosts were not used. [Public guides](https://dev.byebyebryan.com/codex-plus/) are
+live over enforced HTTPS on the account’s inherited dev.byebyebryan.com domain.
+The first Pages workflow from be401d7 succeeded; all six HTML pages and the SVG
+matched candidate bytes, and actual HTTPS browser checks passed all scene/control
+and five-guide desktop/mobile gates without browser errors.
 Runtime/worker files, managed pins, live configs and active native work remain
 outside this publication. The existing Snap report snapshots/hosting are retained.
 
