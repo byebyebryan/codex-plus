@@ -67,7 +67,7 @@ The user subsequently selected a plain HTTP server in tmux. `codex-report-server
 owns the foreground Python server and explicit start/status/attach/restart/stop
 controls for the same-named detached session. Publishing and HTTP health checks
 are independent of Tailscale Serve. SSH/terminal closure preserves the session;
-host reboot requires starting it again. Existing project servers remain separate
+after host reboot the next opted-in publish starts it again. Existing project servers remain separate
 until their content and project-specific behavior are deliberately migrated.
 
 HTTP supports ordinary rendering and client-side controls. Some browser APIs,
@@ -86,6 +86,7 @@ schema = 1
 data_root = "/home/bryan/.local/share/codex-plus/reports"
 base_url = "http://starship:8787/reports/"
 catalog_enabled = true
+server_autostart = true
 max_bundle_bytes = 104857600
 max_bundle_files = 2000
 max_store_bytes = 5368709120
@@ -106,7 +107,10 @@ they do not prune reports or deletion history.
 
 Chezmoi owns code selection, publisher configuration, server entry point and
 skill/MCP discovery wiring. Scoped installation starts the owned tmux server
-explicitly; ordinary publish calls never start or stop it. Inspect the selected
+explicitly. The fleet enables `server_autostart = true`: publish starts or reuses
+the shared owned server and leaves it running. Read-only commands do not start it,
+and there is no automatic shutdown. Standalone installations default to external
+hosting without automatic startup. Inspect the selected
 bind/port and existing firewall before activation. Any necessary firewall opening
 is a precise host-side deployment action, preserving unrelated rules. Tailscale
 Serve state and network policy are not copied into report artifacts.

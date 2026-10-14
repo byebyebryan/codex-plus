@@ -5,10 +5,12 @@ from __future__ import annotations
 import hashlib
 import json
 import socket
+import subprocess
 import time
 from urllib.parse import urlsplit
 from urllib.request import build_opener, HTTPRedirectHandler, ProxyHandler, Request
 
+from .config import config_path, load
 from .store import CHUNK, Store, read_file, timestamp
 
 
@@ -27,6 +29,20 @@ class NoRedirect(HTTPRedirectHandler):
 
 def clean_detail(error):
     return "".join(c if ord(c) >= 32 else " " for c in str(error))[:1024]
+
+
+def ensure_server(config, path=None):
+    """Start or reuse opted-in local hosting; keep a stored report on failure."""
+    if not config.server_autostart:
+        return None
+    from .server import Controller
+    try:
+        selected = path if path is not None else config_path()
+        if load(selected) != config:
+            raise ValueError("automatic hosting needs the effective store settings in the selected config file")
+        return Controller(config, selected).start(recover_dead=True)
+    except (OSError, ValueError, subprocess.SubprocessError) as error:
+        return {"state": "unavailable", "detail": clean_detail(error)}
 
 
 def verify_http(url, expected, *, timeout=5):

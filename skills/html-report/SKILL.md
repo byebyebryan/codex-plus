@@ -31,14 +31,18 @@ rtk proxy codex-plus-report --json publish --source /absolute/export/path --titl
 
 For a directory, `index.html` is the default entrypoint; use `--entrypoint` for
 another relative HTML path. An optional `--project` label helps catalog discovery.
-Do not pass the whole repository to collect incidental files. Publishing never
-starts a web server or an agent daemon; operator-installed hosting is separate.
+Do not pass the whole repository to collect incidental files. On hosts configured
+with `server_autostart = true`, publishing starts or reuses the shared
+`codex-report-server` tmux session. Leave it running after delivery; there is no
+automatic shutdown. External hosting remains configurable. Publishing does not
+start an agent daemon.
 
 Read the receipt. A stored snapshot, configured URL, verified HTTP bytes and
 browser acceptance are different facts. Return a descriptive title and visible
 hostname URL when configured. If delivery fails or hosting is unconfigured,
 explain that accurately and retain the snapshot; do not replace the link with
-remote `localhost`, claim browser opening or set up serving silently. Kitty
+remote `localhost` or claim browser opening. Report any server startup failure
+without discarding the snapshot or taking over a foreign session or port. Kitty
 Ctrl+Shift-click opens links in the local desktop browser from an SSH TUI.
 
 Reports remain available independently of TUI attachment and thread unloading,

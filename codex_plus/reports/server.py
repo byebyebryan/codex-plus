@@ -165,15 +165,15 @@ class Controller:
                 or owner.get('fingerprint') != fingerprint(self.config)
                 or not re.fullmatch('[0-9a-f]{32}', owner.get('instance', ''))):
             raise ValueError('the existing report session belongs to another configuration')
-        panes = self.tmux('list-panes', '-s', '-t', sid, '-F', '#{pane_pid}\t#{pane_dead}').splitlines()
+        panes = self.tmux('list-panes', '-s', '-t', sid, '-F', '#{pane_id}\t#{pane_pid}\t#{pane_dead}').splitlines()
         if len(panes) != 1:
             raise ValueError('the report session has additional panes; refusing to manage them')
-        pid, dead = panes[0].split('\t')
+        _, pid, dead = panes[0].split('\t')
         if dead != '1':
             actual = (Path('/proc') / pid / 'cmdline').read_bytes().rstrip(b'\0').split(b'\0')
             if actual != [arg.encode() for arg in owner.get('argv', [])]:
                 raise ValueError('the report pane now runs a different process; no action was taken')
-        return {**owner, 'session_id': sid, 'pid': int(pid), 'dead': dead == '1'}
+        return {**owner, 'session_id': sid, 'pid': int(pid) if pid else None, 'dead': dead == '1'}
 
     def status(self):
         owner = self.owned()
@@ -191,7 +191,7 @@ class Controller:
     def stop_owned(self):
         owner = self.owned()
         if owner is not None:
-            birth = process_birth(owner['pid'])
+            birth = process_birth(owner['pid']) if not owner['dead'] else None
             self.tmux('kill-session', '-t', owner['session_id'])
             deadline = time.monotonic() + 3
             while birth is not None and process_birth(owner['pid']) == birth:
@@ -199,12 +199,12 @@ class Controller:
                 time.sleep(0.02)
         return {'state': 'stopped', 'session': SESSION, 'url': self.config.base_url}
 
-    def start(self, *, restart=False):
+    def start(self, *, restart=False, recover_dead=False):
         settings(self.config)
         with self.locked():
             owner = self.owned()
             if owner is not None:
-                if not restart:
+                if not restart and not (recover_dead and owner['dead']):
                     result = self.status()
                     if result['state'] != 'running': raise ValueError('the owned server is unhealthy; use restart or attach to inspect it')
                     return {**result, 'reused': True}

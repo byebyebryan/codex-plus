@@ -2,8 +2,9 @@
 
 The source implementation supplies durable static snapshots, a static catalog,
 standalone CLI, provider-neutral skill and optional local report MCP. Publishing
-does not start Codex, a browser or a web server. The separate `codex-report-server`
-command supplies plain HTTP hosting in an explicitly named tmux session.
+does not start Codex or a browser. With `server_autostart = true`, CLI/MCP publish
+starts or reuses `codex-report-server` in its shared tmux session. The server stays
+running after publication; there is no idle shutdown or report cleanup timer.
 
 ## Publish and find reports
 
@@ -26,6 +27,9 @@ URL is not proof that serving is ready. `--check-delivery` verifies actual HTML
 bytes and records its check location; it does not open or validate a desktop
 browser. Unconfigured/unreachable hosting retains the snapshot. Subsequent
 configuration can supply a URL for an initially unconfigured report.
+Automatic server startup has its own receipt. Startup failure retains the stored
+report and explains the unavailable hosting; it does not take over a foreign
+tmux session or listener. Read-only get/list/doctor commands do not start a server.
 
 Unchanged content/title/project reuses a snapshot. Changed content gets a new
 immutable link. Files are copied into XDG data, default
@@ -78,8 +82,15 @@ reports needs no server restart. The bind address defaults to the configured URL
 hostname; `server_bind` can select another local address. Only HTTP is built in;
 HTTPS can use an external server.
 
+`server_autostart` defaults to false for standalone/external installations.
+Chezmoi enables it on this fleet. Publish starts a missing server, reuses a healthy
+one and replaces an exited owned pane. It leaves an unhealthy live server or a
+foreign session alone. Explicit `--data-root` overrides require matching store
+settings in the selected config file for automatic hosting.
+
 The session survives TUI closure, SSH disconnect and terminal closure. Tmux does
-not survive host reboot: run `codex-report-server start` after reboot. Chezmoi's
+not survive host reboot: the next publish starts it again, or run
+`codex-report-server start` to restore access before publishing. Chezmoi's
 scoped installation starts it through an idempotent apply script. `stop` and
 `restart` revalidate the owned session, configuration and actual process; foreign
 same-named sessions and added user panes are refused. Stopping preserves reports.

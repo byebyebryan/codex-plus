@@ -103,7 +103,7 @@ flowchart LR
 ```
 
 The publisher core owns bundle validation, snapshot creation, metadata, listing
-and removal. CLI and MCP adapters use the same implementation. The separately started HTTP server owns
+and removal. CLI and MCP adapters use the same implementation. The shared HTTP server owns
 the configured endpoint and serving lifetime. There is no background
 report coordinator or model turn needed to keep a static report available.
 
@@ -258,11 +258,14 @@ the user-facing URL remains host-addressed. The host profiles use dedicated port
 viewing device changes networks or desktops; it does not make an offline
 publishing host available.
 
-Start the server once through the explicit deployment/controller command.
-Ordinary publication never starts or stops it. Inspect port/bind and firewall
+With `server_autostart = true`, publication starts or reuses the shared owned
+tmux HTTP server. The standalone default is false for external hosting; chezmoi
+enables it on this fleet. Read-only discovery/get/list/doctor do not start it.
+Publication leaves the server running, with no automatic shutdown. Startup failure
+retains the report and returns a separate server receipt. Inspect port/bind and firewall
 requirements first, retaining unrelated rules and project servers. The named tmux
-session persists across SSH/terminal closure; host reboot requires starting it
-again. Report files survive independently. Existing project server retirement is
+session persists across SSH/terminal closure; after host reboot the next publish
+starts it again, or the user can start it manually. Report files survive independently. Existing project server retirement is
 a separate migration because project navigation refresh or live behavior may
 need preserving.
 

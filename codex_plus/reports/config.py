@@ -63,6 +63,7 @@ class Config:
     max_store_bytes: int = 5 * 1024 * 1024 * 1024
     max_store_reports: int = 1000
     server_bind: str | None = None
+    server_autostart: bool = False
 
     def __post_init__(self):
         object.__setattr__(self, "data_root", absolute_path(self.data_root))
@@ -73,6 +74,8 @@ class Config:
             raise ValueError("server_bind must be an IP address or hostname")
         if type(self.catalog_enabled) is not bool:
             raise ValueError("catalog_enabled must be boolean")
+        if type(self.server_autostart) is not bool:
+            raise ValueError("server_autostart must be boolean")
         for name in ("max_bundle_bytes", "max_bundle_files", "max_store_bytes", "max_store_reports"):
             if type(getattr(self, name)) is not int or getattr(self, name) <= 0:
                 raise ValueError(f"{name} must be a positive integer")

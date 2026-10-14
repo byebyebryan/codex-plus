@@ -1,4 +1,4 @@
-"""Publish static reports without starting an agent, daemon or web server."""
+"""Publish static reports with optional on-demand tmux HTTP hosting."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 
 from .config import load
-from .hosting import check_delivery, inspect_hosting
+from .hosting import check_delivery, ensure_server, inspect_hosting
 from .store import Store
 
 
@@ -18,6 +18,8 @@ def readable(value):
         output = [f'{value["title"]} ({status})', value.get("url") or "Hosting is unconfigured; the report is stored locally."]
         if value["delivery"]["state"] == "unavailable":
             output.append(value["delivery"]["detail"])
+        if value.get("server", {}).get("state") == "unavailable":
+            output.append("Report stored; server startup failed: " + value["server"]["detail"])
         if value["catalog"]["state"] == "stale":
             output.append("Report stored; catalog update failed: " + value["catalog"]["detail"])
         output.append("Report ID: " + value["report_id"])
@@ -48,6 +50,8 @@ def main(argv=None):
         store = Store(load(args.config, data_root=args.data_root))
         if args.command == "publish":
             value = store.publish(args.source, args.title, entrypoint=args.entrypoint, project=args.project)
+            serving = ensure_server(store.config, args.config)
+            if serving is not None: value["server"] = serving
         elif args.command == "get": value = store.get(args.report_id)
         elif args.command == "list": value = store.list(limit=args.limit, cursor=args.cursor, project=args.project)
         elif args.command == "delete": value = store.delete(args.report_id)
