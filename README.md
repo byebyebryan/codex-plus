@@ -6,6 +6,17 @@ remain available with the same identities and installation paths.
 
 ## Current scope and next step
 
+The standalone [HTML report component](docs/html-report-usage.md) now supplies
+immutable static publication, a shared catalog, CLI, skill and optional local MCP.
+Report data and serving are independent of native agent ownership. The separate
+`codex-report-server` command runs plain HTTP in its named tmux session; delivery
+checks work with any HTTP server. Fleet activation has its own deployment checks.
+With `server_autostart = true`, publishing starts or reuses that shared server
+and leaves it running. Read-only report commands do not start it.
+Management uses the shared default tmux socket even from another attached client.
+Interrupted deletion keeps its cleanup identity and capacity reservation until
+the selected delete or explicit repair finishes.
+
 The existing installed worker agents and skills retain the identities described below.
 The separate [runtime preview v0.1.0-preview.2](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.2)
 supports authenticated endpoint monitoring and scheduled configured MCP inspection.
@@ -204,6 +215,13 @@ results on representative tasks. Use runtime cost data when available; do not
 infer savings from the number of Luna assignments or from token rates alone.
 
 ## Design notes
+
+[HTML report design](docs/html-report-design.md) proposes static report publishing,
+durable browser-accessible URLs and a shared skill/tool surface. It is a design
+draft; the [usage guide](docs/html-report-usage.md) records the source implementation
+and separate hosting/installation boundary.
+The [v1 implementation plan](docs/html-report-plan.md) defines proposed defaults,
+interfaces, publication recovery and staged acceptance.
 
 [Worker routing design](docs/worker-routing-design.md) records selective Luna
 delegation, the separate purpose of Sol workers, and the rollout plan.

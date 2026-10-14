@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML Report"
+  short_description: "Publish durable HTML reports with browser links"
+  default_prompt: "Use $html-report to present these findings as a browser report and return its link."
