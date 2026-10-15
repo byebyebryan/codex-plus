@@ -443,3 +443,37 @@ configuration hash restoration, and both native PID/start-tick identities stayed
 unchanged. This closes the current-server desktop Open gate. Physical panel
 acceptance and user authorization for the 349d-only admission-queue restart remain
 outstanding. No live service or firmware change was made.
+
+## Resource-cost checkpoint
+
+On Starship with TUI/server 0.162.1/0.163.0, the private two-root fixture measured
+the relay Python process at 27.6 MiB RSS and 15.3 MiB PSS. No additional CPU ticks
+were observed over a ten-second idle interval or the subsequent two-completion
+publication interval (0.101 seconds); `/proc` CPU accounting has ten-millisecond
+tick granularity, so this is not a claim of zero CPU cost. The fixture includes
+diagnostic trace writes and excludes the native TUI/server. It passed exact
+body/identity association, two rich completions without native OSC 9 duplicates,
+unchanged private owner identity and owned-process cleanup. No real model or
+desktop was involved.
+
+Installed inspector measurements used one exact owned historical card per source,
+three calls per host at the consumer's five-second cadence, and native
+supersession readback. CPU and peak RSS are for the short-lived inspector child:
+
+| Source | CPU per call | Helper wall time | Peak RSS | Mean CPU at five-second cadence |
+| --- | --- | --- | --- | --- |
+| Starship | 107-114 ms | 110-117 ms | 26.0 MiB | 2.20% of one core |
+| Snap | 91-99 ms | 95-103 ms | 26.0 MiB | 1.91% of one core |
+
+Observed end-to-end wall time was 189-194 ms locally and 478-516 ms over SSH;
+those figures also include measurement-wrapper startup. Inspector CPU/RSS exclude
+the wrapper, native server and SSH processes. These bounded samples establish
+ordinary one-card cost, not maximum-batch throughput or whole-stack overhead.
+No inspector command runs without matching outstanding cards; batches share one
+native connection and read each requested thread once. The relay remains one
+process per wrapped viewer, and inspection remains transient. Python's standard
+library and the existing SSH route are sufficient; Observer is not required.
+
+Private results are `private-resource-1/result.json`, `inspector-resource-5s.json`
+and `resource-cost-summary.json` under the existing evidence directory. All reads
+were restricted to owned test identities, with native owners and services intact.
