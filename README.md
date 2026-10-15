@@ -29,11 +29,11 @@ walkthrough and five readable guides through GitHub Pages. See the
 
 ## Current status
 
-The standalone [notification utility](docs/notifications.md) provides a config-driven
-desktop delivery candidate, the older terminal callback, an optional native TUI
-relay and bounded read-only lifecycle inspection. Normal launching remains the
-preferred integration; the candidate's focus/Open limits are explicit. Chezmoi
-pins its installation independently of watch and reports.
+The standalone [notification utility](docs/notifications.md) provides a native TUI
+relay, an alternate configured desktop route, the older terminal callback and
+bounded read-only lifecycle inspection. The selected
+[launcher direction](docs/notification-launcher-plan.md) preserves terminal focus
+while adding richer content. Chezmoi pins it independently of watch and reports.
 The [notification utility preview.1](https://github.com/byebyebryan/codex-plus/releases/tag/codex-notify-v0.1.0-preview.1)
 is installed on Starship and Snap; ordinary launches keep native basic alerts.
 Installing the helper does not select its desktop mode or replace the launcher.

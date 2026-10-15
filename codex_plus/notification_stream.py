@@ -118,12 +118,8 @@ def bounded_put(mapping, key, value, limit):
 
 
 def eligible(thread):
-    if thread.get('threadSource') in ('system', 'thread_title') or thread.get('parentThreadId'):
-        return False
-    source = thread.get('source')
-    if isinstance(source, dict) and any(key in source for key in ('subAgent', 'subagent')):
-        return False
-    return True
+    return (thread.get('threadSource') == 'user' and not thread.get('parentThreadId')
+            and thread.get('source') in ('cli', 'vscode', 'appServer'))
 
 
 class Notices:
@@ -136,24 +132,49 @@ class Notices:
         self.finals = OrderedDict()
         self.sent = OrderedDict()
 
+    def forget(self, thread):
+        self.threads.pop(thread, None)
+        for key in tuple(self.finals):
+            if key[0] == thread:
+                self.finals.pop(key, None)
+
     def client(self, value):
         identifier, method = value.get('id'), value.get('method')
-        if method in ('thread/start', 'thread/resume') and isinstance(identifier, (str, int)) and not isinstance(identifier, bool):
-            bounded_put(self.requests, identifier, method, MAX_REQUESTS)
+        if (method in ('thread/start', 'thread/resume', 'thread/unsubscribe', 'thread/archive')
+                and isinstance(identifier, (str, int)) and not isinstance(identifier, bool)):
+            params = value.get('params')
+            target = params.get('threadId') if isinstance(params, dict) else None
+            canonical = False
+            if method != 'thread/start':
+                try:
+                    target = native_id(target)
+                    canonical = True
+                except (ValueError, TypeError):
+                    if (method != 'thread/resume' or not isinstance(target, str)
+                            or not target or len(target) > 256 or any(ord(c) < 32 for c in target)):
+                        return
+            bounded_put(self.requests, identifier, (method, target, canonical), MAX_REQUESTS)
 
     def server(self, value):
         identifier = value.get('id')
         if isinstance(identifier, (str, int)) and not isinstance(identifier, bool) and identifier in self.requests:
-            self.requests.pop(identifier)
+            method, target, canonical = self.requests.pop(identifier)
             result = value.get('result')
+            if method in ('thread/unsubscribe', 'thread/archive'):
+                if isinstance(result, dict) and 'error' not in value:
+                    if method == 'thread/archive' or result.get('status') in ('unsubscribed', 'notSubscribed', 'notLoaded'):
+                        self.forget(target)
+                return None
             thread = result.get('thread') if isinstance(result, dict) else None
             if isinstance(thread, dict):
                 try:
                     tid = native_id(thread.get('id'))
                 except (ValueError, TypeError, AttributeError):
                     return None
+                if method == 'thread/resume' and canonical and tid != target:
+                    return None
                 if not eligible(thread):
-                    self.threads.pop(tid, None)
+                    self.forget(tid)
                     return None
                 name = thread.get('name')
                 bounded_put(self.threads, tid, name[:256] if isinstance(name, str) else '', MAX_THREADS)
@@ -165,7 +186,9 @@ class Notices:
         if not isinstance(tid, str) or tid not in self.threads:
             return None
         method = value.get('method')
-        if method == 'thread/name/updated':
+        if method in ('thread/closed', 'thread/archived'):
+            self.forget(tid)
+        elif method == 'thread/name/updated':
             name = params.get('threadName')
             if isinstance(name, str):
                 self.threads[tid] = name[:256]

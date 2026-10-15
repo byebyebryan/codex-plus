@@ -2,6 +2,7 @@
 """Augment native Codex completions through configured desktop or terminal routes."""
 
 from pathlib import Path
+import subprocess
 import sys
 
 sys.dont_write_bytecode = True
@@ -34,34 +35,40 @@ if __name__ == "__main__":
                     emit(receive(event, args.config, Path(__file__).resolve()))
                 else:
                     worker(event, load_config(args.config), emit=emit)
-        except (OSError, ValueError, RuntimeError, TimeoutError) as error:
+        except (OSError, ValueError, RuntimeError, TimeoutError, subprocess.SubprocessError) as error:
             # Native completion must remain successful; explicit commands report uncertainty.
             print('codex-notify: ' + str(error), file=sys.stderr)
             sys.exit(0 if sys.argv[1] == 'hook' else 2)
-    elif len(sys.argv) > 1 and sys.argv[1] in ('run', 'inspect', 'identity'):
+    elif len(sys.argv) > 1 and sys.argv[1] in ('run', 'launch', 'inspect', 'identity'):
         import argparse
         import asyncio
         import json
         from codex_plus.notification_inspect import default_socket, main as inspect_main, source_identity
         parser = argparse.ArgumentParser(description=__doc__)
         parser.add_argument('--socket', default=default_socket())
+        if sys.argv[1] in ('run', 'launch'):
+            parser.add_argument('--native', default='/usr/bin/codex')
         rest = sys.argv[2:]
         boundary = rest.index('--') if '--' in rest else len(rest)
         args = parser.parse_args(rest[:boundary])
         arguments = rest[boundary + 1:]
         command = sys.argv[1]
-        if command != 'run' and arguments:
-            parser.error('only run accepts native arguments')
+        if command not in ('run', 'launch') and arguments:
+            parser.error('only run/launch accept native arguments')
         try:
             if command == 'inspect':
                 inspect_main(args.socket)
             elif command == 'identity':
                 host, instance = source_identity(args.socket)
                 print(json.dumps({'host': host, 'instance': instance}))
+            elif command == 'launch':
+                from codex_plus.notification_launcher import launch
+                sys.exit(launch(args.socket, arguments, args.native))
             else:
                 from codex_plus.notification_run import run
-                sys.exit(asyncio.run(run(args.socket, arguments)))
-        except (OSError, ValueError, RuntimeError) as error:
+                from codex_plus.notification_launcher import native_exit
+                sys.exit(native_exit(asyncio.run(run(args.socket, arguments, args.native))))
+        except (OSError, ValueError, RuntimeError, TimeoutError, subprocess.SubprocessError) as error:
             print('codex-notify: ' + str(error), file=sys.stderr)
             sys.exit(2)
     else:

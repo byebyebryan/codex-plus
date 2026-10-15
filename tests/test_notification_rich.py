@@ -57,8 +57,9 @@ class Rich(unittest.TestCase):
 
     def bound(self):
         observer = Notices('host', 'native')
-        observer.client({'id': 7, 'method': 'thread/resume'})
-        observer.server({'id': 7, 'result': {'thread': {'id': THREAD, 'name': 'My thread', 'source': 'cli'}}})
+        observer.client({'id': 7, 'method': 'thread/resume', 'params': {'threadId': THREAD}})
+        observer.server({'id': 7, 'result': {'thread': {'id': THREAD, 'name': 'My thread',
+                                                   'source': 'cli', 'threadSource': 'user'}}})
         return observer
 
     def complete(self, observer, turn=OLD):
@@ -81,11 +82,43 @@ class Rich(unittest.TestCase):
         self.assertIn(event_id(notice['metadata']).encode(), wire)
 
     def test_system_and_children_have_no_route(self):
-        for origin in ({'threadSource': 'thread_title'}, {'parentThreadId': NEW}, {'source': {'subagent': {}}}):
+        for origin in ({}, {'source': 'cli'}, {'threadSource': 'user'},
+                       {'threadSource': 'thread_title'}, {'parentThreadId': NEW}, {'source': {'subagent': {}}}):
             observer = Notices('host', 'native')
             observer.client({'id': 7, 'method': 'thread/start'})
             observer.server({'id': 7, 'result': {'thread': {'id': THREAD, **origin}}})
             self.assertIsNone(self.complete(observer))
+
+    def test_mismatched_resume_and_unsubscribe_revoke_no_unrelated_route(self):
+        observer = self.bound()
+        observer.client({'id': 8, 'method': 'thread/resume', 'params': {'threadId': NEW}})
+        observer.server({'id': 8, 'result': {'thread': {'id': THREAD, 'source': 'cli', 'threadSource': 'user'}}})
+        self.assertIsNotNone(self.complete(observer))
+        observer = self.bound()
+        observer.client({'id': 9, 'method': 'thread/unsubscribe', 'params': {'threadId': THREAD}})
+        observer.server({'id': 9, 'error': {'code': -1}})
+        self.assertIsNotNone(self.complete(observer))
+        observer.server({'method': 'thread/closed', 'params': {'threadId': THREAD}})
+        self.assertIsNone(self.complete(observer, NEW))
+        observer = self.bound()
+        observer.client({'id': 10, 'method': 'thread/unsubscribe', 'params': {'threadId': THREAD}})
+        observer.server({'id': 10, 'result': {'status': 'unsubscribed'}})
+        self.assertIsNone(self.complete(observer))
+
+    def test_viewers_have_distinct_kitty_actions_and_same_episode(self):
+        notice = self.complete(self.bound())
+        first, second = packet(notice, route='a'), packet(notice, route='b')
+        self.assertNotEqual(first.split(b':', 1)[0], second.split(b':', 1)[0])
+        self.assertIn(b':f=Q29kZXg=', first)
+        for wire in (first, second):
+            tag = wire.split(b':t=')[1].split(b':')[0]
+            self.assertEqual(decode(base64.b64decode(tag).decode()), notice['metadata'])
+
+    def test_successful_native_resume_alias_binds_the_returned_exact_id(self):
+        observer = Notices('host', 'native')
+        observer.client({'id': 1, 'method': 'thread/resume', 'params': {'threadId': 'my-session-name'}})
+        observer.server({'id': 1, 'result': {'thread': {'id': THREAD, 'source': 'cli', 'threadSource': 'user'}}})
+        self.assertIsNotNone(self.complete(observer))
 
     def test_malformed_values_do_not_break_observer(self):
         observer = self.bound()

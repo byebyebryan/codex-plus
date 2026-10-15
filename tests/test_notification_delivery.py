@@ -191,6 +191,11 @@ if "--action=default=Open" in sys.argv:
         with self.assertRaises(TimeoutError):
             forward(self.event, [sys.executable, str(script)], timeout=.1)
         self.assertLess(time.monotonic() - started, 2)
+        script.write_text('import json,sys,time\ne=json.load(sys.stdin)\n'
+            'print(json.dumps(dict(v=1,event=' + repr(event_id(self.event['metadata']))
+            + ',status="delivered",desktop_id=1)),flush=True)\ntime.sleep(30)\n')
+        with self.assertRaisesRegex(TimeoutError, 'did not exit'):
+            forward(self.event, [sys.executable, '-B', str(script)], timeout=.2)
 
     def test_detached_command_path_and_duplicate_receipt(self):
         path = self.root / 'notify.toml'

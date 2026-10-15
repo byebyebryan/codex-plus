@@ -19,6 +19,41 @@ The currently selected basic recovery keeps ordinary launches on `notify = []`
 and native `tui.notifications = ["agent-turn-complete", "approval-requested"]`
 with the existing `osc9` method. Settings take effect on the next normal TUI launch.
 
+The selected next direction is a terminal-associated launch helper; see the
+[launcher plan](notification-launcher-plan.md). Bryan confirmed native desktop
+click-to-focus in both session and Command Center views and now accepts a
+launcher to add richness while preserving that behavior. Source hardening and
+private native qualification are underway; installed selection is unchanged.
+
+## Terminal-associated launcher candidate
+
+The source adds `launch` and hardens `run`; installed preview.1 does not yet
+contain these changes. Use `codex-notify run --native /usr/bin/codex -- NATIVE_ARGS`
+for explicit mode. `codex-notify launch --native /usr/bin/codex -- NATIVE_ARGS`
+is the candidate automatic shell entry point. Unsupported/noninteractive calls,
+CLI utilities, notification overrides and pre-launch qualification failures keep
+native behavior. The current qualified TUI/daemon version is 0.162.1.
+
+Only native completion publication is removed for a wrapped client; all other
+configured native event types are preserved. Server hook conflicts are checked
+read-only. The relay sends Codex as sender, separate title/body, host and v1
+metadata through the attached terminal. Per-viewer Kitty identifiers keep action
+targets independent. Desktop Open focuses the originating Kitty window,
+including Command Center; thread selection stays a native TUI interaction.
+
+Positive root classification and successful native start/resume responses grant
+routes; unsubscribe/archive/close revoke them. A native session-name resume binds
+its returned exact ID. Reconnection requires fresh authority. Observation failure
+issues one degraded-status notice while bytes continue forwarding; it cannot
+restore native completion publication inside an already-running client. The
+helper never automatically resubmits input or relaunches a disconnected client.
+
+Private native checks cover Command Center, switching between two running roots
+and a loaded thread with the known legacy terminal helper. Arbitrary custom
+loaded-thread hooks remain outside that evidence. See the
+[launcher plan](notification-launcher-plan.md) for scope, failure semantics and
+the remaining installed desktop/local/SSH and physical gates.
+
 ## Config-driven desktop candidate
 
 The candidate keeps ordinary `codex` launching. It remains experimental because
@@ -119,11 +154,12 @@ The native TUI connects through a private transient Unix relay. All native bytes
 pass unchanged; the observer binds successful explicit `thread/start` and
 `thread/resume` responses. Rosters, titles and daemon environments never grant a
 route. Native TUI completion alerts are disabled for this launched client;
-native approval alerts remain enabled. Server-side hooks are independent and
+other configured native events are preserved. Server-side hooks are independent and
 must be disabled for this covered context to avoid duplicate publication. A TUI
 `notify` override cannot disable a host-owned hook. Stock launches retain the
-basic recovery path. This relay is not a launcher requirement or the preferred
-config-driven integration.
+basic recovery path. This prototype is now the starting point for the selected
+[launcher direction](notification-launcher-plan.md); promotion requires its
+dispatch, Command Center, failure and installed desktop acceptance gates.
 
 Rich completions carry exact native IDs, a useful body and unfocused-only Kitty
 OSC 99 presentation with native terminal focus actions. Child/system/title

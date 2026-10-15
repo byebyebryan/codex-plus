@@ -184,7 +184,10 @@ def forward(event, argv, *, timeout=8):
         deadline = time.monotonic() + timeout
         write_input(process, encode_event(event), deadline)
         result = check_reply(json.loads(read_line(process.stdout, deadline)), event)
-        process.wait(timeout=max(.01, deadline - time.monotonic()))
+        try:
+            process.wait(timeout=max(.01, deadline - time.monotonic()))
+        except subprocess.TimeoutExpired as error:
+            raise TimeoutError('notification transport did not exit after its reply') from error
         if process.returncode != 0:
             raise ValueError('notification transport failed')
         return result
