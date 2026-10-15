@@ -290,3 +290,33 @@ native argv fallback and effective configuration checks. The selected explicit
 route, content, packet, inspection and wire behavior are unchanged from preview
 2's installed qualification. The follow-up does not activate daily shell mode,
 restart an owner, or claim the pending click/physical acceptance gates.
+
+
+## Desktop acceptance and rollout preparation follow-up
+
+Preview 3's actual local session-view popup was visually inspected: Codex sender,
+host title, final body and separate paragraph were present. A corrected passive
+monitor correlated DMS acceptance with desktop IDs 566, 567 and 568 for owned
+test episodes. An earlier monitor incorrectly allowed the client library to
+answer observed method calls; that disconnected the monitor and hid replies.
+This was a fixture error, not a missing DMS acknowledgement.
+
+One-shot virtual-pointer attempts produced no corresponding ActionInvoked signal
+or accepted originating-window focus. Their input path has not been qualified,
+so they establish neither successful clicks nor a helper focus failure. Manual
+local/SSH clicks in session and Command Center views remain required. A fixture
+that correlates the exact returned desktop ID, actual owner action signal and
+intended window focus is prepared; no further visible test is staged without an
+available observer. Owned test windows/threads were cleaned up, known test
+desktop IDs closed and exact native configuration restored.
+
+Both canonical chezmoi checkouts have been fast-forwarded locally to the reviewed
+notification source; GitHub main remains unmerged. No broad apply ran and daily
+host selection stays false. A scoped 349d activation/rollback plan is prepared
+under the private evidence directory: candidate and prior reviewed host archives,
+hash manifests, exact config/service/pairing backups and verified isolated imports.
+The running Python service has no source revision stamp; the rollback target is
+the prior reviewed commit, not a claimed dump of its loaded objects. Activating
+the new queue requires a 349d-only restart. Repository instructions require user
+authorization for that live service change, and authorization has been requested.
+Native owners, DMS, Observer, RLCD, Mesh and report services remain untouched.
