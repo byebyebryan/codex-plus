@@ -1,11 +1,12 @@
 # Terminal-associated rich notification launcher
 
-Date: 2026-10-15. Status: implementation and private native qualification in
-progress under the selected goal loop. Bryan accepts a
+Date: 2026-10-15. Status: explicit launcher installed and qualified for local/SSH
+delivery and viewer lifetime; daily selection remains off pending acceptance. Bryan accepts a
 launch helper to preserve unfocused-only notifications and originating-terminal
-focus. The existing relay is a prototype, not a finished daily-use launcher.
-Installed selection, native configuration and live services remain unchanged at
-the source checkpoint below; desktop and managed-rollout gates are still open.
+focus. The relay is an explicit pilot. The helper is independently pinned; ordinary
+launches keep native basic alerts. Desktop click and physical acceptance, daily
+shell selection, canonical-source convergence and the 349 admission rollout are
+still open. Existing native owners and live services have not been restarted.
 
 ## User experience and ownership
 
@@ -156,8 +157,9 @@ threads; existing user sessions and daemon incarnations remain untouched.
 The review found a 349 delayed-first-arrival gap: an unseen old completion can
 reach the board before polling proves supersession. Fix or explicitly revise
 that display guarantee before accepting step 5. The alternate desktop transport
-also has an uncaught subprocess-exit timeout; track that separately when that
-route is changed. It is not a dependency of the selected terminal relay path.
+also had an uncaught subprocess-exit timeout. The source checkpoint normalizes it
+to the existing quiet hook error path; it is not a dependency of the selected
+terminal relay path.
 
 Roll out explicit mode first, then the selected daily entry point on one host,
 then the second host after desktop acceptance. Retain native recovery and prior
@@ -200,7 +202,91 @@ or authorize a DMS/349d restart in this plan.
 Private evidence is under `~/.cache/codex-notify-launcher-20261015`. The first
 Command Center harness needed separate typing/Enter events to avoid native paste
 coalescing; the loaded-thread fixture needed a persisted first turn before resume.
-Only completed corrected runs support the claims above. Actual installed
-local/SSH desktop arrival, focus, failure/lifetime acceptance and managed rollout
-remain open; packet/private checks do not establish those gates. Arbitrary custom
+Only completed corrected runs support the claims above. At that source checkpoint,
+installed desktop and managed-rollout gates were open; the later checkpoint below
+records new evidence without promoting packet/private checks to GUI acceptance. Arbitrary custom
 hooks on already-loaded threads remain outside the legacy/no-hook qualification.
+
+
+## Installed explicit-pilot checkpoint: 2026-10-15
+
+The published [preview 2](https://github.com/byebyebryan/codex-plus/releases/tag/codex-notify-v0.1.0-preview.2)
+selects `a41365cdcf3dfd34576ed4a935b95bb55a4371e1`, source archive SHA-256
+`03be5f680e62eb27f488a6a5d35cfdcaa4e0360ee9d9ce4e3dd52873d93b2e50`.
+Chezmoi helper-only dry-run/apply, fourteen-file hash/mode readback and rollback
+to preview 1 followed by reselection pass on Starship and Snap. Worker/report
+selectors, native notification preferences, shell files and protected service
+identities remain at their starting state. This selection makes explicit `run`
+available; it does not replace ordinary `codex` launches.
+
+Actual stock 0.162.1 native owners were used with owned disposable threads and
+temporary loopback Responses providers. No external model requests or credentials
+were used. The native TUI saved trust entries for the owned test directories;
+only those exact entries were removed afterward, guarded by restoration of each
+host's original complete configuration hash. Owned threads were archived, test
+windows/SSH forwards/private servers reaped, and native PID/start ticks unchanged.
+
+| Case | Actual desktop evidence | Actual 349 evidence |
+| --- | --- | --- |
+| Direct local Kitty | Foreground completion suppressed; one Codex notification in Command Center with `Codex @ starship`, separate body and exact metadata | Card `100106` retained after 31 seconds, then removed after a newer exact turn |
+| Snap through ordinary SSH to Kitty | Same checks with `Codex @ 80H1VV3`; no fixed desktop receiver | Card `100108` retained after 31 seconds, then removed after a newer exact turn |
+| Local Kitty with an owned tmux server | Same suppression, Command Center and body/metadata delivery through tmux passthrough | Card `100110` retained after 31 seconds, then removed after a newer exact turn |
+
+Direct local and SSH checks closed only their owned viewer while a subsequent
+turn was waiting at the loopback provider. Native readback still showed that
+exact turn in progress; it then completed after the provider was released with
+no viewer. The tmux case also passed, then its owned tmux server was removed.
+These checks establish daemon/work lifetime, not automatic recovery of a dead
+relay or restoration of native completion filtering inside a surviving client.
+
+A local click-window probe recorded the intended Kitty window gaining focus
+while showing Command Center. The input action was not captured, so this is
+window-focus evidence, not confirmed notification-click attribution. The SSH
+probe received its notification but recorded no focus during its observation
+window. User click confirmation remains pending for both contexts; no click
+failure is inferred from an unobserved test. Session-view rich clicks have not
+been separately accepted.
+
+An additional private native two-viewer check passed: both real TUIs resumed the
+same owned thread, neither replayed its completed history, and each emitted one
+completion with the same episode and distinct Kitty action identifiers. It had
+no desktop and does not claim global exactly-one delivery.
+
+The 349 admission fix at `a46ccc8` also passed an integration check using both
+installed inspectors and actual native history from the owned local/SSH cases.
+Delayed old completions were proved superseded before admission and emitted zero
+fake-wire packets. This strengthens the source tests but is not live activation:
+existing 349d, firmware and DMS remain unchanged. All six 349 CI jobs passed,
+including both firmware builds. Physical panel readability/removal is unobserved;
+the unavailable DMS panel Open provider remains separate.
+
+Chezmoi's daily interactive Zsh entry point is prepared and host-gated. Both host
+activation switches remain false. Render checks cover selected/disabled/unknown
+hosts; an owned PTY check preserves spaces, newlines, literal shell syntax and
+exit status, while noninteractive/no-TTY use stays native. The full distribution
+checker passes. Canonical checkout convergence and scoped shell activation remain
+release gates after desktop acceptance; no global PATH shim was installed.
+
+Private receipts are under `~/.cache/codex-notify-launcher-20261015`. Only completed
+corrected fixtures support this table. Earlier harness attempts exposed test-only
+trace selection, TTY forwarding, trust-prompt and monitor issues; overlapping GUI
+fixtures were stopped and the SSH lifecycle case rerun sequentially with exact
+thread filtering. No production source change was needed for these corrections.
+
+
+## Startup-policy review follow-up
+
+The preview 3 follow-up preserves native daemon policy in automatic dispatch.
+Native 0.162.1 uses embedded mode when `daemon_auto_start` is false, even if an
+unrelated shared listener already exists. Automatic `launch` now requires an
+effective true value; explicit `run` still selects its requested existing
+endpoint. CLI overrides for daemon-owned features (`daemon_auto_start`,
+`worktrees`, `transcript_v2`, `realtime_conversation`, `standalone_web_search`)
+stay native, including quoted/dotted TOML keys and feature-table overrides.
+Other feature overrides retain their native arguments through the relay.
+
+Fifty notification tests pass after this review correction, including exact
+native argv fallback and effective configuration checks. The selected explicit
+route, content, packet, inspection and wire behavior are unchanged from preview
+2's installed qualification. The follow-up does not activate daily shell mode,
+restart an owner, or claim the pending click/physical acceptance gates.

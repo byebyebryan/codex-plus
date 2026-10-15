@@ -34,7 +34,7 @@ class Launcher(unittest.TestCase):
         for value in (False, [], ['approval-requested'], 'true'):
             with self.assertRaises(ValueError): filtered_notifications(value)
 
-    def preflight(self, config, changed=False):
+    def preflight(self, config, changed=False, **options):
         owner = {'executable': '/usr/bin/codex', 'pid': 1}
         calls = []
         class Client:
@@ -48,7 +48,8 @@ class Launcher(unittest.TestCase):
         identity = iter([owner, {} if changed else owner])
         with patch('codex_plus.notification_launcher.Path.resolve', return_value=Path('/usr/bin/codex')):
             result = preflight('/socket', ['-C', '/tmp'], '/usr/bin/codex', client_factory=Client,
-                               identity=lambda _: next(identity), version=lambda *a, **k: QUALIFIED_VERSION)
+                               identity=lambda _: next(identity), version=lambda *a, **k: QUALIFIED_VERSION,
+                               **options)
         return result, calls
 
     def test_preflight_is_read_only_and_preserves_custom_native_filter(self):
@@ -66,9 +67,25 @@ class Launcher(unittest.TestCase):
             with self.assertRaises(ValueError): self.preflight(config)
         with self.assertRaises(ValueError): self.preflight({'notify': []}, changed=True)
 
+    def test_automatic_launch_preserves_embedded_and_server_feature_policy(self):
+        for config in ({}, {'features': {}}, {'features': {'daemon_auto_start': False}}):
+            with self.assertRaisesRegex(ValueError, 'embedded TUI'):
+                self.preflight(config, require_native_daemon=True)
+        self.preflight({'features': {'daemon_auto_start': True}}, require_native_daemon=True)
+        # Explicit run chooses an existing endpoint independently of auto-start.
+        self.preflight({'features': {'daemon_auto_start': False}})
+        for argv in (['--disable', 'daemon_auto_start'], ['--enable=worktrees'],
+                     ['-c', 'features."daemon_auto_start"=false'],
+                     ['-c', 'features={worktrees=false}']):
+            with self.subTest(argv=argv):
+                self.assertFalse(invocation(argv).interactive)
+        self.assertTrue(invocation(['--disable', 'hooks']).interactive)
+
     def test_noninteractive_and_unsupported_argv_are_exact_native_exec(self):
         class NativeExec(Exception): pass
-        for argv in (['exec', '--json', 'text with spaces'], ['resume', 'id', '--no-daemon']):
+        for argv in (['exec', '--json', 'text with spaces'], ['resume', 'id', '--no-daemon'],
+                     ['--disable', 'daemon_auto_start', 'literal prompt'],
+                     ['-c', 'features.\"worktrees\"=false', 'literal prompt']):
             with patch('os.execv', side_effect=NativeExec) as execute:
                 with self.assertRaises(NativeExec): launch('/unused', argv)
                 execute.assert_called_once_with('/usr/bin/codex', ['/usr/bin/codex', *argv])

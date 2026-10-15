@@ -13,6 +13,8 @@ from .native import Client, listener_identity
 
 QUALIFIED_VERSION = 'codex-cli 0.162.1'
 NATIVE_EVENTS = ('agent-turn-complete', 'approval-requested', 'plan-mode-prompt', 'async-question')
+SERVER_FEATURES = {'daemon_auto_start', 'worktrees', 'transcript_v2',
+                   'realtime_conversation', 'standalone_web_search'}
 VALUE_OPTIONS = {'-c', '--config', '-m', '--model', '-s', '--sandbox', '-C', '--cd',
                  '--add-dir', '-a', '--ask-for-approval', '--enable', '--disable',
                  '--local-provider'}
@@ -53,6 +55,8 @@ def invocation(arguments, cwd=None):
                     value = arguments[index]
                 if name in ('-C', '--cd'):
                     cwd = os.path.abspath(os.path.expanduser(value))
+                elif name in ('--enable', '--disable') and value in SERVER_FEATURES:
+                    return Invocation(False, cwd, 'explicit native daemon feature policy')
                 elif name in ('-c', '--config'):
                     key, separator, _ = value.partition('=')
                     if not separator:
@@ -67,6 +71,9 @@ def invocation(arguments, cwd=None):
                     if ('notify' in override or not isinstance(tui, dict)
                             or any(key.startswith('notification') for key in tui)):
                         return Invocation(False, cwd, 'explicit native notification policy')
+                    features = override.get('features', {})
+                    if not isinstance(features, dict) or SERVER_FEATURES.intersection(features):
+                        return Invocation(False, cwd, 'explicit native daemon feature policy')
                 index += 1
                 continue
             if name in FLAG_OPTIONS and not equals:
@@ -102,7 +109,7 @@ def filtered_notifications(value):
 
 
 def preflight(path, arguments, executable, *, client_factory=Client, identity=listener_identity,
-              version=subprocess.check_output):
+              version=subprocess.check_output, require_native_daemon=False):
     parsed = invocation(arguments)
     if not parsed.interactive:
         raise ValueError(parsed.reason)
@@ -117,6 +124,10 @@ def preflight(path, arguments, executable, *, client_factory=Client, identity=li
         config = response.get('config')
         if not isinstance(config, dict) or config.get('notify') not in (None, []):
             raise ValueError('configured server hook conflicts with relay completion publication')
+        features = config.get('features') or {}
+        if require_native_daemon and (not isinstance(features, dict)
+                                      or features.get('daemon_auto_start') is not True):
+            raise ValueError('native configuration selects an embedded TUI')
         tui = config.get('tui')
         if tui is None:
             tui = {}
@@ -148,7 +159,7 @@ def launch(path, arguments, executable='/usr/bin/codex'):
     import asyncio
     from .notification_run import prepare, run
     try:
-        prepared = prepare(path, arguments, executable)
+        prepared = prepare(path, arguments, executable, automatic=True)
     except (OSError, ValueError, RuntimeError, TimeoutError, subprocess.SubprocessError):
         os.execv(executable, [executable, *arguments])
     return native_exit(asyncio.run(run(path, arguments, executable, prepared=prepared)))

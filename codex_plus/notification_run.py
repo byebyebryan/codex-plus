@@ -56,7 +56,7 @@ class Prepared:
     route: str
 
 
-def prepare(path, arguments, executable):
+def prepare(path, arguments, executable, *, automatic=False):
     target = terminal()
     if target is None:
         raise ValueError('rich notifications require an attached Kitty terminal')
@@ -65,7 +65,7 @@ def prepare(path, arguments, executable):
     try:
         if not os.isatty(fd) or (tmux and os.fstat(fd).st_uid != os.getuid()):
             raise ValueError('notification route must be an owned terminal')
-        owner, overrides = preflight(path, arguments, executable)
+        owner, overrides = preflight(path, arguments, executable, require_native_daemon=automatic)
         return Prepared(owner, fd, tmux, overrides, secrets.token_hex(8))
     except BaseException:
         os.close(fd)
