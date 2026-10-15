@@ -1,0 +1,12 @@
+#!/usr/bin/env -S python3 -B
+"""Send native Codex completion callbacks through their originating Kitty terminal."""
+
+from pathlib import Path
+import sys
+
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from codex_plus.notifications import is_subagent, main, notification, terminal
+
+if __name__ == "__main__":
+    main()
