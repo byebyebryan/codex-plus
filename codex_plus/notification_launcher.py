@@ -12,6 +12,9 @@ import tomllib
 from .native import Client, listener_identity
 
 QUALIFIED_VERSION = 'codex-cli 0.162.1'
+QUALIFIED_PAIRS = {(QUALIFIED_VERSION, QUALIFIED_VERSION),
+                   (QUALIFIED_VERSION, 'codex-cli 0.163.0'),
+                   ('codex-cli 0.163.0', 'codex-cli 0.163.0')}
 NATIVE_EVENTS = ('agent-turn-complete', 'approval-requested', 'plan-mode-prompt', 'async-question')
 SERVER_FEATURES = {'daemon_auto_start', 'worktrees', 'transcript_v2',
                    'realtime_conversation', 'standalone_web_search'}
@@ -53,6 +56,8 @@ def invocation(arguments, cwd=None):
                     if index == len(arguments):
                         return Invocation(False, cwd, 'native option validation')
                     value = arguments[index]
+                if name == '--add-dir':
+                    return Invocation(False, cwd, 'native additional workspace roots')
                 if name in ('-C', '--cd'):
                     cwd = os.path.abspath(os.path.expanduser(value))
                 elif name in ('--enable', '--disable') and value in SERVER_FEATURES:
@@ -74,6 +79,8 @@ def invocation(arguments, cwd=None):
                     features = override.get('features', {})
                     if not isinstance(features, dict) or SERVER_FEATURES.intersection(features):
                         return Invocation(False, cwd, 'explicit native daemon feature policy')
+                    if 'sandbox_workspace_write' in override:
+                        return Invocation(False, cwd, 'explicit native workspace policy')
                 index += 1
                 continue
             if name in FLAG_OPTIONS and not equals:
@@ -114,11 +121,13 @@ def preflight(path, arguments, executable, *, client_factory=Client, identity=li
     if not parsed.interactive:
         raise ValueError(parsed.reason)
     executable = str(Path(executable).resolve(strict=True))
-    if version([executable, '--version'], text=True, timeout=2).strip() != QUALIFIED_VERSION:
+    tui_version = version([executable, '--version'], text=True, timeout=2).strip()
+    if tui_version not in {pair[0] for pair in QUALIFIED_PAIRS}:
         raise ValueError('native TUI version is outside the qualified notification scope')
     owner = identity(path)
-    if version([owner['executable'], '--version'], text=True, timeout=2).strip() != QUALIFIED_VERSION:
-        raise ValueError('native daemon version is outside the qualified notification scope')
+    daemon_version = version([owner['executable'], '--version'], text=True, timeout=2).strip()
+    if (tui_version, daemon_version) not in QUALIFIED_PAIRS:
+        raise ValueError('native TUI/daemon pair is outside the qualified notification scope')
     with client_factory(path, experimental=True, timeout=4) as client:
         response = client.call('config/read', {'includeLayers': False, 'cwd': parsed.cwd}, timeout=4)
         config = response.get('config')

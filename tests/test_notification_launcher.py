@@ -34,7 +34,7 @@ class Launcher(unittest.TestCase):
         for value in (False, [], ['approval-requested'], 'true'):
             with self.assertRaises(ValueError): filtered_notifications(value)
 
-    def preflight(self, config, changed=False, **options):
+    def preflight(self, config, changed=False, versions=None, **options):
         owner = {'executable': '/usr/bin/codex', 'pid': 1}
         calls = []
         class Client:
@@ -46,9 +46,10 @@ class Launcher(unittest.TestCase):
                 calls.append((method, params))
                 return {'config': config}
         identity = iter([owner, {} if changed else owner])
+        versions = iter(versions or [QUALIFIED_VERSION, QUALIFIED_VERSION])
         with patch('codex_plus.notification_launcher.Path.resolve', return_value=Path('/usr/bin/codex')):
             result = preflight('/socket', ['-C', '/tmp'], '/usr/bin/codex', client_factory=Client,
-                               identity=lambda _: next(identity), version=lambda *a, **k: QUALIFIED_VERSION,
+                               identity=lambda _: next(identity), version=lambda *a, **k: next(versions),
                                **options)
         return result, calls
 
@@ -66,6 +67,13 @@ class Launcher(unittest.TestCase):
                        {'tui': {'notifications': False}}):
             with self.assertRaises(ValueError): self.preflight(config)
         with self.assertRaises(ValueError): self.preflight({'notify': []}, changed=True)
+
+    def test_native_version_pairs_are_qualified_individually(self):
+        for pair in [('0.162.1', '0.162.1'), ('0.162.1', '0.163.0'), ('0.163.0', '0.163.0')]:
+            self.preflight({}, versions=['codex-cli '+version for version in pair])
+        for pair in [('0.162.1', '0.164.0'), ('0.163.0', '0.162.1'), ('0.164.0', '0.164.0')]:
+            with self.assertRaises(ValueError):
+                self.preflight({}, versions=['codex-cli '+version for version in pair])
 
     def test_automatic_launch_preserves_embedded_and_server_feature_policy(self):
         for config in ({}, {'features': {}}, {'features': {'daemon_auto_start': False}}):
@@ -85,7 +93,9 @@ class Launcher(unittest.TestCase):
         class NativeExec(Exception): pass
         for argv in (['exec', '--json', 'text with spaces'], ['resume', 'id', '--no-daemon'],
                      ['--disable', 'daemon_auto_start', 'literal prompt'],
-                     ['-c', 'features.\"worktrees\"=false', 'literal prompt']):
+                     ['-c', 'features.\"worktrees\"=false', 'literal prompt'],
+                     ['--add-dir', '/tmp/with spaces', 'literal prompt'],
+                     ['-c', 'sandbox_workspace_write={writable_roots=["/tmp"]}', 'literal prompt']):
             with patch('os.execv', side_effect=NativeExec) as execute:
                 with self.assertRaises(NativeExec): launch('/unused', argv)
                 execute.assert_called_once_with('/usr/bin/codex', ['/usr/bin/codex', *argv])

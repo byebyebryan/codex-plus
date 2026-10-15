@@ -23,8 +23,9 @@ The selected next direction is a terminal-associated launch helper; see the
 [launcher plan](notification-launcher-plan.md). Bryan confirmed native desktop
 click-to-focus in both session and Command Center views and now accepts a
 launcher to add richness while preserving that behavior. The explicit launcher
-is independently installed on Starship/Snap; ordinary launching remains native
-while the daily entry point is gated. The plan records exact release checkpoints.
+is independently installed on Starship/Snap. Their fresh interactive Zsh shells
+select the qualified launcher; existing shells and noninteractive calls retain
+their current entry point. The plan records exact release checkpoints.
 
 ## Terminal-associated launcher candidate
 
@@ -32,7 +33,10 @@ Use `codex-notify run --native /usr/bin/codex -- NATIVE_ARGS`
 for explicit mode. `codex-notify launch --native /usr/bin/codex -- NATIVE_ARGS`
 is the candidate automatic shell entry point. Unsupported/noninteractive calls,
 CLI utilities, notification overrides and pre-launch qualification failures keep
-native behavior. The current qualified TUI/daemon version is 0.162.1.
+native behavior. Qualified TUI/server pairs are 0.162.1/0.162.1,
+0.162.1/0.163.0 and 0.163.0/0.163.0. Other pairs stay native. Additional workspace
+roots (`--add-dir` or explicit `sandbox_workspace_write` configuration) also
+stay native because the explicit remote route cannot preserve them.
 
 Only native completion publication is removed for a wrapped client; all other
 configured native event types are preserved. Server hook conflicts are checked

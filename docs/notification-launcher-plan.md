@@ -345,3 +345,45 @@ publication also passed. The native owner was unchanged and the owned thread
 archived. Fifty notification tests pass, including unchanged native relay bytes
 and a sole final marker after the button. Packaged local Command Center and SSH
 acceptance are the next gates; this source pilot alone does not establish them.
+
+## Installed Open and shell selection follow-up
+
+Installed preview 4 passed actual desktop Open in local and Snap SSH session
+views and Command Center. Each case correlated one native episode with its
+returned DMS notification ID, visible action 1 and the originating Kitty window
+gaining focus. Command Center detection matched its header, not its help text.
+The local ordinary `codex` shell entry also passed this correlation in Command
+Center. Owned threads were archived and owner identity was unchanged within
+each accepted run. This establishes graphical desktop activation; physical 349
+rendering/touch and the separate unavailable DMS panel Open provider remain open.
+
+Fresh interactive user shells now select the helper on both hosts. Actual PTY
+checks preserve native dispatch in agent and noninteractive shells. Exact scoped
+shell apply, rollback and reselection passed for both hosts. Only `.zshrc` and
+the notification shell snippet were selected; no global PATH shim or broad apply
+was used. Unrelated Observer source changes were preserved. An independently
+stopped RLCD service was observed and left stopped.
+
+## Native version compatibility follow-up
+
+The native managed servers independently transitioned to 0.163.0 during
+qualification while `/usr/bin/codex` remained 0.162.1. No daemon restart command
+was issued by this work, and the transition's cause was not established. Preview
+4 correctly falls back to native behavior for this unqualified server pair.
+The next candidate qualifies explicit TUI/server pairs 0.162.1/0.162.1,
+0.162.1/0.163.0 and 0.163.0/0.163.0; other combinations remain native.
+
+Private real-native checks with a loopback model passed Command Center for
+0.163.0/0.163.0 and a switch between two running roots for 0.162.1/0.163.0.
+Exact body/metadata association, visible Open payloads and absence of native
+OSC 9 duplication passed. With global auto-start enabled, the private listener's
+PID/start ticks remained unchanged; only a harmless startup lock was created.
+All owned processes were reaped. These checks had no real provider or desktop.
+
+Matching native source confirms that an explicit `--remote` endpoint bypasses
+daemon management. No extra daemon-policy override is needed. Native remote
+mode rejects additional workspace roots, so `--add-dir` and explicit
+`sandbox_workspace_write` overrides now preserve exact native dispatch instead.
+Fifty-one notification tests pass, covering the pair allowlist and these argv
+fallbacks. Installed qualification against the current server and updated
+release selection remain separate from the private checks above.
