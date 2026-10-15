@@ -1,5 +1,5 @@
 #!/usr/bin/env -S python3 -B
-"""Send native Codex completion callbacks through their originating Kitty terminal."""
+"""Augment native Codex completions through configured desktop or terminal routes."""
 
 from pathlib import Path
 import sys
@@ -9,7 +9,36 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from codex_plus.notifications import is_subagent, main, notification, terminal
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] in ('run', 'inspect', 'identity'):
+    if len(sys.argv) > 1 and sys.argv[1] in ('hook', 'desktop', 'desktop-worker'):
+        import argparse
+        import json
+        from codex_plus.notification_delivery import config_path, hook, load_config, read_event
+        parser = argparse.ArgumentParser(description=__doc__)
+        parser.add_argument('--config', type=Path, default=config_path())
+        parser.add_argument('payload', nargs='?')
+        args = parser.parse_args(sys.argv[2:])
+        try:
+            if sys.argv[1] == 'hook':
+                if args.payload is None or len(args.payload.encode()) > 1048576:
+                    raise ValueError('missing or oversized native notification')
+                result = hook(json.loads(args.payload), load_config(args.config))
+                if result is not None and result['status'] == 'uncertain':
+                    raise ValueError('desktop admission uncertain')
+            else:
+                if args.payload is not None:
+                    raise ValueError('desktop delivery reads one event from stdin')
+                from codex_plus.notification_desktop import receive, worker
+                event = read_event(sys.stdin.buffer)
+                emit = lambda value: print(json.dumps(value, separators=(',', ':')), flush=True)
+                if sys.argv[1] == 'desktop':
+                    emit(receive(event, args.config, Path(__file__).resolve()))
+                else:
+                    worker(event, load_config(args.config), emit=emit)
+        except (OSError, ValueError, RuntimeError, TimeoutError) as error:
+            # Native completion must remain successful; explicit commands report uncertainty.
+            print('codex-notify: ' + str(error), file=sys.stderr)
+            sys.exit(0 if sys.argv[1] == 'hook' else 2)
+    elif len(sys.argv) > 1 and sys.argv[1] in ('run', 'inspect', 'identity'):
         import argparse
         import asyncio
         import json

@@ -29,9 +29,11 @@ walkthrough and five readable guides through GitHub Pages. See the
 
 ## Current status
 
-The standalone [notification utility](docs/notifications.md) provides the legacy
-callback, an explicit rich native TUI launcher and bounded read-only lifecycle
-inspection. Chezmoi pins its installation independently of watch and reports.
+The standalone [notification utility](docs/notifications.md) provides a config-driven
+desktop delivery candidate, the older terminal callback, an optional native TUI
+relay and bounded read-only lifecycle inspection. Normal launching remains the
+preferred integration; the candidate's focus/Open limits are explicit. Chezmoi
+pins its installation independently of watch and reports.
 
 As of 2026-10-14, the monitoring runtime **v0.1.0-preview.2** and reporting
 component **v0.1.0-preview.7** are installed on Snap and Starship through chezmoi.

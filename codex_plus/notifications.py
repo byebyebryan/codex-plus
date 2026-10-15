@@ -47,7 +47,7 @@ def is_subagent(thread_id):
     return False
 
 
-def notification(payload):
+def completion_body(payload):
     if not isinstance(payload, dict) or payload.get("type") != "agent-turn-complete":
         return None
     # codex exec has no interactive terminal notification to replace.
@@ -72,6 +72,13 @@ def notification(payload):
     body = "\n".join(" ".join(line.split()) for line in lines).strip("\n")
     body = body.encode("utf-8", errors="replace")[:2048]
     body = body.decode("utf-8", errors="ignore") or "Turn complete."
+    return body
+
+
+def notification(payload):
+    body = completion_body(payload)
+    if body is None:
+        return None
     identifier = uuid.uuid4().hex
     encoded = base64.b64encode(body.encode("utf-8")).decode("ascii")
     # Leave the application name unset: Kitty remains the sender.

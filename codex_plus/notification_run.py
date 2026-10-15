@@ -111,7 +111,7 @@ async def run(path, arguments, executable='codex', *, only_when='unfocused'):
                 # Ctrl-C remains native TUI input/lifecycle; do not cancel its parent.
                 asyncio.get_running_loop().add_signal_handler(signal.SIGINT, lambda: None)
                 process = await asyncio.create_subprocess_exec(executable, '--remote', 'unix://' + proxy,
-                    '-c', 'notify=[]', '-c', 'tui.notifications=["approval-requested"]', *arguments)
+                    '-c', 'tui.notifications=["approval-requested"]', *arguments)
                 loop = asyncio.get_running_loop()
                 for sig in (signal.SIGTERM, signal.SIGHUP):
                     loop.add_signal_handler(sig, lambda sig=sig: process.send_signal(sig) if process.returncode is None else None)
