@@ -9,4 +9,31 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from codex_plus.notifications import is_subagent, main, notification, terminal
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1 and sys.argv[1] in ('run', 'inspect', 'identity'):
+        import argparse
+        import asyncio
+        import json
+        from codex_plus.notification_inspect import default_socket, main as inspect_main, source_identity
+        parser = argparse.ArgumentParser(description=__doc__)
+        parser.add_argument('--socket', default=default_socket())
+        rest = sys.argv[2:]
+        boundary = rest.index('--') if '--' in rest else len(rest)
+        args = parser.parse_args(rest[:boundary])
+        arguments = rest[boundary + 1:]
+        command = sys.argv[1]
+        if command != 'run' and arguments:
+            parser.error('only run accepts native arguments')
+        try:
+            if command == 'inspect':
+                inspect_main(args.socket)
+            elif command == 'identity':
+                host, instance = source_identity(args.socket)
+                print(json.dumps({'host': host, 'instance': instance}))
+            else:
+                from codex_plus.notification_run import run
+                sys.exit(asyncio.run(run(args.socket, arguments)))
+        except (OSError, ValueError, RuntimeError) as error:
+            print('codex-notify: ' + str(error), file=sys.stderr)
+            sys.exit(2)
+    else:
+        main()

@@ -184,4 +184,5 @@ class Notifications(unittest.TestCase):
             HELPER_GLOBALS["main"]()
 
 
-unittest.main()
+if __name__ == '__main__':
+    unittest.main()
