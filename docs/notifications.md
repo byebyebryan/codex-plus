@@ -21,11 +21,11 @@ with the existing `osc9` method. Settings take effect on the next normal TUI lau
 
 ## Config-driven desktop candidate
 
-The candidate keeps ordinary `codex` launching. It is opt-in while the behavior
-choice is unresolved: desktop alerts use **always notify**, and Open can launch
-a **new terminal resuming the exact thread**. Originating-terminal focus and
-unfocused-only delivery are not provided by this route. The config hook does not
-identify that viewer; never infer it from titles, text, cwd or daemon environment.
+The candidate keeps ordinary `codex` launching. It remains experimental because
+the selected policy requires unfocused-only alerts and original-terminal Open.
+This route uses **always notify**, and Open can launch a **new terminal resuming
+the exact thread**. The config hook cannot identify the originating viewer;
+never infer it from titles, text, cwd or daemon environment.
 
 When selecting this mode for fresh threads, configure native Codex on its owning
 host:
@@ -268,3 +268,32 @@ This completes helper availability, not desktop-mode activation. No global
 alerts remain selected. The original-terminal versus always-notify/new-terminal
 choice, safe adoption across loaded threads, canonical-source convergence and
 disconnected-board/physical acceptance remain separate gates.
+
+## Selected policy and device follow-up: 2026-10-15
+
+Bryan selected native **unfocused-only alerts and original-terminal Open**.
+Keep ordinary native basic notifications selected. Rich delivery remains
+experimental until native client support supplies the required binding; neither
+the relay launcher nor always-notify/new-terminal desktop behavior becomes a
+default. Changing the server hook type does not establish that client binding.
+
+With the installed preview.1 helper, fresh owned RPC threads on the original
+Starship and Snap owners each produced one rich desktop notification with a
+separate body. Local card `100053` and SSH card `100054` reached the 349, remained
+in its cache after panel presentation expiry, then disappeared after a separate
+client started a newer interrupted turn in the same exact thread. Both device
+removals were read back with board boot ID `162624908` unchanged. These controlled
+per-thread overrides do not establish installed-default normal-launch acceptance.
+
+The twelve manifest files and executable flags still match on both hosts. Native
+owner identities and native notification preferences are unchanged; no global
+desktop route is installed. Owned probe threads were archived and probe processes
+exited. No live service, daemon, launcher or firmware change was made.
+
+Bryan did not observe the tests. Physical rendering/touch, graphical popup expiry
+and graphical Open remain unaccepted. The configured tests supplied no Open
+action; the existing DMS panel Open provider remains unavailable. See the
+[349 October 15 record](https://github.com/byebyebryan/esp32-349/blob/feat/rich-notifications/projects/notification-panel/docs/rich-notifications-acceptance-2026-10-15.md)
+for the exact accepted scope. Future rich activation still needs the client
+binding and safe adoption across loaded threads; retain native completion alerts
+while loaded threads can retain `notify=[]`.
