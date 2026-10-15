@@ -387,3 +387,28 @@ mode rejects additional workspace roots, so `--add-dir` and explicit
 Fifty-one notification tests pass, covering the pair allowlist and these argv
 fallbacks. Installed qualification against the current server and updated
 release selection remain separate from the private checks above.
+
+## Preview 5 installed checkpoint
+
+Published preview 5 selects `8d1fea8e5f25bb71e0ef18ff424a73d7578ac8c0`, archive
+SHA-256 `01ac786f61b57372f1c8417483ca71b1f1a30cb17a9f30e7c6c1cd2801e307a6`.
+Both hosts passed scoped helper dry-run/apply, exact fourteen-file hash/mode
+readback, rollback to preview 4 and reselection. Fresh baselines preserve the
+current 0.163.0 owners, active shell selection and unrelated selectors/services;
+historical 0.162.1 receipts were retained rather than rewritten. Full distribution
+and independent pin checks pass.
+
+Fresh ordinary `codex` launches in actual local and SSH terminals delivered one
+rich completion from Command Center on the current owners, with exact metadata,
+Codex sender, host title and separate body. Local desktop ID 608 and Snap ID 607 were explicit delivery-only cases. Local ID 606 established delivery before its click assertion
+failed: no ActionInvoked signal was captured. That repeat's cause is unresolved;
+it does not replace the earlier preview 4 Open evidence with current-server click
+acceptance. An earlier local attempt also stopped on OCR marker recognition.
+Neither failed fixture is reported as an overall acceptance pass.
+
+Owned threads were archived and native-created test trust entries removed with
+exact original configuration hash restoration. Current native PID/start ticks
+and protected service identities remained unchanged. The live 349d admission
+queue still needs user authorization for its service restart; physical readability,
+visible retirement and touch remain unobserved. No firmware or live host service
+change was performed by this work.
