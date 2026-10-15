@@ -199,6 +199,12 @@ The configured desktop candidate avoids this terminal dependency with different
 focus/Open behavior. The optional relay supplies an attached-client route.
 Ordinary installed launches continue using native basic recovery until selection.
 
+The current [documented hook events](https://learn.chatgpt.com/docs/hooks) do not
+include a client `Notification` hook. The matching 0.162.1 TUI notification backend
+offers OSC 9/BEL, without a client command hook. Switching lifecycle hook types
+does not establish an originating-terminal route; that remains a separate native
+client capability or explicit binding.
+
 ## Checks
 
 ```sh
@@ -240,3 +246,25 @@ from the tested hook; do not make the relay launcher a requirement or silently
 select different semantics. Safe adoption across already loaded threads is a
 separate gate. Chezmoi remains the distributor; no new runtime pin, global
 notification preference or managed desktop route was selected by this checkpoint.
+
+## Distribution follow-up: 2026-10-14
+
+[codex-notify 0.1.0-preview.1](https://github.com/byebyebryan/codex-plus/releases/tag/codex-notify-v0.1.0-preview.1)
+publishes source `7d05b07ffc82c76ba62bee52f9c8c0edf2f8894b` with a manifest for
+the twelve-file helper/doc/license subset. Its source archive SHA-256 is
+`8b1f2f315d11b6b8978eae415e3c937b4c83d93f7ddbdcf0e95a789525aca262`.
+Chezmoi candidate `ee14acb` independently selects it without changing native
+notification preferences, service scripts, launchers, workers or report runtime.
+
+Scoped dry-runs/apply, exact installed-byte/mode readback and helper-only
+rollback/reselection passed on Starship and Snap. The previous `fa46330` helper
+remains available. Installed local and Snap-to-Starship hook/receiver checks
+reused already-admitted owned test episodes: both returned duplicate receipts
+with unchanged episode timestamps, creating no new alert or native model turn.
+Protected native config, selectors and service identities were unchanged.
+
+This completes helper availability, not desktop-mode activation. No global
+`~/.config/codex-plus/notify.toml` route was installed. Ordinary native basic
+alerts remain selected. The original-terminal versus always-notify/new-terminal
+choice, safe adoption across loaded threads, canonical-source convergence and
+disconnected-board/physical acceptance remain separate gates.

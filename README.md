@@ -34,6 +34,9 @@ desktop delivery candidate, the older terminal callback, an optional native TUI
 relay and bounded read-only lifecycle inspection. Normal launching remains the
 preferred integration; the candidate's focus/Open limits are explicit. Chezmoi
 pins its installation independently of watch and reports.
+The [notification utility preview.1](https://github.com/byebyebryan/codex-plus/releases/tag/codex-notify-v0.1.0-preview.1)
+is installed on Starship and Snap; ordinary launches keep native basic alerts.
+Installing the helper does not select its desktop mode or replace the launcher.
 
 As of 2026-10-14, the monitoring runtime **v0.1.0-preview.2** and reporting
 component **v0.1.0-preview.7** are installed on Snap and Starship through chezmoi.
