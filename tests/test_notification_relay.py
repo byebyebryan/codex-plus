@@ -65,10 +65,12 @@ class Relay(unittest.TestCase):
                 self.assertEqual(received, [request])
                 self.assertEqual(json.loads(result.read_text())['sha256'], hashlib.sha256(response).hexdigest())
                 self.assertEqual(json.loads(result.read_text())['argv'][-1], 'owned argument')
-                self.assertEqual(emitted.count(b'\x1b]99;'), 2)
+                self.assertEqual(emitted.count(b'\x1b]99;'), 2 if malformed else 3)
+                self.assertEqual(emitted.count(b':d=1;'), 1)
                 if malformed:
                     self.assertIn(b'codex-notify-status-test-viewer', emitted)
                 else:
+                    self.assertIn(b':p=buttons:e=1:d=1;T3Blbg==\x07', emitted)
                     self.assertIn(b'f=Q29kZXg=', emitted)
                     self.assertNotIn(b'codex-notify-status-', emitted)
             finally:

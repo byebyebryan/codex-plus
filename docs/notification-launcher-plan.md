@@ -320,3 +320,28 @@ the prior reviewed commit, not a claimed dump of its loaded objects. Activating
 the new queue requires a 349d-only restart. Repository instructions require user
 authorization for that live service change, and authorization has been requested.
 Native owners, DMS, Observer, RLCD, Mesh and report services remain untouched.
+
+
+## Visible Open action follow-up
+
+An owned fullscreen terminal independently confirmed that the virtual pointer
+delivers real press/release events. DMS 1.6.3 source and the live false
+`notificationPopupBodyInvokesAction` preference then explained the earlier
+non-action: long card bodies expand on click. Kitty labels its default action
+with a space, leaving no discoverable named Open button in this context.
+
+The next producer candidate adds one visible Open button through OSC 99's
+standard button payload. Title, body and button are collected before the sole
+completion marker, producing one desktop Notify call. Kitty's normal focus
+action activates the launch's exact terminal; no global DMS preference, launcher
+guessing or extra receiver is needed. Clicking card body text continues to follow
+the notification center's expansion/text policy. The explicit Open action is the
+qualified terminal activation gesture.
+
+The source pilot passed a real local session-view click: DMS accepted notification
+578, the visible Open button emitted its exact action 1, and originating Kitty
+window 86 gained focus. Foreground suppression, sender/body/metadata and one
+publication also passed. The native owner was unchanged and the owned thread
+archived. Fifty notification tests pass, including unchanged native relay bytes
+and a sole final marker after the button. Packaged local Command Center and SSH
+acceptance are the next gates; this source pilot alone does not establish them.

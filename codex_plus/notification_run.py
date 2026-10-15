@@ -30,7 +30,8 @@ def packet(notice, *, only_when='unfocused', route=''):
     identifier = event_id(notice['metadata']) + ('-' + route if route else '')
     return (f'\x1b]99;i={identifier}:f={b64("Codex")}:o={only_when}:w=30000:'
             f't={b64(encode(notice["metadata"]))}:e=1:d=0;{b64(title)}\x07'
-            f'\x1b]99;i={identifier}:p=body:e=1:d=1;').encode() + encoded_body + b'\x07'
+            f'\x1b]99;i={identifier}:p=body:e=1:d=0;').encode() + encoded_body + (
+            f'\x07\x1b]99;i={identifier}:p=buttons:e=1:d=1;{b64("Open")}\x07').encode()
 
 
 def publish(fd, data, tmux):

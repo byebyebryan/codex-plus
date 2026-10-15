@@ -22,13 +22,13 @@ with the existing `osc9` method. Settings take effect on the next normal TUI lau
 The selected next direction is a terminal-associated launch helper; see the
 [launcher plan](notification-launcher-plan.md). Bryan confirmed native desktop
 click-to-focus in both session and Command Center views and now accepts a
-launcher to add richness while preserving that behavior. Source hardening and
-private native qualification are underway; installed selection is unchanged.
+launcher to add richness while preserving that behavior. The explicit launcher
+is independently installed on Starship/Snap; ordinary launching remains native
+while the daily entry point is gated. The plan records exact release checkpoints.
 
 ## Terminal-associated launcher candidate
 
-The source adds `launch` and hardens `run`; installed preview.1 does not yet
-contain these changes. Use `codex-notify run --native /usr/bin/codex -- NATIVE_ARGS`
+Use `codex-notify run --native /usr/bin/codex -- NATIVE_ARGS`
 for explicit mode. `codex-notify launch --native /usr/bin/codex -- NATIVE_ARGS`
 is the candidate automatic shell entry point. Unsupported/noninteractive calls,
 CLI utilities, notification overrides and pre-launch qualification failures keep
@@ -40,6 +40,10 @@ read-only. The relay sends Codex as sender, separate title/body, host and v1
 metadata through the attached terminal. Per-viewer Kitty identifiers keep action
 targets independent. Desktop Open focuses the originating Kitty window,
 including Command Center; thread selection stays a native TUI interaction.
+Rich completions include a visible **Open** button. Some notification centers
+expand long bodies on a card click; use Open to activate the terminal without
+changing global desktop notification preferences. Title, body and button are
+published as one completed OSC 99 notification.
 
 Positive root classification and successful native start/resume responses grant
 routes; unsubscribe/archive/close revoke them. A native session-name resume binds
