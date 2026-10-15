@@ -477,3 +477,28 @@ library and the existing SSH route are sufficient; Observer is not required.
 Private results are `private-resource-1/result.json`, `inspector-resource-5s.json`
 and `resource-cost-summary.json` under the existing evidence directory. All reads
 were restricted to owned test identities, with native owners and services intact.
+
+## Live 349 admission checkpoint
+
+The scoped 349d-only activation is complete: Starship's service PID changed from
+775545 to 69987, the admission queue is visible in status, and board boot ID
+162624908 and pairing identity are unchanged. Native owners and all other sampled
+service identities remained unchanged, including the independently running RLCD
+service. Config/unit/pairing files and both hosts' protected selectors match their
+pre-activation snapshots. No firmware was flashed.
+
+Installed daily local and Snap SSH lifecycle checks passed with cards 100005 and
+100007: one rich completion in Command Center, retained device history beyond
+31 seconds, then exact removal when a separate client starts a newer turn.
+Closing the viewer left native work running and it completed without that viewer.
+Owned threads were archived and native-created test trust entries removed with
+exact configuration restoration.
+
+Live delayed local/SSH notifications entered the pending queue and were rejected
+after one native inspection each, with no new device card observed. A generic
+notification was admitted without native inspection and its own desktop close
+removed the exact card. These serial/cache observations complement the zero
+fake-wire integration checks; they do not claim a packet trace or physical view.
+The [consumer checkpoint](https://github.com/byebyebryan/esp32-349/blob/feat/rich-notifications/projects/notification-panel/docs/notification-launcher-acceptance-2026-10-15.md)
+records exact receipts, prepared 349 rollback and the remaining physical/touch
+acceptance. The separate DMS panel Open provider remains unavailable.

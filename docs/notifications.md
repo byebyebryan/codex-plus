@@ -15,14 +15,13 @@ The remote TUI does not forward its `-c notify=...` override; that earlier probe
 did not establish missing hook dispatch. A detached hook lacks the originating
 TTY, so the older `/dev/tty` route fails independently of event production.
 
-The currently selected basic recovery keeps ordinary launches on `notify = []`
+The native basic fallback keeps unwrapped launches on `notify = []`
 and native `tui.notifications = ["agent-turn-complete", "approval-requested"]`
 with the existing `osc9` method. Settings take effect on the next normal TUI launch.
 
-The selected next direction is a terminal-associated launch helper; see the
-[launcher plan](notification-launcher-plan.md). Bryan confirmed native desktop
-click-to-focus in both session and Command Center views and now accepts a
-launcher to add richness while preserving that behavior. The explicit launcher
+The selected rich mode uses a terminal-associated launch helper; see the
+[launcher plan](notification-launcher-plan.md). It preserves native desktop
+click-to-focus in both session and Command Center views. The explicit launcher
 is independently installed on Starship/Snap. Their fresh interactive Zsh shells
 select the qualified launcher; existing shells and noninteractive calls retain
 their current entry point. The plan records exact release checkpoints.
