@@ -412,3 +412,34 @@ and protected service identities remained unchanged. The live 349d admission
 queue still needs user authorization for its service restart; physical readability,
 visible retirement and touch remain unobserved. No firmware or live host service
 change was performed by this work.
+
+## Current-owner desktop Open follow-up
+
+Installed preview 5 now passes actual daily-shell Open on both current 0.163.0
+servers with the 0.162.1 TUI, in both session view and Command Center:
+
+| Source | Native view | Desktop notification | Originating Kitty window |
+| --- | --- | --- | --- |
+| Starship | Command Center | 611 | 105 |
+| Snap SSH | Command Center | 613 | 108 |
+| Starship | Session | 614 | 109 |
+| Snap SSH | Session | 615 | 110 |
+
+Each owned case starts ordinary `codex` in a fresh interactive Zsh terminal,
+delivers one rich completion with the exact episode/host/body, correlates action
+1 from the actual DMS owner with its returned notification ID, and observes the
+exact originating window gaining focus. These are actual GUI checks with private
+loopback providers, without real model requests or credentials. Foreground
+suppression remains the earlier preview 4 qualification; it was not repeated here.
+
+The corrected fixture holds one pointer connection across hover and click and
+restricts exact marker recognition to the popup. A separate owned terminal
+confirmed button delivery; the earlier SSH OCR attempt had matched both the popup
+and background terminal text. Original failed receipts remain available and are
+not counted as passes. No producer change was needed for the successful repeats.
+
+Owned threads were archived, test-folder trust entries removed with exact original
+configuration hash restoration, and both native PID/start-tick identities stayed
+unchanged. This closes the current-server desktop Open gate. Physical panel
+acceptance and user authorization for the 349d-only admission-queue restart remain
+outstanding. No live service or firmware change was made.
