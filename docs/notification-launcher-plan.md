@@ -4,8 +4,9 @@ Date: 2026-10-15. Status: preview 6 is installed through the scoped daily entry
 point on Starship and Snap. Local/SSH delivery, originating-window Open, viewer
 lifetime, native session cwd and the live 349 admission queue have installed
 qualification. Bryan accepts the launch helper to preserve unfocused-only
-notifications and originating-terminal focus. Physical 349 readability, visible
-retirement and touch remain unobserved, so the goal loop remains incomplete.
+notifications and originating-terminal focus. A subsequent user-observed physical
+smoke check confirms 349 readability, visible retirement and touch on the paired
+board; its scope and remaining unsupported contexts are recorded below.
 Native basic alerts remain the pre-launch fallback. The scoped 349d activation
 preserved the board boot and pairing; native Codex owners and existing sessions
 were not restarted. The dated checkpoints below retain their original source
@@ -550,3 +551,27 @@ both owned threads were archived. Native owners, current config, shell bytes and
 protected services remained unchanged. This closes the cwd correction's installed
 qualification; physical acceptance and the separate DMS panel Open gap remain
 unchanged.
+
+## User-observed 349 physical checkpoint — 2026-10-15
+
+Bryan confirmed readability of `Codex @ starship` / `PHYSICAL_PANEL_CHECK`,
+vertical navigation to a generic reference card and dismissal of only that
+reference with ×. After a separate client started the next owned native turn,
+the exact Codex card disappeared visibly while other cards remained. Cache
+readback corroborated presence before and absence after native supersession.
+
+This smoke check used an owned native thread and loopback provider, with a
+desktop stimulus carrying the installed preview-6 utility's v1 metadata. It
+qualifies the shared desktop-to-panel rendering/touch/lifecycle path, alongside
+the earlier installed local/Snap SSH native TUI/relay evidence; it does not
+relabel those earlier automated tests as physical observations. Board boot ID
+1394715752 followed an independent USB reconnect. Firmware reports build
+`b9046f4` / SHA `8f5ae24ba`; the 349d process and native daemon were unchanged.
+Only the owned desktop notifications and disposable thread were cleaned up;
+native configuration hashes were unchanged and no external model was used.
+
+The [consumer acceptance record](https://github.com/byebyebryan/esp32-349/blob/feat/rich-notifications/projects/notification-panel/docs/notification-launcher-acceptance-2026-10-15.md#observed-physical-smoke-check--2026-10-15)
+records the exact stimulus, user reports and limits. Physical observations are
+separate from the stimulus runner's protocol/cache receipt. The DMS panel Open
+provider remains unavailable and outside this completed check. Source reviews
+remain drafts; broader hardware/native/UI contexts retain their declared limits.

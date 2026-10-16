@@ -64,7 +64,8 @@ Private native checks cover Command Center, switching between two running roots
 and a loaded thread with the known legacy terminal helper. Arbitrary custom
 loaded-thread hooks remain outside that evidence. See the
 [launcher plan](notification-launcher-plan.md) for scope, failure semantics and
-the dated installed desktop/local/SSH results and remaining physical gates.
+the dated installed desktop/local/SSH results, subsequent observed 349 smoke
+check and remaining unsupported contexts.
 
 ## Config-driven desktop candidate
 
