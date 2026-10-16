@@ -1,12 +1,15 @@
 # Terminal-associated rich notification launcher
 
-Date: 2026-10-15. Status: explicit launcher installed and qualified for local/SSH
-delivery and viewer lifetime; daily selection remains off pending acceptance. Bryan accepts a
-launch helper to preserve unfocused-only notifications and originating-terminal
-focus. The relay is an explicit pilot. The helper is independently pinned; ordinary
-launches keep native basic alerts. Desktop click and physical acceptance, daily
-shell selection, canonical-source convergence and the 349 admission rollout are
-still open. Existing native owners and live services have not been restarted.
+Date: 2026-10-15. Status: preview 6 is installed through the scoped daily entry
+point on Starship and Snap. Local/SSH delivery, originating-window Open, viewer
+lifetime, native session cwd and the live 349 admission queue have installed
+qualification. Bryan accepts the launch helper to preserve unfocused-only
+notifications and originating-terminal focus. Physical 349 readability, visible
+retirement and touch remain unobserved, so the goal loop remains incomplete.
+Native basic alerts remain the pre-launch fallback. The scoped 349d activation
+preserved the board boot and pairing; native Codex owners and existing sessions
+were not restarted. The dated checkpoints below retain their original source
+identities and acceptance limits.
 
 ## User experience and ownership
 
