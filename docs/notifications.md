@@ -1,5 +1,23 @@
 # Codex notification utility
 
+## Current selection: native notifications
+
+As of 2026-10-15, ordinary launches use native completion and approval alerts.
+The rich relay launcher and external completion hook are disabled by default in
+chezmoi on Snap and Starship, including Snap's work and OSS entry points. Keep
+`notify = []` and native `tui.notifications = ["agent-turn-complete", "approval-requested"]`.
+The helper stays installed for explicit experiments; installing it does not enable
+its launcher or hook. No daemon restart is required. Existing wrapped TUIs keep
+their relay until exit; use a fresh shell and native launch for the new behavior.
+
+The relay uses `--remote` even for its local Unix socket. Native Codex 0.162.1
+therefore disables the empty-prompt Left shortcut to Command Center and applies
+other remote connection semantics. Earlier acceptance below covered entry and
+rich delivery, not transparent preservation of all local TUI behavior. Historical
+launcher selections below are superseded by this default. Notification design
+will continue on Starship without changing monitoring or reports.
+
+
 The standalone `scripts/codex-notify` utility augments native Codex completion
 notifications. It uses Python's standard library. The configured desktop route
 uses `notify-send` and optional SSH; the older terminal route uses Kitty, with

@@ -688,3 +688,15 @@ validation pass. Read-only native discovery on Snap retained both original daemo
 PIDs and explicit monitoring roots; clean copies of the legacy payloads verify.
 No live stores or runtime selectors were changed. Review and artifact evidence
 are bounded to the source/package checks described in the environment guide.
+
+## Native notification default: 2026-10-15
+
+The user selected native notifications and disabled default rich launcher/hook
+activation on Snap and Starship. Chezmoi gates the shell launcher off, keeps
+`notify = []`, enables native completion/approval events, and makes split-home
+wrappers select only the home before executing native Codex. The installed rich
+helper remains opt-in; no component repin or release is needed for this policy.
+Existing relay clients are not interrupted. Relaunch from a fresh shell to restore
+native local-daemon behavior. The Left-arrow regression is caused by the relay's
+explicit remote target, not SSH or the home migration. Rich notification work is
+deferred to Starship; preserve unrelated Observer/RLCD work there.
