@@ -1,4 +1,4 @@
-# Browser walkthrough
+# Product page and interactive walkthrough
 
 [Open the public browser walkthrough](https://dev.byebyebryan.com/codex-plus/).
 GitHub Pages also serves the daily-use, architecture, environment, soak, reporting and
@@ -13,19 +13,21 @@ browser interaction/layout checks passed; see the
 The [self-contained authoring file](presentation/index.html) also opens locally.
 It explains current capabilities with three illustrative scenes: an endpoint
 watch, coordination between independent sessions, and a later MCP inspection
-followed by a report. A separate environment selector illustrates Snap’s
-OSS/work homes, explicit paths and same-daemon peer boundary. It only updates
-the page; it does not create a home, change config or contact a daemon.
+followed by a report. A separate environment selector illustrates personal and
+work contexts with example Codex homes. It only updates the page; it does not
+create a home, change config or contact a daemon.
 
 The scene controls reveal a request, setup, useful update and stop/handoff. They
 only change the page; they do not run commands, create watches, send messages or
 control a session. Dialogue is authored illustration, not a captured native run.
-Technical proof is linked separately to the committed acceptance reports.
+Technical acceptance records remain in the repository guides rather than the
+landing page.
 
-The page includes the component map, tool-check cost comparison, lifecycle FAQ,
-Claude-workflow coverage, limits and a downloadable private-use soak-note
-template. Prompt copy controls have a plain-HTTP fallback for SSH/mesh-hosted
-reports. It uses inline assets and JavaScript with no third-party dependencies.
+The page leads with use cases, everyday benefits, setup links and an interactive
+first-watch checklist. It includes a model-call illustration, lifecycle FAQ and
+a downloadable quickstart checklist. Host-specific deployment status, comparison
+research and validation records stay in the technical guides. Prompt copy
+controls have a plain-HTTP fallback for SSH/mesh-hosted reports. It uses inline assets and JavaScript with no third-party dependencies.
 
 ## Authoring and publication
 
