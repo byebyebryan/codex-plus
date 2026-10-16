@@ -657,3 +657,12 @@ with a loopback provider verifies Command Center entry, root creation, matching
 rich completion, internal-title exclusion, no basic duplicate and owned cleanup.
 Alternate-home wrapper names and downstream source mappings stay in local
 configuration. No monitoring/report runtime or worker behavior changes.
+
+Preview 7 is now published from the reviewed agents fix and selected through
+chezmoi on Snap. All fourteen installed helper files and the selector match the
+manifest. Installed default/agents native TUI checks passed for both configured
+homes in private terminals, preserving source identity/cwd with one rich packet
+and no basic duplicate. The local downstream inspector route also passed current
+and superseded readback on an owned live-daemon thread. This pass did not repeat
+physical panel or graphical focus acceptance. See the preview 7 checkpoint in
+the notification launcher plan. Other host helper selections are unchanged.

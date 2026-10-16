@@ -598,3 +598,27 @@ processes were reaped; no real provider or desktop was involved. The first
 fixture sent a key while the initial list was loading and failed to submit;
 its failed receipt is retained separately from the corrected successful run.
 Installed delivery for this new entry point remains a separate rollout gate.
+
+## Agents preview 7 installed checkpoint
+
+[Preview 7](https://github.com/byebyebryan/codex-plus/releases/tag/codex-notify-v0.1.0-preview.7)
+publishes source `84ca9beea7ec3200342f74cc35f69678e444a961`. The attached source
+archive SHA-256 is `d562616d429cfb24bfd388d270db9df6090c95f745e16648eba488c180bd57f9`;
+the attached manifest defines the independently distributed fourteen-file utility.
+
+Scoped chezmoi installation verified every selected file hash/executable flag
+and the helper selector. The installed artifact passed stock 0.162.1 TUI /
+0.163.0 daemon tests for default and `agents` launches using both the ordinary
+interactive-shell entry and a local alternate-home wrapper. Each retained its
+new-task directory and source identity, produced one matching rich completion
+while viewing Command Center, and emitted no native OSC 9 duplicate. Fixtures
+used private homes, loopback Responses providers and PTYs, with owned cleanup.
+No real provider or desktop notification was used for this regression pass.
+
+The configured downstream SSH inspector route separately recognized an owned
+completed episode on the running alternate-home daemon as current, then as
+superseded behind a newer interrupted turn. Only owned test threads were archived.
+Early harness failures from querying unpersisted history and observing turn
+admission before activation are retained privately; final lifecycle evidence
+comes from authoritative persisted history and the exact configured route.
+Physical panel rendering and graphical focus were not repeated by this pass.
