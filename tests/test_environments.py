@@ -14,7 +14,6 @@ from unittest.mock import patch
 
 from codex_plus import context
 from codex_plus.model_server import default_state_root, existing_socket
-from codex_plus.notification_inspect import default_socket, source_identity
 from codex_plus.reports import cli, config, mcp, server
 
 
@@ -53,7 +52,7 @@ class EnvironmentTests(unittest.TestCase):
         alias = self.home / 'alias'; alias.symlink_to(other.home)
         os.environ['CODEX_HOME'] = str(alias)
         self.assertEqual(context.resolve(), other)
-        self.assertEqual(default_socket(), str(other.socket))
+        self.assertEqual(context.socket_path(), other.socket)
 
     def test_explicit_overrides_win_and_diagnostics_report_effective_storage(self):
         ctx = self.select('other')
@@ -66,7 +65,7 @@ class EnvironmentTests(unittest.TestCase):
         self.assertEqual(config.config_path(), chosen)
         self.assertEqual(config.load().data_root, self.root / 'preserved-store')
         self.assertEqual(existing_socket(), str(self.root / 'selected.sock'))
-        self.assertEqual(default_socket(), existing_socket())
+        self.assertEqual(str(context.socket_path()), existing_socket())
         explicit = self.root / 'explicit.toml'
         self.assertEqual(ctx.report_config(explicit), explicit)
         self.assertEqual(ctx.state_root(self.root / 'explicit-state'), self.root / 'explicit-state')
@@ -181,10 +180,6 @@ class EnvironmentTests(unittest.TestCase):
         self.assertEqual(first.status()['state'], 'stopped')
         self.assertEqual(second.status()['state'], 'running')
         self.assertEqual(second.status()['pid'], second_pid)
-        # The transport identity remains socket-derived, not a new display label.
-        a = source_identity(str(self.home / '.codex/app-server-control/app-server-control.sock'))
-        b = source_identity(str(self.home / 'other/app-server-control/app-server-control.sock'))
-        self.assertNotEqual(a, b)
 
     @unittest.skipUnless(shutil.which('tmux'), 'tmux control is optional')
     def test_existing_matching_legacy_report_server_is_adopted_without_restart(self):

@@ -11,7 +11,7 @@ overrides, then home-derived defaults. Display labels are not storage identity.
 Missing selected daemons fail without fallback or automatic startup. Existing
 frozen daemon-incarnation bindings remain authoritative.
 
-Monitoring, report MCP/CLI, notification socket defaults and read-only context
+Monitoring, report MCP/CLI and read-only context
 inspection share this contract. Reports can host concurrently on independently
 configured endpoints with namespaced tmux ownership. Existing legacy report
 config paths retain their session name; explicit existing storage is preserved.
@@ -50,8 +50,7 @@ Precedence is explicit argument, matching environment override, then derived pat
 - Monitoring: `--state-root`, `CODEX_PLUS_STATE_ROOT`, environment default.
 - Reports: `--config`, `CODEX_PLUS_REPORT_CONFIG`, environment default.
 - Native endpoint: `--socket`, `CODEX_PLUS_SOCKET`, native status-only discovery
-  for monitoring/peer commands. Notification default selection uses that home's
-  conventional socket without starting it.
+  for monitoring/peer commands.
 
 Explicit report `--data-root` overrides its config; the config's `data_root`
 overrides the home-derived default. A missing explicitly selected report config
@@ -59,8 +58,6 @@ refuses fallback unless a data-root override deliberately supplies an isolated
 store. An absent derived default supports an unconfigured local store in that
 same environment. No other home's report config is consulted. Explicit paths can
 intentionally share data; environment selection is not an OS security boundary.
-Global notification delivery settings may still share desktop transports; source
-identity remains derived from the selected socket, preserving downstream routes.
 
 For example, a local launcher can set CODEX_HOME and export
 CODEX_PLUS_REPORT_CONFIG to keep CLI use consistent with a report MCP configured
@@ -86,9 +83,8 @@ server. Distinct configurations require distinct listening endpoints.
 This is source support for runtime preview.3 and reports preview.8, not a live
 upgrade. Both package inventories include the shared resolver and context CLI;
 previous runtime previews .1/.2 and report preview.7 remain verifiable/selectable.
-Notification source archives must include `codex_plus/context.py` alongside their
-existing selected modules before notification release pins change. Component
-releases and deployment receipts remain independent.
+Component releases and deployment receipts remain independent. The notification
+component is retired; the 349 owns its separate read-only inspector.
 
 Snap's existing work/OSS overrides, data attribution, separate work report service
 and installed release selections are preserved by this pass. Adopting namespaced

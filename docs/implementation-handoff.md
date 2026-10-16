@@ -725,3 +725,16 @@ Workers and experimental notification helper retain their independent pins;
 native notifications remain selected. Starship's installed selections were not
 changed by this Snap deployment. Installed receipts are private host state,
 not part of this source tree.
+
+## Notification component retirement: 2026-10-15
+
+The user selected retirement of delivery/hooks and the relay launcher, retaining
+only read-only card inspection with the 349 integration. Notification modules,
+entry point and delivery tests are removed from this source; historical guides
+link to their immutable pre-retirement records. The inspector moves to esp32-349
+as `349-codex-inspect`, preserving exact source/episode identity and the v1 reply
+contract. It has no notification publisher, TUI relay, thread-start/resume or turn
+operations. Native completion/approval delivery stays selected. Chezmoi retires
+its launcher wiring and independently pins the 349 inspector. Existing immutable
+notification releases remain rollback inputs; ongoing relay sessions are not
+terminated. Monitoring, reports, workers and their deployed pins are untouched.

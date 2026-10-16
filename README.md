@@ -31,13 +31,9 @@ walkthrough and five readable guides through GitHub Pages. See the
 
 ## Current status
 
-Native Codex notifications are the default. The standalone
-[notification utility](docs/notifications.md) remains available for explicit
-experiments, independently pinned by chezmoi. Neither its relay launcher nor its
-completion hook is selected by default on Snap or Starship. The relay's explicit
-`--remote` connection changes native TUI behavior, including disabling the
-empty-prompt Left shortcut to Command Center. Rich notification design is deferred
-to work on Starship; monitoring and reports are unaffected.
+Desktop notification delivery and terminal customization are outside Codex Plus.
+Native Codex alerts remain selected. The optional read-only card inspector now
+belongs to the [349 integration](https://github.com/byebyebryan/esp32-349/blob/main/projects/notification-panel/docs/codex-inspector.md).
 
 Snap now selects monitoring runtime **v0.1.0-preview.3** and reporting
 **v0.1.0-preview.8**, including native multi-environment support, through chezmoi.
