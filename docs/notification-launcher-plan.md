@@ -502,3 +502,32 @@ fake-wire integration checks; they do not claim a packet trace or physical view.
 The [consumer checkpoint](https://github.com/byebyebryan/esp32-349/blob/feat/rich-notifications/projects/notification-panel/docs/notification-launcher-acceptance-2026-10-15.md)
 records exact receipts, prepared 349 rollback and the remaining physical/touch
 acceptance. The separate DMS panel Open provider remains unavailable.
+
+## Fresh-session working-directory correction
+
+An ordinary wrapped launch from a project previously added `--remote` without
+`--cd`. The TUI then sent `thread/start` with `cwd=null`, and the daemon selected
+its own home directory. Earlier probes used explicit cwd flags and missed this
+plain-launch path.
+
+The relay now passes the absolute local cwd for a fresh session. Explicit
+`-C`/`--cd` values are resolved locally and retain their option form; other
+arguments remain unchanged. A resume without an explicit cwd flag receives no
+implicit override, so native saved-directory policy stays in control. Unsupported
+automatic invocations still execute the original native argv directly.
+
+Fifty-four notification tests pass, covering the fresh default, relative/absolute
+cwd option forms, literal arguments after `--`, resume policy and child-process
+argv alongside unchanged native bytes, signal/exit handling and degradation.
+A real 0.162.1 TUI/private 0.163.0 daemon fixture reproduced the old null-cwd/home
+behavior before the fix. Corrected native fresh, short/long explicit cwd,
+relative cwd and saved-directory resume cases all pass with distinct caller,
+daemon and saved-session directories. Fresh/resume cases also pass for the
+0.162.1/0.162.1 and 0.163.0/0.163.0 pairs. Owned private processes were reaped.
+
+Against the actual running Starship daemon, a fresh TUI from the already trusted
+349 project sent that exact absolute cwd; native thread-start and thread-read
+responses agreed. No prompt or model turn was submitted, the owned empty thread
+was archived, and native owner/configuration stayed unchanged. Installed-helper
+qualification and the next release selection are recorded separately. Physical
+panel acceptance remains unobserved and separate from this cwd correction.

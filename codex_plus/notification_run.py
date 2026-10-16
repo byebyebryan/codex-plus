@@ -13,7 +13,7 @@ import tempfile
 
 from .native import listener_identity
 from .notification_inspect import source_identity
-from .notification_launcher import preflight
+from .notification_launcher import invocation, preflight
 from .notification_protocol import encode, event_id
 from .notification_stream import Messages, Notices
 from .notifications import notification, terminal
@@ -83,6 +83,7 @@ def degraded_notice(prepared):
 
 
 async def run(path, arguments, executable='/usr/bin/codex', *, only_when='unfocused', prepared=None):
+    native_arguments = invocation(arguments).remote_arguments
     prepared = prepared or prepare(path, arguments, executable)
     identity, fd, tmux = prepared.owner, prepared.fd, prepared.tmux
     host, instance = source_identity(path)
@@ -162,7 +163,7 @@ async def run(path, arguments, executable='/usr/bin/codex', *, only_when='unfocu
             try:
                 loop.add_signal_handler(signal.SIGINT, lambda: None)
                 process = await asyncio.create_subprocess_exec(executable, '--remote', 'unix://' + proxy,
-                    *prepared.overrides, *arguments)
+                    *prepared.overrides, *native_arguments)
                 for sig in (signal.SIGTERM, signal.SIGHUP):
                     loop.add_signal_handler(sig, lambda sig=sig: process.send_signal(sig) if process.returncode is None else None)
                 return await process.wait()

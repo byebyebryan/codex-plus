@@ -34,11 +34,15 @@ class Invocation:
     interactive: bool
     cwd: str
     reason: str = ''
+    remote_arguments: tuple[str, ...] = ()
 
 
 def invocation(arguments, cwd=None):
     """Only recognize qualified syntax; unknown native syntax stays native."""
-    cwd = os.path.abspath(cwd or os.getcwd())
+    caller_cwd = os.path.abspath(cwd or os.getcwd())
+    cwd = caller_cwd
+    adapted = list(arguments)
+    explicit_cwd = False
     index, command = 0, None
     while index < len(arguments):
         arg = arguments[index]
@@ -48,8 +52,10 @@ def invocation(arguments, cwd=None):
             return Invocation(False, cwd, 'native help/version')
         if arg.startswith('-'):
             name, equals, value = arg.partition('=')
+            attached = False
             if not equals and len(arg) > 2 and arg[:2] in ('-c', '-m', '-s', '-C', '-a'):
                 name, value, equals = arg[:2], arg[2:], '='
+                attached = True
             if name in VALUE_OPTIONS:
                 if not equals:
                     index += 1
@@ -59,7 +65,16 @@ def invocation(arguments, cwd=None):
                 if name == '--add-dir':
                     return Invocation(False, cwd, 'native additional workspace roots')
                 if name in ('-C', '--cd'):
-                    cwd = os.path.abspath(os.path.expanduser(value))
+                    if not equals and value.startswith('-'):
+                        return Invocation(False, cwd, 'native option validation')
+                    cwd = os.path.abspath(os.path.join(caller_cwd, os.path.expanduser(value)))
+                    explicit_cwd = True
+                    if not equals:
+                        adapted[index] = cwd
+                    elif attached:
+                        adapted[index] = name + cwd
+                    else:
+                        adapted[index] = name + '=' + cwd
                 elif name in ('--enable', '--disable') and value in SERVER_FEATURES:
                     return Invocation(False, cwd, 'explicit native daemon feature policy')
                 elif name in ('-c', '--config'):
@@ -100,7 +115,11 @@ def invocation(arguments, cwd=None):
         # Later positionals are text, not a scan for subcommand words. Native
         # options are still recognized after a prompt/session ID, as Clap does.
         index += 1
-    return Invocation(True, cwd)
+    # An explicit remote endpoint does not inherit the local viewer's cwd.
+    # Resume without --cd keeps native saved-session cwd selection.
+    if command != 'resume' and not explicit_cwd:
+        adapted[:0] = ['--cd', cwd]
+    return Invocation(True, cwd, remote_arguments=tuple(adapted))
 
 
 def filtered_notifications(value):

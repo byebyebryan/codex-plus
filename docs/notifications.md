@@ -37,6 +37,11 @@ native behavior. Qualified TUI/server pairs are 0.162.1/0.162.1,
 roots (`--add-dir` or explicit `sandbox_workspace_write` configuration) also
 stay native because the explicit remote route cannot preserve them.
 
+Fresh wrapped sessions pass the absolute local working directory to the remote
+TUI. Explicit `-C`/`--cd` paths are resolved from that local directory, including
+relative paths. Resume without a cwd flag adds no implicit override, preserving
+native saved-session directory selection.
+
 Only native completion publication is removed for a wrapped client; all other
 configured native event types are preserved. Server hook conflicts are checked
 read-only. The relay sends Codex as sender, separate title/body, host and v1

@@ -12,7 +12,10 @@ from test_notification_rich import THREAD, OLD, frame
 
 
 class Relay(unittest.TestCase):
-    def check_relay(self, malformed=False):
+    def check_relay(self, malformed=False, arguments=None, expected_arguments=None):
+        arguments = ['owned argument'] if arguments is None else arguments
+        expected_arguments = (['--cd', os.getcwd(), *arguments] if expected_arguments is None
+                              else expected_arguments)
         async def scenario(root):
             native_path = root / 'native.sock'
             request = b'GET / HTTP/1.1\r\n\r\n' + frame({
@@ -59,12 +62,13 @@ class Relay(unittest.TestCase):
             try:
                 with patch('codex_plus.notification_run.listener_identity', return_value=owner):
                     async with asyncio.timeout(5):
-                        code = await run(str(native_path), ['owned argument'], str(executable), prepared=prepared)
+                        code = await run(str(native_path), arguments, str(executable), prepared=prepared)
                 emitted = os.read(read_fd, 65536)
                 self.assertEqual(code, 17)
                 self.assertEqual(received, [request])
                 self.assertEqual(json.loads(result.read_text())['sha256'], hashlib.sha256(response).hexdigest())
-                self.assertEqual(json.loads(result.read_text())['argv'][-1], 'owned argument')
+                self.assertEqual(json.loads(result.read_text())['argv'][2:],
+                                 ['-c', 'tui.notifications=[]', *expected_arguments])
                 self.assertEqual(emitted.count(b'\x1b]99;'), 2 if malformed else 3)
                 self.assertEqual(emitted.count(b':d=1;'), 1)
                 if malformed:
@@ -85,6 +89,15 @@ class Relay(unittest.TestCase):
 
     def test_observation_failure_reports_once_and_preserves_native_bytes(self):
         self.check_relay(malformed=True)
+
+    def test_native_process_preserves_explicit_and_saved_resume_cwd_policy(self):
+        for arguments, expected in (
+            (['-C', 'relative project', 'hello'], ['-C', os.path.abspath('relative project'), 'hello']),
+            (['--cd=/explicit project', 'hello'], ['--cd=/explicit project', 'hello']),
+            (['resume', 'saved-session'], ['resume', 'saved-session']),
+        ):
+            with self.subTest(arguments=arguments):
+                self.check_relay(arguments=arguments, expected_arguments=expected)
 
 
 if __name__ == '__main__': unittest.main()

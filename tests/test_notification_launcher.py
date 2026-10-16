@@ -34,6 +34,35 @@ class Launcher(unittest.TestCase):
         for value in (False, [], ['approval-requested'], 'true'):
             with self.assertRaises(ValueError): filtered_notifications(value)
 
+    def test_remote_new_sessions_use_local_cwd_without_overriding_resume(self):
+        cwd = '/workspace/caller with spaces'
+        for arguments in ([], ['hello'], ['--', 'resume'], ['-m', 'resume', 'hello']):
+            with self.subTest(arguments=arguments):
+                parsed = invocation(arguments, cwd=cwd)
+                self.assertEqual(parsed.cwd, cwd)
+                self.assertEqual(parsed.remote_arguments, ('--cd', cwd, *arguments))
+        for arguments in (['resume'], ['resume', 'saved-session'], ['resume', '--last'],
+                          ['resume', 'saved-session', '--all']):
+            with self.subTest(arguments=arguments):
+                self.assertEqual(invocation(arguments, cwd=cwd).remote_arguments, tuple(arguments))
+
+    def test_remote_explicit_cwd_is_absolute_and_other_arguments_are_preserved(self):
+        caller = '/workspace/caller'
+        target = '/workspace/project with spaces'
+        for arguments, expected in (
+            (['-C', '../project with spaces', 'hello'], ['-C', target, 'hello']),
+            (['--cd', target, 'hello'], ['--cd', target, 'hello']),
+            (['-C../project with spaces', 'hello'], ['-C' + target, 'hello']),
+            (['-C=../project with spaces', 'hello'], ['-C=' + target, 'hello']),
+            (['--cd=../project with spaces', 'hello'], ['--cd=' + target, 'hello']),
+            (['resume', 'saved', '-C', '../project with spaces'], ['resume', 'saved', '-C', target]),
+        ):
+            with self.subTest(arguments=arguments):
+                parsed = invocation(arguments, cwd=caller)
+                self.assertEqual(parsed.cwd, target)
+                self.assertEqual(parsed.remote_arguments, tuple(expected))
+        self.assertFalse(invocation(['-C', '--version'], cwd=caller).interactive)
+
     def preflight(self, config, changed=False, versions=None, **options):
         owner = {'executable': '/usr/bin/codex', 'pid': 1}
         calls = []
