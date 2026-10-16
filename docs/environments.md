@@ -20,8 +20,28 @@ No existing data or active intent is moved or restored automatically.
 Acceptance includes offline resolution/override/legacy checks, two-home report
 CLI/MCP inventories, isolated concurrent tmux servers with independent lifecycle,
 missing-owner refusal, package inventory/install checks and existing regressions.
-No live deployment, migration, authentication copying or native owner restart
-belongs to this source pass.
+The original source pass performed no live deployment or owner restart; the
+subsequent Snap deployment is recorded below.
+
+## Daily selection and diagnosis
+
+On Snap, `codex` / `codex agents` select default OSS (`~/.codex`), and
+`codex-work` / `codex-work agents` select work (`~/.codex-work`). The temporary
+`codex-oss` entry point is retired. Peer discovery/messages never cross these
+native daemons. Both share an account and Unix user; this is best-effort config
+separation rather than filesystem isolation.
+
+Inspect the selected paths with `codex-plus-context`; it does not contact or
+start a daemon. The CLI describes only its own environment/arguments, not the
+settings hidden in another MCP process. For Snap's managed work setup:
+
+```sh
+rtk proxy env CODEX_HOME=/home/bryan/.codex-work codex-plus-context --state-root /home/bryan/.local/state/codex-plus-work --report-config /home/bryan/.config/codex-plus/report-work.toml
+```
+
+For OSS, use `~/.codex`, `codex-plus-oss` and `report.toml` instead. These are
+existing Snap overrides, not portable default names. Preserve them when using
+standalone monitoring/report commands, or pass the exact native MCP arguments.
 
 ## Selection and overrides
 
@@ -80,16 +100,17 @@ matches the selected store and endpoint; foreign legacy sessions are left alone.
 Do not change an active config's storage or endpoint before stopping its owned
 server. Distinct configurations require distinct listening endpoints.
 
-This is source support for runtime preview.3 and reports preview.8, not a live
-upgrade. Both package inventories include the shared resolver and context CLI;
+Source supports runtime preview.3 and reports preview.8. Snap selects both;
+Starship retains its earlier installed releases until a separate apply. Both
+package inventories include the shared resolver and context CLI;
 previous runtime previews .1/.2 and report preview.7 remain verifiable/selectable.
 Component releases and deployment receipts remain independent. The notification
 component and the 349 inspector are retired; terminal formatting belongs to
 Kitty/chezmoi.
 
-Snap's existing work/OSS overrides, data attribution, separate work report service
-and installed release selections are preserved by this pass. Adopting namespaced
-tmux hosting there is a later scoped release/deployment step. Chezmoi continues
+Snap's existing work/OSS overrides, data attribution and separate work report
+service are preserved. Its explicit paths take precedence over home-derived
+defaults; no store migration is required to adopt the new runtime. Chezmoi continues
 to own wrappers, MCP admission, private configuration and host startup policy.
 Observer's collection of multiple native homes is independent of Codex Plus.
 

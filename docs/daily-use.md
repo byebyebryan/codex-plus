@@ -10,6 +10,21 @@ filtering, cadence and continuation. You do not need a thread UUID, exact sessio
 title, JSON prompt or polling recipe. If the source or destination is unclear,
 the model should ask a short clarification.
 
+## Choose the environment first
+
+On Snap, `codex` / `codex agents` use OSS, while `codex-work` /
+`codex-work agents` use work. `codex-oss` is retired. A native `--profile`
+selects settings inside one home; it does not provide this separation.
+
+Peers are discovered only in the selected daemon. A work conversation cannot
+message an OSS conversation through the peer tools, even though both are on
+Snap. Reports also use their own selected store and endpoint. Existing sessions
+may keep older MCP code until reconnect; a source upgrade alone does not reload
+an active process. See [environment selection](environments.md).
+
+Native completion/approval alerts remain available. Codex Plus adds no terminal
+relay, custom hook or desktop-notification publisher.
+
 ## Start with a real task
 
 | What you need | What to say |

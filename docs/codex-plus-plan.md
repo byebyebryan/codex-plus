@@ -1,6 +1,6 @@
 # Codex Plus implementation plan
 
-Updated 2026-10-14. Codex CLI/TUI remains the daily interface and its existing
+Updated 2026-10-16. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are
 installed and enabled on Snap and Starship. Current sources are reconciled.
@@ -9,6 +9,19 @@ Real-source soak and personal UX acceptance remain separate from synthetic proof
 Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
+
+## Current pass: reconciliation, refinement and presentation
+
+The user requested an ordinary goal loop after multi-environment deployment and
+notification retirement. Reconcile current-facing docs and continuation state,
+make environment selection visible in the public guides/walkthrough, and add
+meaningful presentation/link checks. Preserve runtime/worker bytes, installed
+pins, auth, native owners and live serving state. Commit directly to main and
+verify the Pages publication. No worker skill, new observation or native model
+trial is activated. See [the pass results](reconciliation-results.md).
+
+The earlier completed contracts below are historical. Current installed facts
+and continuation boundaries live in the [handoff](implementation-handoff.md).
 
 ## Selected pass: documentation, presentation and daily-use readiness
 

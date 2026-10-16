@@ -3,8 +3,8 @@
 The source implementation supplies durable static snapshots, a static catalog,
 standalone CLI, provider-neutral skill and optional local report MCP. Publishing
 does not start Codex or a browser. With `server_autostart = true`, CLI/MCP publish
-starts or reuses `codex-report-server` in its shared tmux session. The server stays
-running after publication; there is no idle shutdown or report cleanup timer.
+starts or reuses `codex-report-server` under its config-specific tmux ownership.
+The server stays running after publication; there is no idle shutdown or report cleanup timer.
 
 ## Publish and find reports
 
@@ -33,9 +33,9 @@ report and explains the unavailable hosting; it does not take over a foreign
 tmux session or listener. Read-only get/list/doctor commands do not start a server.
 
 Unchanged content/title/project reuses a snapshot. Changed content gets a new
-immutable link. Files are copied into XDG data, default
-`~/.local/share/codex-plus/reports`; deleting/moving the source does not affect
-the published copy. Reports remain stored until selected deletion, subject to
+immutable link. Files are copied into the selected store, defaulting to
+`~/.local/share/codex-plus/reports` for the conventional home. Deleting/moving the
+source does not affect the published copy. Reports remain stored until selected deletion, subject to
 configured capacity limits that refuse new reports rather than evict old ones.
 
 The catalog groups reports by project, with counts and publication dates. Groups
@@ -81,8 +81,16 @@ preserved.
 
 ## Configuration and hosting
 
-Configuration defaults to `~/.config/codex-plus/report.toml`, respecting
-`XDG_CONFIG_HOME`. `--config` and `--data-root` support explicit isolated tests.
+The conventional home defaults to `~/.config/codex-plus/report.toml`, respecting
+`XDG_CONFIG_HOME`. Alternate `CODEX_HOME` values derive separate config and data
+paths; `CODEX_PLUS_REPORT_CONFIG`, `--config` and `--data-root` can preserve
+explicit existing paths. A missing explicitly selected config refuses fallback.
+See [the environment contract](environments.md) before mixing CLI and MCP calls.
+
+On Snap the work MCP explicitly uses `report-work.toml` and port 8788; OSS uses
+`report.toml` and port 8787. For a standalone work report command, select the same
+work home and pass that existing config explicitly; setting `CODEX_HOME` alone
+would select the derived default instead of this managed override.
 The [implementation plan](html-report-plan.md#configuration-and-serving-ownership)
 shows the supported schema and initial tunable limits.
 
@@ -105,8 +113,11 @@ rtk proxy codex-report-server stop
 ```
 
 `start` initializes an owned store if needed and starts one detached tmux session
-named **codex-report-server**, window **http**. A repeated start reuses the healthy
-owned server. The session starts in the configured report data root, consistently
+named **codex-report-server** for the conventional config, window **http**.
+Other config paths get stable config-specific session names, so independent
+stores/endpoints can coexist. An explicitly managed service can own serving
+instead; Snap work uses its existing service with autostart disabled.
+A repeated start reuses the healthy owned server. The session starts in the configured report data root, consistently
 across callers and hosts. This display directory does not determine publication
 or serving: the publisher uses `data_root`, and HTTP serves its `public` subtree.
 HTTP reads the public subtree at the URL prefix; publishing new
@@ -119,7 +130,7 @@ therefore manages the same shared server. The explicit `--tmux-socket` option
 continues to select a separate socket for isolated checks.
 
 `server_autostart` defaults to false for standalone/external installations.
-Chezmoi enables it on this fleet. Publish starts a missing server, reuses a healthy
+Chezmoi enables it for default-home configs; Snap work uses its separate service. Publish starts a missing server, reuses a healthy
 one and replaces an exited owned pane. It leaves an unhealthy live server or a
 foreign session alone. Explicit `--data-root` overrides require matching store
 settings in the selected config file for automatic hosting.

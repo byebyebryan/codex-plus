@@ -22,6 +22,7 @@ SOURCE = f"https://github.com/{REPOSITORY}/blob/main/docs/"
 GUIDES = {
     "daily-use.md": ("daily-use", "Daily use"),
     "architecture.md": ("architecture", "How it works"),
+    "environments.md": ("environments", "Environments"),
     "soak-checklist.md": ("soak-checklist", "Daily trial"),
     "html-report-usage.md": ("reports", "Reporting"),
     "runtime-distribution.md": ("installation", "Installation"),
@@ -156,7 +157,8 @@ def guide_page(name: str, route: str, title: str, body: str, icon: str) -> str:
     nav = '<a href="../">Walkthrough</a>' + "".join(
         f'<a href="../{slug}/"' + (' aria-current="page"' if route == slug else "") + f'>{html.escape(label)}</a>'
         for slug, label in GUIDES.values())
-    body = body.replace("<table>", '<div class="table-scroll"><table>').replace("</table>", "</table></div>")
+    body = re.sub(r"<table\b([^>]*)>", r'<div class="table-scroll"><table\1>', body)
+    body = body.replace("</table>", "</table></div>")
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
             f'<title>{html.escape(title)} — Codex Plus</title>{icon}<style>{STYLE}</style></head><body>'
             f'<header><a class="brand" href="../">Codex Plus /</a><nav aria-label="Public guides">{nav}</nav></header>'
@@ -169,6 +171,9 @@ def validate(output: Path) -> int:
     count = 0
     for path in output.rglob("*.html"):
         text = path.read_text()
+        identifiers = re.findall(r'\bid="([^"]+)"', text)
+        if len(identifiers) != len(set(identifiers)):
+            raise ValueError(f"duplicate site id in {path.relative_to(output)}")
         for url in re.findall(r'\b(?:href|src)="([^"]+)"', text):
             parsed = urlsplit(html.unescape(url))
             if parsed.scheme or parsed.netloc:

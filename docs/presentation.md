@@ -1,11 +1,11 @@
 # Browser walkthrough
 
 [Open the public browser walkthrough](https://dev.byebyebryan.com/codex-plus/).
-GitHub Pages also serves the daily-use, architecture, soak, reporting and
+GitHub Pages also serves the daily-use, architecture, environment, soak, reporting and
 installation guides. See the [Pages deployment guide](pages-deployment.md).
 
 The [immutable report edition](http://snap:8787/reports/293fdc3828d80409edd88861719fa5d376df1afa4bbdf5fae6a569d8f12aaa17/)
-is retained on Snap and requires access to its report endpoint. The [Codex Plus project catalog](http://snap:8787/reports/#project=codex-plus)
+is the historical 2026-10-14 edition retained on Snap and requires access to its report endpoint. The [Codex Plus project catalog](http://snap:8787/reports/#project=codex-plus)
 contains related reports. Publication, HTTP-byte checks from both hosts and
 browser interaction/layout checks passed; see the
 [documentation pass results](documentation-pass-results.md).
@@ -13,7 +13,9 @@ browser interaction/layout checks passed; see the
 The [self-contained authoring file](presentation/index.html) also opens locally.
 It explains current capabilities with three illustrative scenes: an endpoint
 watch, coordination between independent sessions, and a later MCP inspection
-followed by a report.
+followed by a report. A separate environment selector illustrates Snap’s
+OSS/work homes, explicit paths and same-daemon peer boundary. It only updates
+the page; it does not create a home, change config or contact a daemon.
 
 The scene controls reveal a request, setup, useful update and stop/handoff. They
 only change the page; they do not run commands, create watches, send messages or

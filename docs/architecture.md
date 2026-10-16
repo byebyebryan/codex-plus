@@ -8,17 +8,29 @@ coordinator owns bounded observation, timers, event admission and receipts.
 
 | Component | Surface | Responsibility |
 | --- | --- | --- |
-| Monitoring runtime, preview.2 | 15 `codex_plus` MCP tools; watch/peer/package CLIs | Peer discovery and passive reads, bounded sources, messages, reminders, cancellation and receipts. |
-| Reporting component, preview.7 | Four `html_report` MCP tools; report CLI; HTML report skill | Immutable static snapshots, project catalog, delivery checks and selected deletion. |
-| Report server | `codex-report-server` | Independent HTTP hosting in its shared tmux session; publish can start/reuse it. |
+| Monitoring runtime, preview.3 | 15 `codex_plus` MCP tools; watch/peer/package CLIs | Peer discovery and passive reads, bounded sources, messages, reminders, cancellation and receipts. |
+| Reporting component, preview.8 | Four `html_report` MCP tools; report CLI; HTML report skill | Immutable static snapshots, project catalog, delivery checks and selected deletion. |
+| Report server | `codex-report-server` | Independent HTTP hosting; per-config tmux ownership or an explicitly managed server. |
 | Worker bundle | `luna-max`, `sol-xhigh`; four worker workflow skills | Explicitly selected execution workflows; primary retains decisions and acceptance. |
 | Development source | Tests, validators, guides and research reports | Implementation and acceptance evidence; distinct from installed immutable artifacts. |
 
-The current monitoring artifact is `v0.1.0-preview.2` from `2274f4b`; the report
-artifact is `v0.1.0-preview.7` from `fb24aa1`. Both are installed on Snap and
-Starship, with optional MCP availability enabled. Chezmoi owns managed files and
-pins. Journals, report data and hosting remain runtime-owned. Current GitHub docs
-can advance without repinning those qualified artifacts.
+The current releases are runtime `v0.1.0-preview.3` and reports
+`v0.1.0-preview.8`, both from source `c73c237`. Snap selects them through
+chezmoi; Starship retains runtime preview.2 / reports preview.7 until a separate
+apply. Managed configuration, selected artifacts and already loaded processes
+are different layers: existing MCP processes adopt new code on normal reconnect.
+Journals, report data and hosting remain runtime-owned.
+
+Each canonical `CODEX_HOME` selects a native endpoint and Codex Plus context.
+Explicit state/config paths take precedence; alternate homes otherwise derive
+separate namespaces. Native `--profile` does not create another environment.
+Peers and messages stay within that home's daemon, even on the same host.
+Reports use the selected config/store and distinct configured serving endpoints.
+See [multiple environments](environments.md) for diagnostics and compatibility.
+
+Native Codex/terminal notification delivery is outside Codex Plus. There is no
+relay, completion hook or notification enrichment dependency. Formatting belongs
+to Kitty/chezmoi; the old delivery/349 inspector work is retired.
 
 Worker identities and explicit invocation behavior are unchanged. Discussing a
 skill or asking for a generic goal loop does not invoke a worker workflow. The
@@ -117,7 +129,7 @@ The [context study](claude-monitoring-context.md) retains the sanitized counts.
 | Interrupt, stop or detach | Separate foreground interruption, cancellation and viewer detachment | Relevant lifecycle evidence; no native `/exit` confirmation interception. |
 | Persistent recurring calendar work | Not supplied by the preview | One-shot/adaptive mechanisms are not a cron service. |
 
-Current official Claude docs, checked 2026-10-14, describe command or WebSocket
+The official Claude documentation snapshot, checked 2026-10-14, describe command or WebSocket
 Monitor sources, deadline notices and explicit cancellation. Its scheduling docs
 describe adaptive loops and recurring/one-shot tasks, with a distinct Esc rule
 for a waiting self-paced loop. These are comparison references, not Codex Plus

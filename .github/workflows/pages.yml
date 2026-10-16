@@ -8,6 +8,7 @@ on:
       - 'README.md'
       - 'scripts/build-pages'
       - 'scripts/check'
+      - 'tests/test_pages.py'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -35,6 +36,7 @@ jobs:
         run: |
           python3 -B scripts/check
           python3 -B tests/test_check.py
+          python3 -B tests/test_pages.py
           git diff --check
       - name: Build public guides
         run: python3 -B scripts/build-pages --output "${RUNNER_TEMP}/codex-plus-pages"

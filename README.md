@@ -1,7 +1,5 @@
 # Codex Plus
 
-
-Multiple Codex homes: see [environment selection and compatibility](docs/environments.md).
 Watches, later checks, peer communication and browser reports around the native
 Codex CLI/TUI. Keep your continuing conversation and its existing daemon; ask
 for useful follow-up in ordinary language.
@@ -26,10 +24,16 @@ Read the [daily-use guide](docs/daily-use.md), open the
 [how the package works](docs/architecture.md).
 
 The [public HTML guides](https://dev.byebyebryan.com/codex-plus/) publish the
-walkthrough and five readable guides through GitHub Pages. See the
+walkthrough and six readable guides through GitHub Pages. See the
 [Pages deployment guide](docs/pages-deployment.md) for source/build details.
 
 ## Current status
+
+Use `codex` for Snap OSS and `codex-work` for work, including their `agents`
+subcommands. The old `codex-oss` compatibility entry point is retired. These are
+separate homes and daemons; native `--profile` alone does not separate state.
+See [multiple environments](docs/environments.md) for portable defaults and the
+existing explicit Snap paths.
 
 Desktop notification delivery and terminal customization are outside Codex Plus.
 Native Codex alerts remain selected. Notification enrichment and lifecycle
@@ -68,6 +72,7 @@ evidence without manufacturing workloads.
 | Read this | For |
 | --- | --- |
 | [Daily use](docs/daily-use.md) | Natural requests, expected follow-up, stopping and reports. |
+| [Multiple environments](docs/environments.md) | Home selection, explicit overrides, separate stores and same-daemon boundaries. |
 | [Architecture and Claude-workflow coverage](docs/architecture.md) | Components, permissions, costs, discovery, receipts and limits. |
 | [Browser walkthrough](docs/presentation.md) | Three illustrative scenes and the published presentation. |
 | [Runtime distribution](docs/runtime-distribution.md) | Immutable monitoring artifact, loading, managed installation and rollback. |
