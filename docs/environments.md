@@ -114,3 +114,10 @@ copies. The live runtime has pre-existing Python cache files outside its immutab
 manifest; those files were neither removed nor treated as exact-install proof.
 No goal, watch, wake, peer message, live report or native task was created for this
 source acceptance. Report lifecycle tests own only disposable private tmux actors.
+
+Runtime preview.3 and report preview.8 candidates built from source `478138b`
+are byte-for-byte reproducible across two builds each. Both archives verify,
+install and activate under temporary prefixes, and their relocated context CLI
+and MCP inventories work without the source checkout. The relocated report
+CLI and MCP also publish/list independently under two temporary homes. These
+are candidate-package checks, not published releases or installed Snap upgrades.
