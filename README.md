@@ -39,11 +39,11 @@ completion hook is selected by default on Snap or Starship. The relay's explicit
 empty-prompt Left shortcut to Command Center. Rich notification design is deferred
 to work on Starship; monitoring and reports are unaffected.
 
-As of 2026-10-14, the monitoring runtime **v0.1.0-preview.2** and reporting
-component **v0.1.0-preview.7** are installed on Snap and Starship through chezmoi.
-Both optional MCP servers are enabled by default there; explicit opt-outs and
-custom approval policies remain effective. Fresh native TUI sessions loaded and
-used installed tools without a daemon restart or global MCP reload.
+Snap now selects monitoring runtime **v0.1.0-preview.3** and reporting
+**v0.1.0-preview.8**, including native multi-environment support, through chezmoi.
+Both work and OSS entry points pass fresh MCP checks without replacing their
+native daemons. Starship retains its prior installed runtime preview.2/report
+preview.7 until a separate apply. See the [environment contract and deployment](docs/environments.md).
 
 | Capability | What is available |
 | --- | --- |

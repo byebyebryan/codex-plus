@@ -121,3 +121,28 @@ install and activate under temporary prefixes, and their relocated context CLI
 and MCP inventories work without the source checkout. The relocated report
 CLI and MCP also publish/list independently under two temporary homes. These
 are candidate-package checks, not published releases or installed Snap upgrades.
+
+## Snap multi-environment deployment: 2026-10-15
+
+Published runtime [preview.3](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.3)
+and reports [preview.8](https://github.com/byebyebryan/codex-plus/releases/tag/reports-v0.1.0-preview.8)
+from source `c73c237c734eb7e20b46185cccd471edfc803520` and selected them through
+chezmoi on Snap. Published downloads match the local artifact checksums; both
+installed immutable inventories/modes verify. The 326-test suite passes.
+
+Fresh MCP processes launched from both native homes' configured commands report
+runtime preview.3 (15 tools) and report preview.8. Read-only report listing,
+context resolution with the actual explicit overrides, native configuration
+admission and HTTP health at both configured report endpoints pass. OSS and work
+retain their separate state roots, report configs/stores, native owners and auth
+files. Neither existing native daemon nor either report server was restarted.
+Existing MCP processes retain their captured release until their normal reconnect;
+this deployment does not claim to hot-replace already loaded processes.
+
+`codex-plus-context` is installed for read-only diagnostics. Snap's existing
+explicit monitoring roots and report configs remain authoritative; pass those
+same overrides when inspecting them. No state was moved to derived defaults.
+Workers and experimental notification helper retain their independent pins;
+native notifications remain selected. Starship's installed selections were not
+changed by this Snap deployment. Installed receipts are private host state,
+not part of this source tree.

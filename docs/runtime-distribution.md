@@ -6,10 +6,10 @@ paths. It requires an already running owning daemon and loaded independent
 sessions; it never starts a daemon or cold-resumes a target. Long production
 operation, native owner replacement and personal UX acceptance remain separate.
 
-Release: [v0.1.0-preview.2](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.2),
-source `2274f4b54817fae88c3762c39c1284b8b1eb2695`. Runtime SHA-256:
-`d4b23b83339f2a59bd12eadc0408695d899b993020d0fa496dc394de9e49ecdf`.
-The artifact contains 19 declared runtime files plus its manifest. The
+Release: [v0.1.0-preview.3](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.3),
+source `c73c237c734eb7e20b46185cccd471edfc803520`. Runtime SHA-256:
+`43908c4b5b238fdbb81187050f0e7bfd4653a6f4d3677e1f1c9577ff443cd24f`.
+The artifact contains 21 declared runtime files plus its manifest. The
 [source-access report](source-access-pass-results.md) separates source, artifact,
 installed native qualification and managed wiring from live apply/enablement.
 
@@ -24,17 +24,16 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Preview.2 is installed and enabled through chezmoi on Snap and Starship.
-Ordinary fresh native TUI sessions loaded all 15 tools and used installed code
-under each existing daemon, with no restart or global MCP reload. The
-[managed activation report](managed-activation-results.md) records each host's
-acceptance; the earlier source-access report's deferred-live-apply checkpoint is
-historical. Start with the [daily guide](daily-use.md) for normal usage.
+Snap selects runtime preview.3 and reports preview.8 through chezmoi, with both
+OSS/work MCP entry points verified. Existing explicit storage paths, native owners
+and report servers are preserved. Existing MCP processes adopt the new release
+on normal reconnect. See the [environment deployment receipt](environments.md#snap-multi-environment-deployment-2026-10-15).
 
-The separate report component is installed as preview.7, with report MCP enabled
-by default on supported managed hosts and explicit opt-outs preserved. See
-[report usage](html-report-usage.md). Report publication/hosting is independent of
-the monitoring runtime. Later documentation commits do not repin either artifact.
+Starship retains its previously installed runtime preview.2/report preview.7 until
+a separate scoped apply. Workers and notification helpers are independently pinned;
+native basic notifications remain selected. The earlier [managed activation report](managed-activation-results.md)
+records the original two-host deployment. Report publication/hosting remains
+independent of the monitoring runtime.
 
 ## Artifact and immutable installation
 
