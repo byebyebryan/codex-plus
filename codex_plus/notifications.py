@@ -12,14 +12,16 @@ import subprocess
 import sys
 import uuid
 
+from .context import resolve
+
 
 def is_subagent(thread_id):
     if not isinstance(thread_id, str) or not thread_id:
         return False
-    home = Path(os.environ.get("CODEX_HOME") or Path.home() / ".codex").expanduser()
     # notify carries the thread ID but not its source. Consult Codex's local
     # index read-only; never suppress ordinary completions if it is unavailable.
     try:
+        home = resolve().home
         databases = []
         for path in home.glob("state_*.sqlite"):
             match = re.fullmatch(r"state_(\d+)\.sqlite", path.name)
@@ -42,7 +44,7 @@ def is_subagent(thread_id):
             except (TypeError, ValueError):
                 return False
             return isinstance(source, dict) and "subagent" in source
-    except OSError:
+    except (OSError, ValueError):
         pass
     return False
 

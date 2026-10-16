@@ -666,3 +666,25 @@ and no basic duplicate. The local downstream inspector route also passed current
 and superseded readback on an owned live-daemon thread. This pass did not repeat
 physical panel or graphical focus acceptance. See the preview 7 checkpoint in
 the notification launcher plan. Other host helper selections are unchanged.
+
+## Multi-environment source support
+
+The environment pass shares canonical CODEX_HOME resolution across monitoring,
+peer utilities, notification defaults and reports, while preserving legacy
+single-home paths and explicit Snap overrides. It adds a read-only context CLI,
+separate derived report stores/configs, home-bound MCP installation snippets and
+concurrent report tmux ownership with matching legacy-session adoption. See the
+[environment contract](environments.md) for precedence, package requirements and
+acceptance. Native profiles inside one home are not separate environments.
+
+Source versions advance to runtime preview.3 and report preview.8; no release,
+chezmoi pin, native owner or report service is changed by the source pass. The
+existing local work-report chezmoi edits remain independent and uncommitted.
+
+The environment source review and combined 326-test suite pass, including ten
+new environment tests, old artifact compatibility, private concurrent tmux HTTP
+lifecycle and CLI/MCP store separation. The 123-file checker and guide build/link
+validation pass. Read-only native discovery on Snap retained both original daemon
+PIDs and explicit monitoring roots; clean copies of the legacy payloads verify.
+No live stores or runtime selectors were changed. Review and artifact evidence
+are bounded to the source/package checks described in the environment guide.

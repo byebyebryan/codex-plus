@@ -7,6 +7,7 @@ import ipaddress
 import os
 from pathlib import Path
 import tomllib
+from ..context import resolve
 from urllib.parse import unquote, urlsplit, urlunsplit
 
 
@@ -22,8 +23,7 @@ def data_home() -> Path:
 
 
 def config_path() -> Path:
-    root = absolute_path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config")
-    return root / "codex-plus/report.toml"
+    return resolve().report_config()
 
 
 def base_url(value: str | None) -> str | None:
@@ -86,8 +86,10 @@ class Config:
 
 
 def load(path: Path | None = None, *, data_root: Path | None = None) -> Config:
-    selected = absolute_path(path) if path is not None else config_path()
+    selected = resolve().report_config(path)
     values = {}
+    if not selected.exists() and (path is not None or os.environ.get('CODEX_PLUS_REPORT_CONFIG')) and data_root is None:
+        raise ValueError('the selected report config is missing; no default store was selected')
     if selected.exists() or selected.is_symlink():
         if selected.is_symlink() or not selected.is_file():
             raise ValueError("report config must be a regular file")
@@ -100,5 +102,5 @@ def load(path: Path | None = None, *, data_root: Path | None = None) -> Config:
     allowed = {field.name for field in fields(Config)}
     if set(values) - allowed:
         raise ValueError("unknown report configuration fields: " + ", ".join(sorted(set(values) - allowed)))
-    values["data_root"] = data_root or values.get("data_root") or data_home() / "codex-plus/reports"
+    values["data_root"] = data_root or values.get("data_root") or resolve().report_data()
     return Config(**values)

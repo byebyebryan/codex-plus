@@ -119,6 +119,16 @@ class PackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             package.read_archive(self.archive(metadata=unsupported, files=old_files))
 
+    def test_previous_preview_two_inventory_remains_verifiable_and_selectable(self):
+        files = {name: self.files[name] for name in package.PREVIEW_TWO_FILES}
+        files['codex_plus/__init__.py'] = b"VERSION = '0.1.0-preview.2'\n"
+        metadata = package.manifest(files, '2' * 40)
+        metadata['version'] = '0.1.0-preview.2'
+        prefix = self.root / 'preview-two'
+        installed = package.install(self.archive(metadata=metadata, files=files), prefix)
+        package.activate(prefix, '2' * 40)
+        self.assertEqual(package.verify_install(installed)['version'], '0.1.0-preview.2')
+
     def test_coordinator_from_previous_verified_release_is_recognized_by_new_runtime(self):
         old_files = {name: self.files[name] for name in package.PREVIOUS_RUNTIME_FILES}
         old_meta = package.manifest(old_files, '3'*40); old_meta['version'] = '0.1.0-preview.1'

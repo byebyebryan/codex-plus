@@ -20,6 +20,7 @@ from urllib.parse import quote, unquote, urlsplit, urlunsplit
 from urllib.request import build_opener, ProxyHandler
 import uuid
 
+from ..context import report_session
 from . import VERSION
 from .config import absolute_path, config_path, load
 from .store import Store, canonical, no_links, owned_directory, process_birth
@@ -131,6 +132,7 @@ def make_server(config, *, port=None, instance=None):
 class Controller:
     def __init__(self, config, path, *, socket_path=None):
         self.config, self.path = config, absolute_path(path)
+        self.session = report_session(self.path)
         self.command = ['tmux'] + (['-S', str(absolute_path(socket_path)), '-f', '/dev/null']
                                    if socket_path else ['-L', 'default'])
         self.environment = dict(os.environ)
@@ -161,7 +163,22 @@ class Controller:
     def owned(self):
         inventory = self.tmux('list-sessions', '-F', '#{session_name}\t#{session_id}', optional=True)
         sid = next((line.split('\t', 1)[1] for line in (inventory or '').splitlines()
-                    if line.startswith(SESSION + '\t')), None)
+                    if line.startswith(self.session + '\t')), None)
+        # Adopt an already-running legacy session only when its recorded config
+        # fingerprint matches. Another environment's legacy session is untouched.
+        if sid is None and self.session != SESSION:
+            legacy = next((line.split('\t', 1)[1] for line in (inventory or '').splitlines()
+                           if line.startswith(SESSION + '\t')), None)
+            if legacy is not None:
+                marker = self.tmux('show-options', '-qv', '-t', legacy, OWNER_OPTION)
+                try:
+                    value = json.loads(marker or '{}')
+                except ValueError:
+                    value = {}
+                if (isinstance(value, dict) and value.get('schema') == 1
+                        and value.get('component') == SESSION
+                        and value.get('fingerprint') == fingerprint(self.config)):
+                    sid, self.session = legacy, SESSION
         if sid is None: return None
         raw = self.tmux('show-options', '-qv', '-t', sid, OWNER_OPTION)
         if not raw or len(raw) > 16384:
@@ -183,8 +200,8 @@ class Controller:
 
     def status(self):
         owner = self.owned()
-        if owner is None: return {'state': 'stopped', 'session': SESSION, 'url': self.config.base_url}
-        result = {'state': 'unhealthy', 'session': SESSION, 'session_id': owner['session_id'],
+        if owner is None: return {'state': 'stopped', 'session': self.session, 'url': self.config.base_url}
+        result = {'state': 'unhealthy', 'session': self.session, 'session_id': owner['session_id'],
                   'pid': owner['pid'], 'url': self.config.base_url}
         if owner['dead']: return {**result, 'detail': 'the HTTP server process has exited'}
         try:
@@ -203,7 +220,7 @@ class Controller:
             while birth is not None and process_birth(owner['pid']) == birth:
                 if time.monotonic() >= deadline: raise ValueError('the owned HTTP process did not exit after stopping its session')
                 time.sleep(0.02)
-        return {'state': 'stopped', 'session': SESSION, 'url': self.config.base_url}
+        return {'state': 'stopped', 'session': self.session, 'url': self.config.base_url}
 
     def start(self, *, restart=False, recover_dead=False):
         settings(self.config)
@@ -220,7 +237,7 @@ class Controller:
             token = uuid.uuid4().hex
             script = Path(__file__).resolve().parents[2] / 'scripts/codex-report-server'
             argv = [sys.executable, '-B', str(script), '--config', str(self.path), 'serve', '--instance', token]
-            sid = self.tmux('new-session', '-d', '-P', '-F', '#{session_id}', '-s', SESSION,
+            sid = self.tmux('new-session', '-d', '-P', '-F', '#{session_id}', '-s', self.session,
                             '-n', 'http', '-c', self.config.data_root, *argv)
             marker = {'schema': 1, 'component': SESSION, 'fingerprint': fingerprint(self.config), 'instance': token, 'argv': argv}
             self.tmux('set-option', '-t', sid, OWNER_OPTION, json.dumps(marker))

@@ -20,6 +20,7 @@ import tempfile
 import uuid
 
 from . import VERSION
+from .context import absolute
 
 PREVIOUS_RUNTIME_FILES = (
     'LICENSE', 'codex_plus/__init__.py', 'codex_plus/native.py',
@@ -30,7 +31,8 @@ PREVIOUS_RUNTIME_FILES = (
     'scripts/codex-plus-watch', 'scripts/codex-plus-peer',
     'scripts/codex-plus-model', 'scripts/codex-plus-package',
 )
-RUNTIME_FILES = (*PREVIOUS_RUNTIME_FILES, 'codex_plus/access.py')
+PREVIEW_TWO_FILES = (*PREVIOUS_RUNTIME_FILES, 'codex_plus/access.py')
+RUNTIME_FILES = (*PREVIEW_TWO_FILES, 'codex_plus/context.py', 'scripts/codex-plus-context')
 COMPATIBILITY = {'os': 'linux', 'python': '>=3.11', 'codex': '0.162.1',
                  'rtk': 'required', 'transport': 'existing local Unix daemon'}
 SCOPED_CONTROLS = ('watch_start', 'watch_cancel', 'watch_renew', 'watch_recover',
@@ -66,6 +68,8 @@ def manifest(files, source_revision):
 def version_files(version):
     if version == VERSION:
         return RUNTIME_FILES
+    if version == '0.1.0-preview.2':
+        return PREVIEW_TWO_FILES
     if version == '0.1.0-preview.1':
         return PREVIOUS_RUNTIME_FILES
     raise ValueError('unsupported runtime package/version')
@@ -198,7 +202,7 @@ def activate(prefix, source_revision):
 
 
 def mcp_config(prefix, *, enabled=True, allow_peer_send=False, state_root=None,
-               socket=None, allowlist=None, max_duration=86400, max_events=1000):
+               socket=None, allowlist=None, max_duration=86400, max_events=1000, codex_home=None):
     prefix = Path(prefix)
     current = prefix / 'current'
     if not prefix.is_absolute(): raise ValueError('an absolute installed prefix is required')
@@ -214,8 +218,11 @@ def mcp_config(prefix, *, enabled=True, allow_peer_send=False, state_root=None,
     tools = {name: {'approval_mode': 'approve'} for name in SCOPED_CONTROLS}
     if allow_peer_send:
         tools.update({name: {'approval_mode': 'approve'} for name in ('peer_send', 'message_cancel')})
-    return {'command': sys.executable, 'args': args, 'enabled': enabled, 'required': False,
-            'default_tools_approval_mode': 'writes', 'tools': tools}
+    result = {'command': sys.executable, 'args': args, 'enabled': enabled, 'required': False,
+              'default_tools_approval_mode': 'writes', 'tools': tools}
+    if codex_home is not None:
+        result['env'] = {'CODEX_HOME': str(absolute(codex_home)), 'CODEX_PLUS_SOCKET': '', 'CODEX_PLUS_STATE_ROOT': ''}
+    return result
 
 
 def main(argv=None):
@@ -227,7 +234,7 @@ def main(argv=None):
     select = actions.add_parser('activate'); select.add_argument('--prefix', type=Path, required=True); select.add_argument('--revision', required=True)
     installed = actions.add_parser('verify-install'); installed.add_argument('root', type=Path)
     config = actions.add_parser('mcp-config'); config.add_argument('--prefix', type=Path, required=True); config.add_argument('--disabled', action='store_true'); config.add_argument('--allow-peer-send', action='store_true')
-    for key in ('state-root', 'socket', 'allowlist'): config.add_argument('--' + key)
+    for key in ('state-root', 'socket', 'allowlist', 'codex-home'): config.add_argument('--' + key)
     config.add_argument('--max-duration', type=float, default=86400); config.add_argument('--max-events', type=int, default=1000)
     args = parser.parse_args(argv)
     try:
@@ -236,7 +243,7 @@ def main(argv=None):
         elif args.action == 'install': result = {'installed': str(install(args.archive, args.prefix, args.sha256))}
         elif args.action == 'activate': result = {'selected': str(activate(args.prefix, args.revision))}
         elif args.action == 'verify-install': result = verify_install(args.root)
-        else: result = {'mcp_servers': {'codex_plus': mcp_config(args.prefix, enabled=not args.disabled, allow_peer_send=args.allow_peer_send, state_root=args.state_root, socket=args.socket, allowlist=args.allowlist, max_duration=args.max_duration, max_events=args.max_events)}}
+        else: result = {'mcp_servers': {'codex_plus': mcp_config(args.prefix, enabled=not args.disabled, allow_peer_send=args.allow_peer_send, state_root=args.state_root, socket=args.socket, allowlist=args.allowlist, max_duration=args.max_duration, max_events=args.max_events, codex_home=args.codex_home)}}
         print(json.dumps(result, indent=2)); return 0
     except (OSError, ValueError, KeyError, TypeError, RuntimeError, subprocess.SubprocessError, tarfile.TarError) as error:
         print(json.dumps({'error': str(error)}), file=sys.stderr); return 1

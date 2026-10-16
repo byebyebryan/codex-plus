@@ -1,5 +1,7 @@
 # Codex Plus
 
+
+Multiple Codex homes: see [environment selection and compatibility](docs/environments.md).
 Watches, later checks, peer communication and browser reports around the native
 Codex CLI/TUI. Keep your continuing conversation and its existing daemon; ask
 for useful follow-up in ordinary language.

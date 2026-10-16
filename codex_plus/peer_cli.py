@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import sys
 
+from .context import existing_socket
 from .native import Client
 from .peers import PeerReader
 
@@ -27,18 +28,7 @@ def main(argv=None):
     read.add_argument('id')
     read.add_argument('--turn-limit', type=int, default=3)
     args = parser.parse_args(argv)
-    requested = args.socket
-    if requested is None:
-        response = subprocess.run(['rtk', 'proxy', 'codex', 'app-server', 'daemon', 'version'],
-                                  capture_output=True, text=True, check=True)
-        info = json.loads(response.stdout)
-        if info.get('status') != 'running':
-            raise ValueError('existing daemon unavailable; no daemon started')
-        requested = info['socketPath']
-    if requested.startswith('unix://'):
-        requested = requested[7:]
-    if not Path(requested).is_absolute():
-        raise ValueError('an absolute local Unix socket path is required')
+    requested = existing_socket(args.socket)
     with Client(requested, experimental=True) as client:
         reader = PeerReader(client)
         if args.operation == 'list':

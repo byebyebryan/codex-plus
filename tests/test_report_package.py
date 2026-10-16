@@ -51,6 +51,19 @@ class ReportPackageTests(unittest.TestCase):
             cwd=self.root, text=True, capture_output=True, timeout=5, check=True)
         self.assertEqual(len(json.loads(response.stdout)["result"]["tools"]), 4)
 
+    def test_previous_preview_seven_archive_remains_verifiable_and_selectable(self):
+        self.content = {name: value for name, value in self.content.items()
+                        if name in package.PREVIOUS_FILES}
+        self.content['codex_plus/reports/__init__.py'] = b'VERSION = "0.1.0-preview.7"\n'
+        self.content.update(package.plugins('0.1.0-preview.7'))
+        self.metadata = package.manifest(self.content, '7' * 40)
+        self.metadata['version'] = '0.1.0-preview.7'
+        archive = self.archive()
+        prefix = self.root / 'old'
+        installed = package.install(archive, prefix)
+        package.activate(prefix, '7' * 40)
+        self.assertEqual(package.verify_install(installed), self.metadata)
+
     def test_checksums_manifest_and_linked_members_fail_before_install(self):
         archive = self.archive()
         with self.assertRaises(ValueError): package.install(archive, self.root / "wrong", "0" * 64)

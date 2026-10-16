@@ -12,28 +12,17 @@ import sys
 
 from .model import MODEL_GUIDANCE, ModelAPI, native_context, tool_definitions
 from . import VERSION
+from .context import existing_socket as environment_socket, resolve
 from .peers import thread_id
 from .presentation import clean_text
 
 
 def existing_socket(explicit=None):
-    requested = explicit or os.environ.get('CODEX_PLUS_SOCKET')
-    if not requested:
-        # A status query is lazy and never starts/restarts a daemon.
-        status = json.loads(subprocess.run(['rtk', 'proxy', 'codex', 'app-server', 'daemon', 'version'],
-            capture_output=True, text=True, check=True, timeout=10).stdout)
-        if status.get('status') != 'running': raise ValueError('existing native daemon is unavailable; none was started')
-        requested = status.get('socketPath')
-    if not isinstance(requested, str): raise ValueError('existing native Unix endpoint is unavailable')
-    if requested.startswith('unix://'): requested = requested[7:]
-    if not Path(requested).is_absolute(): raise ValueError('an absolute existing Unix socket is required')
-    return requested
+    return environment_socket(explicit, run=subprocess.run)
 
 
 def default_state_root():
-    root = Path(os.environ.get('XDG_STATE_HOME') or Path.home() / '.local/state')
-    if not root.is_absolute(): raise ValueError('XDG_STATE_HOME must be absolute')
-    return root / 'codex-plus'
+    return resolve().state_root()
 
 
 class Server:
@@ -98,7 +87,7 @@ class Server:
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--state-root', type=Path, help='Private state root; defaults to XDG_STATE_HOME/codex-plus')
+    parser.add_argument('--state-root', type=Path, help='Private state root; otherwise environment override or home-scoped default')
     parser.add_argument('--socket', help='Existing Unix endpoint; otherwise resolve lazily from Codex daemon status')
     parser.add_argument('--allowlist', type=Path, help='Optional private JSON list restricting experimental callers/messages')
     parser.add_argument('--max-duration', type=float, default=86400)
@@ -107,7 +96,7 @@ def main(argv=None):
     if not 0 < args.max_duration <= 86400 or not 1 <= args.max_events <= 1000:
         parser.error('invalid operation bounds')
     if args.socket and not Path(args.socket.removeprefix('unix://')).is_absolute(): parser.error('an absolute existing Unix socket is required')
-    root = args.state_root or default_state_root()
+    root = resolve().state_root(args.state_root)
     if not root.is_absolute(): parser.error('an absolute private state root is required')
     os.umask(0o077)
     Server(root, args.socket, allowlist=args.allowlist, max_duration=args.max_duration,

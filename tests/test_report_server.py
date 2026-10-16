@@ -113,7 +113,7 @@ class ServerTests(unittest.TestCase):
         self.config.write_text(self.config.read_text() + 'server_autostart = true\n')
         options = load(self.config)
         controller = server.Controller(options, self.config, socket_path=self.root / 'tmux.sock')
-        self.addCleanup(lambda: controller.tmux('kill-session', '-t', '=codex-report-server', optional=True))
+        self.addCleanup(lambda: controller.tmux('kill-session', '-t', '=' + controller.session, optional=True))
         return options, controller
 
     @unittest.skipUnless(shutil.which('tmux'), 'tmux control is optional')
@@ -173,7 +173,7 @@ class ServerTests(unittest.TestCase):
     @unittest.skipUnless(shutil.which('tmux'), 'tmux control is optional')
     def test_automatic_startup_failure_retains_publication_and_foreign_session(self):
         options, controller = self.automatic_controller()
-        sid = controller.tmux('new-session', '-d', '-P', '-F', '#{session_id}', '-s', 'codex-report-server', 'sleep', '60')
+        sid = controller.tmux('new-session', '-d', '-P', '-F', '#{session_id}', '-s', controller.session, 'sleep', '60')
         source = self.root / 'report.html'; source.write_text('<h1>Stored despite unavailable hosting</h1>')
         output = io.StringIO()
         with patch('codex_plus.reports.server.Controller', return_value=controller), redirect_stdout(output):
@@ -183,7 +183,7 @@ class ServerTests(unittest.TestCase):
         self.assertEqual(receipt['publication'], 'created')
         self.assertEqual(receipt['server']['state'], 'unavailable')
         self.assertTrue(Path(receipt['snapshot_path']).is_dir())
-        self.assertEqual(controller.tmux('display-message', '-p', '-t', '=codex-report-server:', '#{session_id}'), sid)
+        self.assertEqual(controller.tmux('display-message', '-p', '-t', '=' + controller.session + ':', '#{session_id}'), sid)
         with patch('codex_plus.reports.server.Controller') as constructor:
             self.assertIsNone(hosting.ensure_server(self.options, self.config))
             changed = hosting.ensure_server(replace(options, data_root=self.root / 'different'), self.config)
@@ -195,7 +195,7 @@ class ServerTests(unittest.TestCase):
     def test_tmux_survives_launcher_exit_reuses_session_and_preserves_other_sessions(self):
         controller = server.Controller(self.options, self.config, socket_path=self.root / 'tmux.sock')
         self.addCleanup(lambda: controller.tmux('kill-session', '-t', '=unrelated-test', optional=True))
-        self.addCleanup(lambda: controller.tmux('kill-session', '-t', '=codex-report-server', optional=True))
+        self.addCleanup(lambda: controller.tmux('kill-session', '-t', '=' + controller.session, optional=True))
         controller.tmux('new-session', '-d', '-s', 'unrelated-test', 'sleep', '60')
         command = [sys.executable, '-B', str(Path(__file__).resolve().parents[1] / 'scripts/codex-report-server'),
                    '--config', str(self.config), '--tmux-socket', str(self.root / 'tmux.sock'), '--json', 'start']
@@ -243,11 +243,11 @@ class ServerTests(unittest.TestCase):
     @unittest.skipUnless(shutil.which('tmux'), 'tmux control is optional')
     def test_tmux_refuses_foreign_named_session_and_additional_user_panes(self):
         controller = server.Controller(self.options, self.config, socket_path=self.root / 'tmux.sock')
-        self.addCleanup(lambda: controller.tmux('kill-session', '-t', '=codex-report-server', optional=True))
-        sid = controller.tmux('new-session', '-d', '-P', '-F', '#{session_id}', '-s', 'codex-report-server', 'sleep', '60')
+        self.addCleanup(lambda: controller.tmux('kill-session', '-t', '=' + controller.session, optional=True))
+        sid = controller.tmux('new-session', '-d', '-P', '-F', '#{session_id}', '-s', controller.session, 'sleep', '60')
         with self.assertRaises(ValueError): controller.start()
         with self.assertRaises(ValueError): controller.stop_owned()
-        self.assertEqual(controller.tmux('display-message', '-p', '-t', '=codex-report-server:', '#{session_id}'), sid)
+        self.assertEqual(controller.tmux('display-message', '-p', '-t', '=' + controller.session + ':', '#{session_id}'), sid)
         controller.tmux('kill-session', '-t', sid)
         receipt = controller.start()
         controller.tmux('split-window', '-d', '-t', receipt['session_id'], 'sleep', '60')

@@ -8,6 +8,8 @@ import os
 from pathlib import Path
 import re
 import socket
+
+from .context import socket_path
 import time
 
 from .native import Client, listener_identity
@@ -17,8 +19,7 @@ MAX_CARDS = 32
 
 
 def default_socket():
-    return str(Path(os.environ.get('CODEX_HOME') or Path.home() / '.codex').expanduser()
-               / 'app-server-control/app-server-control.sock')
+    return str(socket_path())
 
 
 def source_identity(path):

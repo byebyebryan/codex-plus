@@ -19,12 +19,13 @@ import tempfile
 import uuid
 
 from . import VERSION
+from ..context import absolute
 from .store import no_links
 
 
 NAME = "codex-plus-report"
 FILES = (
-    "LICENSE", "codex_plus/__init__.py", "codex_plus/reports/__init__.py",
+    "LICENSE", "codex_plus/context.py", "scripts/codex-plus-context", "codex_plus/__init__.py", "codex_plus/reports/__init__.py",
     "codex_plus/reports/config.py", "codex_plus/reports/catalog.py",
     "codex_plus/reports/store.py", "codex_plus/reports/hosting.py",
     "codex_plus/reports/cli.py", "codex_plus/reports/mcp.py", "codex_plus/reports/package.py", "codex_plus/reports/server.py",
@@ -49,11 +50,11 @@ def revision(value):
 def mode(name): return 0o755 if name.startswith("scripts/") else 0o644
 
 
-def plugins():
+def plugins(version=VERSION):
     portable = {"$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-                "name": "html-report", "version": VERSION,
+                "name": "html-report", "version": version,
                 "description": "Static HTML report presentation with the installed codex-plus-report component."}
-    legacy = {"name": "html-report", "version": VERSION,
+    legacy = {"name": "html-report", "version": version,
               "description": portable["description"], "skills": "./skills/"}
     return {"plugin.json": (json.dumps(portable, indent=2) + "\n").encode(),
             ".codex-plugin/plugin.json": (json.dumps(legacy, indent=2) + "\n").encode()}
@@ -90,19 +91,24 @@ def build(root, output):
     return {**metadata, "artifact_sha256": sha(output.read_bytes())}
 
 
+PREVIOUS_FILES = tuple(name for name in FILES if name not in ('codex_plus/context.py', 'scripts/codex-plus-context'))
+
+
 def validate(metadata, content, modes):
     if (not isinstance(metadata, dict)
             or set(metadata) != {"schema", "name", "version", "source_revision", "compatibility", "files"}
-            or metadata["schema"] != 1 or metadata["name"] != NAME or metadata["version"] != VERSION
+            or metadata["schema"] != 1 or metadata["name"] != NAME or metadata["version"] not in (VERSION, "0.1.0-preview.7")
             or metadata["compatibility"] != COMPATIBILITY):
         raise ValueError("unsupported report package manifest/compatibility")
     revision(metadata["source_revision"])
-    if set(content) != {*FILES, *plugins()} or set(metadata["files"]) != set(content):
+    version = metadata['version']
+    inventory = FILES if version == VERSION else PREVIOUS_FILES
+    if set(content) != {*inventory, *plugins(version)} or set(metadata["files"]) != set(content):
         raise ValueError("report package inventory differs")
     for name, data in content.items():
         if metadata["files"][name] != {"sha256": sha(data), "mode": mode(name)} or modes[name] != mode(name):
             raise ValueError("report package content/mode mismatch: " + name)
-    if any(content[name] != data for name, data in plugins().items()):
+    if any(content[name] != data for name, data in plugins(version).items()):
         raise ValueError("report plugin manifests differ from the component")
     return metadata
 
@@ -136,14 +142,18 @@ def read_archive(path, expected_sha=None):
 def verify_install(root):
     root = Path(root); no_links(root)
     if not root.is_dir(): raise ValueError("report release directory is missing")
+    no_links(root / 'report.json')
+    metadata = json.loads((root / 'report.json').read_text())
+    if not isinstance(metadata, dict): raise ValueError('invalid report package manifest')
+    inventory = FILES if metadata.get('version') == VERSION else PREVIOUS_FILES
     paths = [p for p in root.rglob("*") if not p.is_dir() or p.is_symlink()]
-    if any(p.is_symlink() for p in paths) or {p.relative_to(root).as_posix() for p in paths} != {*FILES, *plugins(), "report.json"}:
+    if any(p.is_symlink() for p in paths) or {p.relative_to(root).as_posix() for p in paths} != {*inventory, *plugins(), "report.json"}:
         raise ValueError("installed report inventory differs")
-    content = {name: (root / name).read_bytes() for name in (*FILES, *plugins())}
+    content = {name: (root / name).read_bytes() for name in (*inventory, *plugins())}
     modes = {name: stat.S_IMODE((root / name).stat().st_mode) for name in content}
     if stat.S_IMODE((root / "report.json").stat().st_mode) != 0o644:
         raise ValueError("installed report manifest mode differs")
-    return validate(json.loads((root / "report.json").read_text()), content, modes)
+    return validate(metadata, content, modes)
 
 
 def prefix_path(prefix, create=False):
@@ -190,7 +200,7 @@ def activate(prefix, source_revision):
     return target
 
 
-def mcp_config(prefix, config=None, *, enabled=True):
+def mcp_config(prefix, config=None, *, enabled=True, codex_home=None):
     prefix = Path(prefix)
     if not prefix.is_absolute(): raise ValueError("an absolute report install prefix is required")
     if enabled: verify_install((prefix / "current").resolve(strict=True))
@@ -198,8 +208,11 @@ def mcp_config(prefix, config=None, *, enabled=True):
     if config is not None:
         if not Path(config).is_absolute(): raise ValueError("an absolute report config path is required")
         args += ["--config", str(config)]
-    return {"command": sys.executable, "args": args, "enabled": enabled, "required": False,
-            "default_tools_approval_mode": "writes"}
+    result = {"command": sys.executable, "args": args, "enabled": enabled, "required": False,
+              "default_tools_approval_mode": "writes"}
+    if codex_home is not None:
+        result['env'] = {'CODEX_HOME': str(absolute(codex_home)), 'CODEX_PLUS_REPORT_CONFIG': ''}
+    return result
 
 
 def main(argv=None):
@@ -210,7 +223,7 @@ def main(argv=None):
     put = commands.add_parser("install"); put.add_argument("archive", type=Path); put.add_argument("--prefix", type=Path, required=True); put.add_argument("--sha256")
     select = commands.add_parser("activate"); select.add_argument("--prefix", type=Path, required=True); select.add_argument("--revision", required=True)
     installed = commands.add_parser("verify-install"); installed.add_argument("root", type=Path)
-    config = commands.add_parser("mcp-config"); config.add_argument("--prefix", type=Path, required=True); config.add_argument("--config", type=Path); config.add_argument("--disabled", action="store_true")
+    config = commands.add_parser("mcp-config"); config.add_argument("--prefix", type=Path, required=True); config.add_argument("--config", type=Path); config.add_argument("--disabled", action="store_true"); config.add_argument("--codex-home", type=Path)
     args = parser.parse_args(argv)
     try:
         if args.command == "build": result = build(args.source, args.output)
@@ -218,7 +231,7 @@ def main(argv=None):
         elif args.command == "install": result = {"installed": str(install(args.archive, args.prefix, args.sha256))}
         elif args.command == "activate": result = {"selected": str(activate(args.prefix, args.revision))}
         elif args.command == "verify-install": result = verify_install(args.root)
-        else: result = {"mcp_servers": {"html_report": mcp_config(args.prefix, args.config, enabled=not args.disabled)}}
+        else: result = {"mcp_servers": {"html_report": mcp_config(args.prefix, args.config, enabled=not args.disabled, codex_home=args.codex_home)}}
         print(json.dumps(result, indent=2)); return 0
     except (OSError, ValueError, TypeError, KeyError, subprocess.SubprocessError, tarfile.TarError) as error:
         print(json.dumps({"error": str(error)[:1024]}), file=sys.stderr); return 1

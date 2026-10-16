@@ -6,7 +6,11 @@ description: Create and deliver static HTML reports with interactive client-side
 # HTML reports
 
 Use the installed `codex-plus-report` CLI or report MCP tools. Hosting
-configuration supplies the browser-accessible URL.
+configuration supplies the browser-accessible URL. CLI and MCP defaults select
+one environment from `CODEX_HOME`. For an explicit report-config override, set
+`CODEX_PLUS_REPORT_CONFIG` consistently in both; CLI `--config` takes precedence.
+Run `codex-plus-context` to inspect resolved paths before using a different
+store. Native Codex `--profile` alone does not select a separate report store.
 
 Choose structure, charts and interactions that explain this task's result. Keep
 a brief useful answer in chat with the report link. A report is an optional
@@ -36,7 +40,8 @@ and hosts. Keep a user's chosen label. Work without a meaningful project can
 omit it and appears under Uncategorized; the publisher does not infer it.
 Do not pass the whole repository to collect incidental files. On hosts configured
 with `server_autostart = true`, publishing starts or reuses the shared
-`codex-report-server` tmux session. Leave it running after delivery; there is no
+environment's owned `codex-report-server` tmux session (a namespaced session
+for a separate report configuration). Leave it running after delivery; there is no
 automatic shutdown. External hosting remains configurable. Publishing does not
 start an agent daemon.
 

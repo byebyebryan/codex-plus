@@ -15,6 +15,7 @@ import time
 import uuid
 
 from .engine import Engine
+from .context import existing_socket
 from .native import Client
 from .peers import PeerReader, DEFAULT_SIGNALS
 from .store import Store, private_directory
@@ -269,17 +270,7 @@ def main(argv=None, *, before_write=None) -> int:
         if not thread_id:
             raise ValueError('exact thread UUID is required')
         uuid.UUID(thread_id)
-        requested = args.socket
-        if requested is None:
-            info = json.loads(subprocess.run(['rtk', 'proxy', 'codex', 'app-server', 'daemon', 'version'],
-                capture_output=True, text=True, check=True).stdout)
-            if info.get('status') != 'running':
-                raise ValueError('existing native daemon is unavailable; no daemon was started')
-            requested = info['socketPath']
-        if requested.startswith('unix://'):
-            requested = requested[7:]
-        if not Path(requested).is_absolute():
-            raise ValueError('an absolute local Unix socket path is required')
+        requested = existing_socket(args.socket, run=subprocess.run)
         with Client(requested, experimental=True) as client:
             frozen = client.bind(thread_id)
             thread = client.call('thread/read', {'threadId': thread_id})['thread']
