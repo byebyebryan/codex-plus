@@ -531,3 +531,19 @@ responses agreed. No prompt or model turn was submitted, the owned empty thread
 was archived, and native owner/configuration stayed unchanged. Installed-helper
 qualification and the next release selection are recorded separately. Physical
 panel acceptance remains unobserved and separate from this cwd correction.
+
+Preview 6 publishes `e77601b593f85e8fa004add1e1f54ccb97423f6b`, archive SHA-256
+`7fdec339dcea7dc0d8925b1b5ee74cd4cc84a648662e20e0a842b73ca89eaad3`.
+Both hosts passed helper-only dry-run/apply, fourteen-file hash/mode readback,
+rollback to preview 5 and reselection. Fresh baselines preserve concurrent native
+configuration changes rather than restoring an older configuration snapshot.
+The full distribution checker passes.
+
+Using the installed automatic `launch` entry point with no cwd argument and no
+prompt, real fresh TUIs against both running daemons sent the caller's directory:
+the trusted 349 project on Starship and `/home/bryan/code/mesh-plus` on Snap.
+Native thread-start and thread-read cwd values matched. No model turn started;
+both owned threads were archived. Native owners, current config, shell bytes and
+protected services remained unchanged. This closes the cwd correction's installed
+qualification; physical acceptance and the separate DMS panel Open gap remain
+unchanged.
