@@ -32,8 +32,9 @@ walkthrough and five readable guides through GitHub Pages. See the
 ## Current status
 
 Desktop notification delivery and terminal customization are outside Codex Plus.
-Native Codex alerts remain selected. The optional read-only card inspector now
-belongs to the [349 integration](https://github.com/byebyebryan/esp32-349/blob/main/projects/notification-panel/docs/codex-inspector.md).
+Native Codex alerts remain selected. Notification enrichment and lifecycle
+inspection are parked; [native terminal formatting](https://github.com/byebyebryan/dotfiles/blob/main/docs/kitty-notifications.md)
+is managed with Kitty/chezmoi.
 
 Snap now selects monitoring runtime **v0.1.0-preview.3** and reporting
 **v0.1.0-preview.8**, including native multi-environment support, through chezmoi.

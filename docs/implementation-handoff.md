@@ -738,3 +738,12 @@ operations. Native completion/approval delivery stays selected. Chezmoi retires
 its launcher wiring and independently pins the 349 inspector. Existing immutable
 notification releases remain rollback inputs; ongoing relay sessions are not
 terminated. Monitoring, reports, workers and their deployed pins are untouched.
+
+## Notification enrichment parked: 2026-10-16
+
+The user selected retirement of the remaining 349 inspector and enrichment
+handling. Desktop notifications stay on native Codex/Kitty delivery. The next
+bounded change is generic title/body formatting in Kitty's supported notification
+script, managed through chezmoi. It carries no thread identity and changes no
+Codex arguments or daemon connection. Existing dated checks remain historical;
+monitoring, reports, workers and their installed selections are untouched.

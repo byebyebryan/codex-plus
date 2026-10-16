@@ -84,7 +84,8 @@ This is source support for runtime preview.3 and reports preview.8, not a live
 upgrade. Both package inventories include the shared resolver and context CLI;
 previous runtime previews .1/.2 and report preview.7 remain verifiable/selectable.
 Component releases and deployment receipts remain independent. The notification
-component is retired; the 349 owns its separate read-only inspector.
+component and the 349 inspector are retired; terminal formatting belongs to
+Kitty/chezmoi.
 
 Snap's existing work/OSS overrides, data attribution, separate work report service
 and installed release selections are preserved by this pass. Adopting namespaced
