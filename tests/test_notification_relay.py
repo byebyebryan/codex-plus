@@ -67,8 +67,10 @@ class Relay(unittest.TestCase):
                 self.assertEqual(code, 17)
                 self.assertEqual(received, [request])
                 self.assertEqual(json.loads(result.read_text())['sha256'], hashlib.sha256(response).hexdigest())
-                self.assertEqual(json.loads(result.read_text())['argv'][2:],
-                                 ['-c', 'tui.notifications=[]', *expected_arguments])
+                argv = json.loads(result.read_text())['argv']
+                endpoint = argv.index('--remote')
+                self.assertEqual(argv[:endpoint] + argv[endpoint + 2:], expected_arguments
+                                 if 'agents' in arguments else ['-c', 'tui.notifications=[]', *expected_arguments])
                 self.assertEqual(emitted.count(b'\x1b]99;'), 2 if malformed else 3)
                 self.assertEqual(emitted.count(b':d=1;'), 1)
                 if malformed:
@@ -98,6 +100,10 @@ class Relay(unittest.TestCase):
         ):
             with self.subTest(arguments=arguments):
                 self.check_relay(arguments=arguments, expected_arguments=expected)
+
+    def test_agents_child_argv_keeps_relay_options_inside_subcommand(self):
+        self.check_relay(arguments=['agents'], expected_arguments=[
+            'agents', '-c', 'tui.notifications=[]', '--cd', os.getcwd()])
 
 
 if __name__ == '__main__': unittest.main()

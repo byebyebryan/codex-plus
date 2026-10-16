@@ -32,7 +32,13 @@ Use `codex-notify run --native /usr/bin/codex -- NATIVE_ARGS`
 for explicit mode. `codex-notify launch --native /usr/bin/codex -- NATIVE_ARGS`
 is the candidate automatic shell entry point. Unsupported/noninteractive calls,
 CLI utilities, notification overrides and pre-launch qualification failures keep
-native behavior. Qualified TUI/server pairs are 0.162.1/0.162.1,
+native behavior. The interactive `agents` Command Center entry point is also wrapped. Its relay
+endpoint, notification override and default new-task working directory are passed
+to the `agents` subcommand. Opening the list alone does not grant notification
+authority for every listed thread: the viewer must start or resume a root thread.
+Explicit remote endpoints and unsupported `agents` syntax keep native behavior.
+
+Qualified TUI/server pairs are 0.162.1/0.162.1,
 0.162.1/0.163.0 and 0.163.0/0.163.0. Other pairs stay native. Additional workspace
 roots (`--add-dir` or explicit `sandbox_workspace_write` configuration) also
 stay native because the explicit remote route cannot preserve them.

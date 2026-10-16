@@ -645,3 +645,24 @@ references, not required local files on Snap:
 > ownership and the worker bundle with no initial Agent Observer dependency.
 > Plan the human TUI walkthrough and a cheap accessible real-source pilot.
 > Keep installation separate; do not restart the closed research batches.
+
+## Native agents notification launcher follow-up
+
+The notification feature branch now wraps the native interactive `agents`
+entry point. Relay endpoint and completion-filter options are inserted inside
+the subcommand, with the local directory retained for new tasks. Explicit
+remote endpoints, unsupported syntax and utilities keep the native path.
+The notification suite passes 56 tests; stock 0.162.1 TUI / owned 0.163.0 server
+with a loopback provider verifies Command Center entry, root creation, matching
+rich completion, internal-title exclusion, no basic duplicate and owned cleanup.
+Alternate-home wrapper names and downstream source mappings stay in local
+configuration. No monitoring/report runtime or worker behavior changes.
+
+Preview 7 is now published from the reviewed agents fix and selected through
+chezmoi on Snap. All fourteen installed helper files and the selector match the
+manifest. Installed default/agents native TUI checks passed for both configured
+homes in private terminals, preserving source identity/cwd with one rich packet
+and no basic duplicate. The local downstream inspector route also passed current
+and superseded readback on an owned live-daemon thread. This pass did not repeat
+physical panel or graphical focus acceptance. See the preview 7 checkpoint in
+the notification launcher plan. Other host helper selections are unchanged.

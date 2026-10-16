@@ -23,6 +23,7 @@ VALUE_OPTIONS = {'-c', '--config', '-m', '--model', '-s', '--sandbox', '-C', '--
                  '--local-provider'}
 FLAG_OPTIONS = {'--strict-config', '--approve-for-me', '--dangerously-bypass-approvals-and-sandbox',
                 '--dangerously-bypass-hook-trust', '--search', '--no-alt-screen', '--oss'}
+AGENTS_VALUE_OPTIONS = {'-c', '--config', '-C', '--cd', '--enable', '--disable'}
 NATIVE_COMMANDS = {'agents', 'exec', 'e', 'review', 'login', 'logout', 'mcp', 'plugin', 'app-server',
                    'remote-control', 'completion', 'update', 'doctor', 'sandbox', 'debug', 'apply',
                    'a', 'resume', 'queue', 'archive', 'delete', 'migrate-rollouts', 'unarchive',
@@ -35,6 +36,7 @@ class Invocation:
     cwd: str
     reason: str = ''
     remote_arguments: tuple[str, ...] = ()
+    remote_option_index: int = 0
 
 
 def invocation(arguments, cwd=None):
@@ -43,10 +45,12 @@ def invocation(arguments, cwd=None):
     cwd = caller_cwd
     adapted = list(arguments)
     explicit_cwd = False
-    index, command = 0, None
+    index, command, command_index = 0, None, None
     while index < len(arguments):
         arg = arguments[index]
         if arg == '--':
+            if command == 'agents' and index + 1 < len(arguments):
+                return Invocation(False, cwd, 'native agents positional validation')
             break  # Remaining arguments are positional text, never helper options.
         if arg in ('-h', '--help', '-V', '--version'):
             return Invocation(False, cwd, 'native help/version')
@@ -57,6 +61,8 @@ def invocation(arguments, cwd=None):
                 name, value, equals = arg[:2], arg[2:], '='
                 attached = True
             if name in VALUE_OPTIONS:
+                if command == 'agents' and name not in AGENTS_VALUE_OPTIONS:
+                    return Invocation(False, cwd, 'unqualified agents option')
                 if not equals:
                     index += 1
                     if index == len(arguments):
@@ -99,6 +105,8 @@ def invocation(arguments, cwd=None):
                 index += 1
                 continue
             if name in FLAG_OPTIONS and not equals:
+                if command == 'agents' and name != '--no-alt-screen':
+                    return Invocation(False, cwd, 'unqualified agents option')
                 index += 1
                 continue
             if command == 'resume' and name in ('--last', '--all', '--include-non-interactive') and not equals:
@@ -108,18 +116,22 @@ def invocation(arguments, cwd=None):
         if command is None:
             if arg in NATIVE_COMMANDS:
                 command = arg
-                if command != 'resume':
+                command_index = index
+                if command not in ('resume', 'agents'):
                     return Invocation(False, cwd, 'native command')
             else:
                 command = 'default'
+        elif command == 'agents':
+            return Invocation(False, cwd, 'native agents positional validation')
         # Later positionals are text, not a scan for subcommand words. Native
         # options are still recognized after a prompt/session ID, as Clap does.
         index += 1
     # An explicit remote endpoint does not inherit the local viewer's cwd.
     # Resume without --cd keeps native saved-session cwd selection.
+    option_index = command_index + 1 if command == 'agents' else 0
     if command != 'resume' and not explicit_cwd:
-        adapted[:0] = ['--cd', cwd]
-    return Invocation(True, cwd, remote_arguments=tuple(adapted))
+        adapted[option_index:option_index] = ['--cd', cwd]
+    return Invocation(True, cwd, remote_arguments=tuple(adapted), remote_option_index=option_index)
 
 
 def filtered_notifications(value):

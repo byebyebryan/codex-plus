@@ -575,3 +575,50 @@ records the exact stimulus, user reports and limits. Physical observations are
 separate from the stimulus runner's protocol/cache receipt. The DMS panel Open
 provider remains unavailable and outside this completed check. Source reviews
 remain drafts; broader hardware/native/UI contexts retain their declared limits.
+
+## Interactive agents entry point
+
+The launcher recognizes the native `agents` Command Center, preserving its
+configuration, directory and alternate-screen options. Generated remote endpoint
+and notification settings belong after the subcommand, avoiding the independent
+root-TUI option fields. A bare `agents` receives the caller's directory for new
+tasks; explicit directories are resolved locally. Explicit remote destinations,
+unsupported options, utilities and noninteractive calls retain the native path.
+List membership grants no publication route: successful start/resume responses
+remain required for each root. Alternate home selection remains the caller's
+`CODEX_HOME` responsibility; no machine-specific launcher names are assumed.
+
+The source pass has 56 passing notification tests plus the public bundle
+inventory check. A stock 0.162.1 TUI launched directly into `agents` through the
+relay against an owned 0.163.0 server and a loopback Responses fixture. Creating
+a root task used the caller directory; returning to Command Center before
+completion produced one rich notification with matching body/thread metadata
+and no native OSC 9 duplicate. Internal title work was excluded. All owned
+processes were reaped; no real provider or desktop was involved. The first
+fixture sent a key while the initial list was loading and failed to submit;
+its failed receipt is retained separately from the corrected successful run.
+Installed delivery for this new entry point remains a separate rollout gate.
+
+## Agents preview 7 installed checkpoint
+
+[Preview 7](https://github.com/byebyebryan/codex-plus/releases/tag/codex-notify-v0.1.0-preview.7)
+publishes source `84ca9beea7ec3200342f74cc35f69678e444a961`. The attached source
+archive SHA-256 is `d562616d429cfb24bfd388d270db9df6090c95f745e16648eba488c180bd57f9`;
+the attached manifest defines the independently distributed fourteen-file utility.
+
+Scoped chezmoi installation verified every selected file hash/executable flag
+and the helper selector. The installed artifact passed stock 0.162.1 TUI /
+0.163.0 daemon tests for default and `agents` launches using both the ordinary
+interactive-shell entry and a local alternate-home wrapper. Each retained its
+new-task directory and source identity, produced one matching rich completion
+while viewing Command Center, and emitted no native OSC 9 duplicate. Fixtures
+used private homes, loopback Responses providers and PTYs, with owned cleanup.
+No real provider or desktop notification was used for this regression pass.
+
+The configured downstream SSH inspector route separately recognized an owned
+completed episode on the running alternate-home daemon as current, then as
+superseded behind a newer interrupted turn. Only owned test threads were archived.
+Early harness failures from querying unpersisted history and observing turn
+admission before activation are retained privately; final lifecycle evidence
+comes from authoritative persisted history and the exact configured route.
+Physical panel rendering and graphical focus were not repeated by this pass.

@@ -15,15 +15,37 @@ class Launcher(unittest.TestCase):
         for argv in ([], ['--no-alt-screen'], ['-m', 'exec', 'Please review this'],
                      ['-c', 'model="review"', 'resume', 'some-session', 'exec'],
                      ['-c', 'model_reasoning_effort=low'],
-                     ['resume', '--last'], ['resume', 'session', '--all'],
+                     ['resume', '--last'], ['resume', 'session', '--all'], ['agents'],
+                     ['agents', '--no-alt-screen'], ['agents', '-C', '/workspace'],
                      ['--', 'review'], ['say hello', 'review']):
             with self.subTest(argv=argv):
                 self.assertTrue(invocation(argv).interactive)
-        for argv in (['exec', 'hello'], ['--model', 'x', 'review'], ['agents'], ['fork'],
+        for argv in (['exec', 'hello'], ['--model', 'x', 'review'], ['fork'],
                      ['--no-daemon'], ['resume', 'session', '--no-daemon'], ['--help'],
                      ['resume', '--help'], ['-m'], ['--profile', 'other'], ['--remote=unix:///x'],
                      ['-c', 'tui.notifications=false'], ['-c', 'tui."notifications"=false'],
                      ['--config=tui={notifications=true}']):
+            with self.subTest(argv=argv):
+                self.assertFalse(invocation(argv).interactive)
+
+    def test_agents_uses_its_subcommand_endpoint_and_new_task_cwd(self):
+        cwd = '/workspace/caller'
+        for argv, expected, index in (
+            (['agents'], ['agents', '--cd', cwd], 1),
+            (['-c', 'model="agents"', 'agents'],
+             ['-c', 'model="agents"', 'agents', '--cd', cwd], 3),
+            (['agents', '-C', '../project'], ['agents', '-C', '/workspace/project'], 1),
+            (['agents', '--cd=../project'], ['agents', '--cd=/workspace/project'], 1),
+        ):
+            with self.subTest(argv=argv):
+                parsed = invocation(argv, cwd=cwd)
+                self.assertTrue(parsed.interactive)
+                self.assertEqual(parsed.remote_arguments, tuple(expected))
+                self.assertEqual(parsed.remote_option_index, index)
+        for argv in (['agents', 'unexpected'], ['agents', '--', 'unexpected'], ['agents', '--last'],
+                     ['agents', '-m', 'model'], ['agents', '--search'],
+                     ['agents', '--remote', 'unix:///explicit'],
+                     ['agents', '--help'], ['agents', '-c', 'tui.notifications=false']):
             with self.subTest(argv=argv):
                 self.assertFalse(invocation(argv).interactive)
 

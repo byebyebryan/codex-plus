@@ -83,7 +83,8 @@ def degraded_notice(prepared):
 
 
 async def run(path, arguments, executable='/usr/bin/codex', *, only_when='unfocused', prepared=None):
-    native_arguments = invocation(arguments).remote_arguments
+    parsed = invocation(arguments)
+    native_arguments = parsed.remote_arguments
     prepared = prepared or prepare(path, arguments, executable)
     identity, fd, tmux = prepared.owner, prepared.fd, prepared.tmux
     host, instance = source_identity(path)
@@ -162,8 +163,9 @@ async def run(path, arguments, executable='/usr/bin/codex', *, only_when='unfocu
             os.chmod(proxy, 0o600)
             try:
                 loop.add_signal_handler(signal.SIGINT, lambda: None)
-                process = await asyncio.create_subprocess_exec(executable, '--remote', 'unix://' + proxy,
-                    *prepared.overrides, *native_arguments)
+                index = parsed.remote_option_index
+                process = await asyncio.create_subprocess_exec(executable, *native_arguments[:index],
+                    '--remote', 'unix://' + proxy, *prepared.overrides, *native_arguments[index:])
                 for sig in (signal.SIGTERM, signal.SIGHUP):
                     loop.add_signal_handler(sig, lambda sig=sig: process.send_signal(sig) if process.returncode is None else None)
                 return await process.wait()
