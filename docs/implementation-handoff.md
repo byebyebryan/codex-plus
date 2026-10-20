@@ -9,11 +9,15 @@ coordination and independent static reports around native Codex. Native Codex
 owns its conversations, goals, execution policy and daemons. Worker workflows
 remain explicitly invoked; a generic goal loop does not activate them.
 
-Start with the [daily guide](daily-use.md), [worker workflows](workers.md), [architecture](architecture.md),
+Start with [setup](getting-started.md), the [daily guide](daily-use.md), [worker workflows](workers.md), [architecture](architecture.md),
 [environment contract](environments.md) and [public walkthrough](https://dev.byebyebryan.com/codex-plus/).
 The [implementation plan](codex-plus-plan.md) and [reconciliation results](reconciliation-results.md)
 record this pass. The [historical checkpoints](implementation-history.md) preserve
 older migration, notification, rollout and acceptance evidence.
+
+The [site polish pass](site-polish-results.md) adds the component-based setup
+path, a fourth illustrative scene for Luna and publication/navigation refinements.
+Its source and publication acceptance remains separate from runtime qualification.
 
 ## Source, releases and installed state
 

@@ -1,6 +1,6 @@
 # Codex Plus implementation plan
 
-Updated 2026-10-16. Codex CLI/TUI remains the daily interface and its existing
+Updated 2026-10-20. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are
 installed and enabled on Snap and Starship. Current sources are reconciled.
@@ -10,7 +10,27 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
-## Current pass: reconciliation, refinement and presentation
+## Current pass: documentation and site polish
+
+Run an ordinary primary goal loop to refine the docs, site, presentation and
+publication. The exit gate is a coherent setup path for workers, monitoring and
+reporting; visible coverage of all capabilities; navigable and accessible guides;
+validated public links/metadata; successful Pages publication; and actual
+desktop/mobile browser checks. Commit validated slices directly to main.
+
+1. Audit the reader paths and record the smallest changes needed.
+2. Add a component-based setup guide and reconcile README/daily-use entry points.
+3. Refine the landing page, include a Luna example and improve guide navigation.
+4. Strengthen builder checks and validate candidate content and browser behavior.
+5. Publish through the personal github.com repository, verify the deployed bytes
+   and interactions, and close the handoff with evidence and remaining limits.
+
+Preserve runtime/worker/skill bytes, installed pins, credentials, native owners,
+report stores and pre-existing untracked bytecode. Do not activate a worker skill,
+create observation intent or perform a managed apply. Existing immutable reports
+retain their historical identities. See [the polish results](site-polish-results.md).
+
+## Previous pass: reconciliation, refinement and presentation
 
 The user requested an ordinary goal loop after multi-environment deployment and
 notification retirement. Reconcile current-facing docs and continuation state,
@@ -1077,7 +1097,7 @@ Carry forward these findings:
   correction replaced saved-name lookup with actual-owner loaded inventory and
   bounded metadata. The reference is Starship's
   `agent-harness-research/notes/2026-10-11-codex-daily-workflow-follow-up.md`,
-  summarized in [the handoff](implementation-handoff.md#evidence-already-available).
+  summarized in [the historical handoff](implementation-history.md#evidence-already-available).
 - The newer native list/read/send/wait facade is exposed, and listing was checked;
   those receipts do not establish every facade operation. A targeted compatibility
   check is appropriate if that facade is selected, not a new basic messaging study.

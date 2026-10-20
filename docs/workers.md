@@ -89,10 +89,26 @@ skills do not automatically register a watch or reminder.
 
 ## Installation
 
-Install the two agent definitions and all four worker skill directories from
-the [worker bundle instructions](https://github.com/byebyebryan/codex-plus#installation).
-The bundle also contains the separate HTML report skill. If chezmoi owns these
-paths, update its source and published pins through that installation method.
+For an unmanaged conventional Codex home, clone the repository and copy the
+two agents and four worker skills. Run these commands from the parent directory
+where you want the checkout:
+
+```sh
+git clone https://github.com/byebyebryan/codex-plus.git
+mkdir -p ~/.codex/agents ~/.agents/skills
+cp codex-plus/agents/*.toml ~/.codex/agents/
+cp -R codex-plus/skills/luna-task codex-plus/skills/luna-goal-loop codex-plus/skills/worker-task codex-plus/skills/worker-goal-loop ~/.agents/skills/
+```
+
+The paths follow the official [custom agent](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents)
+and [local skill](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills)
+documentation. For another Codex home, use its agent directory and the skill
+location supported by your client. If chezmoi owns these paths, update its
+source and published pins through that installation method.
+
+The bundle also contains the separate `skills/html-report` skill. Add it when
+you configure the report component; the four worker skills above do not install
+that skill or either runtime.
 Your client and account must support the selected models, custom agents and
 skills; installation does not prove runtime model availability.
 

@@ -1,7 +1,7 @@
 # Product page and interactive walkthrough
 
 [Open the public browser walkthrough](https://dev.byebyebryan.com/codex-plus/).
-GitHub Pages also serves the daily-use, worker, architecture, environment, soak, reporting and
+GitHub Pages also serves the setup, daily-use, worker, architecture, environment, soak, reporting and
 installation guides. See the [Pages deployment guide](pages-deployment.md).
 
 The [immutable report edition](http://snap:8787/reports/293fdc3828d80409edd88861719fa5d376df1afa4bbdf5fae6a569d8f12aaa17/)
@@ -11,9 +11,9 @@ browser interaction/layout checks passed; see the
 [documentation pass results](documentation-pass-results.md).
 
 The [self-contained authoring file](presentation/index.html) also opens locally.
-It explains current capabilities with three illustrative scenes: an endpoint
-watch, coordination between independent sessions, and a later MCP inspection
-followed by a report. A separate environment selector illustrates personal and
+It explains current capabilities with four illustrative scenes: a Luna
+investigation, an endpoint watch, coordination between independent sessions,
+and a later MCP inspection followed by a report. A separate environment selector illustrates personal and
 work contexts with example Codex homes. It only updates the page; it does not
 create a home, change config or contact a daemon.
 
@@ -50,5 +50,6 @@ server remains independently managed; publication reuses it when healthy.
 
 The daily quickstart and reference material remain readable without a browser:
 [daily use](daily-use.md), [architecture and comparison](architecture.md), and
+[setup](getting-started.md), [workers](workers.md) and the
 [soak checklist](soak-checklist.md). This presentation does not change installed
 runtime bytes, managed release pins or worker invocation behavior.

@@ -1,9 +1,11 @@
 # Using Codex Plus day to day
 
-Codex Plus adds watches, later checks, peer messages and browser reports to the
-ordinary Codex CLI/TUI. It is an installed preview on Snap and Starship. Open a
-fresh ordinary session on either host; the optional monitoring and report MCP
-tools load from managed configuration. Existing opt-outs remain effective.
+Codex Plus adds explicit worker workflows, watches, later checks, peer messages
+and browser reports to the ordinary Codex CLI/TUI. If this is your first visit,
+use the [setup guide](getting-started.md) to choose the components you need.
+For the managed Snap and Starship preview, open a fresh ordinary session in
+the intended environment; monitoring and report MCP tools load from its
+configuration. Existing opt-outs remain effective.
 
 Describe what you need in normal language. The model chooses the source,
 filtering, cadence and continuation. You do not need a thread UUID, exact session
@@ -136,5 +138,5 @@ operation and your judgment of the interaction still need daily-use evidence.
 Use the [soak checklist](soak-checklist.md) during normal work. See
 [how the package works](architecture.md) for component boundaries, Claude
 workflow coverage and evidence, or the [browser walkthrough](presentation.md)
-for three illustrative scenes. Low-level CLI diagnostics remain in the
+for four illustrative scenes. Low-level CLI diagnostics remain in the
 [technical watch guide](watch-candidate.md).

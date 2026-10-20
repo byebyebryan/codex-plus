@@ -1,13 +1,17 @@
 # Codex Plus
 
-Watches, later checks, peer communication and browser reports around the native
-Codex CLI/TUI. Keep your continuing conversation and its existing daemon; ask
-for useful follow-up in ordinary language.
+Workers, watches, later checks, peer communication and browser reports around
+the native Codex CLI/TUI. Keep your continuing conversation and its existing
+daemon; choose explicit worker workflows or ask for useful follow-up in ordinary
+language.
 
 ## Start here
 
-Open a fresh ordinary Codex session on Snap or Starship and say, for example:
+Start with the [setup guide](docs/getting-started.md) to choose workers,
+monitoring or reporting. With the relevant components installed, open an
+ordinary Codex session and say, for example:
 
+- “$luna-task Investigate the importer failure and return a reproduction.”
 - “Watch the session doing the packaging work and tell me when it is ready.”
 - “Tell that session the handoff should include the risks.”
 - “Watch this run and tell me if it stalls or fails.”
@@ -24,7 +28,7 @@ Read the [daily-use guide](docs/daily-use.md), open the
 [how the package works](docs/architecture.md).
 
 The [public HTML guides](https://dev.byebyebryan.com/codex-plus/) publish the
-walkthrough and seven readable guides through GitHub Pages. See the
+walkthrough and eight readable guides through GitHub Pages. See the
 [Pages deployment guide](docs/pages-deployment.md) for source/build details.
 
 ## Current status
@@ -71,11 +75,12 @@ evidence without manufacturing workloads.
 
 | Read this | For |
 | --- | --- |
+| [Get started](docs/getting-started.md) | Choose components, use an existing managed installation or set up your own. |
 | [Daily use](docs/daily-use.md) | Natural requests, expected follow-up, stopping and reports. |
 | [Luna and worker workflows](docs/workers.md) | Luna tasks and goal loops, adaptive delegation, agent roles and installation. |
 | [Multiple environments](docs/environments.md) | Home selection, explicit overrides, separate stores and same-daemon boundaries. |
 | [Architecture and Claude-workflow coverage](docs/architecture.md) | Components, permissions, costs, discovery, receipts and limits. |
-| [Browser walkthrough](docs/presentation.md) | Three illustrative scenes and the published presentation. |
+| [Browser walkthrough](docs/presentation.md) | Four illustrative scenes and the published presentation. |
 | [Runtime distribution](docs/runtime-distribution.md) | Immutable monitoring artifact, loading, managed installation and rollback. |
 | [HTML report usage](docs/html-report-usage.md) | Publication, catalog, storage and separate hosting. |
 | [Managed activation results](docs/managed-activation-results.md) | Independent installed/native acceptance on Snap and Starship. |
@@ -154,24 +159,12 @@ new evidence call for primary diagnosis rather than repeated worker cycling.
 
 ## Installation
 
-For the worker bundle, clone the repository and install its two custom agents
-and skills (four worker workflows plus the additional HTML report skill):
-
-```sh
-git clone https://github.com/byebyebryan/codex-plus.git
-mkdir -p ~/.codex/agents ~/.agents/skills
-cp codex-plus/agents/*.toml ~/.codex/agents/
-cp -R codex-plus/skills/. ~/.agents/skills/
-```
-
-This copy example installs agents/skills, not the monitoring or reporting
-runtimes. Follow the [runtime guide](docs/runtime-distribution.md) and
-[report guide](docs/html-report-usage.md) for those separate components.
-
-The example uses `~/.codex/agents` for custom agents and `~/.agents/skills`
-for user skills. If your client supports another personal skills directory,
-install the same skill directories there. With a dotfile manager, update its
-source and published pins instead of copying over managed targets.
+Choose components in the [setup guide](docs/getting-started.md). The
+[worker installation steps](docs/workers.md#installation) install two agents and
+four worker workflows; the HTML report skill is a separate optional addition.
+The [runtime guide](docs/runtime-distribution.md) and
+[report guide](docs/html-report-usage.md) cover their independent artifacts.
+With a dotfile manager, update its source and published pins through that owner.
 
 Bryan's chezmoi distribution uses `.chezmoiexternals/codex-plus.toml` with pinned
 Codex Plus URLs and checksums. It retains `~/.local/share/codex-worker-kit` as the

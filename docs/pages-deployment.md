@@ -16,6 +16,7 @@ to the inherited domain. The publication contract follows.
 ## Site contents
 
 - Interactive walkthrough at the root, from `docs/presentation/index.html`.
+- [Setup](getting-started.md), which separates worker, monitoring and report installation.
 - [Daily use](daily-use.md), [Luna and workers](workers.md), [architecture](architecture.md),
   [environments](environments.md), [soak checklist](soak-checklist.md), [reporting](html-report-usage.md) and
   [installation](runtime-distribution.md), rendered as HTML guides.
@@ -36,7 +37,7 @@ deploy job. The github-pages environment and Pages concurrency group own deploym
 No personal credential is stored in the repository or site artifact.
 
 `scripts/build-pages` uses GitHub’s Markdown API through `gh api --hostname
-github.com` to render the seven public guides. GitHub Actions supplies its temporary
+github.com` to render the eight public guides. GitHub Actions supplies its temporary
 repository token; local builds use the selected personal github.com authentication.
 Rendering requires network access. No JavaScript library/CDN is needed by the site.
 
@@ -52,6 +53,14 @@ anchors, preserves links to technical GitHub sources, and validates every local
 page/asset/fragment before upload. Generated files remain outside committed source.
 Update the diagram SVG alongside Mermaid changes; a mismatched source hash fails
 rather than publishing a stale diagram.
+
+Generated guides include section contents, skip links, keyboard-accessible table
+scrolling and related-guide navigation. All public pages receive canonical and
+Open Graph URL/description metadata. `sitemap.xml` lists only the landing page
+and selected guide routes. The build rejects a mismatched public file inventory,
+missing or duplicate descriptions, incorrect canonical URLs, multiple main/H1
+elements or a stale sitemap before upload. Existing public routes stay stable;
+the component-based setup overview is at `/start/`.
 
 Pages serves current guides; the report tool serves immutable snapshots. Neither
 changes qualified monitoring/report runtime pins, installed worker identities,

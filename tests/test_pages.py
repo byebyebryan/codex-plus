@@ -34,13 +34,80 @@ class PagesTests(unittest.TestCase):
     def test_github_accessible_table_keeps_attributes_inside_scroll_container(self):
         body = '<markdown-accessiblity-table><table role="table"><tr><td>Wide</td></tr></table></markdown-accessiblity-table>'
         result = pages.guide_page('architecture.md', 'architecture', 'How it works', body, '')
-        self.assertIn('<div class="table-scroll"><table role="table">', result)
+        self.assertIn('tabindex="0" role="region" aria-label="Scrollable table"><table role="table">', result)
         self.assertIn('</table></div></markdown-accessiblity-table>', result)
 
     def test_duplicate_heading_slugs_are_distinct(self):
         result = pages.headings('<h2>Same home</h2><h2>Same home</h2>')
         self.assertIn('id="same-home"', result)
         self.assertIn('id="same-home-1"', result)
+
+    def test_setup_links_stay_on_public_site(self):
+        self.assertEqual(pages.rewrite_link('getting-started.md#choose-what-to-install', './'),
+                         './start/#choose-what-to-install')
+
+    def test_guide_contents_links_and_skip_target_are_accessible(self):
+        body = pages.headings('<h1>Workers</h1><h2>Choose &amp; review</h2><h2>Choose &amp; review</h2>')
+        result = pages.guide_page('workers.md', 'workers', 'Luna & workers', body, '')
+        self.assertIn('<a class="skip" href="#main">', result)
+        self.assertIn('<main id="main" tabindex="-1">', result)
+        self.assertIn('aria-label="On this page"', result)
+        self.assertIn('href="#choose--review-1">Choose &amp; review</a>', result)
+        self.assertIn('aria-label="Related guides"', result)
+
+    def test_metadata_escapes_titles_and_uses_public_route(self):
+        result = pages.metadata(pages.SITE + 'workers/', 'Luna & "review"', 'Choose <workers>.')
+        self.assertIn('Luna &amp; &quot;review&quot;', result)
+        self.assertIn('Choose &lt;workers&gt;.', result)
+        self.assertIn('rel="canonical" href="' + pages.SITE + 'workers/"', result)
+
+    def publication_fixture(self, directory):
+        root = Path(directory)
+        (root / 'index.html').write_text(pages.metadata(pages.SITE, 'Codex Plus', 'Workers and watches') +
+                                        '<main><h1>Codex Plus</h1></main>')
+        for name, (route, title) in pages.GUIDES.items():
+            (root / route).mkdir()
+            (root / route / 'index.html').write_text(pages.guide_page(name, route, title, '<h1>Guide</h1>', ''))
+        (root / 'assets').mkdir()
+        (root / 'assets/architecture.svg').write_text('<svg/>')
+        (root / '.nojekyll').write_text('')
+        pages.write_sitemap(root)
+        return root
+
+    def test_publication_has_exact_route_inventory_and_sitemap(self):
+        with tempfile.TemporaryDirectory() as directory:
+            pages.validate_publication(self.publication_fixture(directory))
+
+    def test_publication_refuses_wrong_canonical_route(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.publication_fixture(directory)
+            path = root / 'workers/index.html'
+            path.write_text(path.read_text().replace(pages.SITE + 'workers/', pages.SITE + 'wrong/'))
+            with self.assertRaisesRegex(ValueError, 'public URL metadata differs'):
+                pages.validate_publication(root)
+
+    def test_publication_refuses_missing_description(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.publication_fixture(directory)
+            (root / 'index.html').write_text(pages.metadata(pages.SITE, 'Codex Plus', '') +
+                                           '<main><h1>Codex Plus</h1></main>')
+            with self.assertRaisesRegex(ValueError, 'public description'):
+                pages.validate_publication(root)
+
+    def test_publication_refuses_unselected_export(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.publication_fixture(directory)
+            (root / 'private-note.txt').write_text('fixture')
+            with self.assertRaisesRegex(ValueError, 'public file inventory differs'):
+                pages.validate_publication(root)
+
+    def test_publication_refuses_stale_sitemap(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.publication_fixture(directory)
+            path = root / 'sitemap.xml'
+            path.write_text(path.read_text().replace(pages.SITE + 'workers/', pages.SITE + 'wrong/'))
+            with self.assertRaisesRegex(ValueError, 'public sitemap differs'):
+                pages.validate_publication(root)
 
     def validate_site(self, landing, target=None):
         with tempfile.TemporaryDirectory() as directory:

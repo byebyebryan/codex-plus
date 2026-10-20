@@ -63,6 +63,8 @@ EXPECTED_FILES = {
     "docs/html-report-results.md",
     "docs/watch-candidate.md",
     "docs/daily-use.md",
+    "docs/getting-started.md",
+    "docs/site-polish-results.md",
     "docs/workers.md",
     "docs/architecture.md",
     "docs/soak-checklist.md",

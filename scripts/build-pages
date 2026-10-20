@@ -13,6 +13,8 @@ import re
 import shutil
 import subprocess
 from urllib.parse import unquote, urlsplit
+from xml.sax.saxutils import escape as xml_escape
+from xml.etree import ElementTree
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +22,7 @@ REPOSITORY = "byebyebryan/codex-plus"
 SITE = "https://dev.byebyebryan.com/codex-plus/"
 SOURCE = f"https://github.com/{REPOSITORY}/blob/main/docs/"
 GUIDES = {
+    "getting-started.md": ("start", "Get started"),
     "daily-use.md": ("daily-use", "Daily use"),
     "workers.md": ("workers", "Luna & workers"),
     "architecture.md": ("architecture", "How it works"),
@@ -27,6 +30,16 @@ GUIDES = {
     "soak-checklist.md": ("soak-checklist", "Daily trial"),
     "html-report-usage.md": ("reports", "Reporting"),
     "runtime-distribution.md": ("installation", "Installation"),
+}
+DESCRIPTIONS = {
+    "getting-started.md": "Choose workers, monitoring and reporting, then follow the setup path for your Codex environment.",
+    "daily-use.md": "Everyday requests for worker tasks, watches, later checks, session coordination and browser reports.",
+    "workers.md": "Use Luna tasks and goal loops or adaptive worker workflows while your primary owns decisions and review.",
+    "architecture.md": "Understand Codex Plus components, source access, discovery, costs, receipts and lifecycle boundaries.",
+    "environments.md": "Select a Codex home and keep conversations, MCP tools, follow-up state and reports in the intended context.",
+    "soak-checklist.md": "Record useful outcomes and friction during ordinary work, with private evidence and clear acceptance limits.",
+    "html-report-usage.md": "Publish immutable HTML reports, organize the project catalog and configure independent hosting.",
+    "runtime-distribution.md": "Verify and install the monitoring runtime, configure its MCP tools and select immutable releases.",
 }
 STYLE = """
 :root{color-scheme:light;--paper:#f6f4ee;--ink:#202e2c;--teal:#185b50;--line:#d7ddd4}
@@ -42,6 +55,11 @@ code{font-family:ui-monospace,Consolas,monospace;font-size:.88em}p code,td code{
 th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#e7eee7}
 figure{margin:24px 0}figure img{display:block;width:100%;height:auto}figcaption{color:#586760;font-size:13px;margin-top:8px}
 .source,.mesh-note{font-size:13px;color:#586760}.source{margin-bottom:25px}footer{border-top:1px solid var(--line);font-size:13px;color:#586760}
+.skip{position:absolute;top:-100px;left:16px;padding:10px;background:#fffefa;z-index:2}.skip:focus{top:12px}
+.toc{display:block;border:1px solid var(--line);border-radius:10px;background:#fffefa;padding:16px 20px;margin:25px 0}.toc ol{columns:2;margin:10px 0 0;padding-left:20px;font-size:14px}.toc li{break-inside:avoid;margin:5px 0}.toc a{display:block;padding:3px 0}
+html{scroll-padding-top:20px}h2[id]{scroll-margin-top:20px}.table-scroll:focus-visible{outline:3px solid #b04e29;outline-offset:3px}td code{white-space:nowrap}
+.more{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-size:14px}.more strong{flex-basis:100%}
+@media(max-width:600px){.toc ol{columns:1}}@media print{.skip,header nav,.toc,.more{display:none}body{background:white}pre{white-space:pre-wrap;overflow-wrap:anywhere}}
 @media(max-width:600px){header,main,footer{padding:18px}h1{font-size:31px}h2{font-size:23px}th,td{padding:9px}figure{overflow-x:auto}figure img{min-width:650px}}
 """
 
@@ -158,14 +176,88 @@ def guide_page(name: str, route: str, title: str, body: str, icon: str) -> str:
     nav = '<a href="../">Walkthrough</a>' + "".join(
         f'<a href="../{slug}/"' + (' aria-current="page"' if route == slug else "") + f'>{html.escape(label)}</a>'
         for slug, label in GUIDES.values())
-    body = re.sub(r"<table\b([^>]*)>", r'<div class="table-scroll"><table\1>', body)
+    sections = re.findall(r'<h2\b[^>]*\bid="([^"]+)"[^>]*>(.*?)</h2>', body, re.S)
+    toc = ('<nav class="toc" aria-label="On this page"><strong>On this page</strong><ol>' + ''.join(
+        '<li><a href="#' + html.escape(identifier, quote=True) + '">' +
+        html.escape(html.unescape(re.sub(r'<[^>]+>', '', heading))) + '</a></li>'
+        for identifier, heading in sections) + '</ol></nav>') if sections else ''
+    body = re.sub(r"<table\b([^>]*)>", r'<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable table"><table\1>', body)
     body = body.replace("</table>", "</table></div>")
+    first_heading = re.search(r'</h1>', body)
+    if first_heading:
+        body = body[:first_heading.end()] + toc + body[first_heading.end():]
+    else:
+        body = toc + body
+    more = '<aside class="more" aria-label="Related guides"><strong>Keep exploring</strong>' + ''.join(
+        f'<a href="../{slug}/">{label}</a>' for slug, label in
+        [('start', 'Choose components'), ('daily-use', 'Everyday requests'), ('architecture', 'How it works')]
+        if slug != route) + '</aside>'
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
-            f'<title>{html.escape(title)} — Codex Plus</title>{icon}<style>{STYLE}</style></head><body>'
+            f'<title>{html.escape(title)} — Codex Plus</title>{metadata(SITE + route + "/", title + " — Codex Plus", DESCRIPTIONS[name])}{icon}<style>{STYLE}</style></head><body>'
+            '<a class="skip" href="#main">Skip to content</a>'
             f'<header><a class="brand" href="../">Codex Plus /</a><nav aria-label="Public guides">{nav}</nav></header>'
-            f'<main><p class="source">Current preview guide · <a href="{SOURCE}{name}">Source on GitHub</a></p>{body}</main>'
+            f'<main id="main" tabindex="-1"><p class="source">Current preview guide · <a href="{SOURCE}{name}">Source on GitHub</a></p>{body}{more}</main>'
             '<footer>Codex Plus · Documentation updates do not repin installed runtime artifacts. '
             '<a href="../">Return to the walkthrough</a></footer></body></html>')
+
+
+def metadata(url: str, title: str, description: str) -> str:
+    url, title, description = (html.escape(value, quote=True) for value in (url, title, description))
+    return (f'<link rel="canonical" href="{url}"><meta name="description" content="{description}">'
+            '<meta name="theme-color" content="#185b50"><meta property="og:type" content="website">'
+            '<meta property="og:site_name" content="Codex Plus">'
+            f'<meta property="og:url" content="{url}"><meta property="og:title" content="{title}">'
+            f'<meta property="og:description" content="{description}">')
+
+
+def write_sitemap(output: Path) -> None:
+    urls = [SITE, *(SITE + route + '/' for route, _ in GUIDES.values())]
+    (output / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(
+            '<url><loc>' + xml_escape(url) + '</loc></url>' for url in urls) + '</urlset>\n')
+
+
+class PageFacts(HTMLParser):
+    def __init__(self, text: str):
+        super().__init__()
+        self.canonical = []
+        self.descriptions = []
+        self.social_urls = []
+        self.main_count = 0
+        self.h1_count = 0
+        self.feed(text)
+        self.close()
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == 'link' and attrs.get('rel') == 'canonical':
+            self.canonical.append(attrs.get('href'))
+        if tag == 'meta' and attrs.get('name') == 'description':
+            self.descriptions.append(attrs.get('content'))
+        if tag == 'meta' and attrs.get('property') == 'og:url':
+            self.social_urls.append(attrs.get('content'))
+        self.main_count += tag == 'main'
+        self.h1_count += tag == 'h1'
+
+
+def validate_publication(output: Path) -> None:
+    pages = {'index.html': SITE, **{route + '/index.html': SITE + route + '/' for route, _ in GUIDES.values()}}
+    allowed = {*pages, 'assets/architecture.svg', '.nojekyll', 'sitemap.xml'}
+    actual = {p.relative_to(output).as_posix() for p in output.rglob('*') if p.is_file()}
+    if actual != allowed:
+        raise ValueError(f'public file inventory differs: missing={sorted(allowed-actual)}, extra={sorted(actual-allowed)}')
+    for name, url in pages.items():
+        facts = PageFacts((output / name).read_text())
+        if facts.canonical != [url] or facts.social_urls != [url]:
+            raise ValueError(f'public URL metadata differs in {name}')
+        if len(facts.descriptions) != 1 or not facts.descriptions[0]:
+            raise ValueError(f'public description is missing or duplicated in {name}')
+        if facts.main_count != 1 or facts.h1_count != 1:
+            raise ValueError(f'public page needs one main and one h1 in {name}')
+    sitemap = ElementTree.fromstring((output / 'sitemap.xml').read_text())
+    urls = [element.text for element in sitemap.findall('{*}url/{*}loc')]
+    if sorted(urls) != sorted(pages.values()):
+        raise ValueError('public sitemap differs from published routes')
 
 
 def validate(output: Path) -> int:
@@ -204,6 +296,11 @@ def build(output: Path) -> None:
     if not icon:
         raise ValueError("presentation icon is missing")
     landing = links(original, "./")
+    # Metadata is generated from the public URL, keeping local/report editions portable.
+    landing = re.sub(r'<meta name="description"[^>]+>', '', landing)
+    title = html.unescape(re.search(r'<title>(.*?)</title>', original, re.S)[1])
+    landing = landing.replace('</head>', metadata(SITE, title,
+        'Delegate to Luna, watch running work, coordinate sessions and publish browser handoffs in native Codex.') + '</head>')
     # Preserve internal snapshot references with an explicit reachability label.
     landing = re.sub(r'(<a href="http://(?:snap|starship):[^\"]+">)(.*?)(</a>)',
                      r'\1\2 (mesh access)\3', landing)
@@ -220,8 +317,10 @@ def build(output: Path) -> None:
         page.mkdir()
         (page / "index.html").write_text(guide_page(name, route, title, body, icon[0]))
     (output / ".nojekyll").write_text("")
+    write_sitemap(output)
     count = validate(output)
-    print(f"Built walkthrough + {len(GUIDES)} guides; {count} local links/assets/anchors verified: {output}")
+    validate_publication(output)
+    print(f"Built walkthrough + {len(GUIDES)} guides; {count} local links/assets/anchors and public metadata verified: {output}")
 
 
 def main() -> None:

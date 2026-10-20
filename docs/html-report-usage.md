@@ -6,6 +6,21 @@ does not start Codex or a browser. With `server_autostart = true`, CLI/MCP publi
 starts or reuses `codex-report-server` under its config-specific tmux ownership.
 The server stays running after publication; there is no idle shutdown or report cleanup timer.
 
+## Use it from Codex
+
+With reporting configured in your current environment, ask: “Make a browser
+report of the results, including the risks.” Codex prepares the HTML and intended
+assets, publishes them under a stable project label and returns the report link.
+You can ask to find earlier reports for that project or inspect a selected
+report's delivery result. The CLI reference below supports setup and diagnosis;
+ordinary use does not require a report ID or command recipe from you.
+
+For a new installation, start with [component setup](getting-started.md#set-up-reporting)
+and the [artifact and MCP steps](#verified-artifacts-and-optional-mcpplugin-loading).
+GitHub Pages hosts this project's public documentation. The report component
+publishes independent snapshots to your configured endpoint; it does not deploy
+them to GitHub Pages.
+
 ## Publish and find reports
 
 With the component installed on PATH:

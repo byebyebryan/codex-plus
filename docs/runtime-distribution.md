@@ -30,8 +30,8 @@ and report servers are preserved. Existing MCP processes adopt the new release
 on normal reconnect. See the [environment deployment receipt](environments.md#snap-multi-environment-deployment-2026-10-15).
 
 Starship retains its previously installed runtime preview.2/report preview.7 until
-a separate scoped apply. Workers and the optional 349 inspector have independent selectors; native
-notifications remain selected. The earlier [managed activation report](managed-activation-results.md)
+a separate scoped apply. Workers have their own installation. The 349 inspector
+is retired, and native notifications remain selected. The earlier [managed activation report](managed-activation-results.md)
 records the original two-host deployment. Report publication/hosting remains
 independent of the monitoring runtime.
 
