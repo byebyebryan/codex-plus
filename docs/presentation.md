@@ -1,7 +1,7 @@
 # Product page and interactive walkthrough
 
 [Open the public browser walkthrough](https://dev.byebyebryan.com/codex-plus/).
-GitHub Pages also serves the daily-use, architecture, environment, soak, reporting and
+GitHub Pages also serves the daily-use, worker, architecture, environment, soak, reporting and
 installation guides. See the [Pages deployment guide](pages-deployment.md).
 
 The [immutable report edition](http://snap:8787/reports/293fdc3828d80409edd88861719fa5d376df1afa4bbdf5fae6a569d8f12aaa17/)
@@ -24,7 +24,9 @@ Technical acceptance records remain in the repository guides rather than the
 landing page.
 
 The page leads with use cases, everyday benefits, setup links and an interactive
-first-watch checklist. It includes a model-call illustration, lifecycle FAQ and
+first-watch checklist. A dedicated Luna section compares the four worker
+workflows and links to the [worker guide](workers.md) for examples and setup.
+It includes a model-call illustration, lifecycle FAQ and
 a downloadable quickstart checklist. Host-specific deployment status, comparison
 research and validation records stay in the technical guides. Prompt copy
 controls have a plain-HTTP fallback for SSH/mesh-hosted reports. It uses inline assets and JavaScript with no third-party dependencies.

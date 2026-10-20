@@ -16,7 +16,7 @@ to the inherited domain. The publication contract follows.
 ## Site contents
 
 - Interactive walkthrough at the root, from `docs/presentation/index.html`.
-- [Daily use](daily-use.md), [architecture](architecture.md),
+- [Daily use](daily-use.md), [Luna and workers](workers.md), [architecture](architecture.md),
   [environments](environments.md), [soak checklist](soak-checklist.md), [reporting](html-report-usage.md) and
   [installation](runtime-distribution.md), rendered as HTML guides.
 - The architecture SVG, tied by SHA-256 to the Markdown Mermaid diagram source.
@@ -36,7 +36,7 @@ deploy job. The github-pages environment and Pages concurrency group own deploym
 No personal credential is stored in the repository or site artifact.
 
 `scripts/build-pages` uses GitHub’s Markdown API through `gh api --hostname
-github.com` to render the six public guides. GitHub Actions supplies its temporary
+github.com` to render the seven public guides. GitHub Actions supplies its temporary
 repository token; local builds use the selected personal github.com authentication.
 Rendering requires network access. No JavaScript library/CDN is needed by the site.
 
@@ -67,3 +67,11 @@ relative destinations and fragments; regression tests run in the Pages build.
 Attributed GitHub tables retain their attributes inside balanced scroll wrappers,
 so mobile pages contain their wide tables rather than expanding the viewport.
 See the [pass results](reconciliation-results.md) for source and browser checks.
+
+## Worker guide: 2026-10-20
+
+The site now renders seven guides. The landing page names Luna and all four
+worker workflows, with direct links to the worker guide. That guide explains
+task versus goal scope, explicit invocation, primary review, adaptive routing,
+installation and the distinction between child workers and independent peers.
+The worker definitions, skill instructions and runtime artifacts are unchanged.

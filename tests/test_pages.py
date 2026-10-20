@@ -24,6 +24,13 @@ class PagesTests(unittest.TestCase):
         self.assertEqual(pages.rewrite_link('implementation-history.md#earlier-implementation-history', '../'),
                          pages.SOURCE + 'implementation-history.md#earlier-implementation-history')
 
+    def test_worker_guide_is_public_and_keeps_fragment(self):
+        self.assertEqual(pages.rewrite_link('workers.md#choose-a-workflow', '../'),
+                         '../workers/#choose-a-workflow')
+        self.assertEqual(pages.rewrite_link(pages.SOURCE + 'workers.md', './'), './workers/')
+        nav = pages.guide_page('workers.md', 'workers', 'Luna & workers', '<h1>Workers</h1>', '')
+        self.assertIn('aria-current="page">Luna &amp; workers</a>', nav)
+
     def test_github_accessible_table_keeps_attributes_inside_scroll_container(self):
         body = '<markdown-accessiblity-table><table role="table"><tr><td>Wide</td></tr></table></markdown-accessiblity-table>'
         result = pages.guide_page('architecture.md', 'architecture', 'How it works', body, '')

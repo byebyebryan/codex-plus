@@ -21,6 +21,7 @@ SITE = "https://dev.byebyebryan.com/codex-plus/"
 SOURCE = f"https://github.com/{REPOSITORY}/blob/main/docs/"
 GUIDES = {
     "daily-use.md": ("daily-use", "Daily use"),
+    "workers.md": ("workers", "Luna & workers"),
     "architecture.md": ("architecture", "How it works"),
     "environments.md": ("environments", "Environments"),
     "soak-checklist.md": ("soak-checklist", "Daily trial"),

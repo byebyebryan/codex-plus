@@ -24,7 +24,7 @@ Read the [daily-use guide](docs/daily-use.md), open the
 [how the package works](docs/architecture.md).
 
 The [public HTML guides](https://dev.byebyebryan.com/codex-plus/) publish the
-walkthrough and six readable guides through GitHub Pages. See the
+walkthrough and seven readable guides through GitHub Pages. See the
 [Pages deployment guide](docs/pages-deployment.md) for source/build details.
 
 ## Current status
@@ -72,6 +72,7 @@ evidence without manufacturing workloads.
 | Read this | For |
 | --- | --- |
 | [Daily use](docs/daily-use.md) | Natural requests, expected follow-up, stopping and reports. |
+| [Luna and worker workflows](docs/workers.md) | Luna tasks and goal loops, adaptive delegation, agent roles and installation. |
 | [Multiple environments](docs/environments.md) | Home selection, explicit overrides, separate stores and same-daemon boundaries. |
 | [Architecture and Claude-workflow coverage](docs/architecture.md) | Components, permissions, costs, discovery, receipts and limits. |
 | [Browser walkthrough](docs/presentation.md) | Three illustrative scenes and the published presentation. |

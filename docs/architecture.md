@@ -35,6 +35,8 @@ to Kitty/chezmoi; the old delivery/349 inspector work is retired.
 Worker identities and explicit invocation behavior are unchanged. Discussing a
 skill or asking for a generic goal loop does not invoke a worker workflow. The
 HTML report skill is an additional skill, separate from the four worker workflows.
+The [worker guide](workers.md) covers Luna, task versus goal-loop workflows,
+adaptive routing and the distinction between workers and independent peers.
 
 ## Observation and follow-up
 
