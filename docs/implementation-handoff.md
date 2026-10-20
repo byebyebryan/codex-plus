@@ -18,6 +18,11 @@ older migration, notification, rollout and acceptance evidence.
 The [site polish pass](site-polish-results.md) adds the component-based setup
 path, a fourth illustrative scene for Luna and publication/navigation refinements.
 Its source and publication acceptance remains separate from runtime qualification.
+The pass is complete: eight HTML guides and 16 illustrative scene states passed
+actual public delivery/browser checks at desktop, tablet and mobile widths.
+The publication workflow uses pinned Pages actions on Ubuntu 24.04; its build and
+deploy completed without annotations. Only the pre-existing untracked bytecode
+remains outside committed source. Continue with ordinary use and its evidence.
 
 ## Source, releases and installed state
 

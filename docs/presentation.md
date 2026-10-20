@@ -49,7 +49,7 @@ URL. Keep previous reports unless the user selects deletion. The shared report
 server remains independently managed; publication reuses it when healthy.
 
 The daily quickstart and reference material remain readable without a browser:
-[daily use](daily-use.md), [architecture and comparison](architecture.md), and
+[daily use](daily-use.md), [architecture and comparison](architecture.md),
 [setup](getting-started.md), [workers](workers.md) and the
 [soak checklist](soak-checklist.md). This presentation does not change installed
 runtime bytes, managed release pins or worker invocation behavior.

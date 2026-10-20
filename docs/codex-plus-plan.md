@@ -30,6 +30,10 @@ report stores and pre-existing untracked bytecode. Do not activate a worker skil
 create observation intent or perform a managed apply. Existing immutable reports
 retain their historical identities. See [the polish results](site-polish-results.md).
 
+This pass is complete. The published candidate passed source, link, metadata,
+desktop/mobile and public delivery checks. The results record the scope and
+remaining real-use evidence; this closed pass authorizes no automatic trials.
+
 ## Previous pass: reconciliation, refinement and presentation
 
 The user requested an ordinary goal loop after multi-environment deployment and

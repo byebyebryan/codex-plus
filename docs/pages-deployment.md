@@ -69,8 +69,8 @@ replaced through successful deployment; source history retains earlier versions.
 
 ## Reconciliation: 2026-10-16
 
-The site now renders six guides, including environment selection. The landing
-page distinguishes installed host versions and illustrates Snap's separate home
+That reconciliation rendered six guides, including environment selection. The landing
+page distinguished installed host versions and illustrated Snap's separate home
 contexts without contacting native services. The builder validates duplicate IDs,
 relative destinations and fragments; regression tests run in the Pages build.
 Attributed GitHub tables retain their attributes inside balanced scroll wrappers,
@@ -79,8 +79,23 @@ See the [pass results](reconciliation-results.md) for source and browser checks.
 
 ## Worker guide: 2026-10-20
 
-The site now renders seven guides. The landing page names Luna and all four
+That pass added a seventh guide. The landing page named Luna and all four
 worker workflows, with direct links to the worker guide. That guide explains
 task versus goal scope, explicit invocation, primary review, adaptive routing,
 installation and the distinction between child workers and independent peers.
 The worker definitions, skill instructions and runtime artifacts are unchanged.
+
+## Current polish: 2026-10-20
+
+The current site renders eight guides and four illustrative conversations.
+Component setup starts at `/start/`; the existing `/installation/` runtime
+reference remains available. Guide contents links, share metadata and the sitemap
+are checked during every build. The workflow pins Ubuntu 24.04 and the official
+configure-pages v6.0.0, upload-pages-artifact v5.0.0 and deploy-pages v5.0.1
+actions to full commit hashes. Only the explicitly validated export is uploaded,
+including `.nojekyll`.
+
+The [deployment](https://github.com/byebyebryan/codex-plus/actions/runs/39513590938)
+passed with zero annotations; the actual HTTPS pages, diagram and sitemap match
+the local candidate. The [polish results](site-polish-results.md) record browser
+coverage, protected files and the distinction from runtime qualification.

@@ -1,6 +1,6 @@
 # Documentation and site polish
 
-Started 2026-10-20. This pass refines documentation and publication around the
+Completed 2026-10-20. This pass refines documentation and publication around the
 existing package. It uses the ordinary primary workflow and does not activate a
 worker skill, observation, message or native model trial.
 
@@ -40,9 +40,35 @@ checked against the official custom-agent and local-skill documentation.
 
 ## Publication
 
-Pending: commit/push, Pages deployment, deployed-byte/browser verification and
-final protected-file comparison. This section will record those receipts when
-they are available.
+The content/navigation implementation is commit `376aa1a`; publication and the
+final setup-card layout are `f543008`. Both were pushed to the personal
+`byebyebryan/codex-plus` repository. The
+[final implementation deployment](https://github.com/byebyebryan/codex-plus/actions/runs/39513590938)
+completed successfully with actor `byebyebryan` and zero build/deploy annotations.
+The first successful run exposed deprecated Node actions and the moving Ubuntu
+image. The refined workflow pins Ubuntu 24.04 and official Node-24-compatible
+Pages actions to full commit hashes, with the existing permission separation.
+
+The [public site](https://dev.byebyebryan.com/codex-plus/) serves the landing
+page, all eight guide routes, architecture SVG and sitemap with HTTP 200 and
+exact bytes matching the accepted candidate. The actual public HTTPS browser
+pass repeated the 16 scene states, eight guides, controls, keyboard/contents
+navigation, reduced-motion/no-JavaScript checks and four viewport widths with
+zero errors. Owned browser profiles and the temporary preview server were closed.
+
+Final protected-file comparison retains all 41 runtime/agent/skill hashes and
+both pre-existing bytecode hashes. Read-only selected-manifest checks agree with
+the documented host split: Snap runtime preview.3 / report preview.8; Starship
+runtime preview.2 / report preview.7. No managed apply, release repin, native-owner
+restart, report-store mutation or real watch/message was performed.
+
+## Remaining acceptance
+
+Documentation/publication acceptance is complete. Real-source soak, provider
+recovery, long unattended operation and personal UX remain separate. Browser
+interaction checks are evidence of the tested paths, not a formal accessibility
+certification. Immutable Snap report editions retain their historical contents;
+the public Pages site is the current guide.
 
 Runtime, agent and skill bytes; selected release pins; native owners; credentials;
 report stores and historical snapshots remain outside the changes. The two
