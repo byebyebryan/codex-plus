@@ -1,6 +1,6 @@
 # Codex Plus implementation plan
 
-Updated 2026-10-20. Codex CLI/TUI remains the daily interface and its existing
+Updated 2026-10-21. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are
 installed and enabled on Snap and Starship. Current sources are reconciled.
@@ -10,7 +10,21 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
-## Current pass: documentation and site polish
+## Current pass: repository discovery and presentation
+
+Make the public HTML site a prominent README entry point. Put setup, Luna/worker
+workflows and daily use beside it, keep the browser and source editions easy to
+choose, and move host-specific deployment details out of the introductory path.
+Align the repository description/topics and the site's guide/source navigation.
+
+Keep this follow-up focused on reader paths. Preserve existing guide URLs,
+README anchors, runtime/worker/skill bytes, installed state, active sessions and
+pre-existing untracked bytecode. Use the personal github.com repository. Accept
+the pass after source/link checks, actual desktop/mobile navigation checks,
+reviewed commits, successful Pages publication and public delivery verification.
+Record the outcome in [the polish results](site-polish-results.md).
+
+## Previous pass: documentation and site polish
 
 Run an ordinary primary goal loop to refine the docs, site, presentation and
 publication. The exit gate is a coherent setup path for workers, monitoring and

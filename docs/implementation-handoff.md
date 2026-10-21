@@ -1,6 +1,6 @@
 # Implementation handoff
 
-Updated 2026-10-20. Continue in `/home/bryan/code/codex-plus` on Snap.
+Updated 2026-10-21. Continue in `/home/bryan/code/codex-plus` on Snap.
 
 ## Current scope and entry points
 
@@ -18,11 +18,16 @@ older migration, notification, rollout and acceptance evidence.
 The [site polish pass](site-polish-results.md) adds the component-based setup
 path, a fourth illustrative scene for Luna and publication/navigation refinements.
 Its source and publication acceptance remains separate from runtime qualification.
-The pass is complete: eight HTML guides and 16 illustrative scene states passed
+That pass is complete: eight HTML guides and 16 illustrative scene states passed
 actual public delivery/browser checks at desktop, tablet and mobile widths.
 The publication workflow uses pinned Pages actions on Ubuntu 24.04; its build and
 deploy completed without annotations. Only the pre-existing untracked bytecode
-remains outside committed source. Continue with ordinary use and its evidence.
+remains outside committed source.
+
+The repository-discovery follow-up makes the HTML site prominent in the README,
+pairs all eight guides with their Markdown sources, and aligns guide/repository
+navigation and GitHub metadata. Its plan and acceptance belong to the same
+[polish results](site-polish-results.md); publication verification is pending.
 
 ## Source, releases and installed state
 

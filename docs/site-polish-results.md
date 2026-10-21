@@ -1,5 +1,32 @@
 # Documentation and site polish
 
+## Repository discovery follow-up: 2026-10-21
+
+The repository About panel already linked the public site, but the README placed
+it below the introductory examples. The repository description omitted workers,
+and the landing page's resource directory listed only six of the eight guides.
+
+The follow-up places a prominent HTML-site callout and setup/worker/daily links
+near the README title, includes a Luna goal-loop example, and pairs the eight
+browser guides with their Markdown sources. Host-specific deployment details
+remain in an expandable section. The site header gains direct guide, setup and
+GitHub paths; its directory includes all eight guides. The repository description
+now names Luna workers; the existing topics are retained with `codex-skills` and
+`subagents` added. The About-panel website remains the canonical public URL.
+Existing routes and README anchors stay available.
+
+The isolated 115-file inventory, five metadata tests, 18 Pages tests and diff
+check pass. The repository audit checks 211 Markdown links/fragments and the
+site builder checks 221 local links/assets/anchors plus publication metadata.
+GitHub's GFM renderer confirms the site callout precedes the first README
+section, all eight browser guides appear, and the deployment details expand.
+Actual candidate Chrome checks pass the new header navigation and complete guide
+directory, all 16 scene states and existing controls, all eight guide routes and
+1440/768/390/320-pixel layouts, with no global overflow or browser errors.
+Desktop/mobile screenshots were inspected. Publication verification is pending.
+
+## Completed site polish: 2026-10-20
+
 Completed 2026-10-20. This pass refines documentation and publication around the
 existing package. It uses the ordinary primary workflow and does not activate a
 worker skill, observation, message or native model trial.

@@ -1,8 +1,11 @@
 # Product page and interactive walkthrough
 
 [Open the public browser walkthrough](https://dev.byebyebryan.com/codex-plus/).
-GitHub Pages also serves the setup, daily-use, worker, architecture, environment, soak, reporting and
-installation guides. See the [Pages deployment guide](pages-deployment.md).
+GitHub Pages also serves the setup, daily-use, worker, architecture, environment,
+soak, reporting and installation guides. Use **Guides** in the page header for
+the complete directory, **Get started** for setup or **GitHub** for the source
+repository. The README links the site prominently and offers both HTML and
+Markdown editions of each guide. See the [Pages deployment guide](pages-deployment.md).
 
 The [immutable report edition](http://snap:8787/reports/293fdc3828d80409edd88861719fa5d376df1afa4bbdf5fae6a569d8f12aaa17/)
 is the historical 2026-10-14 edition retained on Snap and requires access to its report endpoint. The [Codex Plus project catalog](http://snap:8787/reports/#project=codex-plus)

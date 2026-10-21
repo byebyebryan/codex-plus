@@ -5,6 +5,12 @@ the native Codex CLI/TUI. Keep your continuing conversation and its existing
 daemon; choose explicit worker workflows or ask for useful follow-up in ordinary
 language.
 
+> **[Explore the interactive walkthrough and HTML guides →](https://dev.byebyebryan.com/codex-plus/)**
+>
+> [Get started](https://dev.byebyebryan.com/codex-plus/start/) ·
+> [Luna & workers](https://dev.byebyebryan.com/codex-plus/workers/) ·
+> [Daily use](https://dev.byebyebryan.com/codex-plus/daily-use/)
+
 ## Start here
 
 Start with the [setup guide](docs/getting-started.md) to choose workers,
@@ -12,6 +18,7 @@ monitoring or reporting. With the relevant components installed, open an
 ordinary Codex session and say, for example:
 
 - “$luna-task Investigate the importer failure and return a reproduction.”
+- “$luna-goal-loop Complete the approved importer migration and verify it.”
 - “Watch the session doing the packaging work and tell me when it is ready.”
 - “Tell that session the handoff should include the risks.”
 - “Watch this run and tell me if it stalls or fails.”
@@ -27,28 +34,15 @@ Read the [daily-use guide](docs/daily-use.md), open the
 [browser walkthrough](docs/presentation.md), or see
 [how the package works](docs/architecture.md).
 
-The [public HTML guides](https://dev.byebyebryan.com/codex-plus/) publish the
-walkthrough and eight readable guides through GitHub Pages. See the
-[Pages deployment guide](docs/pages-deployment.md) for source/build details.
+Workers, monitoring and reporting install separately. Choose the components you
+need in the setup guide; an existing managed setup can use these requests
+directly. The public site includes the walkthrough and eight HTML guides. Their
+Markdown sources and technical evidence are linked below.
 
 ## Current status
 
-Use `codex` for Snap OSS and `codex-work` for work, including their `agents`
-subcommands. The old `codex-oss` compatibility entry point is retired. These are
-separate homes and daemons; native `--profile` alone does not separate state.
-See [multiple environments](docs/environments.md) for portable defaults and the
-existing explicit Snap paths.
-
-Desktop notification delivery and terminal customization are outside Codex Plus.
-Native Codex alerts remain selected. Notification enrichment and lifecycle
-inspection are parked; [native terminal formatting](https://github.com/byebyebryan/dotfiles/blob/main/docs/kitty-notifications.md)
-is managed with Kitty/chezmoi.
-
-Snap now selects monitoring runtime **v0.1.0-preview.3** and reporting
-**v0.1.0-preview.8**, including native multi-environment support, through chezmoi.
-Both work and OSS entry points pass fresh MCP checks without replacing their
-native daemons. Starship retains its prior installed runtime preview.2/report
-preview.7 until a separate apply. See the [environment contract and deployment](docs/environments.md).
+The preview is ready for daily-use trials. Choose workers, follow useful changes
+or publish a browser handoff around your existing Codex conversation.
 
 | Capability | What is available |
 | --- | --- |
@@ -64,29 +58,56 @@ each check has model cost. Explicit stop cancels selected observation without
 stopping the observed work. Esc interrupts the foreground turn and leaves
 independent registrations within their bounds.
 
-The preview is ready for daily-use trials. Bounded synthetic native qualification
-is separate from real-source reliability, credential/provider recovery, long
-unattended operation and personal UX acceptance. Cross-host native messaging,
+Bounded synthetic native qualification is separate from real-source reliability,
+credential/provider recovery, long unattended operation and personal UX acceptance.
+Cross-host native messaging,
 a recurring calendar and native `/exit` confirmation interception are outside
 this preview. Use the [soak checklist](docs/soak-checklist.md) to collect actual-use
 evidence without manufacturing workloads.
 
+<details>
+<summary>Managed deployment details: Snap and Starship</summary>
+
+Use `codex` for Snap OSS and `codex-work` for work, including their `agents`
+subcommands. The old `codex-oss` compatibility entry point is retired. These are
+separate homes and daemons; native `--profile` alone does not separate state.
+See [multiple environments](docs/environments.md) for portable defaults and the
+existing explicit Snap paths.
+
+Snap selects monitoring runtime **v0.1.0-preview.3** and reporting
+**v0.1.0-preview.8**, including native multi-environment support, through chezmoi.
+Both work and OSS entry points passed fresh MCP checks without replacing their
+native daemons. Starship retains its prior installed runtime preview.2/report
+preview.7 until a separate apply. The [implementation handoff](docs/implementation-handoff.md)
+records the accepted deployment state.
+
+Desktop notification delivery and terminal customization are outside Codex Plus.
+Native Codex alerts remain selected. Notification enrichment and lifecycle
+inspection are parked; [native terminal formatting](https://github.com/byebyebryan/dotfiles/blob/main/docs/kitty-notifications.md)
+is managed with Kitty/chezmoi.
+
+</details>
+
 ## Guides and evidence
 
-| Read this | For |
-| --- | --- |
-| [Get started](docs/getting-started.md) | Choose components, use an existing managed installation or set up your own. |
-| [Daily use](docs/daily-use.md) | Natural requests, expected follow-up, stopping and reports. |
-| [Luna and worker workflows](docs/workers.md) | Luna tasks and goal loops, adaptive delegation, agent roles and installation. |
-| [Multiple environments](docs/environments.md) | Home selection, explicit overrides, separate stores and same-daemon boundaries. |
-| [Architecture and Claude-workflow coverage](docs/architecture.md) | Components, permissions, costs, discovery, receipts and limits. |
-| [Browser walkthrough](docs/presentation.md) | Four illustrative scenes and the published presentation. |
-| [Runtime distribution](docs/runtime-distribution.md) | Immutable monitoring artifact, loading, managed installation and rollback. |
-| [HTML report usage](docs/html-report-usage.md) | Publication, catalog, storage and separate hosting. |
-| [Managed activation results](docs/managed-activation-results.md) | Independent installed/native acceptance on Snap and Starship. |
-| [Source-access results](docs/source-access-pass-results.md) | Endpoint/MCP permissions, executed continuation and stop evidence. |
-| [Technical watch reference](docs/watch-candidate.md) | Low-level CLI diagnostics and historical synthetic recipes. |
-| [Implementation handoff](docs/implementation-handoff.md) | Current continuation state and earlier implementation history. |
+| HTML guide | For | Markdown source |
+| --- | --- | --- |
+| [Get started](https://dev.byebyebryan.com/codex-plus/start/) | Choose components and follow the right setup path. | [Source](docs/getting-started.md) |
+| [Daily use](https://dev.byebyebryan.com/codex-plus/daily-use/) | Natural requests, useful follow-up, stopping and reports. | [Source](docs/daily-use.md) |
+| [Luna & workers](https://dev.byebyebryan.com/codex-plus/workers/) | Tasks, goal loops, adaptive delegation and worker installation. | [Source](docs/workers.md) |
+| [Multiple environments](https://dev.byebyebryan.com/codex-plus/environments/) | Home selection, separate stores and same-daemon boundaries. | [Source](docs/environments.md) |
+| [How it works](https://dev.byebyebryan.com/codex-plus/architecture/) | Components, permissions, costs, receipts and Claude-workflow coverage. | [Source](docs/architecture.md) |
+| [Monitoring installation](https://dev.byebyebryan.com/codex-plus/installation/) | Immutable releases, MCP loading, managed setup and rollback. | [Source](docs/runtime-distribution.md) |
+| [Browser reports](https://dev.byebyebryan.com/codex-plus/reports/) | Publication, catalog, storage and independent hosting. | [Source](docs/html-report-usage.md) |
+| [Daily-use trial](https://dev.byebyebryan.com/codex-plus/soak-checklist/) | Record real outcomes and friction during ordinary work. | [Source](docs/soak-checklist.md) |
+
+For development and qualification, see the
+[implementation handoff](docs/implementation-handoff.md),
+[managed activation results](docs/managed-activation-results.md),
+[source-access results](docs/source-access-pass-results.md) and
+[technical watch reference](docs/watch-candidate.md).
+The [presentation notes](docs/presentation.md) and
+[Pages deployment guide](docs/pages-deployment.md) explain authoring and publication.
 
 This repository was previously Codex Worker Kit. Compatible agent/skill paths
 remain in place. Current GitHub documentation tracks main; documentation changes
