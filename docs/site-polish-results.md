@@ -23,7 +23,22 @@ section, all eight browser guides appear, and the deployment details expand.
 Actual candidate Chrome checks pass the new header navigation and complete guide
 directory, all 16 scene states and existing controls, all eight guide routes and
 1440/768/390/320-pixel layouts, with no global overflow or browser errors.
-Desktop/mobile screenshots were inspected. Publication verification is pending.
+Desktop/mobile screenshots were inspected.
+
+Implementation commit `26d5703` is pushed to the personal repository. Its
+[Pages deployment](https://github.com/byebyebryan/codex-plus/actions/runs/39647696825)
+completed successfully with actor `byebyebryan` and zero build/deploy annotations.
+All 11 public pages/assets return HTTP 200 with exact candidate bytes. The live
+HTTPS browser pass repeated the navigation, scenes, controls, eight guides and
+four viewport widths with zero errors. Actual GitHub rendering at 1440 and 390
+pixels confirms the prominent callout before the first section, eight HTML guide
+links, expandable host details and a working link to the public site.
+
+All 41 protected runtime/agent/skill hashes and both pre-existing bytecode hashes
+match the baseline. Owned browser profiles and the temporary preview server were
+closed. No runtime deployment, managed apply, daemon restart or live-session
+interaction was needed. This follow-up qualifies documentation discovery and
+publication; real-source soak and runtime reliability remain separate.
 
 ## Completed site polish: 2026-10-20
 

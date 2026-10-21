@@ -27,7 +27,11 @@ remains outside committed source.
 The repository-discovery follow-up makes the HTML site prominent in the README,
 pairs all eight guides with their Markdown sources, and aligns guide/repository
 navigation and GitHub metadata. Its plan and acceptance belong to the same
-[polish results](site-polish-results.md); publication verification is pending.
+[polish results](site-polish-results.md). The follow-up is complete: Pages
+deployed successfully without annotations, all 11 public pages/assets matched
+the candidate bytes, and actual GitHub/Pages desktop and mobile checks passed.
+Runtime, agent and skill files and the pre-existing bytecode are unchanged.
+Continue with ordinary use and its evidence.
 
 ## Source, releases and installed state
 

@@ -24,6 +24,11 @@ the pass after source/link checks, actual desktop/mobile navigation checks,
 reviewed commits, successful Pages publication and public delivery verification.
 Record the outcome in [the polish results](site-polish-results.md).
 
+Completed 2026-10-21. The README entry points, eight-guide directory and GitHub
+metadata are published. Source checks, actual GitHub and Pages desktop/mobile
+navigation, successful Pages CI and byte-for-byte public delivery passed.
+The results retain the scope and runtime-evidence limits.
+
 ## Previous pass: documentation and site polish
 
 Run an ordinary primary goal loop to refine the docs, site, presentation and
