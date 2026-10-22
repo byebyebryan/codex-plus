@@ -56,6 +56,7 @@ EXPECTED_FILES = {
     "docs/implementation-history.md",
     "docs/reconciliation-results.md",
     "docs/refinement-results.md",
+    "docs/native-alignment-results.md",
     "tests/test_pages.py",
     "docs/monitoring-spike-results.md",
     "docs/coordinator-loop-results.md",

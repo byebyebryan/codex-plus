@@ -12,10 +12,11 @@ and [Claude context](claude-monitoring-context.md) for the historical design inp
 
 ## Next pass: native alignment and natural follow-up
 
-Selected for execution 2026-10-22 after Bryan's project review and goal-loop
-request. Preserve the ordinary native Codex workflow and use the smallest
-sufficient addition. Commit validated slices. The completed release and rollout
-remain the baseline below; this pass does not deploy or restart services.
+Completed 2026-10-22 after Bryan's project review and goal-loop request; see
+[the decisions, candidate and evidence limits](native-alignment-results.md).
+The plan below records the research gates used. The source candidate preserves
+the native workflow and adds no tool or service. Installed preview.9 remains the
+baseline; this pass does not deploy or restart services.
 
 The question is whether daily coordination and returning to unfinished work can
 become easier with the existing primitives, and whether native capabilities can
@@ -77,7 +78,8 @@ recap is inspection and does not silently create, renew, recover or cancel work.
 This contract does not alter handling of an independently delivered event under
 the user's existing request.
 
-Source review identifies three questions, not approved implementation slices:
+Initial source review identified three questions. Their measured outcomes and
+selected changes are recorded in the results:
 
 - Watch history is bounded and paginated; `wake_list` currently walks the full
   registration/event history. Measure reminder output with a representative

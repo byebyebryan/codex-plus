@@ -88,6 +88,8 @@ report server. Selected files and enabled config do not establish already loaded
 process versions. Codex 0.163.0 is currently outside the recorded 0.162.1 native
 qualification baseline; daily use and fixture CI do not silently extend it.
 
+The unreleased source candidate adds the following metadata check; installed
+preview.9 retains its earlier selected-file diagnosis.
 When `CODEX_THREAD_ID` is available, or `--thread` selects an already loaded
 conversation, `loaded_mcp` reads that conversation's native MCP metadata. It
 compares reported monitoring/reporting versions with selected manifests. Missing

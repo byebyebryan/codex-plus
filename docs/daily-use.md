@@ -116,6 +116,8 @@ reported with cached receipt freshness. An offline coordinator makes a previous
 running receipt unknown. Ask for watch history to page through settled entries;
 history and handling receipts remain retained.
 
+The unreleased source candidate extends this inspection to reminders and
+outgoing-message discovery; installed preview.9 retains its earlier behavior.
 Ask "What checks are still pending?" for active and unresolved reminders. The
 answer distinguishes cached intent, due time, lease expiry and handling. Ask for
 reminder history to include settled checks; both lists are bounded and paginated.

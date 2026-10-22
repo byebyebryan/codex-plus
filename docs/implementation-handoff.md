@@ -9,13 +9,13 @@ coordination and independent static reports around native Codex. Native Codex
 owns its conversations, goals, execution policy and daemons. Worker workflows
 remain explicitly invoked; a generic goal loop does not activate them.
 
-The selected pass is [native alignment and natural follow-up](codex-plus-plan.md#next-pass-native-alignment-and-natural-follow-up),
-started 2026-10-22 after Bryan's project review and goal-loop request. Investigate ordinary requests,
-a scoped return-to-work recap, recovery clarity and opportunities to reduce
-custom code through native capabilities. Define short probes and decide on the
-smallest sufficient changes before implementation. Use only owned synthetic
-actors for native probes; preserve active work, installed services and native
-owners. Managed deployment is outside this pass.
+The [native alignment and natural follow-up pass](native-alignment-results.md)
+completed 2026-10-22 after Bryan's project review and goal-loop request. Its source
+candidate bounds reminder history, rediscovers outgoing receipts through the
+existing tool, refines recap/quiet-follow-up guidance and adds native MCP version
+metadata to the doctor. The 15-tool monitoring surface and native ownership stay
+intact. Owned synthetic trials supply bounded 0.163.0 evidence; the candidate is
+not released or installed. Managed deployment remains outside this pass.
 
 The completed refinement pass fixes status freshness, reminder expiry and bounded
 watch history; adds full fixture CI and read-only installation diagnosis; and
@@ -58,8 +58,8 @@ Continue with ordinary use and its evidence.
 | Earlier artifacts retained | Monitoring preview.3 and reporting preview.8, source `c73c237`, remain available for captured processes and rollback. |
 | Snap | Workers, monitoring and reporting preview.9 selected; all manifests verify in default OSS and dedicated work contexts. |
 | Starship | Same three preview.9 selections verified; local source history and unrelated desktop edits preserved. |
-| Native compatibility | Snap client and owner 0.163.0; recorded qualification baseline 0.162.1. No new native model trial in this pass. |
-| Source | Multi-environment support retained; notification component retired. |
+| Native compatibility | Snap client and owner 0.163.0; release baseline remains 0.162.1. Bounded owned 0.163.0 trials do not establish blanket compatibility or long-run qualification. |
+| Source | Unreleased natural-follow-up candidate validated separately from installed preview.9. Multi-environment support retained; notification component retired. |
 | Notification delivery | Native Codex to terminal. Formatting belongs to Kitty/chezmoi. Enrichment and the 349 inspector are parked/retired. |
 
 Source documentation may advance beyond the selected immutable artifacts.
@@ -67,7 +67,9 @@ Existing MCP processes keep their captured code until normal reconnect. The
 [runtime guide](runtime-distribution.md) and [report guide](html-report-usage.md)
 explain optional component installation, serving and rollback under one release.
 `scripts/codex-plus-doctor` checks selected manifests and native version evidence
-without starting services. Selection does not establish loaded process versions.
+without starting services. The source candidate can also read reported MCP
+versions for one positively loaded conversation. Selection or reported versions
+do not establish loaded payload bytes; absent metadata remains unknown.
 
 ## Snap environment contract
 
@@ -105,7 +107,15 @@ chezmoi scripts excluded. Payloads verified before selection; source edits,
 private configuration, worker bytes, native/MCP processes and report serving were
 preserved. All three report endpoints retained HTTP 200 and identical content.
 See the [rollout receipt](refinement-results.md#managed-rollout-2026-10-22).
-No service restart, global MCP refresh or new native model trial was performed.
+That managed rollout performed no service restart, global MCP refresh or new
+native model trial.
+
+The subsequent natural-follow-up source candidate passes 312 fixture tests.
+Owned trials cover contextual peer choice, message handling, a known blocker, a
+later configured MCP check, explicit stop, actual compaction and foreground
+interruption that preserves observation. Helper loss is reported as uncertain;
+expired recovery refuses. See the [results and limits](native-alignment-results.md)
+before extending those claims.
 
 Use the [soak checklist](soak-checklist.md) during ordinary work. No pending
 historical trial, actor budget or wakeup should be replayed. Do not create a

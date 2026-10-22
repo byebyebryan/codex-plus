@@ -23,9 +23,11 @@ are different layers: existing MCP processes adopt new code on normal reconnect.
 Journals, report data and hosting remain runtime-owned.
 
 The read-only `scripts/codex-plus-doctor` reports selected manifest integrity,
-enabled MCP configuration and native client/owner version evidence. It never
-starts services or infers loaded code from a selected symlink. A version outside
-the recorded qualification baseline remains unqualified; see
+enabled MCP configuration and native client/owner version evidence. The source
+candidate can read reported MCP versions for one positively loaded conversation;
+missing metadata remains unknown and reported versions do not verify payload
+bytes. It never starts services or infers loaded code from a selected symlink.
+A version outside the recorded qualification baseline remains unqualified; see
 [diagnosis](runtime-distribution.md#read-only-diagnosis).
 
 Each canonical `CODEX_HOME` selects a native endpoint and Codex Plus context.
@@ -161,6 +163,7 @@ are not part of the current preview.
 | [Source-access results](source-access-pass-results.md) | Permissions, authenticated fixture access, scheduled MCP continuation, filtering and stop. |
 | [Managed activation](managed-activation-results.md) | Installed bytes and default fresh native tool use independently on Snap and Starship. |
 | [Interaction results](interaction-pass-results.md) | Natural requests, contextual discovery, readable delivery, handling and draft/order checks. |
+| [Native alignment results](native-alignment-results.md) | Unreleased recap/history/diagnosis refinements and bounded owned native 0.163.0 evidence, separate from installed preview.9. |
 | [Report results](html-report-results.md#managed-mcp-default-2026-10-14) | Default report MCP and native use, with corrected normal-store attribution. |
 | [Runtime distribution](runtime-distribution.md) | Immutable artifact identity, installation/configuration, upgrade and rollback boundaries. |
 | [Soak checklist](soak-checklist.md) | The real-use evidence still to collect; it contains no completed soak claim. |
