@@ -10,7 +10,34 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
-## Current pass: repository discovery and presentation
+## Current pass: daily-use refinement and unified releases
+
+Selected 2026-10-21 after read-only review and Bryan's request for one overall
+Codex Plus version and release. Use an ordinary primary goal loop; worker skills
+and delegation remain explicitly invoked. Commit validated slices to main.
+
+| Slice | Deliverable | Acceptance |
+| --- | --- | --- |
+| Watch status | Shared freshness handling, visible source/control failures and bounded delivery/handling receipts. | Offline coordinators never leave inspection claiming a live source; synthetic failures are visible without executing sources. |
+| Reminders | Default expiry accommodates the requested delay and a delivery window inside configured limits. | Ten-minute reminders work without an extra duration; invalid bounds admit no job; explicit expiry and busy delivery retain their semantics. |
+| History | Bounded default watch output prioritizes active and unresolved work; explicit paginated history retains stable references. | Hundreds of ended watches cannot flood a normal status response; uncertainty and renewals remain discoverable. |
+| CI | Automatic full source/runtime/report validation, separate from Pages deployment. | Existing fixture tests run on supported Python versions without real model sessions or shared services. |
+| Diagnosis | Read-only selected-install, enabled-tool and native compatibility summary; current host facts reconciled. | Missing/invalid/mixed installs and unqualified native versions are visible; selected files are distinguished from loaded processes. |
+| Unified release | One version, source revision, tag and release for workers, monitoring and reporting; component archives and checksummed release manifest. | Reproducible artifacts agree, relocated installs work, old releases remain verifiable, worker identities are unchanged, and fetched published bytes match. |
+
+Publish through the personal github.com repository after validation. Prepare
+scoped chezmoi URL/revision/checksum and validator changes together after release
+verification; live applies are deferred. Preserve private journals, worker
+identities, unrelated drift, existing immutable artifacts, native owners and
+report servers on both hosts. No real watches, reminders or peer writes are
+needed for the fixture regressions. A new native client version is reported as
+unqualified unless separate evidence establishes its compatibility.
+
+Record results and remaining evidence limits in
+[the refinement results](refinement-results.md). Source, CI, published artifacts,
+managed selection and loaded processes remain separate acceptance layers.
+
+## Previous pass: repository discovery and presentation
 
 Make the public HTML site a prominent README entry point. Put setup, Luna/worker
 workflows and daily use beside it, keep the browser and source editions easy to
