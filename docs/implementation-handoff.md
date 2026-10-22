@@ -9,7 +9,15 @@ coordination and independent static reports around native Codex. Native Codex
 owns its conversations, goals, execution policy and daemons. Worker workflows
 remain explicitly invoked; a generic goal loop does not activate them.
 
-The current refinement pass fixes status freshness, reminder expiry and bounded
+The selected pass is [native alignment and natural follow-up](codex-plus-plan.md#next-pass-native-alignment-and-natural-follow-up),
+started 2026-10-22 after Bryan's project review and goal-loop request. Investigate ordinary requests,
+a scoped return-to-work recap, recovery clarity and opportunities to reduce
+custom code through native capabilities. Define short probes and decide on the
+smallest sufficient changes before implementation. Use only owned synthetic
+actors for native probes; preserve active work, installed services and native
+owners. Managed deployment is outside this pass.
+
+The completed refinement pass fixes status freshness, reminder expiry and bounded
 watch history; adds full fixture CI and read-only installation diagnosis; and
 unifies workers, monitoring and reporting under **v0.1.0-preview.9**. See
 [the refinement results](refinement-results.md) for source/artifact/publication
@@ -18,8 +26,9 @@ completed context, not the current execution scope.
 
 Start with [setup](getting-started.md), the [daily guide](daily-use.md), [worker workflows](workers.md), [architecture](architecture.md),
 [environment contract](environments.md) and [public walkthrough](https://dev.byebyebryan.com/codex-plus/).
-The [implementation plan](codex-plus-plan.md) and [reconciliation results](reconciliation-results.md)
-record this pass. The [historical checkpoints](implementation-history.md) preserve
+The [implementation plan](codex-plus-plan.md) records the proposed pass and completed
+contracts; the [reconciliation results](reconciliation-results.md) record the earlier
+environment/documentation pass. The [historical checkpoints](implementation-history.md) preserve
 older migration, notification, rollout and acceptance evidence.
 
 The [site polish pass](site-polish-results.md) adds the component-based setup

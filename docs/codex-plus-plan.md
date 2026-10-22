@@ -10,7 +10,133 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
-## Current pass: daily-use refinement and unified releases
+## Next pass: native alignment and natural follow-up
+
+Selected for execution 2026-10-22 after Bryan's project review and goal-loop
+request. Preserve the ordinary native Codex workflow and use the smallest
+sufficient addition. Commit validated slices. The completed release and rollout
+remain the baseline below; this pass does not deploy or restart services.
+
+The question is whether daily coordination and returning to unfinished work can
+become easier with the existing primitives, and whether native capabilities can
+reduce custom code. A documented decision to keep an existing mechanism is a
+valid outcome. Success does not require a new tool or runtime feature.
+
+### User experience to test
+
+Use one coherent packaging/CI example across two owned independent conversations
+in the same existing daemon. The observer chooses its sources and timing from
+ordinary intent. A small controlled source supplies known transitions; it does
+not run a real release or modify an active worker. Drive the walkthrough so Bryan
+can watch it without copying exact names, JSON or detailed polling prompts.
+
+| Ordinary request | Behavior to establish | Existing starting point |
+| --- | --- | --- |
+| "Watch the packaging session and tell me if it gets blocked." | Resolve the intended independent peer from context, clarify actual ambiguity, return promptly and report a known useful transition. | Peer discovery, passive reads and bounded peer watch. |
+| "Tell it the checksum changed." | Preserve the previously selected identity; attribute the message and distinguish admission, handling and acceptance. | Peer message and handling receipts. |
+| "Check CI again in a little while." | Choose a suitable existing command or configured MCP source, explain unavailable access and distinguish a reminder from quiet observation. | Native command sources, scheduled MCP inspection and one-shot reminder. |
+| "What am I still waiting on?" | Give a short account of active follow-ups, unresolved delivery and relevant ended checks; state stale information and coverage limits. | Watch/reminder inspection plus known message references. |
+| "Stop watching that." | Stop only the selected supervision and its continuation; preserve the observed work and report already consumed delivery honestly. | Frozen watch references and cancellation receipts. |
+
+These examples describe behavior, not universal defaults. The model chooses
+cadence, duration, filtering and useful follow-up for the task. Existing explicit
+worker invocation and native goal controls retain their meanings.
+
+### Research questions and decision gates
+
+| Question | Short probe | Decision gate |
+| --- | --- | --- |
+| What should remain native, and can any custom mechanism be retired? | Compare the exact client/owner versions and supported API with our discovery, reads, delivery, goals and command execution. Investigate native communication only after establishing its scope. | Preserve exact ownership, permissions, cancellation and receipts with less custom machinery. Communication candidates must cover independent same-daemon conversations and passive reads. An experimental flag or documentation entry alone is insufficient. |
+| Can ordinary requests compose the existing tools reliably? | Review source/guidance with ambiguous-peer and child-exclusion fixtures first, then try the example above in short owned synthetic conversations. | The intended peer is selected or a useful clarification is requested; no UUID/JSON/polling recipe is required, and setup returns without foreground waiting. |
+| Can a useful recap be composed without a new store or tool? | Inspect a small fixture containing active, expired, cancelled, lost and unresolved registrations, including reminder history and known outgoing messages. Try a natural recap request after shortening model context. | The answer identifies what this conversation knows, separates source freshness from job outcome, follows or discloses pagination, and exposes missing coverage. Add an API only for a reproduced information gap. |
+| What happens when the caller is interrupted or returns later? | In owned synthetic sessions, exercise a known transition during foreground work, Esc, explicit stop, expiry and a source/coordinator interruption. Reconnect only an owned test client; record owner replacement separately. | Esc preserves independent monitoring; explicit stop forbids replacement. Gaps and uncertain delivery remain visible. Same-thread inspection does not create duplicate intent, silently recover a lost owner or replay ambiguous messages. |
+| Can diagnosis explain an update accurately? | Compare selected manifest versions with the information actually exposed by existing MCP/native interfaces. | Report selected, loaded and unknown facts separately. Add a small diagnostic field only if existing evidence cannot answer an observed question. |
+
+The official [app-server API overview](https://learn.chatgpt.com/docs/app-server#api-overview),
+checked 2026-10-22, documents passive thread reads, loaded-thread inventory,
+native goals, status events and command execution. It does not establish that an
+event subscription can observe another conversation without changing its
+lifecycle. Qualify that boundary before replacing passive polling. Do not replace
+the existing native owner or assume current documentation matches the installed
+build. The [skill guidance](https://developers.openai.com/plugins/build/skills)
+also supports trying instructions and existing tools before adding scripts.
+
+### Recap contract and known questions
+
+The initial recap covers the bound conversation and the follow-ups visible in
+its existing context/store. It is not a complete inventory across other
+conversations, homes or hosts. A new conversation cannot assume that it inherited
+another conversation's pending work. Inspect the actual store/reference scope
+before claiming coverage across reconnect or context compaction.
+
+Prefer a few plain sentences: what is still being observed, what needs attention,
+what was last confirmed, and whether any evidence is stale or missing. Include
+ended checks when relevant to the question; do not equate an expired lease, a
+queued message or missing acknowledgement with job completion or failure. A
+recap is inspection and does not silently create, renew, recover or cancel work.
+This contract does not alter handling of an independently delivered event under
+the user's existing request.
+
+Source review identifies three questions, not approved implementation slices:
+
+- Watch history is bounded and paginated; `wake_list` currently walks the full
+  registration/event history. Measure reminder output with a representative
+  settled history before deciding whether it needs the same bounded behavior.
+- `message_status` requires a known message reference. Establish whether native
+  conversation context and existing reference state provide sufficient discovery
+  after compaction; expose omissions instead of inventing a complete inbox.
+- The doctor distinguishes selected files from loaded code and explicitly leaves
+  loaded-process checking unestablished. Determine what can be proved using
+  existing interfaces before designing another diagnostic tool.
+
+### Execution order and evidence
+
+1. Record a read-only baseline and a small native/custom responsibility map.
+   Recheck client and owning-daemon versions, selected versus loaded code, and
+   current source changes. The recorded native baseline is 0.162.1; installed
+   0.163.0 requires separate qualification. Keep the map with this pass's results,
+   rather than creating another capability registry or runtime service.
+2. Use existing fixtures and focused source review to answer scope, pagination,
+   stale-state and uncertain-delivery questions. Only then select short native
+   probes for behaviors that fixtures and documentation cannot establish.
+3. Exercise the ordinary requests in owned synthetic sessions with known state
+   changes and a finite lease/event allowance. Keep a quiet interval to measure
+   avoidable updates and model turns. Configured MCP checks have model cost;
+   missing access is a reported result, not a reason to obtain new credentials.
+   Stop each probe after its observation or failure is captured. Repeat only to
+   diagnose or validate a change; do not create a general evaluation framework.
+4. Record each finding as retain, simplify, instructions/formatting change,
+   runtime change, or defer, with its trigger, evidence and smallest proposed fix.
+   A runtime addition needs a reproduced gap that existing tools or native
+   behavior cannot adequately cover. Keep native replacement experiments separate
+   from user-facing refinements so their effects can be assessed independently.
+5. If a candidate change is selected, validate focused regressions and the existing
+   suite, then repeat only affected native scenarios. Commit validated slices
+   when execution is authorized. Release/pin preparation follows only if shipped
+   behavior changes; managed deployment is a separate scope decision.
+6. Use the [soak checklist](soak-checklist.md) on relevant ordinary work. Passive
+   real sources may be inspected within the user's request; real peer writes or
+   interruptions require specific task authority. Keep longer duration, provider
+   recovery and Bryan's UX acceptance open until actually observed.
+
+The research deliverable is a concise results record with exact versions,
+scenario outcomes, measured output/cost where available, source/artifact/native
+evidence boundaries, and a decision for each candidate. Keep transcripts, actual
+session IDs, credentials and journals private. Add a results file and update the
+explicit inventory when there are actual results; do not pre-fill acceptance.
+
+Execution uses the existing daemon and only owned test actors. Preserve active
+work, native owners, report hosting, worker identities, private state and unrelated
+edits on both hosts. Do not toggle experimental features globally or restart,
+refresh, deploy or run historical trials as part of this research plan.
+
+Native plugin packaging, cross-host routing, recurring calendar work, new source
+adapter frameworks and a separate command center stay deferred until an actual
+workflow demonstrates a gap. The immediate pass is complete when these questions
+have evidence-backed decisions and any selected small candidate has appropriate
+validation; it need not expand the package's feature count.
+
+## Completed pass: daily-use refinement and unified releases
 
 Selected 2026-10-21 after read-only review and Bryan's request for one overall
 Codex Plus version and release. Use an ordinary primary goal loop; worker skills
