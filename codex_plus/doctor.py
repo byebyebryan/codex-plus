@@ -10,6 +10,7 @@ import re
 import stat
 import subprocess
 import tomllib
+import uuid
 
 from . import VERSION
 from .context import absolute, describe, resolve
@@ -69,8 +70,47 @@ def command_version(argv, *, run):
         return {'state': 'unavailable', 'detail': type(error).__name__}
 
 
+def loaded_mcp(requested, thread, components, *, client_factory=None):
+    if not thread:
+        return {'state': 'not_checked', 'detail': 'No loaded conversation selected; use CODEX_THREAD_ID or --thread.'}
+    try:
+        if not isinstance(thread, str): raise ValueError('expected a native thread identity')
+        uuid.UUID(thread)
+        if client_factory is None:
+            try:
+                from .native import Client
+            except ImportError:
+                return {'state': 'not_available', 'detail': 'The monitoring component supplies native MCP introspection.'}
+            client_factory = Client
+        servers = {}
+        with client_factory(requested, experimental=True, timeout=5) as client:
+            client.bind(thread, timeout=5)  # Positive loaded inventory only; never resume.
+            for name, component in (('codex_plus', 'monitoring'), ('html_report', 'reporting')):
+                page = client.call('mcpServerStatus/list', {'threadId': thread, 'serverName': name,
+                    'detail': 'toolsAndAuthOnly'}, timeout=5)
+                rows = page.get('data', [])
+                if len(rows) != 1 or rows[0].get('name') != name or page.get('nextCursor'):
+                    servers[name] = {'state': 'not_reported', 'version_alignment': 'unknown'}
+                    continue
+                row = rows[0]
+                info = row.get('serverInfo')
+                version = info.get('version') if isinstance(info, dict) else None
+                if not isinstance(version, str) or not 1 <= len(version) <= 128: version = None
+                selected_version = components[component].get('version')
+                servers[name] = {'state': row.get('runtimeStatus') or 'unknown',
+                    'reported_version': version, 'selected_version': selected_version,
+                    'version_alignment': ('same_reported_version' if version == selected_version else 'different_reported_version')
+                        if row.get('runtimeStatus') == 'connected' and version and selected_version else 'unknown'}
+        return {'state': 'reported', 'scope': 'one positively loaded conversation', 'servers': servers,
+                'note': 'Native MCP metadata reports versions; it does not verify loaded payload bytes or other conversations.'}
+    except (OSError, ValueError, RuntimeError, TimeoutError) as error:
+        return {'state': 'unavailable', 'detail': type(error).__name__,
+                'note': 'No conversation was resumed, server refreshed or owner started.'}
+
+
 def diagnose(*, runtime_prefix=None, report_prefix=None, worker_prefix=None,
-             state_root=None, report_config=None, check_native=True, run=subprocess.run):
+             state_root=None, report_config=None, thread=None, check_native=True,
+             run=subprocess.run, client_factory=None):
     context = resolve()
     config_path = context.home / 'config.toml'
     try:
@@ -94,7 +134,7 @@ def diagnose(*, runtime_prefix=None, report_prefix=None, worker_prefix=None,
         'config_state': config_state, 'mcp_configuration': {
             name: {'configured': name in servers, 'enabled': servers[name].get('enabled', True) if name in servers else False}
             for name in ('codex_plus', 'html_report')},
-        'components': {}, 'loaded_processes_checked': False,
+        'components': {}, 'loaded_processes_checked': False, 'loaded_mcp': {'state': 'not_checked'},
         'integrity_note': 'Manifest consistency is local integrity evidence; compare release checksums for published provenance.',
         'activation_note': 'Selected files and enabled configuration do not prove which release existing MCP processes loaded.'}
     for name, prefix, manifest, identity in (
@@ -114,13 +154,20 @@ def diagnose(*, runtime_prefix=None, report_prefix=None, worker_prefix=None,
                             'qualified_version': qualified,
                             'qualification': 'version_matches_recorded_baseline' if match and match.group(1) == qualified else 'not_established',
                             'qualification_note': 'A version match alone is not a new native acceptance test.'}
+        status = {}
         try:
             status = json.loads(owner) if isinstance(owner, str) else owner
+            if not isinstance(status, dict): raise ValueError('invalid native owner status')
             result['native']['owner_status'] = {key: status[key] for key in ('status', 'version', 'cliVersion', 'appServerVersion', 'managedCodexVersion') if key in status}
             owner_version = status.get('appServerVersion')
             result['native']['owner_qualification'] = ('version_matches_recorded_baseline'
                 if owner_version and owner_version == qualified else 'not_established')
-        except (ValueError, TypeError): result['native']['owner_status'] = {'state': 'unavailable'}
+        except (ValueError, TypeError):
+            status = {}
+            result['native']['owner_status'] = {'state': 'unavailable'}
+        requested = os.environ.get('CODEX_PLUS_SOCKET') or status.get('socketPath') or result['environment']['socket']
+        result['loaded_mcp'] = loaded_mcp(str(requested).removeprefix('unix://'),
+            thread or os.environ.get('CODEX_THREAD_ID'), result['components'], client_factory=client_factory)
     return result
 
 
@@ -129,6 +176,7 @@ def main(argv=None):
     for option in ('runtime-prefix', 'report-prefix', 'worker-prefix', 'state-root', 'report-config'):
         parser.add_argument('--' + option, type=Path)
     parser.add_argument('--no-native', action='store_true', help='Only inspect selected files and configuration')
+    parser.add_argument('--thread', help='Inspect native MCP version metadata for this positively loaded conversation; defaults to CODEX_THREAD_ID')
     args = vars(parser.parse_args(argv))
     args['check_native'] = not args.pop('no_native')
     try:

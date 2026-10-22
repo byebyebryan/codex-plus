@@ -7,6 +7,8 @@ import unittest
 from unittest.mock import patch
 
 from codex_plus import doctor, package
+from codex_plus.native import RpcError
+from test_peers import A
 
 
 class DoctorTests(unittest.TestCase):
@@ -20,11 +22,68 @@ class DoctorTests(unittest.TestCase):
 
     def test_missing_install_is_readonly_and_does_not_query_native_when_disabled(self):
         def forbidden(*args, **kwargs): raise AssertionError('native command executed')
-        result = doctor.diagnose(check_native=False, run=forbidden)
+        result = doctor.diagnose(check_native=False, thread=A, run=forbidden, client_factory=forbidden)
         self.assertEqual(result['native']['state'], 'not_checked')
         self.assertEqual({row['state'] for row in result['components'].values()}, {'not_installed'})
         self.assertFalse(result['loaded_processes_checked'])
         self.assertFalse((self.root / 'home').exists())
+
+    def test_loaded_mcp_versions_use_native_metadata_without_resume_or_configuration_details(self):
+        calls = []
+        class Native:
+            def __init__(self, requested, **kwargs): calls.append(('connect', requested))
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def bind(self, identity, **kwargs): calls.append(('bind', identity))
+            def call(self, method, params, **kwargs):
+                calls.append((method, params))
+                version = 'old-preview' if params['serverName'] == 'codex_plus' else 'current-preview'
+                return {'data': [{'name': params['serverName'], 'runtimeStatus': 'connected',
+                    'serverInfo': {'version': version, 'websiteUrl': 'must-never-appear'},
+                    'tools': {'private_arguments': 'must-never-appear'}}]}
+        components = {name: {'version': 'current-preview'} for name in ('monitoring', 'reporting')}
+        result = doctor.loaded_mcp('/fixture/socket', A, components, client_factory=Native)
+        self.assertEqual(result['state'], 'reported')
+        self.assertEqual(result['servers']['codex_plus']['version_alignment'], 'different_reported_version')
+        self.assertEqual(result['servers']['html_report']['version_alignment'], 'same_reported_version')
+        self.assertNotIn('must-never-appear', json.dumps(result))
+        self.assertEqual([method for method, _ in calls], ['connect', 'bind', 'mcpServerStatus/list', 'mcpServerStatus/list'])
+
+    def test_loaded_mcp_missing_metadata_and_unloaded_thread_remain_unknown(self):
+        class Native:
+            def __init__(self, *args, **kwargs): pass
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def bind(self, *args, **kwargs): pass
+            def call(self, method, params, **kwargs):
+                return {'data': [{'name': params['serverName'], 'runtimeStatus': 'connected'}]}
+        components = {name: {} for name in ('monitoring', 'reporting')}
+        result = doctor.loaded_mcp('/fixture/socket', A, components, client_factory=Native)
+        self.assertIsNone(result['servers']['codex_plus']['reported_version'])
+        self.assertEqual(result['servers']['codex_plus']['version_alignment'], 'unknown')
+        class Unloaded(Native):
+            def bind(self, *args, **kwargs): raise RpcError('not loaded')
+            def call(self, *args, **kwargs): raise AssertionError('unloaded thread queried')
+        self.assertEqual(doctor.loaded_mcp('/fixture/socket', A, components, client_factory=Unloaded)['state'], 'unavailable')
+        def forbidden(*args, **kwargs): raise AssertionError('connected without valid caller')
+        self.assertEqual(doctor.loaded_mcp('/fixture/socket', None, components, client_factory=forbidden)['state'], 'not_checked')
+        self.assertEqual(doctor.loaded_mcp('/fixture/socket', 'invalid', components, client_factory=forbidden)['state'], 'unavailable')
+
+    def test_disconnected_cached_version_and_malformed_owner_status_are_not_loaded_proof(self):
+        class Native:
+            def __init__(self, *args, **kwargs): pass
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def bind(self, *args, **kwargs): pass
+            def call(self, method, params, **kwargs):
+                return {'data': [{'name': params['serverName'], 'runtimeStatus': 'disconnected',
+                                  'serverInfo': {'version': 'preview'}}]}
+        components = {name: {'version': 'preview'} for name in ('monitoring', 'reporting')}
+        result = doctor.loaded_mcp('/fixture/socket', A, components, client_factory=Native)
+        self.assertEqual(result['servers']['codex_plus']['version_alignment'], 'unknown')
+        def malformed(argv, **kwargs):
+            return subprocess.CompletedProcess(argv, 0, 'null')
+        self.assertEqual(doctor.diagnose(run=malformed)['native']['owner_status']['state'], 'unavailable')
 
     def test_version_evidence_and_managed_path_overrides_do_not_expose_credentials(self):
         home = self.root / 'home/.codex'; home.mkdir(parents=True)

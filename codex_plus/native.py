@@ -16,6 +16,8 @@ import struct
 import time
 from typing import Any
 
+from . import VERSION
+
 
 class RpcError(RuntimeError):
     pass
@@ -89,7 +91,7 @@ class Client:
             if not header.startswith(b'HTTP/1.1 101 ') or headers.get(b'sec-websocket-accept') != expected:
                 raise RpcError('WebSocket upgrade rejected')
             self.call('initialize', {'clientInfo': {'name': 'codex_plus_watch',
-                                                   'version': '0.1.0'},
+                                                   'version': VERSION},
                                      'capabilities': {'experimentalApi': experimental}}, timeout=self.remaining(deadline))
             self.send({'method': 'initialized'})
         except BaseException:

@@ -88,6 +88,16 @@ report server. Selected files and enabled config do not establish already loaded
 process versions. Codex 0.163.0 is currently outside the recorded 0.162.1 native
 qualification baseline; daily use and fixture CI do not silently extend it.
 
+When `CODEX_THREAD_ID` is available, or `--thread` selects an already loaded
+conversation, `loaded_mcp` reads that conversation's native MCP metadata. It
+compares reported monitoring/reporting versions with selected manifests. Missing
+metadata stays unknown; the doctor never resumes a thread or refreshes a server.
+A reported version does not verify loaded payload bytes or describe every
+conversation. `--no-native` skips this inspection; `loaded_processes_checked`
+remains false because the doctor does not scan or verify running process code.
+The reporting-only archive retains file and native CLI diagnosis; the monitoring
+component supplies the optional client for native MCP metadata inspection.
+
 ## Artifact and immutable installation
 
 `scripts/codex-plus-package build --output /ABSOLUTE/OUTSIDE/REPO/runtime.tar.gz`
