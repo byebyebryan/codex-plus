@@ -37,6 +37,13 @@ Record results and remaining evidence limits in
 [the refinement results](refinement-results.md). Source, CI, published artifacts,
 managed selection and loaded processes remain separate acceptance layers.
 
+Completed 2026-10-21: all six slices are implemented, reviewed and published as
+`v0.1.0-preview.9` from `0ec803d`. The full 303-test suite passes locally and in
+Python 3.11/3.14 CI. Fetched release assets match reproducible candidates; the
+public guides pass HTTP/browser checks. Chezmoi's verified upgrade is prepared
+in draft PR #5, preserving concurrent canonical desktop work. Real host selection,
+active processes and the native qualification baseline remain unchanged.
+
 ## Previous pass: repository discovery and presentation
 
 Make the public HTML site a prominent README entry point. Put setup, Luna/worker

@@ -52,8 +52,70 @@ Snap check confirms both native client and owner are 0.163.0, outside the record
 0.162.1 qualification. Fresh passive SSH reads confirm Starship also selects the
 earlier preview.3/preview.8 artifacts. Current-facing docs now reflect that fact.
 
-A dedicated read-only-permission CI workflow runs the complete fixture suite and
+A dedicated CI workflow with read-only GitHub permissions runs the complete fixture suite and
 release build/verification on Python 3.11 and 3.14. Its tmux tests use owned private
 sockets; RTK and Actions dependencies are pinned. Pages retains separate deployment
 permissions. The expanded local suite passed 302 tests before the final CLI reminder
 regression was added; final source/CI counts are recorded below.
+
+## Published release and validation
+
+Completed 2026-10-21. Source commits are `a983f3d` (plan), `d54a85d` (watch/reminder
+fixes) and `0ec803d` (unified release, diagnosis, CI and guides). The single
+[v0.1.0-preview.9 release](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.9)
+binds all components to source `0ec803df806fc311bab6ccafe2dd4fc6bdf12ad2`.
+All five fetched assets match two independently built candidates byte for byte.
+
+| Archive | SHA-256 |
+| --- | --- |
+| Workers | `14ee7f3334eaabb9c6210fcb650a35865331ae729df1303ccbc41083d1537248` |
+| Monitoring | `eca07dd88aa54539610c21eb65768b793854a22d2339afec99ea52a48a461703` |
+| Reporting | `cc1d9f805755e1e841b80e2530dac75c993e5b58f91329ae02ad7fc148bce874` |
+
+The final suite passes **303 tests** locally and in both jobs of
+[CI run 39735947262](https://github.com/byebyebryan/codex-plus/actions/runs/39735947262)
+on Python 3.11 and 3.14. Both jobs also build and verify the complete release.
+The 123-file inventory, agent/skill validation and `git diff --check` pass.
+All agent, skill and legacy payload bytes remain unchanged.
+
+Actual relocated artifacts initialize both MCP adapters with version preview.9
+and list 15 monitoring/four report tools without native access. New tooling also
+verifies Snap's selected old monitoring preview.3/report preview.8 installations.
+The release verifier rejects mixed identities, changed checksums and unsafe paths.
+
+[Pages run 39735947123](https://github.com/byebyebryan/codex-plus/actions/runs/39735947123)
+published the updated guides successfully. Eleven public routes/assets returned
+HTTP 200 with exact candidate bytes. Owned browser checks passed all eight guide
+routes and 16 illustrative scene states at widths 1440, 768, 390 and 320, with
+keyboard, copy fallbacks, environment selection and zero browser errors. These
+checks validate presentation and delivery; they are not native watch trials.
+
+## Prepared managed upgrade
+
+The dotfiles candidate is commit `6aad69e`, branch `codex-plus-preview-9`, in
+[draft PR #5](https://github.com/byebyebryan/dotfiles/pull/5). It updates worker,
+monitoring and report URLs/revisions/fetched checksums, selectors, doctor wiring,
+validators and release notes together. Worker payload hashes remain unchanged;
+the compatibility worker tree gains its product identity manifest.
+
+Codex Plus and split-home validators pass. The report artifact checker passes
+isolated extraction/publication/CLI/MCP/retained-data/convergence checks on all
+three supported profiles. The full checker's exact Codex Plus pin section passes;
+the unrelated full desktop/fleet checker was not run for this scoped candidate.
+Separate disposable Snap and Starship homes pass targeted status/diff/dry-run,
+script-excluded fixture apply, three-component manifest verification and
+convergence. No native daemon or real report service starts for these checks.
+
+Concurrent desktop edits appeared in the canonical chezmoi checkout during this
+pass. They remain untouched; the managed upgrade is isolated on its draft branch.
+The branch has been pushed, while merging and live apply are deferred.
+
+## Remaining evidence boundaries
+
+Snap and Starship retain the selected c73c237 preview.3/preview.8 artifacts and
+their active MCP/native/report processes. No live managed apply, global refresh,
+daemon/server restart, real watch/reminder, peer write or new native model trial
+was performed. Codex 0.163.0 compatibility remains unqualified against the recorded
+0.162.1 baseline. Long-run/provider recovery and daily UX remain ordinary-use
+evidence, not outcomes inferred from fixtures. Pre-existing untracked bytecode
+in the source checkout is preserved.

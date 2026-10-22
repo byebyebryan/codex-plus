@@ -44,7 +44,8 @@ Continue with ordinary use and its evidence.
 
 | Layer | Current fact |
 | --- | --- |
-| Unified release candidate | v0.1.0-preview.9; one version, tag, source commit and release manifest, with optional worker/monitoring/report archives. |
+| Published unified release | v0.1.0-preview.9, source `0ec803d`; one version, tag and release manifest, with optional worker/monitoring/report archives. Fetched bytes match reproducible candidates. |
+| Managed upgrade | Prepared on dotfiles branch `codex-plus-preview-9`, commit `6aad69e`, draft PR #5. Source review/live apply remain deferred. |
 | Earlier selected artifacts | Monitoring preview.3 and reporting preview.8, source `c73c237`; 15 monitoring and four reporting MCP tools. |
 | Snap | Earlier artifacts remain selected through chezmoi; default OSS and dedicated work homes. |
 | Starship | Same preview.3/preview.8 selections, freshly verified; earlier preview.2/preview.7 descriptions were stale. |
@@ -84,6 +85,14 @@ stores, exact installed manifests, company-MCP admission and both HTTP endpoints
 The earlier native acceptance covers bounded watches, messages, inspections,
 continuation and explicit stop on owned synthetic sessions. Those facts do not
 establish provider recovery, long unattended reliability or personal UX.
+
+The refinement release passes 303 fixture tests locally and in Python 3.11/3.14
+CI, reproducible artifact verification, relocated CLI/MCP discovery, old-artifact
+verification and public guide delivery/browser checks. Managed installation is
+qualified in disposable Snap/Starship profile homes, including all three aligned
+manifests, script-excluded apply and convergence. Canonical chezmoi has concurrent
+desktop edits, so the upgrade remains isolated in its draft PR. No live apply,
+service restart or new native model trial belongs to this completed pass.
 
 Use the [soak checklist](soak-checklist.md) during ordinary work. No pending
 historical trial, actor budget or wakeup should be replayed. Do not create a

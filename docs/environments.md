@@ -100,11 +100,12 @@ matches the selected store and endpoint; foreign legacy sessions are left alone.
 Do not change an active config's storage or endpoint before stopping its owned
 server. Distinct configurations require distinct listening endpoints.
 
-Source supports runtime preview.3 and reports preview.8. Snap selects both;
-Starship retains its earlier installed releases until a separate apply. Both
-package inventories include the shared resolver and context CLI;
-previous runtime previews .1/.2 and report preview.7 remain verifiable/selectable.
-Component releases and deployment receipts remain independent. The notification
+The unified Codex Plus preview.9 release supplies optional monitoring/reporting
+archives with the shared resolver, context CLI and read-only doctor. Snap and
+Starship still select earlier monitoring preview.3/reporting preview.8 artifacts;
+the prepared upgrade needs a scoped live apply. Previous monitoring previews 1–3
+and reporting previews 7–8 remain verifiable/selectable. All new components share
+one release version; each host retains its own deployment receipts. The notification
 component and the 349 inspector are retired; terminal formatting belongs to
 Kitty/chezmoi.
 
@@ -116,7 +117,9 @@ Observer's collection of multiple native homes is independent of Codex Plus.
 
 ## Source acceptance
 
-The combined suite passes 326 tests, including ten environment tests. These
+This section records the earlier environment pass; current refinement evidence
+and its 303-test suite are in [the refinement results](refinement-results.md).
+That earlier combined suite passed 326 tests, including ten environment tests. These
 cover legacy/canonical-home defaults, explicit overrides, absent daemon/config
 refusal, same-thread-ID monitoring separation, CLI/MCP report separation,
 home-bound install snippets, real concurrent HTTP/tmux lifecycles on a private
