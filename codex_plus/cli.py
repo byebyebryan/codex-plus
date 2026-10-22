@@ -174,7 +174,7 @@ def serve(root: Path):
                     pass
 
 
-def inspection(store: Store, job_id: str | None = None) -> dict:
+def inspection(store: Store, job_id: str | None = None, *, watches=None) -> dict:
     info = coordinator_info(store.root)
     attempts = store.renewals()
     target = job_id
@@ -184,7 +184,11 @@ def inspection(store: Store, job_id: str | None = None) -> dict:
         except ValueError:
             target = store.renewal(job_id)['parent_id']
         attempts = [row for row in attempts if row['parent_id'] == target or row['new_id'] == job_id]
-    jobs = [store.job(target)] if target else store.jobs()
+    page = store.watch_page(**watches) if watches is not None else None
+    jobs = page['registrations'] if page is not None else [store.job(target)] if target else store.jobs()
+    if page is not None:
+        selected = {job['id'] for job in jobs}
+        attempts = [row for row in attempts if row['parent_id'] in selected]
     if info is None:
         for job in jobs:
             if job['source_state'] in ('starting', 'running', 'stop_requested'):
@@ -193,7 +197,8 @@ def inspection(store: Store, job_id: str | None = None) -> dict:
     return {'coordinator': {'state': 'running' if info else 'offline',
             'generation': info['generation'] if info else None},
         'destination': binding(store.root), 'registrations': jobs,
-        'events': store.events(target), 'renewals': attempts,
+        'events': [event for job in jobs for event in store.recent_events(job['id'])] if page is not None else store.events(target),
+        'renewals': attempts, 'page': {k: v for k, v in page.items() if k != 'registrations'} if page is not None else None,
         'source_receipts_may_be_stale': info is None}
 
 
@@ -242,7 +247,7 @@ def parser():
         command.add_argument('command', nargs=argparse.REMAINDER)
     wake = commands.add_parser('wake_schedule')
     wake.add_argument('--after', type=float, required=True)
-    wake.add_argument('--duration', type=float, default=120)
+    wake.add_argument('--duration', type=float, help='Expiry from registration; default delay plus up to 120 seconds')
     wake.add_argument('--prompt', required=True)
     message = commands.add_parser('peer_send', help='Send one correlated input to this state directory destination')
     message.add_argument('--message', required=True)
@@ -371,12 +376,14 @@ def main(argv=None, *, before_write=None) -> int:
                       'destination': frozen, 'admission_is_not_handling': True}
             print(json.dumps(accepted_coordinator(root, result)))
         elif args.operation == 'wake_schedule':
+            from .store import wake_duration
+            duration = wake_duration(args.after, args.duration)
             validate_binding(root)
             if before_write: before_write()
-            job_id = store.create('wake', {'after': args.after, 'duration': args.duration,
+            job_id = store.create('wake', {'after': args.after, 'duration': duration,
                 'prompt': args.prompt, 'followup': args.prompt})
             print(json.dumps(accepted_coordinator(root, {'id': job_id, 'state': 'registered', 'after': args.after,
-                'duration': args.duration, 'event_limit': 1, 'destination': binding(root)})))
+                'duration': duration, 'event_limit': 1, 'destination': binding(root)})))
         elif args.operation in ('status', 'list'):
             print(json.dumps(inspection(store, args.id if args.operation == 'status' else None)))
         elif args.operation == 'cancel':

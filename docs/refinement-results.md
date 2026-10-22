@@ -19,6 +19,20 @@ Neither fixture tests nor documentation publication requalify native protocols.
 
 ## Execution and acceptance
 
-Implementation, artifact and publication results will be recorded here as each
-slice is completed. Existing active sessions and services are preserved; managed
-live applies and native model trials are outside this pass.
+The watch/reminder slice passes 293 fixture tests in an isolated source copy.
+Status list and detailed inspection share coordinator freshness handling, expose
+source/control failures and bounded event/renewal receipts, and retain unresolved
+delivery. Default watch listing includes active and unresolved registrations;
+history is retained with explicit bounded pages. A 202-watch fixture verifies
+settled history is omitted from ordinary output and available without duplicate
+entries across history pages. Pending renewal references are inspectable.
+
+Reminder expiry now defaults to the requested delay plus 120 seconds, capped at
+the configured lifetime. Its receipt states the remaining delivery window; a
+delay at the lifetime limit is rejected before job admission. Explicit expiry
+still must follow the due time. A ten-minute reminder fixture remains unique
+while its owner is busy and starts within its delivery window when idle.
+
+Existing active sessions and services are preserved; managed live applies and
+native model trials are outside this pass. Artifact and publication results will
+be recorded as the remaining slices complete.

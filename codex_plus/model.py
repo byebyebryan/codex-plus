@@ -14,7 +14,7 @@ from . import cli
 from .native import Client, RpcError
 from .peers import PeerReader, metadata, thread_id
 from .presentation import clean_text, compact_ref, label, quote
-from .store import Store, private_directory
+from .store import Store, private_directory, wake_duration
 
 
 MODEL_GUIDANCE = """Codex Plus supplies session-local peer, watch and one-shot wakeup tools.
@@ -107,7 +107,9 @@ def tool_definitions(max_duration=86400, max_events=1000):
          {'peer': peer, 'turn_limit': _number(10, 1, True)}, ['peer']),
         ('watch_start', 'Register a peer, command observer with native session permissions, or scheduled MCP inspection using normal model tools/approvals. MCP checks use model turns. Choose cadence/lease/follow-up and settle.',
          watch_options, ['followup']),
-        ('watch_list', 'Inspect cached owned watch state, gaps and pending renewals without starting or polling a source.', {}, []),
+        ('watch_list', 'Inspect bounded cached watch state and receipts without polling a source. Default current view includes active and unresolved work; choose history for all registrations. Follow next_cursor for more; pages may change as work progresses.',
+         {'scope': {'type': 'string', 'enum': ['current', 'history']}, 'limit': _number(50, 1, True),
+          'cursor': _string('A next_cursor returned by watch_list for the same scope.')}, []),
         ('watch_inspect', 'Inspect the selected watch or the current incoming watch event. Returns exact registered source/tool arguments and cached receipts; does not execute the source.', {'watch': watch}, []),
         ('watch_cancel', 'Explicitly cancel the selected watch lineage. Preserve the peer and native turns; never replace or renew cancelled intent.', {'watch': watch}, ['watch']),
         ('watch_renew', 'Explicitly continue the same frozen source under its existing request. Cancelled/lost sources refuse; a renewal attempt is not a running receipt.',
@@ -123,7 +125,9 @@ def tool_definitions(max_duration=86400, max_events=1000):
         ('event_ack', 'Acknowledge the current incoming event using verified native turn context. For a peer request, record accepted/declined after evaluating existing scope; receipt is not execution.',
          {'outcome': {'type': 'string', 'enum': ['received', 'accepted', 'declined']}, 'detail': _string('Brief handling explanation, without claiming unverified effects.', 1024)}, []),
         ('wake_schedule', 'Schedule one bounded future reassessment under the existing request. This is separate from source events; no recurring calendar or automatic task expansion.',
-         {'after': _number(max_duration, 0), 'duration': _number(max_duration), 'prompt': _string(maximum=4096)}, ['after', 'prompt']),
+         {'after': {'type': 'number', 'minimum': 0, 'exclusiveMaximum': max_duration},
+          'duration': {**_number(max_duration), 'description': 'Expiry from registration. Defaults to delay plus 120 seconds, capped at the configured lifetime; must exceed after.'},
+          'prompt': _string(maximum=4096)}, ['after', 'prompt']),
         ('wake_list', 'Inspect cached owned one-shot reminders and their delivery/handling state. Does not start a coordinator, poll or renew a reminder.', {}, []),
         ('wake_cancel', 'Cancel the selected one-shot reminder. Preserve native work; already consumed input cannot be retracted. Never replace a cancelled reminder.',
          {'wake': _string('A reminder reference returned by wake_schedule or wake_list.')}, ['wake']),
@@ -155,6 +159,8 @@ def validate_arguments(schema, args):
                 raise ValueError('numeric tool arguments must be finite and correctly typed')
             if not rule.get('minimum', -math.inf) <= value <= rule.get('maximum', math.inf):
                 raise ValueError('numeric tool argument outside its bound')
+            if value >= rule.get('exclusiveMaximum', math.inf):
+                raise ValueError('numeric tool argument must be below its exclusive bound')
         elif kind == 'boolean':
             if not isinstance(value, bool): raise ValueError('boolean tool argument required')
         elif kind == 'array':
@@ -381,16 +387,43 @@ class ModelAPI:
         mode = ' scheduled native MCP inspections; each uses a model turn' if mcp_server is not None else ' observations'
         return 'Registered ' + ref + ' for ' + clean_text(display, 192) + '. Source receipt: ' + job['source_state'] + '. Lease: ' + str(duration) + ' seconds; at most ' + str(event_limit) + mode + '. Registration is not a running/task-outcome receipt.' + (' Coordinator unavailable; intent is durable. Do not repeat registration; inspect watch_list.' if result.get('coordinator_error') else '')
 
-    def _watch_list(self):
-        result = cli.inspection(self.store)
-        lines = ['Coordinator ' + result['coordinator']['state'] + '; cached receipts.']
+    def _watch_status(self, job, result):
+        ref = self._remember('watch', job['id'], display=job['spec'].get('label', 'registered source'))
+        lines = [ref + ': ' + label(job['spec'].get('label'), 'registered source') + ' | intent ' + job['intent'] + ' | source ' + job['source_state'] + ' | observations ' + str(job['event_count'])]
+        if job.get('last_source_state'):
+            lines.append('  Last source receipt: ' + job['last_source_state'] + '; coordinator offline, current source state unknown.')
+        for field, title in (('source_detail', 'Source detail'), ('control_reason', 'Control')):
+            if job.get(field): lines.append('  ' + title + ': ' + clean_text(job[field], 512))
+        events = self.store.recent_events(job['id'])
+        for event in events:
+            lines.append('  Delivery ' + event['delivery'] + '; start ' + event['start_state'] +
+                         '; turn ' + str(event['turn_outcome'] or 'not yet known') +
+                         '; handling ' + ('acknowledged' if event['acknowledged'] else 'not acknowledged') +
+                         '; withdrawal ' + event['withdraw_state'] + '.')
+            for field in ('detail', 'turn_error', 'withdraw_detail'):
+                if event.get(field): lines.append('    ' + clean_text(event[field], 256))
+        if job['event_count'] + job['notice_count'] > len(events):
+            lines.append('  Showing up to three event receipts, unresolved first; other receipts remain in the journal.')
+        attempts = [row for row in result['renewals'] if row['parent_id'] == job['id']]
+        attempts.sort(key=lambda row: (row['state'] != 'pending', -(row['created'] or 0), row['new_id']))
+        for attempt in attempts[:3]:
+            renewal_ref = self._remember('watch', attempt['new_id'])
+            lines.append('  ' + renewal_ref + ': renewal ' + attempt['state'] + '; ' + clean_text(attempt['detail'], 256))
+        if len(attempts) > 3:
+            lines.append('  Additional renewal attempts retained: ' + str(len(attempts) - 3) + '.')
+        return lines
+
+    def _watch_list(self, scope='current', limit=20, cursor=None):
+        result = cli.inspection(self.store, watches={'scope': scope, 'limit': limit, 'cursor': cursor})
+        lines = ['Coordinator ' + result['coordinator']['state'] + '; cached receipts' + (' may be stale.' if result['source_receipts_may_be_stale'] else '.')]
         for job in result['registrations']:
-            if job['kind'] != 'watch': continue
-            ref = self._remember('watch', job['id'], display=job['spec'].get('label', 'registered source'))
-            lines.append(ref + ': ' + label(job['spec'].get('label')) + ' | intent ' + job['intent'] + ' | source ' + job['source_state'] + ' | observations ' + str(job['event_count']))
-        for attempt in result['renewals']:
-            ref = self._remember('watch', attempt['new_id'])
-            lines.append(ref + ': renewal ' + attempt['state'] + '; ' + clean_text(attempt['detail'], 256))
+            lines.extend(self._watch_status(job, result))
+        page = result['page']
+        lines.append('Showing ' + str(len(result['registrations'])) + ' of ' + str(page['matching']) + ' ' + scope + ' watches; ' + str(page['history_total']) + ' total in history.')
+        if scope == 'current' and page['history_total'] > page['matching']:
+            lines.append('Use scope=history for settled registrations; history is retained.')
+        if page['next_cursor']:
+            lines.append('next_cursor: ' + page['next_cursor'])
         return '\n'.join(lines)
 
     def _watch_cancel(self, watch):
@@ -411,10 +444,15 @@ class ModelAPI:
             if job['kind'] != 'watch':
                 raise ValueError('current event does not belong to a watch')
         else:
-            job = self.store.job(self._reference('watch', watch)['identity'])
+            identity = self._reference('watch', watch)['identity']
+            result = cli.inspection(self.store, identity)
+            job = result['registrations'][0]
+        result = cli.inspection(self.store, job['id'])
+        job = result['registrations'][0]
         spec = job['spec']
         ref = self._remember('watch', job['id'], display=spec.get('label', 'registered source'))
-        lines = [ref + ': ' + label(spec.get('label')) + ' | intent ' + job['intent'] + ' | source ' + job['source_state']]
+        lines = ['Coordinator ' + result['coordinator']['state'] + '; cached receipts' + (' may be stale.' if result['source_receipts_may_be_stale'] else '.')]
+        lines.extend(self._watch_status(job, result))
         if spec.get('mcp'):
             lines += ['Scheduled native inspection: ' + spec['mcp']['server'] + '.' + spec['mcp']['tool'],
                 'Exact tool arguments (inspection detail):\n' + json.dumps(spec['mcp']['arguments'], ensure_ascii=False, indent=2),
@@ -528,10 +566,10 @@ class ModelAPI:
 
     def _wake_schedule(self, after, prompt, duration=None):
         self._mutable()
-        duration = min(120, self.max_duration) if duration is None else duration
+        duration = wake_duration(after, duration, self.max_duration)
         result = self._cli(self.state, 'wake_schedule', '--after', str(after), '--duration', str(duration), '--prompt', prompt)
         ref = self._remember('wake', result['id'], display=prompt)
-        return 'Registered one reassessment ' + ref + ' after ' + str(after) + ' seconds, within ' + str(duration) + ' seconds. No recurring schedule or new task authority.' + (' Coordinator unavailable; intent is durable. Do not repeat registration; inspect wake_list.' if result.get('coordinator_error') else '')
+        return 'Registered one reassessment ' + ref + ' after ' + str(after) + ' seconds; delivery window ' + str(round(duration - after, 3)) + ' seconds after due. No recurring schedule or new task authority.' + (' Coordinator unavailable; intent is durable. Do not repeat registration; inspect wake_list.' if result.get('coordinator_error') else '')
 
     def _wake_list(self):
         result = cli.inspection(self.store)

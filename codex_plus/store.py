@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
+import base64
 import json
+import math
 import os
 from pathlib import Path
 import sqlite3
@@ -17,6 +19,18 @@ from .access import validate_grant, mcp_spec
 MAX_DURATION = 86400
 MAX_EVENTS = 1000
 RECORD_BYTES = 4096
+
+
+def wake_duration(after, duration=None, maximum=MAX_DURATION):
+    """Expiry is measured from registration, with up to two minutes after due."""
+    if (isinstance(after, bool) or not isinstance(after, (int, float))
+            or not math.isfinite(after) or not 0 <= after < maximum):
+        raise ValueError('wakeup delay must be nonnegative and below the configured lifetime limit')
+    duration = min(after + 120, maximum) if duration is None else duration
+    if (isinstance(duration, bool) or not isinstance(duration, (int, float))
+            or not math.isfinite(duration) or not after < duration <= maximum):
+        raise ValueError('wakeup expiry must be after its delay and within the configured lifetime limit')
+    return duration
 
 
 def private_directory(path: Path) -> Path:
@@ -256,6 +270,48 @@ class Store:
 
     def jobs(self) -> list[dict]:
         return [self._job(row) for row in self.db.execute('SELECT * FROM jobs ORDER BY created,id')]
+
+    def watch_page(self, *, scope='current', limit=20, cursor=None):
+        if scope not in ('current', 'history') or isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 50:
+            raise ValueError('select current/history and a page size from 1 through 50')
+        priority = "CASE WHEN j.intent IN ('active','replacing') THEN 0 ELSE 1 END"
+        attention = """(j.intent IN ('active','replacing') OR j.source_state IN ('lost','error')
+            OR EXISTS (SELECT 1 FROM events e WHERE e.job_id=j.id AND
+                (e.delivery IN ('pending','dispatching','uncertain') OR e.withdraw_state='unknown'
+                 OR (e.delivery='native_queued' AND e.acknowledged=0 AND e.withdraw_state!='withdrawn'))))"""
+        where = "j.kind='watch'" + (' AND ' + attention if scope == 'current' else '')
+        total = self.db.execute('SELECT COUNT(*) FROM jobs j WHERE ' + where).fetchone()[0]
+        history_total = self.db.execute("SELECT COUNT(*) FROM jobs WHERE kind='watch'").fetchone()[0]
+        params = []
+        if cursor is not None:
+            try:
+                if not isinstance(cursor, str) or len(cursor) > 512:
+                    raise ValueError()
+                page_scope, rank, created, identity = json.loads(base64.urlsafe_b64decode(cursor.encode()))
+                if page_scope != scope or type(rank) is not int or rank not in (0, 1) or type(created) not in (int, float) or not math.isfinite(created):
+                    raise ValueError()
+                thread_id(identity)
+            except (ValueError, TypeError, UnicodeError) as error:
+                raise ValueError('invalid watch page cursor for this scope') from error
+            where += f' AND ({priority}>? OR ({priority}=? AND (j.created<? OR (j.created=? AND j.id<?))))'
+            params = [rank, rank, created, created, identity]
+        rows = self.db.execute('SELECT j.* FROM jobs j WHERE ' + where +
+                              f' ORDER BY {priority},j.created DESC,j.id DESC LIMIT ?', [*params, limit + 1]).fetchall()
+        jobs = [self._job(row) for row in rows[:limit]]
+        next_cursor = None
+        if len(rows) > limit:
+            last = jobs[-1]
+            rank = 0 if last['intent'] in ('active', 'replacing') else 1
+            next_cursor = base64.urlsafe_b64encode(json.dumps([scope, rank, last['created'], last['id']]).encode()).decode()
+        return {'registrations': jobs, 'scope': scope, 'matching': total,
+                'history_total': history_total, 'next_cursor': next_cursor}
+
+    def recent_events(self, job_id, limit=3):
+        return [dict(row) for row in self.db.execute(
+            """SELECT * FROM events WHERE job_id=? ORDER BY
+                CASE WHEN delivery IN ('pending','dispatching','uncertain') OR withdraw_state='unknown'
+                     OR (delivery='native_queued' AND acknowledged=0 AND withdraw_state!='withdrawn')
+                     THEN 0 ELSE 1 END,sequence DESC LIMIT ?""", (job_id, limit))]
 
     def event(self, event_id: str) -> dict:
         row = self.db.execute('SELECT * FROM events WHERE id=?', (event_id,)).fetchone()

@@ -326,6 +326,21 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(receipt['start_state'], 'withdrawn')
         self.assertFalse(any(method == 'thread/queue/start' for method, _ in self.backend.calls))
 
+    def test_long_reminder_waits_for_due_and_busy_owner_within_delivery_window(self):
+        from codex_plus.store import wake_duration
+        timer = self.store.create('wake', {'after': 600, 'duration': wake_duration(600), 'prompt': 'fixture'})
+        self.backend.runtime = {'type': 'active', 'activeFlags': []}
+        self.tick()
+        self.assertEqual(self.store.events(timer), [])
+        self.now += 600; self.tick()
+        self.assertEqual(len(self.store.events(timer)), 1)
+        self.assertFalse(any(method == 'thread/queue/start' for method, _ in self.backend.calls))
+        self.now += 60
+        self.backend.runtime = {'type': 'idle'}
+        self.tick()
+        self.assertTrue(any(method == 'thread/queue/start' for method, _ in self.backend.calls))
+        self.assertEqual(len(self.store.events(timer)), 1)
+
     def test_pending_notice_expires_without_native_connection(self):
         job = self.store.create('watch', {**self.spec, 'notify_end': True})
         event = self.store.notice(job, 'source_error')

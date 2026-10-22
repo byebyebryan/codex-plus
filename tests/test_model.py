@@ -255,6 +255,84 @@ class ModelTests(unittest.TestCase):
             self.assertEqual(api.store.jobs()[0]['intent'], 'cancelled')
             self.assertEqual(api.store.events(), [])
 
+    def test_reminder_default_covers_delay_and_delivery_window_within_limit(self):
+        with self.api(max_duration=1000) as api:
+            for after, duration in ((0, 120), (120, 240), (600, 720), (999, 1000)):
+                text = api.call('wake_schedule', {'after': after, 'prompt': 'Reassess the fixture.'})
+                job = api.store.jobs()[-1]
+                self.assertEqual(job['spec']['duration'], duration)
+                self.assertAlmostEqual(job['expires'] - job['due'], duration - after)
+                self.assertIn('delivery window', text)
+            api.call('wake_schedule', {'after': 600, 'duration': 650, 'prompt': 'Explicit window.'})
+            self.assertEqual(api.store.jobs()[-1]['spec']['duration'], 650)
+            before = len(api.store.jobs())
+            for args in ({'after': 1000}, {'after': 600, 'duration': 600},
+                         {'after': 600, 'duration': 1001}, {'after': -1}):
+                with self.assertRaises(ValueError):
+                    api.call('wake_schedule', {**args, 'prompt': 'Invalid.'})
+            self.assertEqual(len(api.store.jobs()), before)
+
+    def test_watch_reads_share_freshness_failure_and_handling_receipts_without_source_work(self):
+        with self.api() as api:
+            self.discover(api)
+            api.call('watch_start', {'peer': 'validation', 'followup': 'watch'})
+            job = api.store.jobs()[0]
+            api.store.source(job['id'], 'running', 'HTTP 401 from synthetic endpoint')
+            api.store.control(job['id'], 'native control state unavailable')
+            event = api.store.notice(job['id'], 'synthetic failure')
+            api.store.db.execute("UPDATE events SET delivery='uncertain',detail='admission reply lost' WHERE id=?", (event,))
+            with patch('codex_plus.cli.coordinator_info', return_value=None), patch('codex_plus.cli.ensure_coordinator') as start:
+                for operation, args in (('watch_list', {}), ('watch_inspect', {'watch': 'w1'})):
+                    text = api.call(operation, args)
+                    for expected in ('source unknown', 'Last source receipt: running', 'HTTP 401',
+                                     'control state unavailable', 'Delivery uncertain', 'not acknowledged', 'admission reply lost'):
+                        self.assertIn(expected, text)
+                    self.assertNotIn('| source running', text)
+                start.assert_not_called()
+
+    def test_watch_history_is_bounded_active_first_and_explicitly_pageable(self):
+        with self.api() as api:
+            self.discover(api)
+            api.call('watch_start', {'peer': 'validation', 'followup': 'watch'})
+            active = api.store.jobs()[0]
+            for index in range(200):
+                identity = api.store.create('watch', {**active['spec'], 'label': 'ended-' + str(index)})
+                api.store.cancel(identity)
+            uncertain = api.store.create('watch', {**active['spec'], 'label': 'unresolved fixture'})
+            event = api.store.notice(uncertain, 'synthetic failure')
+            api.store.cancel(uncertain)
+            api.store.db.execute("UPDATE events SET delivery='uncertain' WHERE id=?", (event,))
+            current = api.call('watch_list', {})
+            self.assertIn('w1:', current)
+            self.assertIn('unresolved fixture', current)
+            self.assertNotIn('ended-', current)
+            self.assertIn('2 current watches; 202 total', current)
+            self.assertLess(len(current), 2000)
+            seen, cursor = set(), None
+            while True:
+                page = api.store.watch_page(scope='history', limit=17, cursor=cursor)
+                identities = {row['id'] for row in page['registrations']}
+                self.assertFalse(seen & identities)
+                seen.update(identities)
+                cursor = page['next_cursor']
+                if cursor is None: break
+            self.assertEqual(len(seen), 202)
+            history = api.call('watch_list', {'scope': 'history', 'limit': 5})
+            self.assertIn('Showing 5 of 202', history)
+            self.assertIn('next_cursor:', history)
+            self.assertLess(history.index('w1:'), history.index('ended-'))
+            with self.assertRaises(ValueError): api.call('watch_list', {'cursor': 'invalid'})
+            with self.assertRaises(ValueError): api.call('watch_list', {'limit': 51})
+
+    def test_renewal_reference_can_be_inspected_before_child_is_created(self):
+        with self.api() as api:
+            self.discover(api)
+            api.call('watch_start', {'peer': 'validation', 'followup': 'watch'})
+            parent = api.store.jobs()[0]
+            child = api.store.request_renewal(parent['id'], parent['spec'])
+            ref = api._remember('watch', child)
+            self.assertIn('renewal pending', api.call('watch_inspect', {'watch': ref}))
+
     def test_sender_cancels_only_its_outgoing_intent_and_retains_handling_receipts(self):
         with self.api(allowed={A,B}) as api:
             self.discover(api)
