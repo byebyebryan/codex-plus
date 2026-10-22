@@ -12,7 +12,7 @@ watches produced unbounded output; and runtime tests were absent from CI.
 The existing 288 fixture tests passed in a clean isolated source copy.
 
 Monitoring preview.3 and reporting preview.8 were both built from `c73c237`.
-Snap and Starship select those artifacts, while current-facing documentation
+Snap and Starship selected those artifacts, while current-facing documentation
 still described older Starship selections. The locally installed Codex client
 reports 0.163.0; the monitoring manifest records qualification against 0.162.1.
 Neither fixture tests nor documentation publication requalify native protocols.
@@ -90,10 +90,10 @@ routes and 16 illustrative scene states at widths 1440, 768, 390 and 320, with
 keyboard, copy fallbacks, environment selection and zero browser errors. These
 checks validate presentation and delivery; they are not native watch trials.
 
-## Prepared managed upgrade
+## Initial managed candidate: 2026-10-21
 
-The dotfiles candidate is commit `6aad69e`, branch `codex-plus-preview-9`, in
-[draft PR #5](https://github.com/byebyebryan/dotfiles/pull/5). It updates worker,
+The initial dotfiles candidate was commit `6aad69e`, branch `codex-plus-preview-9`, in
+[PR #5](https://github.com/byebyebryan/dotfiles/pull/5), drafted before the later direct publication below. It updates worker,
 monitoring and report URLs/revisions/fetched checksums, selectors, doctor wiring,
 validators and release notes together. Worker payload hashes remain unchanged;
 the compatibility worker tree gains its product identity manifest.
@@ -107,15 +107,44 @@ script-excluded fixture apply, three-component manifest verification and
 convergence. No native daemon or real report service starts for these checks.
 
 Concurrent desktop edits appeared in the canonical chezmoi checkout during this
-pass. They remain untouched; the managed upgrade is isolated on its draft branch.
-The branch has been pushed, while merging and live apply are deferred.
+pass. They remained untouched; that initial managed upgrade was isolated on its
+draft branch, with publication to main and live apply deferred to the later request below.
+
+## Managed rollout: 2026-10-22
+
+Bryan requested direct publication, followed by bringing Snap and Starship up to
+date. Dotfiles main contains the nine-file upgrade as `4598b2a`; PR #5 is closed
+without merging. Both canonical source checkouts contain those pins. Snap's
+overlapping local checker edit was retained, and Starship's local commits were
+merged with published history without publishing that unrelated work. Uncommitted
+and untracked desktop edits on both hosts were preserved.
+
+Targeted `chezmoi status`, `diff` and verbose dry runs showed only the new
+release directories, selection links, doctor entry point and worker manifest.
+The live applies excluded scripts and addressed only those component targets and
+their existing agent/skill entry points. All three payload inventories, hashes,+modes, versions and source revisions verified before changing selection links.
+Older immutable releases remain installed for captured processes and rollback.
+
+| Host/context | Workers | Monitoring | Reporting |
+| --- | --- | --- | --- |
+| Snap OSS and work | preview.9 | preview.9 | preview.9 |
+| Starship default | preview.9 | preview.9 | preview.9 |
+
+All three components resolve to source `0ec803d`. Read-only installed diagnosis
+passes in every context, and scoped managed diffs converge to empty. Existing
+configuration/auth files, worker agent/skill files and private profile modes are
+unchanged across 128 protected Snap paths and 68 Starship paths. The 24 captured
+Snap native/MCP/report process identities and 23 Starship identities were retained.
+Snap's two report endpoints and Starship's report
+endpoint retain HTTP 200 and byte-identical catalog responses. No daemon, MCP
+bridge or report server was restarted, and no new native model workload was run.
 
 ## Remaining evidence boundaries
 
-Snap and Starship retain the selected c73c237 preview.3/preview.8 artifacts and
-their active MCP/native/report processes. No live managed apply, global refresh,
-daemon/server restart, real watch/reminder, peer write or new native model trial
-was performed. Codex 0.163.0 compatibility remains unqualified against the recorded
+Both hosts select preview.9; existing MCP/native/report processes retain their
+captured code until normal reconnect. The rollout establishes installation and
+preservation, without a global refresh, real watch/reminder, peer write or new
+native model trial. Codex 0.163.0 compatibility remains unqualified against the recorded
 0.162.1 baseline. Long-run/provider recovery and daily UX remain ordinary-use
 evidence, not outcomes inferred from fixtures. Pre-existing untracked bytecode
 in the source checkout is preserved.

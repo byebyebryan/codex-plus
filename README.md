@@ -74,12 +74,12 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Snap and Starship select the earlier monitoring **preview.3** and reporting
-**preview.8** artifacts from source `c73c237` through chezmoi.
-Both work and OSS entry points passed fresh MCP checks without replacing their
-native daemons. The unified **v0.1.0-preview.9** release contains the next fixes;
-live selection is a separate scoped apply. The [implementation handoff](docs/implementation-handoff.md)
-records source, release and installed state.
+Snap and Starship select **v0.1.0-preview.9** for workers, monitoring and reporting
+from source `0ec803d` through chezmoi. The scoped rollout on 2026-10-22 verified
+all component manifests and preserved native daemons, active MCP processes,
+configuration and report hosting. Existing processes adopt new code on normal
+reconnect. The [implementation handoff](docs/implementation-handoff.md) records
+source, release and installed state.
 
 Desktop notification delivery and terminal customization are outside Codex Plus.
 Native Codex alerts remain selected. Notification enrichment and lifecycle

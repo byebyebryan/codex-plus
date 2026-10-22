@@ -1,6 +1,6 @@
 # Implementation handoff
 
-Updated 2026-10-21. Continue in `/home/bryan/code/codex-plus` on Snap.
+Updated 2026-10-22. Continue in `/home/bryan/code/codex-plus` on Snap.
 
 ## Current scope and entry points
 
@@ -13,7 +13,7 @@ The current refinement pass fixes status freshness, reminder expiry and bounded
 watch history; adds full fixture CI and read-only installation diagnosis; and
 unifies workers, monitoring and reporting under **v0.1.0-preview.9**. See
 [the refinement results](refinement-results.md) for source/artifact/publication
-acceptance and deferred live activation. The documentation passes below are
+acceptance and the subsequent scoped managed rollout. The documentation passes below are
 completed context, not the current execution scope.
 
 Start with [setup](getting-started.md), the [daily guide](daily-use.md), [worker workflows](workers.md), [architecture](architecture.md),
@@ -45,10 +45,10 @@ Continue with ordinary use and its evidence.
 | Layer | Current fact |
 | --- | --- |
 | Published unified release | v0.1.0-preview.9, source `0ec803d`; one version, tag and release manifest, with optional worker/monitoring/report archives. Fetched bytes match reproducible candidates. |
-| Managed upgrade | Prepared on dotfiles branch `codex-plus-preview-9`, commit `6aad69e`, draft PR #5. Source review/live apply remain deferred. |
-| Earlier selected artifacts | Monitoring preview.3 and reporting preview.8, source `c73c237`; 15 monitoring and four reporting MCP tools. |
-| Snap | Earlier artifacts remain selected through chezmoi; default OSS and dedicated work homes. |
-| Starship | Same preview.3/preview.8 selections, freshly verified; earlier preview.2/preview.7 descriptions were stale. |
+| Managed upgrade | Published directly to dotfiles main as `4598b2a`; PR #5 closed without merging. Scoped live rollout completed 2026-10-22. |
+| Earlier artifacts retained | Monitoring preview.3 and reporting preview.8, source `c73c237`, remain available for captured processes and rollback. |
+| Snap | Workers, monitoring and reporting preview.9 selected; all manifests verify in default OSS and dedicated work contexts. |
+| Starship | Same three preview.9 selections verified; local source history and unrelated desktop edits preserved. |
 | Native compatibility | Snap client and owner 0.163.0; recorded qualification baseline 0.162.1. No new native model trial in this pass. |
 | Source | Multi-environment support retained; notification component retired. |
 | Notification delivery | Native Codex to terminal. Formatting belongs to Kitty/chezmoi. Enrichment and the 349 inspector are parked/retired. |
@@ -90,9 +90,13 @@ The refinement release passes 303 fixture tests locally and in Python 3.11/3.14
 CI, reproducible artifact verification, relocated CLI/MCP discovery, old-artifact
 verification and public guide delivery/browser checks. Managed installation is
 qualified in disposable Snap/Starship profile homes, including all three aligned
-manifests, script-excluded apply and convergence. Canonical chezmoi has concurrent
-desktop edits, so the upgrade remains isolated in its draft PR. No live apply,
-service restart or new native model trial belongs to this completed pass.
+manifests, script-excluded apply and convergence. The subsequent user-authorized
+rollout applied only selected Codex Plus targets on Snap and Starship, with
+chezmoi scripts excluded. Payloads verified before selection; source edits,
+private configuration, worker bytes, native/MCP processes and report serving were
+preserved. All three report endpoints retained HTTP 200 and identical content.
+See the [rollout receipt](refinement-results.md#managed-rollout-2026-10-22).
+No service restart, global MCP refresh or new native model trial was performed.
 
 Use the [soak checklist](soak-checklist.md) during ordinary work. No pending
 historical trial, actor budget or wakeup should be replayed. Do not create a

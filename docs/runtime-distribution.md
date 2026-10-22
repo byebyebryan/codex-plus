@@ -59,14 +59,15 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Snap selects runtime preview.3 and reports preview.8 through chezmoi, with both
-OSS/work MCP entry points verified. Existing explicit storage paths, native owners
-and report servers are preserved. Existing MCP processes adopt the new release
-on normal reconnect. See the [environment deployment receipt](environments.md#snap-multi-environment-deployment-2026-10-15).
+Snap and Starship select workers, monitoring and reporting **preview.9**, source
+`0ec803d`, through chezmoi following the scoped rollout on 2026-10-22. All three
+manifests verify on both hosts, including Snap's OSS/work contexts. Existing
+explicit storage paths, configuration, native owners, active MCP processes and
+report servers are preserved. Already loaded MCP processes adopt the selected
+release on normal reconnect. See the [rollout receipt](refinement-results.md#managed-rollout-2026-10-22)
+and the earlier [environment deployment receipt](environments.md#snap-multi-environment-deployment-2026-10-15).
 
-Starship also selects monitoring preview.3/reporting preview.8. The unified
-preview.9 release is prepared independently of a live apply on either host.
-Workers have their own installation. The 349 inspector
+Workers retain their own installation. The 349 inspector
 is retired, and native notifications remain selected. The earlier [managed activation report](managed-activation-results.md)
 records the original two-host deployment. Report publication/hosting remains
 independent of the monitoring runtime.

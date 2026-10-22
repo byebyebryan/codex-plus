@@ -102,8 +102,9 @@ server. Distinct configurations require distinct listening endpoints.
 
 The unified Codex Plus preview.9 release supplies optional monitoring/reporting
 archives with the shared resolver, context CLI and read-only doctor. Snap and
-Starship still select earlier monitoring preview.3/reporting preview.8 artifacts;
-the prepared upgrade needs a scoped live apply. Previous monitoring previews 1–3
+Starship select preview.9 for all three components after the scoped live apply on
+2026-10-22. Existing native, MCP and report processes were preserved; already
+loaded processes adopt the selected release on normal reconnect. Previous monitoring previews 1–3
 and reporting previews 7–8 remain verifiable/selectable. All new components share
 one release version; each host retains its own deployment receipts. The notification
 component and the 349 inspector are retired; terminal formatting belongs to

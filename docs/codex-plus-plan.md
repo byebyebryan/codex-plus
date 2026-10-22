@@ -1,6 +1,6 @@
 # Codex Plus implementation plan
 
-Updated 2026-10-21. Codex CLI/TUI remains the daily interface and its existing
+Updated 2026-10-22. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are
 installed and enabled on Snap and Starship. Current sources are reconciled.
@@ -41,8 +41,16 @@ Completed 2026-10-21: all six slices are implemented, reviewed and published as
 `v0.1.0-preview.9` from `0ec803d`. The full 303-test suite passes locally and in
 Python 3.11/3.14 CI. Fetched release assets match reproducible candidates; the
 public guides pass HTTP/browser checks. Chezmoi's verified upgrade is prepared
-in draft PR #5, preserving concurrent canonical desktop work. Real host selection,
-active processes and the native qualification baseline remain unchanged.
+in draft PR #5, preserving concurrent canonical desktop work. That initial pass
+left host selection, active processes and the native qualification baseline unchanged.
+
+Follow-up completed 2026-10-22 at Bryan's request: dotfiles commit `4598b2a`
+publishes the pins directly to main; PR #5 is closed. Snap and Starship now select
+preview.9 for workers, monitoring and reporting after scoped, script-excluded
+chezmoi applies. All manifests and scoped convergence pass. Existing native/MCP
+processes, report serving, configuration, worker bytes and unrelated source work
+are preserved. This updates installed selection without a service restart or new
+native compatibility qualification; see the [rollout receipt](refinement-results.md#managed-rollout-2026-10-22).
 
 ## Previous pass: repository discovery and presentation
 
