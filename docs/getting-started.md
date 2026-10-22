@@ -1,8 +1,8 @@
 # Get started with Codex Plus
 
 Choose the part that helps your work: delegate a task, follow a running job or
-publish a browser handoff. The components install separately and keep native
-Codex as your daily interface.
+publish a browser handoff. One Codex Plus release supplies optional component
+archives and keeps native Codex as your daily interface.
 
 ## Choose what to install
 
@@ -16,6 +16,10 @@ Workers use native agent tools. Monitoring provides 15 MCP tools for observation
 peer communication and later checks. Reporting provides four tools and an
 independent static report store. Installing one component does not install the
 others.
+
+Workers, monitoring and reporting use the same version and source commit in each
+release. Choose the archives you need from its single GitHub release; see
+[release verification](runtime-distribution.md#one-codex-plus-release).
 
 ## If your setup is already managed
 

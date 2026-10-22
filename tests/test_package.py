@@ -129,6 +129,15 @@ class PackageTests(unittest.TestCase):
         package.activate(prefix, '2' * 40)
         self.assertEqual(package.verify_install(installed)['version'], '0.1.0-preview.2')
 
+    def test_previous_preview_three_remains_verifiable_without_new_doctor_files(self):
+        files = {name: self.files[name] for name in package.PREVIEW_THREE_FILES}
+        files['codex_plus/__init__.py'] = b"VERSION = '0.1.0-preview.3'\n"
+        metadata = package.manifest(files, '3' * 40); metadata['version'] = '0.1.0-preview.3'
+        prefix = self.root / 'preview-three'
+        installed = package.install(self.archive(metadata=metadata, files=files), prefix)
+        package.activate(prefix, '3' * 40)
+        self.assertEqual(package.verify_install(installed)['version'], '0.1.0-preview.3')
+
     def test_coordinator_from_previous_verified_release_is_recognized_by_new_runtime(self):
         old_files = {name: self.files[name] for name in package.PREVIOUS_RUNTIME_FILES}
         old_meta = package.manifest(old_files, '3'*40); old_meta['version'] = '0.1.0-preview.1'

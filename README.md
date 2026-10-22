@@ -34,8 +34,8 @@ Read the [daily-use guide](docs/daily-use.md), open the
 [browser walkthrough](docs/presentation.md), or see
 [how the package works](docs/architecture.md).
 
-Workers, monitoring and reporting install separately. Choose the components you
-need in the setup guide; an existing managed setup can use these requests
+Workers, monitoring and reporting share **one Codex Plus version and release**.
+Choose the component archives you need in the setup guide; an existing managed setup can use these requests
 directly. The public site includes the walkthrough and eight HTML guides. Their
 Markdown sources and technical evidence are linked below.
 
@@ -74,12 +74,12 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Snap selects monitoring runtime **v0.1.0-preview.3** and reporting
-**v0.1.0-preview.8**, including native multi-environment support, through chezmoi.
+Snap and Starship select the earlier monitoring **preview.3** and reporting
+**preview.8** artifacts from source `c73c237` through chezmoi.
 Both work and OSS entry points passed fresh MCP checks without replacing their
-native daemons. Starship retains its prior installed runtime preview.2/report
-preview.7 until a separate apply. The [implementation handoff](docs/implementation-handoff.md)
-records the accepted deployment state.
+native daemons. The unified **v0.1.0-preview.9** release contains the next fixes;
+live selection is a separate scoped apply. The [implementation handoff](docs/implementation-handoff.md)
+records source, release and installed state.
 
 Desktop notification delivery and terminal customization are outside Codex Plus.
 Native Codex alerts remain selected. Notification enrichment and lifecycle

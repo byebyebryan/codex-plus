@@ -27,6 +27,13 @@ AGENTS = {
     "legacy/agents/terra-xhigh.toml": ("gpt-5.6-terra", "xhigh"),
 }
 EXPECTED_FILES = {
+    "codex_plus/release.py",
+    "codex_plus/doctor.py",
+    "scripts/codex-plus-release",
+    "scripts/codex-plus-doctor",
+    "tests/test_release.py",
+    "tests/test_doctor.py",
+    ".github/workflows/check.yml",
     "codex_plus/context.py",
     "scripts/codex-plus-context",
     "docs/environments.md",

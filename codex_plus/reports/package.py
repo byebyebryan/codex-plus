@@ -24,7 +24,7 @@ from .store import no_links
 
 
 NAME = "codex-plus-report"
-FILES = (
+PREVIEW_EIGHT_FILES = (
     "LICENSE", "codex_plus/context.py", "scripts/codex-plus-context", "codex_plus/__init__.py", "codex_plus/reports/__init__.py",
     "codex_plus/reports/config.py", "codex_plus/reports/catalog.py",
     "codex_plus/reports/store.py", "codex_plus/reports/hosting.py",
@@ -32,6 +32,7 @@ FILES = (
     "scripts/codex-plus-report", "scripts/codex-plus-report-mcp", "scripts/codex-plus-report-package", "scripts/codex-report-server",
     "skills/html-report/SKILL.md", "skills/html-report/agents/openai.yaml",
 )
+FILES = (*PREVIEW_EIGHT_FILES, 'codex_plus/doctor.py', 'scripts/codex-plus-doctor')
 COMPATIBILITY = {"os": "linux", "python": ">=3.11", "agent_owner": "not required",
                  "hosting": "configured static HTTP/HTTPS endpoint", "server_control": "optional tmux >=2.9"}
 MAX_FILE = 2 * 1024 * 1024
@@ -91,18 +92,25 @@ def build(root, output):
     return {**metadata, "artifact_sha256": sha(output.read_bytes())}
 
 
-PREVIOUS_FILES = tuple(name for name in FILES if name not in ('codex_plus/context.py', 'scripts/codex-plus-context'))
+PREVIOUS_FILES = tuple(name for name in PREVIEW_EIGHT_FILES if name not in ('codex_plus/context.py', 'scripts/codex-plus-context'))
+
+
+def version_files(version):
+    if version == VERSION: return FILES
+    if version == '0.1.0-preview.8': return PREVIEW_EIGHT_FILES
+    if version == '0.1.0-preview.7': return PREVIOUS_FILES
+    raise ValueError('unsupported report package version')
 
 
 def validate(metadata, content, modes):
     if (not isinstance(metadata, dict)
             or set(metadata) != {"schema", "name", "version", "source_revision", "compatibility", "files"}
-            or metadata["schema"] != 1 or metadata["name"] != NAME or metadata["version"] not in (VERSION, "0.1.0-preview.7")
+            or metadata["schema"] != 1 or metadata["name"] != NAME
             or metadata["compatibility"] != COMPATIBILITY):
         raise ValueError("unsupported report package manifest/compatibility")
     revision(metadata["source_revision"])
     version = metadata['version']
-    inventory = FILES if version == VERSION else PREVIOUS_FILES
+    inventory = version_files(version)
     if set(content) != {*inventory, *plugins(version)} or set(metadata["files"]) != set(content):
         raise ValueError("report package inventory differs")
     for name, data in content.items():
@@ -145,7 +153,7 @@ def verify_install(root):
     no_links(root / 'report.json')
     metadata = json.loads((root / 'report.json').read_text())
     if not isinstance(metadata, dict): raise ValueError('invalid report package manifest')
-    inventory = FILES if metadata.get('version') == VERSION else PREVIOUS_FILES
+    inventory = version_files(metadata.get('version'))
     paths = [p for p in root.rglob("*") if not p.is_dir() or p.is_symlink()]
     if any(p.is_symlink() for p in paths) or {p.relative_to(root).as_posix() for p in paths} != {*inventory, *plugins(), "report.json"}:
         raise ValueError("installed report inventory differs")

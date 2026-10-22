@@ -1,4 +1,4 @@
-# Codex Plus runtime preview distribution
+# Codex Plus releases and monitoring installation
 
 The runtime is a Linux/Unix preview qualified against Codex 0.162.1. It uses
 Python 3.11 or newer and RTK for the existing native status/coordinator command
@@ -6,12 +6,47 @@ paths. It requires an already running owning daemon and loaded independent
 sessions; it never starts a daemon or cold-resumes a target. Long production
 operation, native owner replacement and personal UX acceptance remain separate.
 
-Release: [v0.1.0-preview.3](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.3),
+Previous monitoring release: [v0.1.0-preview.3](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.3),
 source `c73c237c734eb7e20b46185cccd471edfc803520`. Runtime SHA-256:
 `43908c4b5b238fdbb81187050f0e7bfd4653a6f4d3677e1f1c9577ff443cd24f`.
 The artifact contains 21 declared runtime files plus its manifest. The
 [source-access report](source-access-pass-results.md) separates source, artifact,
 installed native qualification and managed wiring from live apply/enablement.
+
+## One Codex Plus release
+
+Starting with **v0.1.0-preview.9**, workers, monitoring and reporting share one
+version, source commit, GitHub tag and release. A reporting-only fix still advances
+the product version; release notes identify which capabilities changed. Components
+remain optional and keep their own configuration, data and running processes.
+
+The single release contains three archives, `release.json` and `SHA256SUMS`:
+
+| Component | Archive |
+| --- | --- |
+| Workers | `codex-plus-workers-0.1.0-preview.9.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.9.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.9.tar.gz` |
+
+`codex_plus/__init__.py` is the authoritative version. Both MCP adapters, report
+plugin manifests and all component manifests use it. The worker archive retains
+the existing default and optional legacy identities; packaging does not enable
+legacy skills or change explicit workflow invocation.
+
+From a clean committed checkout, build into a new directory outside it:
+
+```sh
+rtk proxy scripts/codex-plus-release build --output /ABSOLUTE/OUTSIDE/REPO/release
+rtk proxy scripts/codex-plus-release verify /ABSOLUTE/OUTSIDE/REPO/release
+```
+
+The verifier checks all archives, exact member inventories, modes, component
+versions, source revisions and checksums. Builds refuse existing output. Compare
+the fetched release's hashes with the reviewed/pinned identities; a self-consistent
+manifest alone does not authenticate its publisher. Install selected component
+archives through their existing installers or configuration owner. Older tags and
+artifacts remain available; current installers retain validation/selection support
+for monitoring previews 1–3 and reporting previews 7–8.
 
 Command sources inherit verified native session permissions, including existing
 networking and authorized cache writes. Filesystem read-only and network-off are
@@ -29,11 +64,28 @@ OSS/work MCP entry points verified. Existing explicit storage paths, native owne
 and report servers are preserved. Existing MCP processes adopt the new release
 on normal reconnect. See the [environment deployment receipt](environments.md#snap-multi-environment-deployment-2026-10-15).
 
-Starship retains its previously installed runtime preview.2/report preview.7 until
-a separate scoped apply. Workers have their own installation. The 349 inspector
+Starship also selects monitoring preview.3/reporting preview.8. The unified
+preview.9 release is prepared independently of a live apply on either host.
+Workers have their own installation. The 349 inspector
 is retired, and native notifications remain selected. The earlier [managed activation report](managed-activation-results.md)
 records the original two-host deployment. Report publication/hosting remains
 independent of the monitoring runtime.
+
+## Read-only diagnosis
+
+Run `rtk proxy scripts/codex-plus-doctor` from this checkout, or the shipped
+`scripts/codex-plus-doctor` inside a selected monitoring/reporting release.
+`--runtime-prefix`, `--report-prefix` and `--worker-prefix` select nondefault
+installations. The selected `CODEX_HOME` chooses MCP configuration and native
+status queries; managed state/report path overrides are reflected. `--no-native`
+limits diagnosis to local files and configuration.
+
+The result reports optional/missing or legacy installations, local manifest
+integrity, aligned/mixed component versions, enabled MCP configuration and native
+client/owner versions. It never starts or restarts a daemon, MCP process, watch or
+report server. Selected files and enabled config do not establish already loaded
+process versions. Codex 0.163.0 is currently outside the recorded 0.162.1 native
+qualification baseline; daily use and fixture CI do not silently extend it.
 
 ## Artifact and immutable installation
 

@@ -443,11 +443,10 @@ class ModelAPI:
             job = self.store.job(event['job_id'])
             if job['kind'] != 'watch':
                 raise ValueError('current event does not belong to a watch')
+            identity = job['id']
         else:
             identity = self._reference('watch', watch)['identity']
-            result = cli.inspection(self.store, identity)
-            job = result['registrations'][0]
-        result = cli.inspection(self.store, job['id'])
+        result = cli.inspection(self.store, identity)
         job = result['registrations'][0]
         spec = job['spec']
         ref = self._remember('watch', job['id'], display=spec.get('label', 'registered source'))

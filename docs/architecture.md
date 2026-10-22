@@ -8,18 +8,25 @@ coordinator owns bounded observation, timers, event admission and receipts.
 
 | Component | Surface | Responsibility |
 | --- | --- | --- |
-| Monitoring runtime, preview.3 | 15 `codex_plus` MCP tools; watch/peer/package CLIs | Peer discovery and passive reads, bounded sources, messages, reminders, cancellation and receipts. |
-| Reporting component, preview.8 | Four `html_report` MCP tools; report CLI; HTML report skill | Immutable static snapshots, project catalog, delivery checks and selected deletion. |
+| Monitoring runtime | 15 `codex_plus` MCP tools; watch/peer/package CLIs | Peer discovery and passive reads, bounded sources, messages, reminders, cancellation and receipts. |
+| Reporting component | Four `html_report` MCP tools; report CLI; HTML report skill | Immutable static snapshots, project catalog, delivery checks and selected deletion. |
 | Report server | `codex-report-server` | Independent HTTP hosting; per-config tmux ownership or an explicitly managed server. |
 | Worker bundle | `luna-max`, `sol-xhigh`; four worker workflow skills | Explicitly selected execution workflows; primary retains decisions and acceptance. |
 | Development source | Tests, validators, guides and research reports | Implementation and acceptance evidence; distinct from installed immutable artifacts. |
 
-The current releases are runtime `v0.1.0-preview.3` and reports
-`v0.1.0-preview.8`, both from source `c73c237`. Snap selects them through
-chezmoi; Starship retains runtime preview.2 / reports preview.7 until a separate
-apply. Managed configuration, selected artifacts and already loaded processes
+Codex Plus `v0.1.0-preview.9` unifies workers, monitoring and reporting under one
+version, source commit and release. Optional archives retain each component's
+dependencies and configuration. Snap and Starship currently select earlier
+monitoring preview.3/reporting preview.8 artifacts from `c73c237`; the unified
+release needs a scoped managed apply. Managed configuration, selected artifacts and already loaded processes
 are different layers: existing MCP processes adopt new code on normal reconnect.
 Journals, report data and hosting remain runtime-owned.
+
+The read-only `scripts/codex-plus-doctor` reports selected manifest integrity,
+enabled MCP configuration and native client/owner version evidence. It never
+starts services or infers loaded code from a selected symlink. A version outside
+the recorded qualification baseline remains unqualified; see
+[diagnosis](runtime-distribution.md#read-only-diagnosis).
 
 Each canonical `CODEX_HOME` selects a native endpoint and Codex Plus context.
 Explicit state/config paths take precedence; alternate homes otherwise derive

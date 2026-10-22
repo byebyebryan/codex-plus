@@ -1,0 +1,46 @@
+name: Validate Codex Plus
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.14']
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install fixture dependencies
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends tmux
+          curl --fail --location --retry 3 https://github.com/rtk-ai/rtk/releases/download/v1.0.1/rtk-x86_64-unknown-linux-musl.tar.gz --output "${RUNNER_TEMP}/rtk.tar.gz"
+          echo '5b919c3bccb799b67a61866d0e617410a4fcdf173e2614440e59de2fa2003436  '"${RUNNER_TEMP}/rtk.tar.gz" | sha256sum --check
+          mkdir "${RUNNER_TEMP}/rtk-bin"
+          tar -xzf "${RUNNER_TEMP}/rtk.tar.gz" -C "${RUNNER_TEMP}/rtk-bin"
+          echo "${RUNNER_TEMP}/rtk-bin" >> "$GITHUB_PATH"
+      - name: Validate inventory, workers and full fixture suite
+        run: |
+          rtk proxy scripts/check
+          rtk proxy python3 -B -m unittest discover -s tests -p 'test_*.py'
+          rtk proxy git diff --check
+      - name: Build and verify the complete release
+        run: |
+          rtk proxy scripts/codex-plus-release build --output "${RUNNER_TEMP}/codex-plus-release"
+          rtk proxy scripts/codex-plus-release verify "${RUNNER_TEMP}/codex-plus-release"

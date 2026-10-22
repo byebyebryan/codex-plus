@@ -177,7 +177,10 @@ HTTPS-only browser APIs such as clipboard writing.
 
 ## Verified artifacts and optional MCP/plugin loading
 
-The report component is packaged separately from supervision and worker artifacts:
+Reporting is an optional archive in the single Codex Plus release, sharing its
+version and source commit with workers and monitoring. See
+[release verification](runtime-distribution.md#one-codex-plus-release).
+The component installer still supports standalone use:
 
 ```sh
 rtk proxy scripts/codex-plus-report-package build --output /absolute/outside/repo/report.tar.gz

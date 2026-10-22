@@ -97,9 +97,26 @@ and returns now. The model should not hold the foreground turn open with sleep
 or repeatedly poll while waiting. A due check follows native conversation
 control and can wait behind active work; it is not an exact-time alarm.
 
+The default expiry leaves up to two minutes for delivery after the requested
+delay, within the configured lifetime limit. The receipt states that window;
+the model can choose an explicit longer expiry when the request needs it.
+If active work outlasts expiry, the reminder records that outcome.
+
 A reminder is separate from a watch. Ask to list or cancel the relevant reminder
 when you want to stop it. The preview does not provide a recurring calendar or
 cron service.
+
+## Inspect follow-up health
+
+Ask “What are you watching?” for bounded active and unresolved watch status.
+Source failures, observation gaps, control holds and uncertain delivery are
+reported with cached receipt freshness. An offline coordinator makes a previous
+running receipt unknown. Ask for watch history to page through settled entries;
+history and handling receipts remain retained.
+
+Detailed inspection shows up to three event receipts with unresolved delivery
+first, plus bounded renewal details. A receipt records observation, admission or
+handling; it does not establish that the watched work succeeded.
 
 ## Stop, interrupt or leave
 

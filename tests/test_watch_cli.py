@@ -66,6 +66,16 @@ class CliTests(unittest.TestCase):
         self.assertTrue(result['source_receipts_may_be_stale'])
         native.assert_not_called(); start.assert_not_called()
 
+    def test_reminder_cli_default_expiry_covers_requested_delay_before_admission(self):
+        with patch('codex_plus.cli.validate_binding'), patch('codex_plus.cli.ensure_coordinator'):
+            code, result = self.run_cli(['wake_schedule', '--after', '600', '--prompt', 'Reassess fixture.'])
+            self.assertEqual(code, 0)
+            self.assertEqual(result['duration'], 720)
+            self.assertAlmostEqual(self.store.job(result['id'])['expires'] - self.store.job(result['id'])['due'], 120)
+            with self.assertRaises(ValueError):
+                self.run_cli(['wake_schedule', '--after', '86400', '--prompt', 'Invalid.'])
+            self.assertEqual(len(self.store.jobs()), 1)
+
     def test_compact_ack_requires_unique_known_native_admission(self):
         job = self.store.create('message', {'prompt': 'hello'})
         event = self.store.emit(job, 'hello', 'message')

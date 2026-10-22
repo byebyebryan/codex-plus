@@ -9,6 +9,13 @@ coordination and independent static reports around native Codex. Native Codex
 owns its conversations, goals, execution policy and daemons. Worker workflows
 remain explicitly invoked; a generic goal loop does not activate them.
 
+The current refinement pass fixes status freshness, reminder expiry and bounded
+watch history; adds full fixture CI and read-only installation diagnosis; and
+unifies workers, monitoring and reporting under **v0.1.0-preview.9**. See
+[the refinement results](refinement-results.md) for source/artifact/publication
+acceptance and deferred live activation. The documentation passes below are
+completed context, not the current execution scope.
+
 Start with [setup](getting-started.md), the [daily guide](daily-use.md), [worker workflows](workers.md), [architecture](architecture.md),
 [environment contract](environments.md) and [public walkthrough](https://dev.byebyebryan.com/codex-plus/).
 The [implementation plan](codex-plus-plan.md) and [reconciliation results](reconciliation-results.md)
@@ -37,17 +44,20 @@ Continue with ordinary use and its evidence.
 
 | Layer | Current fact |
 | --- | --- |
-| Monitoring release | preview.3, source `c73c237`, 15 MCP tools. |
-| Reporting release | preview.8, source `c73c237`, four MCP tools. |
-| Snap | Both releases selected through chezmoi; default OSS and dedicated work homes. |
-| Starship | Runtime preview.2 / reports preview.7 remain installed; upgrade is a separate apply. |
+| Unified release candidate | v0.1.0-preview.9; one version, tag, source commit and release manifest, with optional worker/monitoring/report archives. |
+| Earlier selected artifacts | Monitoring preview.3 and reporting preview.8, source `c73c237`; 15 monitoring and four reporting MCP tools. |
+| Snap | Earlier artifacts remain selected through chezmoi; default OSS and dedicated work homes. |
+| Starship | Same preview.3/preview.8 selections, freshly verified; earlier preview.2/preview.7 descriptions were stale. |
+| Native compatibility | Snap client and owner 0.163.0; recorded qualification baseline 0.162.1. No new native model trial in this pass. |
 | Source | Multi-environment support retained; notification component retired. |
 | Notification delivery | Native Codex to terminal. Formatting belongs to Kitty/chezmoi. Enrichment and the 349 inspector are parked/retired. |
 
 Source documentation may advance beyond the selected immutable artifacts.
 Existing MCP processes keep their captured code until normal reconnect. The
 [runtime guide](runtime-distribution.md) and [report guide](html-report-usage.md)
-explain independent installation, serving and rollback.
+explain optional component installation, serving and rollback under one release.
+`scripts/codex-plus-doctor` checks selected manifests and native version evidence
+without starting services. Selection does not establish loaded process versions.
 
 ## Snap environment contract
 
