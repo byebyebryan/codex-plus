@@ -418,6 +418,8 @@ class ModelTests(unittest.TestCase):
                 job=recipient.jobs()[0];spec=job['spec'];spec['sender']['thread_id']=CHILD
                 recipient.db.execute('UPDATE jobs SET spec=? WHERE id=?',(json.dumps(spec),job['id']))
             with self.assertRaises(ValueError):api.call('message_cancel',{'message':'m1'})
+            with self.assertRaises(ValueError):api.call('message_status',{'message':'m1'})
+            self.assertIn('this caller does not own', api.call('message_status', {}))
             with closing(Store(self.root/B)) as recipient:self.assertEqual(recipient.jobs()[0]['intent'],'active')
 
     def test_outgoing_receipts_are_rediscoverable_after_context_loss_and_paginated_without_sends(self):
