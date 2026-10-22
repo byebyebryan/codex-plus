@@ -62,6 +62,8 @@ session. If two plausible sessions remain, it asks which one. Once selected,
 does not silently switch to a different session.
 
 Setup should give a short confirmation of the selected work and useful condition.
+Follow-up should report changes relevant to that condition. Routine checks,
+ordinary phase changes and successful renewals can remain quiet.
 Later updates should explain a meaningful finding, such as readiness or a request
 for input. Observation does not resume, interrupt or stop the other session.
 Idle status alone does not prove that its task succeeded.
@@ -118,6 +120,13 @@ Ask "What checks are still pending?" for active and unresolved reminders. The
 answer distinguishes cached intent, due time, lease expiry and handling. Ask for
 reminder history to include settled checks; both lists are bounded and paginated.
 Inspection leaves existing follow-ups unchanged and explains stale evidence.
+
+"What am I still waiting on?" combines this conversation's watches, reminders
+and recorded outgoing-message receipts. References survive context compaction;
+message inspection can rediscover them without another send. The model should
+state incomplete coverage and distinguish last confirmed facts from current
+activity. This is a recap of the bound conversation, not an inventory across
+other conversations, environments or hosts.
 
 Detailed inspection shows up to three event receipts with unresolved delivery
 first, plus bounded renewal details. A receipt records observation, admission or

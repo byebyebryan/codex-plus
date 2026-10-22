@@ -3,6 +3,7 @@ from contextlib import closing
 import io
 import json
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -418,6 +419,55 @@ class ModelTests(unittest.TestCase):
                 recipient.db.execute('UPDATE jobs SET spec=? WHERE id=?',(json.dumps(spec),job['id']))
             with self.assertRaises(ValueError):api.call('message_cancel',{'message':'m1'})
             with closing(Store(self.root/B)) as recipient:self.assertEqual(recipient.jobs()[0]['intent'],'active')
+
+    def test_outgoing_receipts_are_rediscoverable_after_context_loss_and_paginated_without_sends(self):
+        with self.api(allowed={A, B}) as api:
+            self.discover(api)
+            for number in range(23):
+                api.call('peer_send', {'peer': 'validation', 'message': 'Synthetic checksum ' + str(number)})
+        with closing(Store(self.root / B)) as recipient:
+            before = recipient.jobs(), recipient.events()
+        with self.api() as api:
+            text = api.call('message_status', {})
+            self.assertIn('m23: intent', text)
+            self.assertIn('m4: intent', text)
+            self.assertNotIn('m3: intent', text)
+            self.assertIn('Showing 20 of 23', text)
+            self.assertIn('next_cursor: m4', text)
+            older = api.call('message_status', {'cursor': 'm4'})
+            self.assertIn('m3: intent', older)
+            self.assertIn('m1: intent', older)
+            self.assertNotIn('next_cursor:', older)
+            self.assertIn('m1: intent', api.call('message_status', {'message': 'm1'}))
+            self.assertEqual(api.store.jobs(), [])
+        with closing(Store(self.root / B)) as recipient:
+            self.assertEqual(before, (recipient.jobs(), recipient.events()))
+
+    def test_outgoing_discovery_is_scoped_to_its_sender_and_validates_pagination(self):
+        with self.api(allowed={A, B}) as api:
+            self.discover(api)
+            api.call('peer_send', {'peer': 'validation', 'message': 'Synthetic checksum'})
+            for args in ({'cursor': 'missing'}, {'limit': 0}, {'limit': 51},
+                         {'message': 'm1', 'cursor': 'm1'}):
+                with self.assertRaises(ValueError): api.call('message_status', args)
+        self.backend.rows[B]['status'] = {'type': 'active', 'activeFlags': []}
+        self.backend.turns[B][0]['status'] = 'inProgress'
+        with self.api(B, TURN_B) as api:
+            self.assertIn('Showing 0 of 0', api.call('message_status', {}))
+            with self.assertRaises(ValueError): api.call('message_status', {'message': 'm1'})
+
+    def test_missing_recipient_receipts_remain_unknown_without_recreating_state_or_resending(self):
+        with self.api(allowed={A, B}) as api:
+            self.discover(api)
+            api.call('peer_send', {'peer': 'validation', 'message': 'Synthetic checksum'})
+        shutil.rmtree(self.root / B)
+        with self.api() as api:
+            text = api.call('message_status', {})
+            self.assertIn('m1: receipt unavailable', text)
+            self.assertIn('Delivery/handling unknown; do not resend', text)
+            with self.assertRaises(ValueError): api.call('message_status', {'message': 'm1'})
+            self.assertFalse((self.root / B).exists())
+            self.assertEqual(api.store.jobs(), [])
 
     def test_cancelled_reminder_callback_cannot_create_a_replacement(self):
         with self.api() as api:
