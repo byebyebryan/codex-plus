@@ -174,7 +174,9 @@ def serve(root: Path):
                     pass
 
 
-def inspection(store: Store, job_id: str | None = None, *, watches=None) -> dict:
+def inspection(store: Store, job_id: str | None = None, *, watches=None, wakes=None) -> dict:
+    if watches is not None and wakes is not None:
+        raise ValueError('choose watch or reminder history')
     info = coordinator_info(store.root)
     attempts = store.renewals()
     target = job_id
@@ -184,7 +186,8 @@ def inspection(store: Store, job_id: str | None = None, *, watches=None) -> dict
         except ValueError:
             target = store.renewal(job_id)['parent_id']
         attempts = [row for row in attempts if (row['new_id'] == job_id if target != job_id else row['parent_id'] == target)]
-    page = store.watch_page(**watches) if watches is not None else None
+    page = (store.watch_page(**watches) if watches is not None else
+            store.registration_page('wake', **wakes) if wakes is not None else None)
     jobs = page['registrations'] if page is not None else [store.job(target)] if target else store.jobs()
     if page is not None:
         selected = {job['id'] for job in jobs}

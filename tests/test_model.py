@@ -272,6 +272,72 @@ class ModelTests(unittest.TestCase):
                     api.call('wake_schedule', {**args, 'prompt': 'Invalid.'})
             self.assertEqual(len(api.store.jobs()), before)
 
+    def test_reminder_recap_bounds_settled_history_without_scanning_all_jobs_or_events(self):
+        with self.api() as api:
+            for number in range(400):
+                identity = api.store.create('wake', {'after': 10, 'duration': 20,
+                    'prompt': 'Settled synthetic check ' + str(number)})
+                api.store.cancel(identity)
+            active = api.store.create('wake', {'after': 600, 'duration': 720,
+                'prompt': 'Check the pending build'})
+            with (patch.object(api.store, 'jobs', side_effect=AssertionError('unbounded jobs')),
+                 patch.object(api.store, 'events', side_effect=AssertionError('unbounded events')),
+                 patch('codex_plus.cli.ensure_coordinator') as start):
+                text = api.call('wake_list', {})
+                start.assert_not_called()
+            self.assertIn('Check the pending build', text)
+            self.assertNotIn('Settled synthetic check', text)
+            self.assertIn('Showing 1 of 1 current reminders; 401 total', text)
+            self.assertIn('scope=history', text)
+            self.assertLess(len(text.encode()), 2500)
+            ref = api.store.db.execute("SELECT ref FROM model_refs WHERE kind='wake' AND identity=?", (active,)).fetchone()[0]
+        with self.api() as api:
+            self.assertIn(ref, api.call('wake_list', {}))
+            api.call('wake_cancel', {'wake': ref})
+            self.assertEqual(api.store.job(active)['intent'], 'cancelled')
+
+    def test_reminder_pages_cover_history_and_refuse_watch_or_other_scope_cursors(self):
+        with self.api() as api:
+            api.store.clock = lambda: 100
+            identities = set()
+            for number in range(7):
+                identity = api.store.create('wake', {'after': 10, 'duration': 20, 'prompt': str(number)})
+                identities.add(identity)
+                if number % 2: api.store.cancel(identity)
+            cursor = None
+            seen = []
+            while True:
+                page = api.store.registration_page('wake', scope='history', limit=2, cursor=cursor)
+                seen.extend(job['id'] for job in page['registrations'])
+                cursor = page['next_cursor']
+                if cursor is None: break
+            self.assertEqual(set(seen), identities)
+            self.assertEqual(len(seen), len(identities))
+            page = api.store.registration_page('wake', scope='history', limit=2)
+            self.assertIn('next_cursor:', api.call('wake_list', {'scope': 'history', 'limit': 2}))
+            with self.assertRaises(ValueError): api.store.watch_page(scope='history', cursor=page['next_cursor'])
+            with self.assertRaises(ValueError): api.call('wake_list', {'cursor': page['next_cursor']})
+            for options in ({'limit': 0}, {'limit': 51}, {'cursor': 'invalid'}):
+                with self.assertRaises(ValueError): api.call('wake_list', options)
+
+    def test_reminder_recap_exposes_overdue_stale_and_uncertain_receipts_without_mutation(self):
+        with self.api() as api:
+            api.store.clock = lambda: 100
+            identity = api.store.create('wake', {'after': 10, 'duration': 20, 'prompt': 'Recheck the build'})
+            event = api.store.emit(identity, 'Recheck the build', 'wake')
+            api.store.reserve(event)
+            api.store.uncertain(event, 'admission reply missing')
+            api.store.clock = lambda: 140
+            before = api.store.job(identity), api.store.event(event)
+            text = api.call('wake_list', {})
+            self.assertIn('may be stale', text)
+            self.assertIn('due 30.0 seconds ago', text)
+            self.assertIn('lease expired 20.0 seconds ago', text)
+            self.assertIn('Delivery uncertain', text)
+            self.assertIn('admission reply missing', text)
+            self.assertIn('not acknowledged', text)
+            self.assertEqual(before, (api.store.job(identity), api.store.event(event)))
+
     def test_watch_reads_share_freshness_failure_and_handling_receipts_without_source_work(self):
         with self.api() as api:
             self.discover(api)

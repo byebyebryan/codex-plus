@@ -84,6 +84,11 @@ def _number(maximum, minimum=0.001, integer=False):
 def tool_definitions(max_duration=86400, max_events=1000):
     peer = _string('A previously discovered peer reference or established label.')
     watch = _string('A watch reference returned by registration or watch_list.')
+    history_options = {
+        'scope': {'type': 'string', 'enum': ['current', 'history']},
+        'limit': _number(50, 1, True),
+        'cursor': _string('A next_cursor returned by the same list tool and scope.'),
+    }
     watch_options = {
         'peer': peer, 'label': _string('Readable task context; not a destination name requirement.'),
         'command': {'type': 'array', 'items': _string(maximum=4096), 'minItems': 1, 'maxItems': 64},
@@ -108,8 +113,7 @@ def tool_definitions(max_duration=86400, max_events=1000):
         ('watch_start', 'Register a peer, command observer with native session permissions, or scheduled MCP inspection using normal model tools/approvals. MCP checks use model turns. Choose cadence/lease/follow-up and settle.',
          watch_options, ['followup']),
         ('watch_list', 'Inspect bounded cached watch state and receipts without polling a source. Default current view includes active and unresolved work; choose history for all registrations. Follow next_cursor for more; pages may change as work progresses.',
-         {'scope': {'type': 'string', 'enum': ['current', 'history']}, 'limit': _number(50, 1, True),
-          'cursor': _string('A next_cursor returned by watch_list for the same scope.')}, []),
+         history_options, []),
         ('watch_inspect', 'Inspect the selected watch or the current incoming watch event. Returns exact registered source/tool arguments and cached receipts; does not execute the source.', {'watch': watch}, []),
         ('watch_cancel', 'Explicitly cancel the selected watch lineage. Preserve the peer and native turns; never replace or renew cancelled intent.', {'watch': watch}, ['watch']),
         ('watch_renew', 'Explicitly continue the same frozen source under its existing request. Cancelled/lost sources refuse; a renewal attempt is not a running receipt.',
@@ -128,7 +132,7 @@ def tool_definitions(max_duration=86400, max_events=1000):
          {'after': {'type': 'number', 'minimum': 0, 'exclusiveMaximum': max_duration},
           'duration': {**_number(max_duration), 'description': 'Expiry from registration. Defaults to delay plus 120 seconds, capped at the configured lifetime; must exceed after.'},
           'prompt': _string(maximum=4096)}, ['after', 'prompt']),
-        ('wake_list', 'Inspect cached owned one-shot reminders and their delivery/handling state. Does not start a coordinator, poll or renew a reminder.', {}, []),
+        ('wake_list', 'Inspect bounded cached one-shot reminders and their delivery/handling state. Default current view includes active and unresolved work; choose history for ended checks and follow next_cursor for more. Does not start a coordinator, poll or renew.', history_options, []),
         ('wake_cancel', 'Cancel the selected one-shot reminder. Preserve native work; already consumed input cannot be retracted. Never replace a cancelled reminder.',
          {'wake': _string('A reminder reference returned by wake_schedule or wake_list.')}, ['wake']),
     ]
@@ -570,15 +574,35 @@ class ModelAPI:
         ref = self._remember('wake', result['id'], display=prompt)
         return 'Registered one reassessment ' + ref + ' after ' + str(after) + ' seconds; delivery window ' + str(round(duration - after, 3)) + ' seconds after due. No recurring schedule or new task authority.' + (' Coordinator unavailable; intent is durable. Do not repeat registration; inspect wake_list.' if result.get('coordinator_error') else '')
 
-    def _wake_list(self):
-        result = cli.inspection(self.store)
-        lines = ['Coordinator ' + result['coordinator']['state'] + '; cached one-shot reminders.']
+    def _wake_list(self, scope='current', limit=20, cursor=None):
+        result = cli.inspection(self.store, wakes={'scope': scope, 'limit': limit, 'cursor': cursor})
+        lines = ['Coordinator ' + result['coordinator']['state'] + '; cached one-shot reminders' +
+                 (' may be stale.' if result['source_receipts_may_be_stale'] else '.')]
+        now = self.store.clock()
         for job in result['registrations']:
-            if job['kind'] != 'wake': continue
             ref = self._remember('wake', job['id'], display=job['spec']['prompt'])
-            lines.append(ref + ': intent ' + job['intent'] + '; due in ' + str(round(max(0, job['due'] - self.store.clock()), 1)) + ' seconds.\n' + quote(job['spec']['prompt']))
-            for event in self.store.events(job['id']):
-                lines.append('  Delivery ' + event['delivery'] + '; turn ' + str(event['turn_outcome'] or 'not yet known') + '; handling ' + ('acknowledged' if event['acknowledged'] else 'not acknowledged') + '.')
+            due, expiry = job['due'] - now, job['expires'] - now
+            lines.append(ref + ': cached intent ' + job['intent'] +
+                         '; due ' + ('in ' if due > 0 else '') + str(round(abs(due), 1)) +
+                         ' seconds' + (' ago' if due <= 0 else '') +
+                         '; lease ' + ('expires in ' if expiry > 0 else 'expired ') +
+                         str(round(abs(expiry), 1)) + ' seconds' + (' ago' if expiry <= 0 else '') +
+                         '.\n' + quote(clean_text(job['spec']['prompt'], 512)))
+            if job['control_reason']:
+                lines.append('  Control: ' + clean_text(job['control_reason'], 512))
+            for event in (event for event in result['events'] if event['job_id'] == job['id']):
+                lines.append('  Delivery ' + event['delivery'] + '; turn ' + str(event['turn_outcome'] or 'not yet known') +
+                             '; handling ' + ('acknowledged' if event['acknowledged'] else 'not acknowledged') +
+                             '; withdrawal ' + event['withdraw_state'] + '.')
+                for field in ('detail', 'turn_error', 'withdraw_detail'):
+                    if event.get(field): lines.append('    ' + clean_text(event[field], 256))
+        page = result['page']
+        lines.append('Showing ' + str(len(result['registrations'])) + ' of ' + str(page['matching']) +
+                     ' ' + scope + ' reminders; ' + str(page['history_total']) + ' total in history.')
+        if scope == 'current' and page['history_total'] > page['matching']:
+            lines.append('Use scope=history for settled reminders; history is retained.')
+        if page['next_cursor']:
+            lines.append('next_cursor: ' + page['next_cursor'])
         return '\n'.join(lines)
 
     def _wake_cancel(self, wake):

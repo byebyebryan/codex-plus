@@ -114,6 +114,11 @@ reported with cached receipt freshness. An offline coordinator makes a previous
 running receipt unknown. Ask for watch history to page through settled entries;
 history and handling receipts remain retained.
 
+Ask "What checks are still pending?" for active and unresolved reminders. The
+answer distinguishes cached intent, due time, lease expiry and handling. Ask for
+reminder history to include settled checks; both lists are bounded and paginated.
+Inspection leaves existing follow-ups unchanged and explains stale evidence.
+
 Detailed inspection shows up to three event receipts with unresolved delivery
 first, plus bounded renewal details. A receipt records observation, admission or
 handling; it does not establish that the watched work succeeded.

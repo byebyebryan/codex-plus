@@ -272,6 +272,11 @@ class Store:
         return [self._job(row) for row in self.db.execute('SELECT * FROM jobs ORDER BY created,id')]
 
     def watch_page(self, *, scope='current', limit=20, cursor=None):
+        return self.registration_page('watch', scope=scope, limit=limit, cursor=cursor)
+
+    def registration_page(self, kind, *, scope='current', limit=20, cursor=None):
+        if kind not in ('watch', 'wake'):
+            raise ValueError('select watch or wake registrations')
         if scope not in ('current', 'history') or isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 50:
             raise ValueError('select current/history and a page size from 1 through 50')
         priority = "CASE WHEN j.intent IN ('active','replacing') THEN 0 ELSE 1 END"
@@ -279,22 +284,23 @@ class Store:
             OR EXISTS (SELECT 1 FROM events e WHERE e.job_id=j.id AND
                 (e.delivery IN ('pending','dispatching','uncertain') OR e.withdraw_state='unknown'
                  OR (e.delivery='native_queued' AND e.acknowledged=0 AND e.withdraw_state!='withdrawn'))))"""
-        where = "j.kind='watch'" + (' AND ' + attention if scope == 'current' else '')
-        total = self.db.execute('SELECT COUNT(*) FROM jobs j WHERE ' + where).fetchone()[0]
-        history_total = self.db.execute("SELECT COUNT(*) FROM jobs WHERE kind='watch'").fetchone()[0]
-        params = []
+        where = 'j.kind=?' + (' AND ' + attention if scope == 'current' else '')
+        total = self.db.execute('SELECT COUNT(*) FROM jobs j WHERE ' + where, (kind,)).fetchone()[0]
+        history_total = self.db.execute('SELECT COUNT(*) FROM jobs WHERE kind=?', (kind,)).fetchone()[0]
+        params = [kind]
+        cursor_scope = scope if kind == 'watch' else kind + '/' + scope
         if cursor is not None:
             try:
                 if not isinstance(cursor, str) or len(cursor) > 512:
                     raise ValueError()
                 page_scope, rank, created, identity = json.loads(base64.urlsafe_b64decode(cursor.encode()))
-                if page_scope != scope or type(rank) is not int or rank not in (0, 1) or type(created) not in (int, float) or not math.isfinite(created):
+                if page_scope != cursor_scope or type(rank) is not int or rank not in (0, 1) or type(created) not in (int, float) or not math.isfinite(created):
                     raise ValueError()
                 thread_id(identity)
             except (ValueError, TypeError, UnicodeError) as error:
-                raise ValueError('invalid watch page cursor for this scope') from error
+                raise ValueError('invalid ' + kind + ' page cursor for this scope') from error
             where += f' AND ({priority}>? OR ({priority}=? AND (j.created<? OR (j.created=? AND j.id<?))))'
-            params = [rank, rank, created, created, identity]
+            params += [rank, rank, created, created, identity]
         rows = self.db.execute('SELECT j.* FROM jobs j WHERE ' + where +
                               f' ORDER BY {priority},j.created DESC,j.id DESC LIMIT ?', [*params, limit + 1]).fetchall()
         jobs = [self._job(row) for row in rows[:limit]]
@@ -302,7 +308,7 @@ class Store:
         if len(rows) > limit:
             last = jobs[-1]
             rank = 0 if last['intent'] in ('active', 'replacing') else 1
-            next_cursor = base64.urlsafe_b64encode(json.dumps([scope, rank, last['created'], last['id']]).encode()).decode()
+            next_cursor = base64.urlsafe_b64encode(json.dumps([cursor_scope, rank, last['created'], last['id']]).encode()).decode()
         return {'registrations': jobs, 'scope': scope, 'matching': total,
                 'history_total': history_total, 'next_cursor': next_cursor}
 
