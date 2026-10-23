@@ -9,6 +9,15 @@ coordination and independent static reports around native Codex. Native Codex
 owns its conversations, goals, execution policy and daemons. Worker workflows
 remain explicitly invoked; a generic goal loop does not activate them.
 
+The [documentation follow-up](site-polish-results.md#source-documentation-follow-up-2026-10-22)
+completed 2026-10-22 after the recap fixes. It reconciles source/release availability
+across the entry points and guides, and adds a fifth illustrative catch-up scene.
+All 20 authored scene states pass actual candidate browser checks at desktop,
+tablet and narrow mobile widths, alongside the eight guide routes and controls.
+The public Pages edition has not been replaced by this local pass; runtime,
+worker and skill bytes remain unchanged. Publication and runtime release are
+separate next steps, with no historical trial to replay.
+
 The [native alignment and natural follow-up pass](native-alignment-results.md)
 completed 2026-10-22 after Bryan's project review and goal-loop request. Its source
 candidate bounds reminder history, rediscovers outgoing receipts through the

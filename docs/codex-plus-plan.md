@@ -10,6 +10,19 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
+## Documentation and presentation follow-up
+
+Completed 2026-10-22 after the recap fixes. README, setup, daily-use, architecture
+and release guides distinguish released preview.9 from the unreleased source
+candidate. A fifth illustrative scene shows returning to unfinished work,
+receipt freshness and explicit cancellation. Luna/adaptive worker coverage,
+guide routes and the legacy refinement-plan anchor are preserved. The candidate
+passes generated-site checks and actual browser checks for all 20 scene states
+across four viewport widths, including controls and availability labels. See
+[polish results](site-polish-results.md#source-documentation-follow-up-2026-10-22).
+Public publication and runtime distribution remain separate from this local
+source pass. Runtime/agent/skill bytes, private state and services are preserved.
+
 ## Next pass: native alignment and natural follow-up
 
 Review fixes completed 2026-10-22: acknowledged reminder callbacks stay in the
@@ -146,6 +159,8 @@ adapter frameworks and a separate command center stay deferred until an actual
 workflow demonstrates a gap. The immediate pass is complete when these questions
 have evidence-backed decisions and any selected small candidate has appropriate
 validation; it need not expand the package's feature count.
+
+<a id="current-pass-daily-use-refinement-and-unified-releases"></a>
 
 ## Completed pass: daily-use refinement and unified releases
 

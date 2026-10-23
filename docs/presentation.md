@@ -14,17 +14,27 @@ browser interaction/layout checks passed; see the
 [documentation pass results](documentation-pass-results.md).
 
 The [self-contained authoring file](presentation/index.html) also opens locally.
-It explains current capabilities with four illustrative scenes: a Luna
-investigation, an endpoint watch, coordination between independent sessions,
-and a later MCP inspection followed by a report. A separate environment selector illustrates personal and
+Its source now has five illustrative scenes: a Luna investigation, an endpoint
+watch, coordination between independent sessions, a later MCP inspection followed
+by a report, and returning to unfinished work. The fifth scene is labeled
+**source preview** throughout: its recap/history improvements are unreleased,
+and this local documentation pass has not replaced the public Pages edition.
+See [released and source features](getting-started.md#released-and-source-features).
+A separate environment selector illustrates personal and
 work contexts with example Codex homes. It only updates the page; it does not
 create a home, change config or contact a daemon.
 
-The scene controls reveal a request, setup, useful update and stop/handoff. They
+The scene controls reveal a request, setup or recap, useful update and stop/handoff. They
 only change the page; they do not run commands, create watches, send messages or
 control a session. Dialogue is authored illustration, not a captured native run.
 Technical acceptance records remain in the repository guides rather than the
 landing page.
+
+The catch-up example distinguishes an acknowledged reminder from a completed
+follow-up, identifies an accepted message by purpose, and closes attention on
+a failed callback through explicit cancellation. It explains that the recap is
+cached and conversation-scoped. Its dialogue does not claim that a native run
+or fresh source check occurred.
 
 The page leads with use cases, everyday benefits, setup links and an interactive
 first-watch checklist. A dedicated Luna section compares the four worker

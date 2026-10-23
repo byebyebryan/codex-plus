@@ -87,7 +87,7 @@ The worker definitions, skill instructions and runtime artifacts are unchanged.
 
 ## Current polish: 2026-10-20
 
-The current site renders eight guides and four illustrative conversations.
+That published edition renders eight guides and four illustrative conversations.
 Component setup starts at `/start/`; the existing `/installation/` runtime
 reference remains available. Guide contents links, share metadata and the sitemap
 are checked during every build. The workflow pins Ubuntu 24.04 and the official
@@ -99,3 +99,14 @@ The [deployment](https://github.com/byebyebryan/codex-plus/actions/runs/39513590
 passed with zero annotations; the actual HTTPS pages, diagram and sitemap match
 the local candidate. The [polish results](site-polish-results.md) record browser
 coverage, protected files and the distinction from runtime qualification.
+
+## Source follow-up: 2026-10-22
+
+The next source edition retains all eight guide routes and adds a fifth,
+four-step catch-up scene. The scene and setup guide distinguish released
+preview.9 from unreleased recap/history and diagnosis changes. README, daily-use,
+architecture and installation guidance use the same availability boundary.
+The [presentation notes](presentation.md) explain the authored examples;
+[polish results](site-polish-results.md) record candidate validation separately
+from public delivery. A local build or browser check does not publish this edition
+or distribute its runtime features.

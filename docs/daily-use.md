@@ -42,6 +42,7 @@ choose whether delegation helps. A generic “goal loop” does not select a wor
 | Follow an endpoint or run | “Watch this run and tell me if it stalls or fails.” |
 | Inspect later | “Check this endpoint again later.” |
 | See registrations | “What are you watching, and what checks are scheduled?” |
+| Return to unfinished work (source preview) | “What am I still waiting on?” |
 | Stop a watch | “Stop watching that run.” |
 | Cancel a later check | “Cancel the endpoint reminder.” |
 | Get a browser report | “Make a browser report of what we learned, with the main risks.” |
@@ -116,28 +117,39 @@ reported with cached receipt freshness. An offline coordinator makes a previous
 running receipt unknown. Ask for watch history to page through settled entries;
 history and handling receipts remain retained.
 
-The unreleased source candidate extends this inspection to reminders and
-outgoing-message discovery; installed preview.9 retains its earlier behavior.
-Ask "What checks are still pending?" for active and unresolved reminders. The
-answer distinguishes cached intent, due time, lease expiry and handling. Ask for
-reminder history to include settled checks; both lists are bounded and paginated.
-Inspection leaves existing follow-ups unchanged and explains stale evidence.
+### Return to unfinished work — source preview
+
+The following improvements are in the unreleased source candidate. Installed
+preview.9 retains its earlier reminder/message inspection; see
+[released and source features](getting-started.md#released-and-source-features).
+
+| Ask | What the recap should cover |
+| --- | --- |
+| “What checks are still pending?” | This conversation's active reminders, unknown follow-up outcomes and failures needing attention, with due time, expiry and receipt freshness. |
+| “Did it accept my request?” | The stored message kind, a short quoted excerpt and its received/accepted/declined handling receipt. Acceptance does not establish completion. |
+| “What am I still waiting on?” | Watches, reminder follow-ups and recorded outgoing messages, with stale or missing evidence explained. |
+| “Show me the history.” | Bounded pages of settled registrations and retained receipts; the model follows or discloses additional pages. |
+
+For example, a recap could say:
+
+> I’m still watching packaging for a blocker. The CI reminder was received, but
+> its follow-up turn hasn’t finished. Packaging accepted the release-note request;
+> completion is unconfirmed. These are cached receipts, not a fresh check of CI
+> or packaging.
+
+This is an authored example. Inspection reads the current receipts before
+summarizing; it leaves existing follow-ups unchanged and does not poll a source,
+resend a message or restart an observer. Saved references survive context
+compaction in this conversation. The recap covers its own recorded follow-ups;
+it does not inventory other conversations, environments or hosts.
 
 A reminder's acknowledgement confirms receipt before follow-up work finishes.
-Pending or unknown native turn outcomes remain visible. Failed or interrupted
-follow-ups need attention until you explicitly cancel that reminder; its receipts
-stay in history. Cancellation preserves an already running native turn, whose
-unknown outcome remains visible until a terminal receipt is recorded. Inspection
-does not infer completion from missing receipts or retry the follow-up.
-
-"What am I still waiting on?" combines this conversation's watches, reminders
-and recorded outgoing-message receipts. References survive context compaction;
-message inspection can rediscover them without another send. Each receipt shows
-the stored information/request kind and a short quoted message excerpt, so
-several messages to the same peer can be distinguished. The model should
-state incomplete coverage and distinguish last confirmed facts from current
-activity. This is a recap of the bound conversation, not an inventory across
-other conversations, environments or hosts.
+Pending or unknown native turn outcomes remain visible. A failed or interrupted
+follow-up needs attention until you explicitly cancel that reminder; its receipts
+stay in history. Cancellation preserves an already consumed native turn, whose
+unknown outcome remains visible until a terminal receipt is recorded. A missing
+receipt stays unknown even if the coordinator has exited; it is not inferred as
+success or automatically retried. Unresolved delivery/withdrawal also stays visible.
 
 Detailed inspection shows up to three event receipts with unresolved delivery
 first, plus bounded renewal details. A receipt records observation, admission or
@@ -180,5 +192,5 @@ operation and your judgment of the interaction still need daily-use evidence.
 Use the [soak checklist](soak-checklist.md) during normal work. See
 [how the package works](architecture.md) for component boundaries, Claude
 workflow coverage and evidence, or the [browser walkthrough](presentation.md)
-for four illustrative scenes. Low-level CLI diagnostics remain in the
+for illustrative examples. Low-level CLI diagnostics remain in the
 [technical watch guide](watch-candidate.md).

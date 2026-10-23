@@ -1,7 +1,7 @@
 # Daily-use refinement and unified-release results
 
 Started 2026-10-21. The selected scope is recorded in the
-[implementation plan](codex-plus-plan.md#current-pass-daily-use-refinement-and-unified-releases).
+[implementation plan](codex-plus-plan.md#completed-pass-daily-use-refinement-and-unified-releases).
 
 ## Baseline
 

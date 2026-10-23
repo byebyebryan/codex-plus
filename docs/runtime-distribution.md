@@ -6,16 +6,10 @@ paths. It requires an already running owning daemon and loaded independent
 sessions; it never starts a daemon or cold-resumes a target. Long production
 operation, native owner replacement and personal UX acceptance remain separate.
 
-Previous monitoring release: [v0.1.0-preview.3](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.3),
-source `c73c237c734eb7e20b46185cccd471edfc803520`. Runtime SHA-256:
-`43908c4b5b238fdbb81187050f0e7bfd4653a6f4d3677e1f1c9577ff443cd24f`.
-The artifact contains 21 declared runtime files plus its manifest. The
-[source-access report](source-access-pass-results.md) separates source, artifact,
-installed native qualification and managed wiring from live apply/enablement.
-
 ## One Codex Plus release
 
-Starting with **v0.1.0-preview.9**, workers, monitoring and reporting share one
+The published release is [v0.1.0-preview.9](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.9),
+source `0ec803d`. Workers, monitoring and reporting share one
 version, source commit, GitHub tag and release. A reporting-only fix still advances
 the product version; release notes identify which capabilities changed. Components
 remain optional and keep their own configuration, data and running processes.
@@ -32,6 +26,13 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 plugin manifests and all component manifests use it. The worker archive retains
 the existing default and optional legacy identities; packaging does not enable
 legacy skills or change explicit workflow invocation.
+
+Main also contains unreleased recap/history and loaded-MCP metadata refinements.
+They are not in the preview.9 archives. See
+[released and source features](getting-started.md#released-and-source-features)
+and [candidate evidence](native-alignment-results.md). A new unified release is
+required before updating managed URLs, revisions and checksums; existing tags
+and artifacts are immutable. Documentation publication is a separate operation.
 
 From a clean committed checkout, build into a new directory outside it:
 
@@ -86,7 +87,9 @@ integrity, aligned/mixed component versions, enabled MCP configuration and nativ
 client/owner versions. It never starts or restarts a daemon, MCP process, watch or
 report server. Selected files and enabled config do not establish already loaded
 process versions. Codex 0.163.0 is currently outside the recorded 0.162.1 native
-qualification baseline; daily use and fixture CI do not silently extend it.
+release qualification baseline. The source candidate has bounded owned 0.163.0
+trials; daily use and fixture CI do not silently extend that evidence to blanket
+compatibility or long unattended operation.
 
 The unreleased source candidate adds the following metadata check; installed
 preview.9 retains its earlier selected-file diagnosis.
@@ -192,3 +195,13 @@ of fresh-session activation. The managed installation pass applies only the sele
 runtime/wiring and Codex Plus configuration; its host evidence is recorded in the
 implementation handoff. Fresh owned native acceptance must run from the installed
 artifact with the shipped instructions, independent of this checkout.
+
+### Earlier component artifacts
+
+The previous monitoring release, [v0.1.0-preview.3](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.3),
+used source `c73c237c734eb7e20b46185cccd471edfc803520`. Its runtime SHA-256 is
+`43908c4b5b238fdbb81187050f0e7bfd4653a6f4d3677e1f1c9577ff443cd24f`,
+with 21 declared runtime files plus its manifest. It remains historical/rollback
+evidence; it is not the current unified release. The
+[source-access report](source-access-pass-results.md) separates source, artifact,
+installed native qualification and managed wiring from live apply/enablement.

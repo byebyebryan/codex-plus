@@ -120,6 +120,26 @@ Recovery is explicit, retains remaining bounds, discloses gaps and does not repl
 uncertain admitted events. The runtime does not claim exactly-once processing,
 replace the native owner or intercept `/exit` with a confirmation dialog.
 
+### Returning to unfinished work in the source candidate
+
+The unreleased candidate composes a recap from the existing watch/reminder
+journals and sender-owned outgoing references. Reminder history is paginated;
+outgoing receipts include their kind and a bounded quoted purpose. This is the
+bound conversation's recorded work, with cached evidence and coverage limits.
+It neither inventories every session nor starts new observation.
+
+Fulfilled reminder delivery intent can precede completion of its native
+follow-up turn. Acknowledgement records receipt. Pending or unknown outcomes
+stay visible, including consumed callbacks after cancellation. Failed/interrupted
+turns need attention until explicit reminder cancellation; terminal receipts
+remain in history. Missing terminal evidence remains unknown even after a
+coordinator exits. Inspection does not retry or infer success. Uncertain delivery
+or withdrawal remains visible independently of that attention state.
+
+See [the daily recap example](daily-use.md#inspect-follow-up-health),
+[release availability](getting-started.md#released-and-source-features) and
+[the review evidence](native-alignment-results.md#review-corrections).
+
 ## Coverage of the studied Claude workflow
 
 Bryan's sampled Claude histories supplied the sequence: observe, wake, inspect,
@@ -140,7 +160,7 @@ The [context study](claude-monitoring-context.md) retains the sanitized counts.
 | Interrupt, stop or detach | Separate foreground interruption, cancellation and viewer detachment | Relevant lifecycle evidence; no native `/exit` confirmation interception. |
 | Persistent recurring calendar work | Not supplied by the preview | One-shot/adaptive mechanisms are not a cron service. |
 
-The official Claude documentation snapshot, checked 2026-10-14, describe command or WebSocket
+The official Claude documentation snapshot, checked 2026-10-14, describes command or WebSocket
 Monitor sources, deadline notices and explicit cancellation. Its scheduling docs
 describe adaptive loops and recurring/one-shot tasks, with a distinct Esc rule
 for a waiting self-paced loop. These are comparison references, not Codex Plus

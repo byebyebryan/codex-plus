@@ -29,6 +29,7 @@ than making it the normal usage pattern.
 | Control | Explicit stop prevented renewal/replacement and left observed work intact; Esc behaved as foreground interruption. |
 | Conversation | Follow-ups respected foreground work, human input and drafts; a peer's text did not create new task authority. |
 | Delivery/receipts | Queued, handled, accepted/declined and external success were reported separately; uncertainty was not blindly replayed. |
+| Returning to work (source candidate) | A recap reread this conversation's stored receipts, kept pending/failed follow-ups visible and explained stale or missing outcomes without resending or restarting. |
 | Cost | Cadence matched the task; MCP checks had visible model use, while quiet command reads avoided inference per poll. |
 | Reporting | A readable result and reachable immutable link were useful from the viewing desktop; publication and HTTP delivery were distinguished. |
 
@@ -40,7 +41,7 @@ observing a known useful transition, its handling and an effective stop.
 Copy this into a private working note when a meaningful episode occurs:
 
 ```text
-Date / host / preview versions:
+Date / host / Codex Plus version and source revision, if known:
 Scenario: peer / endpoint / logs / MCP / reminder / report
 Request, summarized without private names or credentials:
 Expected useful condition:

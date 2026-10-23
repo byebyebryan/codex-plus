@@ -21,6 +21,23 @@ Workers, monitoring and reporting use the same version and source commit in each
 release. Choose the archives you need from its single GitHub release; see
 [release verification](runtime-distribution.md#one-codex-plus-release).
 
+## Released and source features
+
+These guides follow the development source. The published release is
+**v0.1.0-preview.9**; a source change or documentation update does not upgrade an
+installed component or reload an existing MCP process.
+
+| Available in | What to expect |
+| --- | --- |
+| Released preview.9 | Worker workflows, watches, one-shot later checks, same-daemon peer coordination, reports and selected-file diagnosis. |
+| Unreleased source candidate | Bounded reminder history, outgoing-message rediscovery with kind and quoted purpose, pending/failed follow-up visibility, and reported MCP-version diagnosis for one loaded conversation. |
+
+The new “What am I still waiting on?” example uses the source candidate's
+inspection improvements. See [daily use](daily-use.md#inspect-follow-up-health)
+for its behavior and [the review results](native-alignment-results.md#review-corrections)
+for evidence and limits. Publish a new unified release before changing managed
+pins; existing preview.9 artifacts keep their original contents.
+
 ## If your setup is already managed
 
 Use the configuration manager that owns your agent, skill and MCP files. For
@@ -51,8 +68,9 @@ decisions and review. Generic “goal loop” wording does not select a worker.
 
 The [monitoring installation guide](runtime-distribution.md) covers verified
 release archives, immutable installation and MCP configuration. The preview
-targets Linux/Unix, Python 3.11 or newer and RTK. It was qualified against Codex
-0.162.1; that is a compatibility result, not a claim about every newer client.
+targets Linux/Unix, Python 3.11 or newer and RTK. The release qualification
+baseline is Codex 0.162.1. The source candidate also has bounded owned trials on
+0.163.0; neither result establishes compatibility with every newer client.
 
 Integrate the generated MCP table through your configuration owner. Once loaded
 in a native conversation, ask for a useful update from a source your session

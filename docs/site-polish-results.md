@@ -1,5 +1,48 @@
 # Documentation and site polish
 
+## Source documentation follow-up: 2026-10-22
+
+The post-review audit found that the latest recap fixes appeared in technical
+results and the daily guide but had no walkthrough. Availability was easy to
+misread: the README had no prominent source/release distinction and the runtime
+installation guide opened with a historical preview.3 checksum.
+
+The candidate reconciles README, setup, daily-use, architecture and installation
+guidance around released preview.9 and unreleased source features. A five-scene
+walkthrough adds returning to unfinished work, including acknowledgement versus
+completion, cached message purpose, unknown outcomes and explicit cancellation
+of a known failed follow-up. Availability stays visible throughout that scene.
+Luna/task/goal-loop coverage and all eight public guide routes remain available.
+
+The whole-repository Markdown audit also found a stale refinement-plan fragment.
+Its referring link now uses the completed-pass anchor, and the old anchor is
+restored as an alias for existing readers. Historical receipts remain intact.
+
+The candidate passes the 124-file clean inventory, unchanged worker/skill
+contracts, 33 existing Pages/presentation/metadata tests and diff checks. The
+generated walkthrough and eight guides pass 234 local page/asset/anchor checks
+and the public inventory, metadata and sitemap contract. The repository Markdown
+link/fragment audit passes as well.
+
+An owned headless Chrome profile exercised all 20 authored scene states at
+1440, 768, 390 and 320 pixels (80 state/viewport checks), including back/reset,
+availability labels and scene controls contained within their card. It checked
+the actual clipboard fallback, manual copying, native Enter activation, both
+environment selections, cost slider, FAQ, checklist and download. All eight
+guide routes, skip/contents navigation, architecture SVG, reduced motion and
+no-JavaScript content passed with no global overflow or browser errors.
+Desktop/mobile screenshots were inspected, including the new catch-up scene.
+
+All 58 protected runtime/agent/skill/script and pre-existing bytecode hashes and
+modes match the baseline. The owned browser and temporary loopback preview
+server were closed. No managed apply, report-store publication, release repin,
+service restart or real session interaction was performed.
+
+This pass updates local source. Public Pages publication and a new unified
+runtime release/distribution remain separate; the published release is still
+preview.9. Historical publication receipts below describe their tested editions.
+Browser/source acceptance does not extend native runtime or soak qualification.
+
 ## Repository discovery follow-up: 2026-10-21
 
 The repository About panel already linked the public site, but the README placed
