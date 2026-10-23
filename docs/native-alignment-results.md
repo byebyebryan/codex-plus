@@ -65,7 +65,9 @@ cursors cannot be reused as watch cursors.
 Previously, `message_status` required a reference that could disappear from
 model context. The existing store retained those references. Omitting `message`
 now lists this caller's recorded outgoing receipts, newest first, with bounded
-pagination. Exact-reference inspection still works.
+pagination. Each receipt includes the stored information/request kind and a
+quoted message excerpt clipped to 512 UTF-8 bytes before presentation markers.
+Exact-reference inspection includes the same purpose and still works.
 
 Reopening the API recovers references without sending or retrying. Sender
 ownership is checked. A missing recipient journal reports unknown delivery and
@@ -107,6 +109,40 @@ skips the check. Reporting-only installs work without monitoring's optional
 native-introspection module. Client initialization also reports the unified
 package version instead of a hardcoded base version.
 
+## Review corrections
+
+The subsequent read-only review reproduced two correctness gaps in fixtures.
+After acknowledgement, a reminder's fulfilled delivery intent disappeared from
+the default current view even while its native callback was pending or later
+failed/interrupted. Rediscovered outgoing receipts identified references and
+destinations but omitted the message kind and purpose, leaving multiple messages
+to the same peer indistinguishable after context loss.
+
+The reminder view now keeps pending or unknown native callback outcomes visible,
+including already consumed callbacks whose reminder was cancelled. Known failed
+or interrupted follow-ups need attention until explicit `wake_cancel`; that
+closes attention and retains receipts in history. Successful acknowledged native
+turns leave the current view. Existing delivery/withdrawal uncertainty remains
+visible. No automatic retry, replacement or native interruption was added.
+These are cached receipts: absent terminal evidence stays unknown, including
+when the coordinator has already exited. Inspection starts no listener or source.
+Watch classification and existing cursor formats are unchanged.
+
+Outgoing receipt inspection now reads kind and purpose from the existing
+recipient journal after verifying sender ownership. The excerpt is bounded,
+control characters are cleaned and each displayed line is quoted. Missing
+journals still report unknown handling without recreation or resend. No new
+message copy, database schema or tool was introduced.
+
+Five new regression tests failed before their corresponding fixes. They cover
+callback outcomes and pagination, explicit failure resolution, cancellation of
+consumed pending callbacks, distinct message purposes after reopening, and
+multiline Unicode clipping. Existing sender-isolation, no-resend and paging
+tests were extended. The cancellation matrix also covers callbacks that ended
+without acknowledgement and retains unresolved withdrawal receipts. The full
+suite passes 317 tests. This review correction
+pass uses fixtures only and adds no native-trial or deployment acceptance.
+
 ## Owned native walkthrough
 
 Two fresh independent conversations used the existing daemon and source MCP
@@ -135,7 +171,7 @@ coordinators had exited. The test conversations were archived after completion.
 
 ## Validation and limits
 
-The candidate passes **312 fixture tests**, including reminder bounds/history,
+The candidate passes **317 fixture tests**, including reminder bounds/history,
 receipt rediscovery after reopening, pagination and sender isolation, missing
 journal behavior, loaded metadata uncertainty, reproducible packaging and
 reporting-only relocated diagnosis. Worker validation remains separate from

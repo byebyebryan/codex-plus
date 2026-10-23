@@ -123,9 +123,18 @@ answer distinguishes cached intent, due time, lease expiry and handling. Ask for
 reminder history to include settled checks; both lists are bounded and paginated.
 Inspection leaves existing follow-ups unchanged and explains stale evidence.
 
+A reminder's acknowledgement confirms receipt before follow-up work finishes.
+Pending or unknown native turn outcomes remain visible. Failed or interrupted
+follow-ups need attention until you explicitly cancel that reminder; its receipts
+stay in history. Cancellation preserves an already running native turn, whose
+unknown outcome remains visible until a terminal receipt is recorded. Inspection
+does not infer completion from missing receipts or retry the follow-up.
+
 "What am I still waiting on?" combines this conversation's watches, reminders
 and recorded outgoing-message receipts. References survive context compaction;
-message inspection can rediscover them without another send. The model should
+message inspection can rediscover them without another send. Each receipt shows
+the stored information/request kind and a short quoted message excerpt, so
+several messages to the same peer can be distinguished. The model should
 state incomplete coverage and distinguish last confirmed facts from current
 activity. This is a recap of the bound conversation, not an inventory across
 other conversations, environments or hosts.

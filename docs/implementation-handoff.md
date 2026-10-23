@@ -17,6 +17,13 @@ metadata to the doctor. The 15-tool monitoring surface and native ownership stay
 intact. Owned synthetic trials supply bounded 0.163.0 evidence; the candidate is
 not released or installed. Managed deployment remains outside this pass.
 
+The review follow-up fixes two recap gaps: acknowledged reminder callbacks stay
+visible while their outcome is unknown or needs attention, and outgoing receipts
+include the stored message kind and a bounded quoted purpose. Explicit reminder
+cancellation closes known failure attention while preserving native work and
+history. Five new regressions bring the fixture suite to 317; these fixes add no
+new native-runtime qualification. See the [review results](native-alignment-results.md#review-corrections).
+
 The completed refinement pass fixes status freshness, reminder expiry and bounded
 watch history; adds full fixture CI and read-only installation diagnosis; and
 unifies workers, monitoring and reporting under **v0.1.0-preview.9**. See
@@ -110,7 +117,8 @@ See the [rollout receipt](refinement-results.md#managed-rollout-2026-10-22).
 That managed rollout performed no service restart, global MCP refresh or new
 native model trial.
 
-The subsequent natural-follow-up source candidate passes 312 fixture tests.
+The subsequent natural-follow-up source candidate, including review corrections,
+passes 317 fixture tests.
 Owned trials cover contextual peer choice, message handling, a known blocker, a
 later configured MCP check, explicit stop, actual compaction and foreground
 interruption that preserves observation. Helper loss is reported as uncertain;

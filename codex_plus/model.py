@@ -146,8 +146,8 @@ def tool_definitions(max_duration=86400, max_events=1000):
          {'after': {'type': 'number', 'minimum': 0, 'exclusiveMaximum': max_duration},
           'duration': {**_number(max_duration), 'description': 'Expiry from registration. Defaults to delay plus 120 seconds, capped at the configured lifetime; must exceed after.'},
           'prompt': _string(maximum=4096)}, ['after', 'prompt']),
-        ('wake_list', 'Inspect bounded cached one-shot reminders and their delivery/handling state. Default current view includes active and unresolved work; choose history for ended checks and follow next_cursor for more. Does not start a coordinator, poll or renew.', history_options, []),
-        ('wake_cancel', 'Cancel the selected one-shot reminder. Preserve native work; already consumed input cannot be retracted. Never replace a cancelled reminder.',
+        ('wake_list', 'Inspect bounded cached one-shot reminders and their delivery/handling state. Current includes pending or unknown follow-up turns and failed/interrupted turns needing attention; acknowledgement is not completion. Choose history for ended checks and follow next_cursor for more. Does not start a coordinator, poll or renew.', history_options, []),
+        ('wake_cancel', 'Cancel the selected one-shot reminder, or close attention on a failed/interrupted follow-up while retaining receipts. Preserve native work; already consumed input cannot be retracted. Never replace a cancelled reminder.',
          {'wake': _string('A reminder reference returned by wake_schedule or wake_list.')}, ['wake']),
     ]
     reads = {'peer_list', 'peer_inspect', 'watch_list', 'watch_inspect', 'message_status', 'wake_list'}

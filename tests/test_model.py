@@ -340,13 +340,13 @@ class ModelTests(unittest.TestCase):
             self.assertIn('not acknowledged', text)
             self.assertEqual(before, (api.store.job(identity), api.store.event(event)))
 
-    def _acknowledged_reminder(self, api, prompt):
+    def _reminder_callback(self, api, prompt, *, acknowledged=True):
         identity = api.store.create('wake', {'after': 0, 'duration': 120, 'prompt': prompt})
         event = api.store.emit(identity, prompt, 'wake')
         turn = str(uuid.uuid4())
         api.store.admitted(event, 'native-' + event)
         api.store.link_turn(event, turn)
-        api.store.acknowledge(event)
+        if acknowledged: api.store.acknowledge(event)
         api.store.settle(identity)
         return identity, event, turn
 
@@ -354,7 +354,7 @@ class ModelTests(unittest.TestCase):
         with self.api() as api:
             expected = set()
             for outcome in (None, 'completed', 'failed', 'interrupted'):
-                identity, event, turn = self._acknowledged_reminder(api, 'Callback ' + str(outcome))
+                identity, event, turn = self._reminder_callback(api, 'Callback ' + str(outcome))
                 self.assertEqual(api.store.job(identity)['intent'], 'completed')
                 if outcome is not None: api.store.turn_completed(turn, outcome)
                 if outcome != 'completed': expected.add(identity)
@@ -383,37 +383,48 @@ class ModelTests(unittest.TestCase):
     def test_cancelling_failed_reminder_followups_closes_attention_and_retains_receipts(self):
         with self.api() as api:
             for outcome in ('failed', 'interrupted'):
-                with self.subTest(outcome=outcome):
-                    prompt = 'Resolve callback ' + outcome
-                    identity, event, turn = self._acknowledged_reminder(api, prompt)
-                    api.store.turn_completed(turn, outcome, {'message': 'Synthetic callback failure'})
-                    self.assertIn(prompt, api.call('wake_list', {}))
-                    ref = api._remember('wake', identity)
-                    api.call('wake_cancel', {'wake': ref})
-                    self.assertNotIn(prompt, api.call('wake_list', {}))
-                    history = api.call('wake_list', {'scope': 'history'})
-                    for expected in (prompt, 'turn ' + outcome, 'handling acknowledged',
-                                     'cached intent cancelled', 'Synthetic callback failure'):
-                        self.assertIn(expected, history)
-                    self.assertEqual(api.store.event(event)['withdraw_state'], 'consumed')
-            self.assertEqual(len(api.store.jobs()), 2)
-            self.assertEqual(len(api.store.events()), 2)
+                for acknowledged in (True, False):
+                    with self.subTest(outcome=outcome, acknowledged=acknowledged):
+                        prompt = 'Resolve callback ' + outcome + ' ack=' + str(acknowledged)
+                        identity, event, turn = self._reminder_callback(api, prompt, acknowledged=acknowledged)
+                        api.store.turn_completed(turn, outcome, {'message': 'Synthetic callback failure'})
+                        api.store.settle(identity)
+                        self.assertIn(prompt, api.call('wake_list', {}))
+                        ref = api._remember('wake', identity)
+                        api.call('wake_cancel', {'wake': ref})
+                        self.assertNotIn(prompt, api.call('wake_list', {}))
+                        history = api.call('wake_list', {'scope': 'history'})
+                        for expected in (prompt, 'turn ' + outcome,
+                                         'handling ' + ('acknowledged' if acknowledged else 'not acknowledged'),
+                                         'cached intent cancelled', 'Synthetic callback failure'):
+                            self.assertIn(expected, history)
+                        self.assertEqual(api.store.event(event)['withdraw_state'], 'consumed')
+                        if outcome == 'failed' and acknowledged:
+                            api.store.withdrawal(event, 'unknown', 'Synthetic missing withdrawal receipt')
+                            text = api.call('wake_list', {})
+                            self.assertIn(prompt, text)
+                            self.assertIn('withdrawal unknown', text)
+            self.assertEqual(len(api.store.jobs()), 4)
+            self.assertEqual(len(api.store.events()), 4)
             self.assertEqual(api.store.renewals(), [])
 
     def test_cancelled_consumed_reminder_stays_current_until_its_turn_outcome_is_known(self):
         with self.api() as api:
-            identity, event, turn = self._acknowledged_reminder(api, 'Already running callback')
-            ref = api._remember('wake', identity)
-            api.call('wake_cancel', {'wake': ref})
-            text = api.call('wake_list', {})
-            self.assertIn('Already running callback', text)
-            self.assertIn('cached intent cancelled', text)
-            self.assertIn('Follow-up turn pending or outcome unknown', text)
-            self.assertEqual(api.store.event(event)['withdraw_state'], 'consumed')
-            api.store.turn_completed(turn, 'interrupted')
-            self.assertNotIn('Already running callback', api.call('wake_list', {}))
-            self.assertIn('turn interrupted', api.call('wake_list', {'scope': 'history'}))
-            self.assertEqual(len(api.store.jobs()), 1)
+            for acknowledged, outcome in ((True, 'completed'), (False, 'completed'), (False, 'interrupted')):
+                with self.subTest(acknowledged=acknowledged, outcome=outcome):
+                    prompt = 'Running callback ack=' + str(acknowledged) + ' then ' + outcome
+                    identity, event, turn = self._reminder_callback(api, prompt, acknowledged=acknowledged)
+                    ref = api._remember('wake', identity)
+                    api.call('wake_cancel', {'wake': ref})
+                    text = api.call('wake_list', {})
+                    self.assertIn(prompt, text)
+                    self.assertIn('cached intent cancelled', text)
+                    self.assertIn('Follow-up turn pending or outcome unknown', text)
+                    self.assertEqual(api.store.event(event)['withdraw_state'], 'consumed')
+                    api.store.turn_completed(turn, outcome)
+                    self.assertNotIn(prompt, api.call('wake_list', {}))
+                    self.assertIn('turn ' + outcome, api.call('wake_list', {'scope': 'history'}))
+            self.assertEqual(len(api.store.jobs()), 3)
             self.assertTrue(all(method in ('thread/loaded/list', 'thread/read', 'thread/turns/list', 'thread/goal/get')
                                 for method, _ in self.backend.calls), self.backend.calls)
 
