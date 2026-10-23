@@ -497,7 +497,9 @@ class ModelTests(unittest.TestCase):
                 recipient.db.execute('UPDATE jobs SET spec=? WHERE id=?',(json.dumps(spec),job['id']))
             with self.assertRaises(ValueError):api.call('message_cancel',{'message':'m1'})
             with self.assertRaises(ValueError):api.call('message_status',{'message':'m1'})
-            self.assertIn('this caller does not own', api.call('message_status', {}))
+            text = api.call('message_status', {})
+            self.assertIn('this caller does not own', text)
+            self.assertNotIn('Updated fixture.', text)
             with closing(Store(self.root/B)) as recipient:self.assertEqual(recipient.jobs()[0]['intent'],'active')
 
     def test_outgoing_receipts_are_rediscoverable_after_context_loss_and_paginated_without_sends(self):
@@ -514,14 +516,55 @@ class ModelTests(unittest.TestCase):
             self.assertNotIn('m3: intent', text)
             self.assertIn('Showing 20 of 23', text)
             self.assertIn('next_cursor: m4', text)
+            self.assertIn('Synthetic checksum 22', text)
+            self.assertNotIn('> Synthetic checksum 2\n', text)
             older = api.call('message_status', {'cursor': 'm4'})
             self.assertIn('m3: intent', older)
             self.assertIn('m1: intent', older)
+            self.assertIn('Synthetic checksum 0', older)
             self.assertNotIn('next_cursor:', older)
             self.assertIn('m1: intent', api.call('message_status', {'message': 'm1'}))
             self.assertEqual(api.store.jobs(), [])
         with closing(Store(self.root / B)) as recipient:
             self.assertEqual(before, (recipient.jobs(), recipient.events()))
+
+    def test_rediscovered_receipts_identify_distinct_message_purposes_and_kinds(self):
+        with self.api(allowed={A, B}) as api:
+            self.discover(api)
+            api.call('peer_send', {'peer': 'validation', 'kind': 'information',
+                                  'message': 'The checksum changed to the new fixture.'})
+            api.call('peer_send', {'peer': 'validation', 'kind': 'request',
+                                  'message': 'Review the release notes before publishing.'})
+        with closing(Store(self.root / B)) as recipient:
+            before = recipient.jobs(), recipient.events()
+        with self.api() as api:
+            text = api.call('message_status', {})
+            for expected in ('m1: intent', 'm2: intent',
+                             'Stored information:\n> The checksum changed to the new fixture.',
+                             'Stored request:\n> Review the release notes before publishing.'):
+                self.assertIn(expected, text)
+            exact = api.call('message_status', {'message': 'm2'})
+            self.assertIn('Stored request:\n> Review the release notes before publishing.', exact)
+            self.assertNotIn('The checksum changed', exact)
+            self.assertEqual(api.store.jobs(), [])
+        with closing(Store(self.root / B)) as recipient:
+            self.assertEqual(before, (recipient.jobs(), recipient.events()))
+
+    def test_outgoing_purpose_is_quoted_cleaned_and_bounded_for_unicode_multiline_messages(self):
+        message = 'Review checksum\x1b\n' + 'é' * 500 + '\nPRIVATE END OF LONG FIXTURE'
+        with self.api(allowed={A, B}) as api:
+            self.discover(api)
+            api.call('peer_send', {'peer': 'validation', 'kind': 'request', 'message': message})
+            text = api.call('message_status', {'message': 'm1'})
+            self.assertIn('Stored request:\n> Review checksum\n> é', text)
+            self.assertIn('[truncated]', text)
+            self.assertNotIn('\x1b', text)
+            self.assertNotIn('PRIVATE END OF LONG FIXTURE', text)
+            excerpt = text.split('Stored request:\n', 1)[1]
+            self.assertTrue(all(line.startswith('> ') for line in excerpt.splitlines()))
+            self.assertLess(len(excerpt.encode()), 600)
+        with closing(Store(self.root / B)) as recipient:
+            self.assertEqual(recipient.jobs()[0]['spec']['prompt'], message)
 
     def test_outgoing_discovery_is_scoped_to_its_sender_and_validates_pagination(self):
         with self.api(allowed={A, B}) as api:

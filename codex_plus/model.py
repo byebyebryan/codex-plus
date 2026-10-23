@@ -135,7 +135,7 @@ def tool_definitions(max_duration=86400, max_events=1000):
          {'watch': watch}, ['watch']),
         ('peer_send', 'Send one attributed information message or request within the recipient existing task. Requests do not override direct user instructions or authorize new tasks. Do not repeat an uncertain send.',
          {'peer': peer, 'message': _string(maximum=4096), 'kind': {'type': 'string', 'enum': ['information', 'request']}, 'duration': _number(max_duration)}, ['peer', 'message']),
-        ('message_status', 'Read a sent message receipt, or omit message to rediscover this conversation\'s recorded outgoing messages, newest first. Follow next_cursor for older messages. Cached receipts do not prove fresh recipient activity or external effects; no send or retry.',
+        ('message_status', 'Read a sent message receipt, or omit message to rediscover this conversation\'s recorded outgoing messages, newest first. Includes stored kind and a bounded quoted message. Follow next_cursor for older messages. Cached receipts do not prove fresh recipient activity or external effects; no send or retry.',
          {'message': _string('A sent message reference.'), 'limit': _number(50, 1, True),
           'cursor': _string('A next_cursor from an outgoing message_status page.')}, []),
         ('message_cancel', 'Cancel your selected outgoing message intent and reconcile pending input. Never interrupt the recipient or retract completed handling; inspect message_status for withdrawal/handling receipts.',
@@ -576,7 +576,9 @@ class ModelAPI:
             with_store.close()
         text = row['ref'] + ': intent ' + job['intent'] + '; ' + receipt['delivery'] + '; withdrawal ' + receipt['withdraw_state'] + '; turn ' + str(receipt['turn_outcome'] or 'not yet known') + '; handling ' + ('acknowledged' if receipt['acknowledged'] else 'not acknowledged')
         if response: text += '; recipient ' + response['outcome'] + ': ' + clean_text(response['detail'], 1024)
-        return text + '. Receipt/acceptance does not prove an external effect.'
+        return (text + '. Receipt/acceptance does not prove an external effect.\nStored ' +
+                label(job['spec'].get('message_kind', 'information')) + ':\n' +
+                quote(clean_text(job['spec']['prompt'], 512)))
 
     def _message_cancel(self, message):
         self._mutable()
