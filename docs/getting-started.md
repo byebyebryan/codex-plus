@@ -40,7 +40,7 @@ contents; choose the new release through your installation's configuration owner
 ## If your setup is already managed
 
 Use the configuration manager that owns your agent, skill and MCP files. For
-Bryan's Snap and Starship installations, that is chezmoi. Open a fresh ordinary
+Bryan's Snap, Starship and Carbon installations, that is chezmoi. Open a fresh ordinary
 session in the intended environment and use a request from the table above.
 Existing explicit opt-outs remain effective. Loaded processes adopt selected
 code on normal reconnect; updating documentation does not update them.

@@ -3,12 +3,22 @@
 Updated 2026-10-22. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are
-installed and enabled on Snap and Starship. Current sources are reconciled.
+installed and enabled on Snap, Starship and Carbon. Current sources are reconciled.
 Real-source soak and personal UX acceptance remain separate from synthetic proof.
 
 Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
+
+## Preview.10 publication and deployment
+
+Completed 2026-10-22. Unified preview.10 from `078c630` is published with matching
+reproducible/fetched artifacts. Pages and Python 3.11/3.14 CI pass. Dotfiles main
+selects all three component archives through `49cfc41`; scoped script-excluded
+applies converge on Snap (OSS/work), Starship and Carbon. Private configuration,
+older releases and all 39 recorded native/MCP/report processes are preserved.
+See the [acceptance receipt](refinement-results.md#preview10-publication-and-managed-rollout).
+Existing connections keep their captured code until normal reconnect.
 
 ## Documentation and presentation follow-up
 

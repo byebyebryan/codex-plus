@@ -102,7 +102,7 @@ coverage, protected files and the distinction from runtime qualification.
 
 ## Source follow-up: 2026-10-22
 
-The next source edition retains all eight guide routes and adds a fifth,
+The source follow-up retained all eight guide routes and added a fifth,
 four-step catch-up scene. The scene and setup guide distinguish released
 preview.9 from unreleased recap/history and diagnosis changes. README, daily-use,
 architecture and installation guidance use the same availability boundary.
@@ -110,3 +110,13 @@ The [presentation notes](presentation.md) explain the authored examples;
 [polish results](site-polish-results.md) record candidate validation separately
 from public delivery. A local build or browser check does not publish this edition
 or distribute its runtime features.
+
+## Preview.10 publication: 2026-10-22
+
+Pages run `39893331291` published the five-scene edition and all eight guides.
+All 11 public files matched the generated release candidate; an owned browser
+verified 20 scene states across four viewport widths and the guide interactions.
+The walkthrough now labels the recap workflow as available in preview.10.
+The subsequent documentation receipt updates managed status to Snap, Starship
+and Carbon; it does not change the immutable release source or running code.
+See the [release and deployment receipt](refinement-results.md#preview10-publication-and-managed-rollout).

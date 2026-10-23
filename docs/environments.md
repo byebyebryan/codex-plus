@@ -100,10 +100,10 @@ matches the selected store and endpoint; foreign legacy sessions are left alone.
 Do not change an active config's storage or endpoint before stopping its owned
 server. Distinct configurations require distinct listening endpoints.
 
-The unified Codex Plus preview.9 release supplies optional monitoring/reporting
-archives with the shared resolver, context CLI and read-only doctor. Snap and
-Starship select preview.9 for all three components after the scoped live apply on
-2026-10-22. Existing native, MCP and report processes were preserved; already
+The unified Codex Plus preview.10 release supplies optional monitoring/reporting
+archives with the shared resolver, context CLI and read-only doctor. Snap,
+Starship and Carbon select preview.10 for all three components after the scoped
+live apply on 2026-10-22. Existing native, MCP and report processes were preserved; already
 loaded processes adopt the selected release on normal reconnect. Previous monitoring previews 1–3
 and reporting previews 7–8 remain verifiable/selectable. All new components share
 one release version; each host retains its own deployment receipts. The notification

@@ -72,7 +72,7 @@ this preview. Use the [soak checklist](docs/soak-checklist.md) to collect actual
 evidence without manufacturing workloads.
 
 <details>
-<summary>Managed deployment details: Snap and Starship</summary>
+<summary>Managed deployment details: Snap, Starship and Carbon</summary>
 
 Use `codex` for Snap OSS and `codex-work` for work, including their `agents`
 subcommands. The old `codex-oss` compatibility entry point is retired. These are
@@ -80,10 +80,10 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Snap and Starship select **v0.1.0-preview.9** for workers, monitoring and reporting
-from source `0ec803d` through chezmoi. The scoped rollout on 2026-10-22 verified
-all component manifests and preserved native daemons, active MCP processes,
-configuration and report hosting. Existing processes adopt new code on normal
+Snap, Starship and Carbon select **v0.1.0-preview.10** for workers, monitoring and
+reporting from source `078c630` through chezmoi. The scoped rollout on 2026-10-22
+verified all component manifests and preserved native daemons, active MCP
+processes, configuration and report hosting. Existing processes adopt new code on normal
 reconnect. The [implementation handoff](docs/implementation-handoff.md) records
 source, release and installed state.
 

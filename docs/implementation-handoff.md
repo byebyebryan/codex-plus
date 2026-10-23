@@ -9,14 +9,23 @@ coordination and independent static reports around native Codex. Native Codex
 owns its conversations, goals, execution policy and daemons. Worker workflows
 remain explicitly invoked; a generic goal loop does not activate them.
 
+The **preview.10 publication and managed rollout is complete**. Release source
+`078c630` supplies workers, monitoring and reporting under one tag; dotfiles main
+`49cfc41` selects it on Snap (OSS/work), Starship and Carbon. All manifests verify,
+scoped diffs converge and fresh MCP protocol discovery reports preview.10 with
+15 monitoring/four report tools. All 39 recorded native/MCP/report processes,
+265 protected paths and four HTTP report endpoints match the starting baseline.
+No daemon/server restart, global MCP refresh or new native model trial occurred.
+See the [full receipt](refinement-results.md#preview10-publication-and-managed-rollout).
+
 The [documentation follow-up](site-polish-results.md#source-documentation-follow-up-2026-10-22)
 completed 2026-10-22 after the recap fixes. It reconciles source/release availability
 across the entry points and guides, and adds a fifth illustrative catch-up scene.
 All 20 authored scene states pass actual candidate browser checks at desktop,
 tablet and narrow mobile widths, alongside the eight guide routes and controls.
 That local pass preserved runtime, worker and skill bytes. The authorized
-publication now packages the reviewed work as preview.10; publication and
-managed rollout are separate acceptance steps, with no historical trial to replay.
+publication packages the reviewed work as preview.10. Public delivery/browser
+and managed rollout checks passed independently, with no historical trial replayed.
 
 The [native alignment and natural follow-up pass](native-alignment-results.md)
 completed 2026-10-22 after Bryan's project review and goal-loop request. Its source
@@ -69,11 +78,12 @@ Continue with ordinary use and its evidence.
 
 | Layer | Current fact |
 | --- | --- |
-| Published unified release | v0.1.0-preview.9, source `0ec803d`; one version, tag and release manifest, with optional worker/monitoring/report archives. Fetched bytes match reproducible candidates. |
-| Managed upgrade | Published directly to dotfiles main as `4598b2a`; PR #5 closed without merging. Scoped live rollout completed 2026-10-22. |
+| Published unified release | v0.1.0-preview.10, source `078c630`; one version, tag and release manifest, with optional worker/monitoring/report archives. Fetched bytes match reproducible candidates. |
+| Managed upgrade | Published directly to dotfiles main as `49cfc41`; scoped live rollout completed 2026-10-22 on all three hosts. |
 | Earlier artifacts retained | Monitoring preview.3 and reporting preview.8, source `c73c237`, remain available for captured processes and rollback. |
-| Snap | Workers, monitoring and reporting preview.9 selected; all manifests verify in default OSS and dedicated work contexts. |
-| Starship | Same three preview.9 selections verified; local source history and unrelated desktop edits preserved. |
+| Snap | Workers, monitoring and reporting preview.10 selected; all manifests verify in default OSS and dedicated work contexts. |
+| Starship | Same three preview.10 selections verified; private configuration, processes and report serving preserved. |
+| Carbon | Same three preview.10 selections verified through the trusted Starship SSH route; configuration, processes and serving preserved. |
 | Native compatibility | Snap client and owner 0.163.0; release baseline remains 0.162.1. Bounded owned 0.163.0 trials do not establish blanket compatibility or long-run qualification. |
 | Source | Reviewed natural-follow-up refinements packaged as preview.10, validated separately from the earlier installed preview.9. Multi-environment support retained; notification component retired. |
 | Notification delivery | Native Codex to terminal. Formatting belongs to Kitty/chezmoi. Enrichment and the 349 inspector are parked/retired. |

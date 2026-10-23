@@ -17,7 +17,36 @@ after release publication. The authorized live rollout covers Snap, Starship
 and Carbon, with payload verification before selection, scripts excluded and
 scoped convergence afterward. Preserve private configuration, unrelated drift,
 older releases and running native/MCP/report processes; no restart or new native
-model trial is required. Concrete acceptance receipts are added after execution.
+model trial is required.
+
+Publication and rollout completed successfully:
+
+| Layer | Receipt |
+| --- | --- |
+| Release | `v0.1.0-preview.10`, source `078c630dbc407e33b0e608c491b0ef6f7ce55dc1`; all five downloaded assets match two reproducible builds. |
+| Source validation | 317 local tests; clean 124-file inventory and unchanged worker/skill contracts. |
+| Release CI | Run `39893331342` passes on Python 3.11 and 3.14 with no annotations; each job builds and verifies the unified release. |
+| Pages | Run `39893331291` publishes the walkthrough and eight guides. All 11 public files match the generated candidate. Actual public browser checks cover 20 scene states at four widths, controls, guide routes, copying and no-JavaScript/reduced-motion behavior. |
+| Managed source | Dotfiles main `49cfc415752b826b91e08dfd5dd78a1b1b83bbe2`; URLs, revisions, checksums and validators advance together. The full dotfiles check and focused Codex Plus/split/report validators pass. |
+| Disposable installation | Snap OSS/work, Starship and Carbon profiles install all three verified components, exclude scripts and converge. |
+| Live installation | Snap OSS/work, Starship and Carbon select preview.10. Payload verification precedes selection; all scoped diffs are empty. |
+| Fresh MCP discovery | Each host's installed monitoring/reporting adapters initialize at preview.10 and expose 15/four tools. No model turn, watch or message is created. |
+| Preservation | All 265 protected paths retain bytes/modes; all 39 recorded native/MCP/report processes retain PID/start identity; older immutable payloads are unchanged. Four report endpoints retain HTTP 200 and identical content. |
+
+Only the new immutable payload roots, two selection links and worker provenance
+manifest changed in each live dry-run. Worker agent/skill files, private configs,
+auth, report storage and runtime journals are preserved. Carbon uses its already
+trusted Starship SSH route; no host-key checking or credential policy is changed.
+
+The installed doctor confirms the distinction between selection and loaded code:
+this Snap conversation's connected monitoring/reporting servers still report
+preview.9 while selected files are preview.10. Normal reconnect loads the new
+selection. Its read-only native metadata check performs no refresh or resume.
+This rollout adds packaging/deployment evidence, not new native compatibility or
+long-soak qualification. The existing 0.162.1 baseline and bounded owned 0.163.0
+research evidence retain their limits.
+
+## Earlier refinement pass: preview.9
 
 Started 2026-10-21. The selected scope is recorded in the
 [implementation plan](codex-plus-plan.md#completed-pass-daily-use-refinement-and-unified-releases).

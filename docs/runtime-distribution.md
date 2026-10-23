@@ -60,12 +60,12 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Snap and Starship select workers, monitoring and reporting **preview.9**, source
-`0ec803d`, through chezmoi following the scoped rollout on 2026-10-22. All three
-manifests verify on both hosts, including Snap's OSS/work contexts. Existing
+Snap, Starship and Carbon select workers, monitoring and reporting **preview.10**,
+source `078c630`, through chezmoi following the scoped rollout on 2026-10-22. All
+three manifests verify on each host, including Snap's OSS/work contexts. Existing
 explicit storage paths, configuration, native owners, active MCP processes and
 report servers are preserved. Already loaded MCP processes adopt the selected
-release on normal reconnect. See the [rollout receipt](refinement-results.md#managed-rollout-2026-10-22)
+release on normal reconnect. See the [rollout receipt](refinement-results.md#preview10-publication-and-managed-rollout)
 and the earlier [environment deployment receipt](environments.md#snap-multi-environment-deployment-2026-10-15).
 
 Workers retain their own installation. The 349 inspector
@@ -161,7 +161,7 @@ The default MCP policy is `writes`, with explicit approval for controls that aff
 the caller's own observation/reminder intent and current-event handling. Command
 sources retain the caller's effective permissions unless explicitly narrowed.
 Legacy jobs without an execution grant retain their earlier offline policy.
-Peer messages have separate approval. Bryan's Snap/Starship managed policy enables
+Peer messages have separate approval. Bryan's Snap/Starship/Carbon managed policy enables
 the optional server and explicitly approves peer_send/message_cancel alongside the
 seven watch/reminder controls while preserving existing explicit preferences.
 For generated configurations, `--allow-peer-send` explicitly opts into tool approval
@@ -186,6 +186,12 @@ process selection only; it does not migrate journals, restart existing MCP bridg
 or native daemons, delete old releases or change worker enablement. Recheck cached
 source/delivery health before explicit recovery of any lost source; uncertain
 admission is never blindly repeated.
+
+Retain an older release's package script with its payload. Verifiers accept
+explicit version inventories; for a preview.9 rollback, verify with its retained
+script before reselecting through the configuration owner. The current verifier
+does not recognize every intervening preview version. Verification and selection
+do not require restarting a captured process.
 
 The managed rollout must keep release URLs, revisions, fetched checksums, runtime
 entry/config wiring and validator expectations together. Render supported and
