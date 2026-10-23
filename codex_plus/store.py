@@ -283,7 +283,10 @@ class Store:
         attention = """(j.intent IN ('active','replacing') OR j.source_state IN ('lost','error')
             OR EXISTS (SELECT 1 FROM events e WHERE e.job_id=j.id AND
                 (e.delivery IN ('pending','dispatching','uncertain') OR e.withdraw_state='unknown'
-                 OR (e.delivery='native_queued' AND e.acknowledged=0 AND e.withdraw_state!='withdrawn'))))"""
+                 OR (e.delivery='native_queued' AND e.acknowledged=0 AND e.withdraw_state!='withdrawn')
+                 OR (j.kind='wake' AND e.delivery='native_queued' AND e.withdraw_state!='withdrawn'
+                     AND (e.turn_outcome IS NULL OR
+                          (j.intent!='cancelled' AND e.turn_outcome IN ('failed','interrupted')))))))"""
         where = 'j.kind=?' + (' AND ' + attention if scope == 'current' else '')
         total = self.db.execute('SELECT COUNT(*) FROM jobs j WHERE ' + where, (kind,)).fetchone()[0]
         history_total = self.db.execute('SELECT COUNT(*) FROM jobs WHERE kind=?', (kind,)).fetchone()[0]

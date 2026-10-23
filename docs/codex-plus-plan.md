@@ -12,6 +12,15 @@ and [Claude context](claude-monitoring-context.md) for the historical design inp
 
 ## Next pass: native alignment and natural follow-up
 
+Review fixes planned 2026-10-22: keep acknowledged reminder callbacks in the
+current view while their native turn is pending or its outcome is unknown.
+Failed/interrupted follow-ups need attention until explicitly cancelled; closing
+attention retains receipts and does not retry or interrupt native work. Add the
+stored message kind and a bounded, quoted purpose to outgoing receipts only
+after verifying sender ownership. Reproduce both gaps with fixtures before
+changing the existing tools; preserve watch cursors, native ownership and the
+installed release. No new tool, schema or service is needed.
+
 Completed 2026-10-22 after Bryan's project review and goal-loop request; see
 [the decisions, candidate and evidence limits](native-alignment-results.md).
 The plan below records the research gates used. The source candidate preserves

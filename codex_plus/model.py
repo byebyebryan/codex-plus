@@ -639,6 +639,12 @@ class ModelAPI:
                 lines.append('  Delivery ' + event['delivery'] + '; turn ' + str(event['turn_outcome'] or 'not yet known') +
                              '; handling ' + ('acknowledged' if event['acknowledged'] else 'not acknowledged') +
                              '; withdrawal ' + event['withdraw_state'] + '.')
+                if event['delivery'] == 'native_queued' and event['withdraw_state'] != 'withdrawn':
+                    if event['turn_outcome'] is None:
+                        lines.append('  Follow-up turn pending or outcome unknown; acknowledgement is not completion.')
+                    elif event['turn_outcome'] in ('failed', 'interrupted') and job['intent'] != 'cancelled':
+                        lines.append('  Follow-up needs attention: ' + event['turn_outcome'] +
+                                     '. No automatic retry; cancel this reminder to close attention and retain receipts.')
                 for field in ('detail', 'turn_error', 'withdraw_detail'):
                     if event.get(field): lines.append('    ' + clean_text(event[field], 256))
         page = result['page']
