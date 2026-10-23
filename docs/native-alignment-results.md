@@ -1,10 +1,12 @@
 # Native alignment and natural follow-up results
 
-Completed 2026-10-22 on Snap. This is the source candidate from the
-[planned pass](codex-plus-plan.md#next-pass-native-alignment-and-natural-follow-up),
-not a new release or managed installation. Installed components remain
-**v0.1.0-preview.9** from `0ec803d`; existing MCP processes retain their captured
-code. No native owner, report server or managed service was restarted.
+Completed 2026-10-22 on Snap. The source candidate from the
+[planned pass](codex-plus-plan.md#next-pass-native-alignment-and-natural-follow-up)
+is included in **v0.1.0-preview.10**. At qualification time installed components
+remained preview.9 from `0ec803d`; this research pass performed no managed apply.
+Existing MCP processes retain their captured code. No native owner, report server
+or managed service was restarted. Release and rollout acceptance are recorded
+separately in the [implementation handoff](implementation-handoff.md).
 
 ## Decisions
 

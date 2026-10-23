@@ -14,9 +14,9 @@ completed 2026-10-22 after the recap fixes. It reconciles source/release availab
 across the entry points and guides, and adds a fifth illustrative catch-up scene.
 All 20 authored scene states pass actual candidate browser checks at desktop,
 tablet and narrow mobile widths, alongside the eight guide routes and controls.
-The public Pages edition has not been replaced by this local pass; runtime,
-worker and skill bytes remain unchanged. Publication and runtime release are
-separate next steps, with no historical trial to replay.
+That local pass preserved runtime, worker and skill bytes. The authorized
+publication now packages the reviewed work as preview.10; publication and
+managed rollout are separate acceptance steps, with no historical trial to replay.
 
 The [native alignment and natural follow-up pass](native-alignment-results.md)
 completed 2026-10-22 after Bryan's project review and goal-loop request. Its source
@@ -24,7 +24,7 @@ candidate bounds reminder history, rediscovers outgoing receipts through the
 existing tool, refines recap/quiet-follow-up guidance and adds native MCP version
 metadata to the doctor. The 15-tool monitoring surface and native ownership stay
 intact. Owned synthetic trials supply bounded 0.163.0 evidence; the candidate is
-not released or installed. Managed deployment remains outside this pass.
+included in preview.10. Managed deployment remains outside that research pass.
 
 The review follow-up fixes two recap gaps: acknowledged reminder callbacks stay
 visible while their outcome is unknown or needs attention, and outgoing receipts
@@ -75,7 +75,7 @@ Continue with ordinary use and its evidence.
 | Snap | Workers, monitoring and reporting preview.9 selected; all manifests verify in default OSS and dedicated work contexts. |
 | Starship | Same three preview.9 selections verified; local source history and unrelated desktop edits preserved. |
 | Native compatibility | Snap client and owner 0.163.0; release baseline remains 0.162.1. Bounded owned 0.163.0 trials do not establish blanket compatibility or long-run qualification. |
-| Source | Unreleased natural-follow-up candidate validated separately from installed preview.9. Multi-environment support retained; notification component retired. |
+| Source | Reviewed natural-follow-up refinements packaged as preview.10, validated separately from the earlier installed preview.9. Multi-environment support retained; notification component retired. |
 | Notification delivery | Native Codex to terminal. Formatting belongs to Kitty/chezmoi. Enrichment and the 349 inspector are parked/retired. |
 
 Source documentation may advance beyond the selected immutable artifacts.
@@ -83,7 +83,7 @@ Existing MCP processes keep their captured code until normal reconnect. The
 [runtime guide](runtime-distribution.md) and [report guide](html-report-usage.md)
 explain optional component installation, serving and rollback under one release.
 `scripts/codex-plus-doctor` checks selected manifests and native version evidence
-without starting services. The source candidate can also read reported MCP
+without starting services. Preview.10 can also read reported MCP
 versions for one positively loaded conversation. Selection or reported versions
 do not establish loaded payload bytes; absent metadata remains unknown.
 

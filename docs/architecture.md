@@ -14,7 +14,7 @@ coordinator owns bounded observation, timers, event admission and receipts.
 | Worker bundle | `luna-max`, `sol-xhigh`; four worker workflow skills | Explicitly selected execution workflows; primary retains decisions and acceptance. |
 | Development source | Tests, validators, guides and research reports | Implementation and acceptance evidence; distinct from installed immutable artifacts. |
 
-Codex Plus `v0.1.0-preview.9` unifies workers, monitoring and reporting under one
+Codex Plus `v0.1.0-preview.10` unifies workers, monitoring and reporting under one
 version, source commit and release. Optional archives retain each component's
 dependencies and configuration. Snap and Starship select the unified preview.9
 artifacts from `0ec803d` following the scoped managed rollout on 2026-10-22.
@@ -23,8 +23,8 @@ are different layers: existing MCP processes adopt new code on normal reconnect.
 Journals, report data and hosting remain runtime-owned.
 
 The read-only `scripts/codex-plus-doctor` reports selected manifest integrity,
-enabled MCP configuration and native client/owner version evidence. The source
-candidate can read reported MCP versions for one positively loaded conversation;
+enabled MCP configuration and native client/owner version evidence. Preview.10
+can read reported MCP versions for one positively loaded conversation;
 missing metadata remains unknown and reported versions do not verify payload
 bytes. It never starts services or infers loaded code from a selected symlink.
 A version outside the recorded qualification baseline remains unqualified; see
@@ -120,9 +120,11 @@ Recovery is explicit, retains remaining bounds, discloses gaps and does not repl
 uncertain admitted events. The runtime does not claim exactly-once processing,
 replace the native owner or intercept `/exit` with a confirmation dialog.
 
-### Returning to unfinished work in the source candidate
+<a id="returning-to-unfinished-work-in-the-source-candidate"></a>
 
-The unreleased candidate composes a recap from the existing watch/reminder
+### Returning to unfinished work
+
+Preview.10 composes a recap from the existing watch/reminder
 journals and sender-owned outgoing references. Reminder history is paginated;
 outgoing receipts include their kind and a bounded quoted purpose. This is the
 bound conversation's recorded work, with cached evidence and coverage limits.
@@ -183,7 +185,7 @@ are not part of the current preview.
 | [Source-access results](source-access-pass-results.md) | Permissions, authenticated fixture access, scheduled MCP continuation, filtering and stop. |
 | [Managed activation](managed-activation-results.md) | Installed bytes and default fresh native tool use independently on Snap and Starship. |
 | [Interaction results](interaction-pass-results.md) | Natural requests, contextual discovery, readable delivery, handling and draft/order checks. |
-| [Native alignment results](native-alignment-results.md) | Unreleased recap/history/diagnosis refinements and bounded owned native 0.163.0 evidence, separate from installed preview.9. |
+| [Native alignment results](native-alignment-results.md) | Preview.10 recap/history/diagnosis refinements and bounded owned native 0.163.0 evidence, with its qualification limits. |
 | [Report results](html-report-results.md#managed-mcp-default-2026-10-14) | Default report MCP and native use, with corrected normal-store attribution. |
 | [Runtime distribution](runtime-distribution.md) | Immutable artifact identity, installation/configuration, upgrade and rollback boundaries. |
 | [Soak checklist](soak-checklist.md) | The real-use evidence still to collect; it contains no completed soak claim. |

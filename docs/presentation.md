@@ -16,10 +16,9 @@ browser interaction/layout checks passed; see the
 The [self-contained authoring file](presentation/index.html) also opens locally.
 Its source now has five illustrative scenes: a Luna investigation, an endpoint
 watch, coordination between independent sessions, a later MCP inspection followed
-by a report, and returning to unfinished work. The fifth scene is labeled
-**source preview** throughout: its recap/history improvements are unreleased,
-and this local documentation pass has not replaced the public Pages edition.
-See [released and source features](getting-started.md#released-and-source-features).
+by a report, and returning to unfinished work. All five workflows are available
+in **preview.10**. The catch-up scene uses its recap/history improvements;
+see [feature availability](getting-started.md#released-and-source-features).
 A separate environment selector illustrates personal and
 work contexts with example Codex homes. It only updates the page; it does not
 create a home, change config or contact a daemon.

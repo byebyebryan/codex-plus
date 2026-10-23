@@ -20,8 +20,9 @@ guide routes and the legacy refinement-plan anchor are preserved. The candidate
 passes generated-site checks and actual browser checks for all 20 scene states
 across four viewport widths, including controls and availability labels. See
 [polish results](site-polish-results.md#source-documentation-follow-up-2026-10-22).
-Public publication and runtime distribution remain separate from this local
-source pass. Runtime/agent/skill bytes, private state and services are preserved.
+This local pass preserved runtime/agent/skill bytes, private state and services.
+The subsequent preview.10 publication includes its documentation and source
+refinements; release and deployment acceptance are tracked in the handoff.
 
 ## Next pass: native alignment and natural follow-up
 

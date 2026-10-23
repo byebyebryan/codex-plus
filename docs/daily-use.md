@@ -42,7 +42,7 @@ choose whether delegation helps. A generic “goal loop” does not select a wor
 | Follow an endpoint or run | “Watch this run and tell me if it stalls or fails.” |
 | Inspect later | “Check this endpoint again later.” |
 | See registrations | “What are you watching, and what checks are scheduled?” |
-| Return to unfinished work (source preview) | “What am I still waiting on?” |
+| Return to unfinished work | “What am I still waiting on?” |
 | Stop a watch | “Stop watching that run.” |
 | Cancel a later check | “Cancel the endpoint reminder.” |
 | Get a browser report | “Make a browser report of what we learned, with the main risks.” |
@@ -117,10 +117,11 @@ reported with cached receipt freshness. An offline coordinator makes a previous
 running receipt unknown. Ask for watch history to page through settled entries;
 history and handling receipts remain retained.
 
-### Return to unfinished work — source preview
+<a id="return-to-unfinished-work--source-preview"></a>
 
-The following improvements are in the unreleased source candidate. Installed
-preview.9 retains its earlier reminder/message inspection; see
+### Return to unfinished work
+
+The following inspection improvements are available in preview.10 and later; see
 [released and source features](getting-started.md#released-and-source-features).
 
 | Ask | What the recap should cover |

@@ -29,7 +29,7 @@ than making it the normal usage pattern.
 | Control | Explicit stop prevented renewal/replacement and left observed work intact; Esc behaved as foreground interruption. |
 | Conversation | Follow-ups respected foreground work, human input and drafts; a peer's text did not create new task authority. |
 | Delivery/receipts | Queued, handled, accepted/declined and external success were reported separately; uncertainty was not blindly replayed. |
-| Returning to work (source candidate) | A recap reread this conversation's stored receipts, kept pending/failed follow-ups visible and explained stale or missing outcomes without resending or restarting. |
+| Returning to work (preview.10+) | A recap reread this conversation's stored receipts, kept pending/failed follow-ups visible and explained stale or missing outcomes without resending or restarting. |
 | Cost | Cadence matched the task; MCP checks had visible model use, while quiet command reads avoided inference per poll. |
 | Reporting | A readable result and reachable immutable link were useful from the viewing desktop; publication and HTTP delivery were distinguished. |
 

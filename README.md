@@ -44,17 +44,16 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-The published release is **v0.1.0-preview.9**. This source tree also contains
-unreleased improvements for returning to unfinished work: bounded reminder
-history, rediscoverable outgoing messages and clearer follow-up outcomes.
-The guides label these source features; see [released and source features](docs/getting-started.md#released-and-source-features).
+**v0.1.0-preview.10** includes bounded reminder history, rediscoverable outgoing
+messages with quoted purpose, clearer follow-up outcomes and reported MCP-version
+diagnosis. The guides explain how to return to unfinished work; see [released and source features](docs/getting-started.md#released-and-source-features).
 Updating a guide or checkout does not upgrade an installed runtime.
 
 | Capability | What is available |
 | --- | --- |
 | Watches | Quiet command/script observation, authenticated endpoint access, passive peer reads and configured MCP inspection. |
 | Later checks | One-shot reassessment and model-selected continuation, with status and cancellation. |
-| Returning to work (source preview) | “What am I still waiting on?” combines this conversation's stored watches, reminder outcomes and outgoing receipts, with stale or missing evidence explained. |
+| Returning to work | “What am I still waiting on?” combines this conversation's stored watches, reminder outcomes and outgoing receipts, with stale or missing evidence explained. |
 | Peer coordination | Contextual independent-session discovery, attributed information/requests and handling receipts within one daemon. |
 | Browser reports | Immutable static HTML, project catalog, four report MCP tools, a report skill and independent HTTP hosting. |
 | Workers | Existing two agents and four worker workflows, with unchanged identities and explicit invocation. |

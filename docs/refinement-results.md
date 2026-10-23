@@ -1,5 +1,24 @@
 # Daily-use refinement and unified-release results
 
+## Preview.10 publication and managed rollout
+
+The 2026-10-22 release pass packages the reviewed natural-follow-up fixes and
+five-scene documentation as one **v0.1.0-preview.10** release. It retains the
+15-tool monitoring surface, four report tools and existing worker identities.
+Reminder outcomes and quoted outgoing-message purpose now remain available
+through the existing inspection tools; the doctor can read reported MCP versions
+for one loaded conversation. See the [review evidence](native-alignment-results.md)
+and [documentation checks](site-polish-results.md#source-documentation-follow-up-2026-10-22).
+
+Publication gates are the complete fixture suite, clean inventory, reproducible
+component artifacts, fetched release verification, Pages delivery and actual
+browser checks. Chezmoi pins, checksums and validators advance together only
+after release publication. The authorized live rollout covers Snap, Starship
+and Carbon, with payload verification before selection, scripts excluded and
+scoped convergence afterward. Preserve private configuration, unrelated drift,
+older releases and running native/MCP/report processes; no restart or new native
+model trial is required. Concrete acceptance receipts are added after execution.
+
 Started 2026-10-21. The selected scope is recorded in the
 [implementation plan](codex-plus-plan.md#completed-pass-daily-use-refinement-and-unified-releases).
 

@@ -23,20 +23,19 @@ release. Choose the archives you need from its single GitHub release; see
 
 ## Released and source features
 
-These guides follow the development source. The published release is
-**v0.1.0-preview.9**; a source change or documentation update does not upgrade an
-installed component or reload an existing MCP process.
+**v0.1.0-preview.10** supplies all workflows shown in these guides. Updating
+documentation or selecting an archive does not reload an existing MCP process.
 
 | Available in | What to expect |
 | --- | --- |
-| Released preview.9 | Worker workflows, watches, one-shot later checks, same-daemon peer coordination, reports and selected-file diagnosis. |
-| Unreleased source candidate | Bounded reminder history, outgoing-message rediscovery with kind and quoted purpose, pending/failed follow-up visibility, and reported MCP-version diagnosis for one loaded conversation. |
+| Preview.9 and later | Worker workflows, watches, one-shot later checks, same-daemon peer coordination, reports and selected-file diagnosis. |
+| Added in preview.10 | Bounded reminder history, outgoing-message rediscovery with kind and quoted purpose, pending/failed follow-up visibility, and reported MCP-version diagnosis for one loaded conversation. |
 
-The new “What am I still waiting on?” example uses the source candidate's
-inspection improvements. See [daily use](daily-use.md#inspect-follow-up-health)
-for its behavior and [the review results](native-alignment-results.md#review-corrections)
-for evidence and limits. Publish a new unified release before changing managed
-pins; existing preview.9 artifacts keep their original contents.
+The “What am I still waiting on?” example uses preview.10's inspection
+improvements. See [daily use](daily-use.md#inspect-follow-up-health) for its
+behavior and [the review results](native-alignment-results.md#review-corrections)
+for evidence and limits. Existing preview.9 artifacts retain their original
+contents; choose the new release through your installation's configuration owner.
 
 ## If your setup is already managed
 
@@ -69,7 +68,7 @@ decisions and review. Generic “goal loop” wording does not select a worker.
 The [monitoring installation guide](runtime-distribution.md) covers verified
 release archives, immutable installation and MCP configuration. The preview
 targets Linux/Unix, Python 3.11 or newer and RTK. The release qualification
-baseline is Codex 0.162.1. The source candidate also has bounded owned trials on
+baseline is Codex 0.162.1. This release also includes bounded owned trials on
 0.163.0; neither result establishes compatibility with every newer client.
 
 Integrate the generated MCP table through your configuration owner. Once loaded

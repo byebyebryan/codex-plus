@@ -8,8 +8,9 @@ operation, native owner replacement and personal UX acceptance remain separate.
 
 ## One Codex Plus release
 
-The published release is [v0.1.0-preview.9](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.9),
-source `0ec803d`. Workers, monitoring and reporting share one
+[v0.1.0-preview.10](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.10)
+includes the follow-up inspection and diagnosis refinements. Workers, monitoring
+and reporting share one
 version, source commit, GitHub tag and release. A reporting-only fix still advances
 the product version; release notes identify which capabilities changed. Components
 remain optional and keep their own configuration, data and running processes.
@@ -18,21 +19,20 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.9.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.9.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.9.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.10.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.10.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.10.tar.gz` |
 
 `codex_plus/__init__.py` is the authoritative version. Both MCP adapters, report
 plugin manifests and all component manifests use it. The worker archive retains
 the existing default and optional legacy identities; packaging does not enable
 legacy skills or change explicit workflow invocation.
 
-Main also contains unreleased recap/history and loaded-MCP metadata refinements.
-They are not in the preview.9 archives. See
-[released and source features](getting-started.md#released-and-source-features)
-and [candidate evidence](native-alignment-results.md). A new unified release is
-required before updating managed URLs, revisions and checksums; existing tags
-and artifacts are immutable. Documentation publication is a separate operation.
+Preview.10 adds recap/history and loaded-MCP metadata refinements. See
+[feature availability](getting-started.md#released-and-source-features) and
+[qualification evidence](native-alignment-results.md). Update managed URLs,
+revisions and checksums together from the published release; existing tags and
+artifacts are immutable. Documentation publication is a separate operation.
 
 From a clean committed checkout, build into a new directory outside it:
 
@@ -87,12 +87,12 @@ integrity, aligned/mixed component versions, enabled MCP configuration and nativ
 client/owner versions. It never starts or restarts a daemon, MCP process, watch or
 report server. Selected files and enabled config do not establish already loaded
 process versions. Codex 0.163.0 is currently outside the recorded 0.162.1 native
-release qualification baseline. The source candidate has bounded owned 0.163.0
+release qualification baseline. This release has bounded owned 0.163.0
 trials; daily use and fixture CI do not silently extend that evidence to blanket
 compatibility or long unattended operation.
 
-The unreleased source candidate adds the following metadata check; installed
-preview.9 retains its earlier selected-file diagnosis.
+Preview.10 adds the following metadata check; preview.9 retains its earlier
+selected-file diagnosis.
 When `CODEX_THREAD_ID` is available, or `--thread` selects an already loaded
 conversation, `loaded_mcp` reads that conversation's native MCP metadata. It
 compares reported monitoring/reporting versions with selected manifests. Missing
