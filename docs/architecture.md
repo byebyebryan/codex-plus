@@ -8,22 +8,22 @@ coordinator owns bounded observation, timers, event admission and receipts.
 
 | Component | Surface | Responsibility |
 | --- | --- | --- |
-| Monitoring runtime | 15 `codex_plus` MCP tools; watch/peer/package CLIs | Peer discovery and passive reads, bounded sources, messages, reminders, cancellation and receipts. |
+| Monitoring runtime | 17 `codex_plus` MCP tools; watch/peer/package/owner CLIs | Peer discovery and passive reads, bounded sources, messages, reminders, cancellation, receipts and explicit clean owner recovery. |
 | Reporting component | Four `html_report` MCP tools; report CLI; HTML report skill | Immutable static snapshots, project catalog, delivery checks and selected deletion. |
 | Report server | `codex-report-server` | Independent HTTP hosting; per-config tmux ownership or an explicitly managed server. |
 | Worker bundle | `luna-max`, `sol-xhigh`; four worker workflow skills | Explicitly selected execution workflows; primary retains decisions and acceptance. |
 | Development source | Tests, validators, guides and research reports | Implementation and acceptance evidence; distinct from installed immutable artifacts. |
 
-Codex Plus `v0.1.0-preview.10` unifies workers, monitoring and reporting under one
+Codex Plus `v0.1.0-preview.11` unifies workers, monitoring and reporting under one
 version, source commit and release. Optional archives retain each component's
-dependencies and configuration. Snap, Starship and Carbon select preview.10
-artifacts from `078c630` following the scoped managed rollout on 2026-10-22.
+dependencies and configuration. Snap, Starship and Carbon select preview.11
+artifacts from `5c9ec1d` following the scoped managed rollout on 2026-10-29.
 Managed configuration, selected artifacts and already loaded processes
 are different layers: existing MCP processes adopt new code on normal reconnect.
 Journals, report data and hosting remain runtime-owned.
 
 The read-only `scripts/codex-plus-doctor` reports selected manifest integrity,
-enabled MCP configuration and native client/owner version evidence. Preview.10
+enabled MCP configuration and native client/owner version evidence. Preview.10 and later
 can read reported MCP versions for one positively loaded conversation;
 missing metadata remains unknown and reported versions do not verify payload
 bytes. It never starts services or infers loaded code from a selected symlink.
