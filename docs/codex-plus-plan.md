@@ -14,9 +14,13 @@ and [Claude context](claude-monitoring-context.md) for the historical design inp
 
 The subsequent authorized release pass completed independent review, corrected
 boot-evidence and journal-state refusal gaps, and passed all 351 fixtures and
-required source gates. The closed native sample is retained with its original
-revision limits. Publication and managed rollout proceed as separate gates;
-no incident reset or native daemon restart is included.
+required source gates. Preview.11 source `5c9ec1d` is published; dotfiles `68d3480`
+selects its verified payloads on Snap OSS/work, Starship and Carbon. Exact-main
+CI, fetched assets, Pages delivery and fresh installed MCP discovery pass. The
+[rollout receipt](owner-recovery.md#preview11-publication-and-managed-rollout)
+records preserved paths/processes and the two already unavailable HTTP endpoints.
+The closed native sample retains its original revision limits; no incident reset
+or native daemon/server restart occurred.
 
 Execution selected through the Luna goal loop on 2026-10-29 after read-only
 investigation. The [bounded contract](owner-recovery.md) distinguishes correct
@@ -26,9 +30,9 @@ The local source loop is complete: 348 fixture tests, package reproducibility,
 relocated installation, required source gates and bounded native acceptance pass.
 Seven completed turns cover two clean rollovers and two new handled messages;
 owned actors/helpers are closed. The recovery document retains the actual native
-and loaded-code limits. The candidate is committed locally, not published/applied.
+and loaded-code limits. That source acceptance preceded the separate release pass.
 
-The unreleased preview.11 candidate supplies bootstrap diagnosis, explicit
+Preview.11 supplies bootstrap diagnosis, explicit
 clean rollover for the same exact positively loaded thread, persistent reference
 identity and read-only historical receipts. Each endpoint is recovered separately.
 Live helpers, active/replacing jobs and uncertain/unacknowledged delivery refuse
@@ -38,8 +42,9 @@ native turn completion remains unknown even after acknowledged handling.
 Keep candidate work isolated from the older Starship report checkout and other
 worktrees. Meaningful fixtures, archive/idempotency/concurrency review, relocated
 package checks and the bounded fresh-actor MCP recipe precede source acceptance.
-No release publication, managed pin/apply, real-session reset or native daemon
-restart belongs to this loop. Installed preview.10 remains selected.
+The initial source loop excluded release publication and managed apply; those
+subsequently completed under separate authorization. Real-session reset and
+native daemon restart remain excluded.
 
 ## Preview.10 publication and deployment
 

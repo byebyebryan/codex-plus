@@ -65,12 +65,14 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Snap, Starship and Carbon select workers, monitoring and reporting **preview.10**,
-source `078c630`, through chezmoi following the scoped rollout on 2026-10-22. All
-three manifests verify on each host, including Snap's OSS/work contexts. Existing
-explicit storage paths, configuration, native owners, active MCP processes and
-report servers are preserved. Already loaded MCP processes adopt the selected
-release on normal reconnect. See the [rollout receipt](refinement-results.md#preview10-publication-and-managed-rollout)
+Snap, Starship and Carbon select workers, monitoring and reporting **preview.11**,
+source `5c9ec1d`, through chezmoi following the scoped rollout on 2026-10-29. All
+three exact payloads verify on each host, including Snap's OSS/work contexts.
+Fresh MCP protocol discovery reports 17 monitoring and four report tools.
+Existing explicit storage paths, private configuration, native owners and old
+immutable releases are preserved. HTTP checks match the baseline; Snap OSS and
+Carbon were already unavailable before rollout. Already loaded MCP processes adopt
+the selected release on normal reconnect. See the [rollout receipt](owner-recovery.md#preview11-publication-and-managed-rollout)
 and the earlier [environment deployment receipt](environments.md#snap-multi-environment-deployment-2026-10-15).
 
 Workers retain their own installation. The 349 inspector

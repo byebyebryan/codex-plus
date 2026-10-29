@@ -1,18 +1,20 @@
 # Implementation handoff
 
-Updated 2026-10-29. The owner-recovery source candidate is isolated on Starship
+Updated 2026-10-29. The owner-recovery work is isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Installed release state
-below remains the separately qualified preview.10 rollout.
+the older report checkout and the existing worktrees. Preview.11 is published and
+selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
 ## Current scope and entry points
 
-The separately authorized release pass has completed review corrections and the
-351-test final source gate. Preview.11 includes strict boot-evidence and journal
-classification checks added after the closed native sample. Artifact publication,
-fetched-byte verification and scoped managed rollout are tracked separately;
-the installed preview.10 receipt below remains historical evidence until those
-gates complete. See [release review](owner-recovery.md#release-review-2026-10-29).
+The separately authorized release pass completed review corrections, the 351-test
+source gate, Python 3.11/3.14 CI, reproducible/fetched artifact verification and
+scoped managed rollout. Preview.11 source `5c9ec1d` includes strict boot-evidence
+and journal classification checks added after the closed native sample. All four
+installed contexts report 17 monitoring/four report tools in fresh protocol
+discovery. All 252 protected paths and native Codex process identities are
+preserved. HTTP baselines are unchanged, including already unavailable Snap OSS
+and Carbon endpoints. See the [full receipt](owner-recovery.md#preview11-publication-and-managed-rollout).
 
 Codex Plus supplies bounded observation, later checks, same-daemon peer
 coordination and independent static reports around native Codex. Native Codex
@@ -22,19 +24,19 @@ remain explicitly invoked; a generic goal loop does not activate them.
 The selected [owner-recovery pass](owner-recovery.md) follows the 2026-10-29
 investigation. It implements explicit clean same-thread rollover, bootstrap
 diagnosis and immutable inspectable history, while refusing live or uncertain
-work. It is an unreleased preview.11 source candidate. The loop completed with
+work. The initial source loop completed with
 348 passing fixture tests, reproducible relocated packages and seven completed
 owned native turns on 0.165.0. Two fresh messages were handled; old unknown turn
 outcomes remained unknown. The actors/helpers are closed and the original owner
 and real incident archives are preserved. No recovered incident
-state is replayed; no existing owner, installed release or managed configuration
-is changed by this source work. The recovery document records the qualified
-artifact revision, evidence limits and deferred publication/deployment gates.
+state was replayed; that source loop changed no existing owner or managed
+installation. The recovery document records the qualified artifact revision and
+evidence limits separately from the subsequent release/rollout above.
 
-The **preview.10 publication and managed rollout is complete**. Release source
-`078c630` supplies workers, monitoring and reporting under one tag; dotfiles main
-`49cfc41` selects it on Snap (OSS/work), Starship and Carbon. All manifests verify,
-scoped diffs converge and fresh MCP protocol discovery reports preview.10 with
+The earlier **preview.10 publication and managed rollout completed**. Release source
+`078c630` supplied workers, monitoring and reporting under one tag; dotfiles main
+`49cfc41` selected it on Snap (OSS/work), Starship and Carbon. All manifests verified,
+scoped diffs converged and fresh MCP protocol discovery reported preview.10 with
 15 monitoring/four report tools. All 39 recorded native/MCP/report processes,
 265 protected paths and four HTTP report endpoints match the starting baseline.
 No daemon/server restart, global MCP refresh or new native model trial occurred.
@@ -100,14 +102,14 @@ Continue with ordinary use and its evidence.
 
 | Layer | Current fact |
 | --- | --- |
-| Published unified release | v0.1.0-preview.10, source `078c630`; one version, tag and release manifest, with optional worker/monitoring/report archives. Fetched bytes match reproducible candidates. |
-| Managed upgrade | Published directly to dotfiles main as `49cfc41`; scoped live rollout completed 2026-10-22 on all three hosts. |
-| Earlier artifacts retained | Monitoring preview.3 and reporting preview.8, source `c73c237`, remain available for captured processes and rollback. |
-| Snap | Workers, monitoring and reporting preview.10 selected; all manifests verify in default OSS and dedicated work contexts. |
-| Starship | Same three preview.10 selections verified; private configuration, processes and report serving preserved. |
-| Carbon | Same three preview.10 selections verified through the trusted Starship SSH route; configuration, processes and serving preserved. |
-| Native compatibility | Snap client and owner 0.163.0; release baseline remains 0.162.1. Bounded owned 0.163.0 trials do not establish blanket compatibility or long-run qualification. |
-| Source | Reviewed natural-follow-up refinements packaged as preview.10, validated separately from the earlier installed preview.9. Multi-environment support retained; notification component retired. |
+| Published unified release | v0.1.0-preview.11, source `5c9ec1d`; one version, tag and release manifest, with optional worker/monitoring/report archives. Fetched bytes match reproducible candidates. |
+| Managed upgrade | Pins published to dotfiles main as `68d3480`; scoped live rollout completed 2026-10-29 on all three hosts. |
+| Earlier artifacts retained | Preview.10 source `078c630` and earlier runtime/report releases remain available for captured processes and rollback. |
+| Snap | Workers, monitoring and reporting preview.11 selected and verified in OSS/work; work HTTP 200 unchanged, OSS HTTP already unavailable. |
+| Starship | All three preview.11 payloads verified; private configuration, native owners, old releases and HTTP bytes preserved. |
+| Carbon | All three preview.11 payloads verified; private configuration and native owners preserved; HTTP already unavailable. |
+| Native compatibility | All four client/owner contexts report 0.165.0; release baseline remains 0.162.1. Bounded older-revision owned trials do not establish blanket compatibility or long-run qualification. |
+| Source | Explicit clean owner recovery with immutable history, strict boot evidence and uncertain-work refusal, packaged as preview.11. |
 | Notification delivery | Native Codex to terminal. Formatting belongs to Kitty/chezmoi. Enrichment and the 349 inspector are parked/retired. |
 
 Source documentation may advance beyond the selected immutable artifacts.

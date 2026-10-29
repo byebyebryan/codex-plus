@@ -251,3 +251,53 @@ explicit workflow invocation and existing approval preferences remain unchanged.
 
 Publication, fetched-artifact verification and scoped managed rollout are
 subsequent gates. No live incident recovery or daemon restart is part of them.
+
+## Preview.11 publication and managed rollout
+
+Completed 2026-10-29 under separate review/commit/push/publish/deploy authorization.
+The immutable release is **v0.1.0-preview.11**, source
+`5c9ec1d4368d6c5908f6a041f3081349fa5b2fd6`. All five assets match two independent
+builds and fetched-artifact verification. Exact-main CI passed on Python 3.11 and
+3.14. Pages publication succeeded and all 11 public pages/assets matched the
+candidate bytes. Later receipt-only documentation does not change the release.
+
+| Component archive | SHA-256 |
+| --- | --- |
+| Workers | `bb7b0eee80ed18b2915ac23d99d3dc368314492d807ab432351629dbd7f1f8d8` |
+| Monitoring | `5d5ae50dc7362eccbd4cbcac9070786ab71470185f9891cec50d77abf933f031` |
+| Reporting | `2601dd594dd57eba20b2ea87064e103b1f2f4da468b835667fff81a0a501c885` |
+
+Dotfiles pin commit `68d3480263bf9d0c2411322907ac69d9281b831b` updates published
+URLs/revisions/checksums and validators together, and adds the stable operator
+helper link. The full dotfiles check and isolated report installation on all
+three profiles pass. Existing worker/skill identities and nine approved controls
+remain unchanged; `owner_recover` retains normal native approval.
+
+Scoped status, diff and script-excluded dry-runs preceded each host's apply.
+Runtime/report payloads and worker provenance were installed and checked against
+the fetched archives before changing selectors. Exact inventories, bytes and
+modes pass on Snap, Starship and Carbon; the existing worker payload bytes are
+unchanged. Old runtime/report trees, including Starship's pre-existing incident
+bytecode, remain identical. All scoped diffs converge.
+
+Fresh stdio initialize/tools-list checks through each installed native MCP command
+report preview.11 and **17 monitoring/four report tools** in Snap OSS, Snap work,
+Starship and Carbon. These are protocol/installation checks, not new native model
+turns or proof that already loaded processes adopted the release. No global MCP
+refresh, native daemon/server restart, real-session reset, recovery or intent
+replay occurred during rollout.
+
+All **252 protected paths** match baseline bytes/modes, including native config,
+auth, agents, skills and report config. All 13 baseline native Codex executable
+processes retain their PID/start-ticks/executable identities. The broader process
+census also records seven Python/shell processes ending during the elapsed work;
+it does not claim every initial MCP/helper remained alive. The rollout issued no
+stop/restart command. Surviving report servers retain their exact identities.
+CLI/owner versions remain 0.165.0 across the four contexts; the release's qualified
+native baseline stays 0.162.1.
+
+HTTP baselines are unchanged: Starship and Snap work return 200 with identical
+catalog hashes; Snap OSS (`:8787`) and Carbon report URLs were unavailable before
+rollout and remain so. Their service availability is not an acceptance pass or a
+new regression attributed to this update. Repair evidence and private captures
+remain outside source under `owner-recovery-release-20261029T095309Z`.
