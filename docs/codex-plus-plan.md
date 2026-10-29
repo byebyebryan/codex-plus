@@ -12,6 +12,12 @@ and [Claude context](claude-monitoring-context.md) for the historical design inp
 
 ## Owner recovery: clean rollover and inspectable history
 
+The subsequent authorized release pass completed independent review, corrected
+boot-evidence and journal-state refusal gaps, and passed all 351 fixtures and
+required source gates. The closed native sample is retained with its original
+revision limits. Publication and managed rollout proceed as separate gates;
+no incident reset or native daemon restart is included.
+
 Execution selected through the Luna goal loop on 2026-10-29 after read-only
 investigation. The [bounded contract](owner-recovery.md) distinguishes correct
 fail-closed ownership from the missing supported lifecycle recovery path.

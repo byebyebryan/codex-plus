@@ -12,7 +12,7 @@ archives and keeps native Codex as your daily interface.
 | Follow work, coordinate sessions or check later | Monitoring runtime and its `codex_plus` MCP configuration | “Watch this run and tell me if it stalls or fails.” |
 | Share findings in a browser | Reporting runtime, hosting configuration and report skill or `html_report` MCP | “Make a browser report of the results, including the risks.” |
 
-Workers use native agent tools. Released monitoring provides 15 MCP tools for observation,
+Workers use native agent tools. Released monitoring provides 17 MCP tools for observation,
 peer communication and later checks. Reporting provides four tools and an
 independent static report store. Installing one component does not install the
 others.
@@ -23,14 +23,14 @@ release. Choose the archives you need from its single GitHub release; see
 
 ## Released and source features
 
-**v0.1.0-preview.10** supplies the released workflows shown in these guides. Updating
+**v0.1.0-preview.11** supplies the released workflows shown in these guides. Updating
 documentation or selecting an archive does not reload an existing MCP process.
 
 | Available in | What to expect |
 | --- | --- |
 | Preview.9 and later | Worker workflows, watches, one-shot later checks, same-daemon peer coordination, reports and selected-file diagnosis. |
 | Added in preview.10 | Bounded reminder history, outgoing-message rediscovery with kind and quoted purpose, pending/failed follow-up visibility, and reported MCP-version diagnosis for one loaded conversation. |
-| Unreleased preview.11 source candidate | Explicit owner diagnosis and clean same-thread rollover, with immutable archived history. Active or uncertain intent refuses recovery. See the [contract and acceptance](owner-recovery.md). |
+| Added in preview.11 | Explicit owner diagnosis and clean same-thread rollover, with immutable archived history. Active or uncertain intent refuses recovery. See the [contract and acceptance](owner-recovery.md). |
 
 The “What am I still waiting on?” example uses preview.10's inspection
 improvements. See [daily use](daily-use.md#inspect-follow-up-health) for its

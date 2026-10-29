@@ -44,14 +44,14 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.10** includes bounded reminder history, rediscoverable outgoing
+**v0.1.0-preview.11** includes bounded reminder history, rediscoverable outgoing
 messages with quoted purpose, clearer follow-up outcomes and reported MCP-version
 diagnosis. The guides explain how to return to unfinished work; see [released and source features](docs/getting-started.md#released-and-source-features).
 Updating a guide or checkout does not upgrade an installed runtime.
 
-The unreleased **preview.11 source candidate** adds explicit diagnosis and clean
+**Preview.11** adds explicit diagnosis and clean
 recovery after a native owner incarnation changes, with immutable history and
-refusal of unsettled work. Installed preview.10 does not provide these operations.
+refusal of unsettled work. Older installed releases require an explicit upgrade.
 See the [recovery contract and acceptance](docs/owner-recovery.md).
 
 | Capability | What is available |

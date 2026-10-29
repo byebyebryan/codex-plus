@@ -4,12 +4,13 @@ The 2026-10-29 investigation found a correct ownership refusal with no supported
 way to resume fresh Codex Plus operations after a daemon incarnation changes.
 The selected implementation scope is **explicit clean rollover**, diagnosis and
 inspectable history. It does not include moving unresolved intent onto a new
-owner, quarantine of unsettled work, publication or managed deployment.
+owner or quarantine of unsettled work. Publication and managed deployment have
+their own acceptance gates.
 
-This is the unreleased preview.11 source-candidate contract. Installed preview.10 remains unchanged;
-its native qualification baseline and the bounded later-version evidence retain
-their limits. Implementation and acceptance results are recorded below as they
-are established.
+This is the preview.11 recovery contract. Older installed processes keep their
+captured code until normal reconnect; the native qualification baseline and
+bounded later-version evidence retain their limits. Implementation and acceptance
+results are recorded below.
 
 ## Incident and product boundary
 
@@ -177,7 +178,7 @@ maintained main. Luna supplied the recovery/archive core and its initial safety
 fixtures. The primary integrated model tools, CLI and packaging, reviewed the
 failure boundaries and completed additional cross-endpoint and corruption cases.
 
-The reviewed candidate passes all **348 fixture tests**, including 22 dedicated
+The initial reviewed candidate passed all **348 fixture tests**, including 22 dedicated
 recovery tests, plus the 128-file inventory and whitespace checks. The external
 Pages build verifies 234 local links/assets/anchors. Runtime packaging retains
 the exact preview.9/.10 inventories for rollback verification; recovery approval
@@ -230,3 +231,23 @@ quarantine service.
 The original older report checkout, existing worktrees, managed installations and
 the recovered incident archives are preserved. Publication and deployment remain
 outside this source loop.
+
+## Release review (2026-10-29)
+
+The separately authorized review/publication pass found and fixed two refusal
+gaps before release: a malformed saved boot identity could be mistaken for a
+reboot, and unrecognized event start/outcome states could pass the clean-state
+gate. Boot identities must now be canonical nonzero UUIDs, agree between the
+stable selector and selected epoch, and match the captured boot again before
+selection commits. Unclassified journal states refuse recovery; acknowledged
+events with a null final turn outcome remain eligible and retain that unknown.
+
+The final source gate passes **351 tests**, including 25 recovery and 48 model
+tests, plus the 128-file inventory and whitespace checks. The external Pages
+build verifies 234 local links/assets/anchors. These final review fixes have
+fixture coverage; the closed seven-turn native sample above was not reopened and
+does not qualify this later revision through a new model trial. Worker identities,
+explicit workflow invocation and existing approval preferences remain unchanged.
+
+Publication, fetched-artifact verification and scoped managed rollout are
+subsequent gates. No live incident recovery or daemon restart is part of them.

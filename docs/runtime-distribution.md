@@ -1,9 +1,9 @@
 # Codex Plus releases and monitoring installation
 
-The current source candidate is unreleased preview.11. Its [owner recovery
-contract](owner-recovery.md) adds explicit clean rollover and archived inspection;
-the released and managed preview.10 described below does not include them.
-Source version preparation does not publish an artifact or upgrade a process.
+Preview.11 adds explicit clean rollover and archived inspection through the
+[owner recovery contract](owner-recovery.md). Publishing or selecting an archive
+does not reload an already running process. Managed rollout is recorded separately
+below.
 
 The runtime is a Linux/Unix preview qualified against Codex 0.162.1. It uses
 Python 3.11 or newer and RTK for the existing native status/coordinator command
@@ -13,8 +13,8 @@ operation, native owner replacement and personal UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.10](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.10)
-includes the follow-up inspection and diagnosis refinements. Workers, monitoring
+[v0.1.0-preview.11](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.11)
+includes explicit clean native-owner recovery and inspectable history. Workers, monitoring
 and reporting share one
 version, source commit, GitHub tag and release. A reporting-only fix still advances
 the product version; release notes identify which capabilities changed. Components
@@ -24,16 +24,16 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.10.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.10.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.10.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.11.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.11.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.11.tar.gz` |
 
 `codex_plus/__init__.py` is the authoritative version. Both MCP adapters, report
 plugin manifests and all component manifests use it. The worker archive retains
 the existing default and optional legacy identities; packaging does not enable
 legacy skills or change explicit workflow invocation.
 
-Preview.10 adds recap/history and loaded-MCP metadata refinements. See
+Preview.10's recap/history and loaded-MCP metadata refinements are retained. See
 [feature availability](getting-started.md#released-and-source-features) and
 [qualification evidence](native-alignment-results.md). Update managed URLs,
 revisions and checksums together from the published release; existing tags and

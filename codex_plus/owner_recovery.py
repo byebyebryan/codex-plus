@@ -92,7 +92,18 @@ def logical_binding(value):
 
 def kernel_boot_id():
     value = Path('/proc/sys/kernel/random/boot_id').read_text().strip()
-    uuid.UUID(value)
+    return _valid_boot_id(value)
+
+
+def _valid_boot_id(value):
+    if not isinstance(value, str):
+        raise ValueError('owner boot identity must be a canonical nonzero UUID')
+    try:
+        parsed = uuid.UUID(value)
+    except (ValueError, AttributeError, TypeError) as error:
+        raise ValueError('owner boot identity must be a canonical nonzero UUID') from error
+    if str(parsed) != value or parsed.int == 0:
+        raise ValueError('owner boot identity must be a canonical nonzero UUID')
     return value
 
 
@@ -273,7 +284,7 @@ def _marker(path):
     value = _read_json(path)
     if not isinstance(value, dict) or value.get('format') != SELECTION_FORMAT:
         return None
-    required = {'format', 'thread_id', 'epoch', 'selected', 'binding', 'archives', 'last_recovery'}
+    required = {'format', 'thread_id', 'epoch', 'selected', 'binding', 'boot_id', 'archives', 'last_recovery'}
     if set(value) != required:
         raise ValueError('owner selection marker is incomplete or unsupported')
     tid = thread_id(value['thread_id'])
@@ -281,6 +292,7 @@ def _marker(path):
         raise ValueError('selected owner epoch identity is malformed')
     if value['selected'] != 'incarnations/' + value['epoch']:
         raise ValueError('selected owner epoch path is malformed')
+    _valid_boot_id(value['boot_id'])
     if _valid_binding(value['binding'])['thread_id'] != tid:
         raise ValueError('selection marker thread does not match its active binding')
     if thread_root_name := Path(path).parent.name:
@@ -327,6 +339,9 @@ def selected_state(thread_root, *, expected_binding=None):
         if (not isinstance(epoch, dict) or epoch.get('format') != EPOCH_FORMAT or
                 epoch.get('epoch') != marker['epoch'] or epoch.get('binding') != binding):
             raise ValueError('selected owner epoch evidence is missing or inconsistent')
+        epoch_boot_id = _valid_boot_id(epoch.get('boot_id'))
+        if marker['boot_id'] != epoch_boot_id:
+            raise ValueError('selected owner boot identity differs from the stable owner marker')
         if expected_binding is not None and binding != expected_binding:
             raise OwnerRecoveryError('caller', 'stale_or_conflicting_incarnation', expected_binding['thread_id'],
                                      detail='The selected model state belongs to another native process incarnation.')
@@ -336,7 +351,7 @@ def selected_state(thread_root, *, expected_binding=None):
             except (OSError, ValueError) as error:
                 raise OwnerRecoveryError('caller', 'boot_identity_unknown', expected_binding['thread_id'],
                                          detail='Current kernel boot identity is unavailable.') from error
-            if not isinstance(epoch.get('boot_id'), str) or epoch.get('boot_id') != current_boot:
+            if epoch_boot_id != current_boot:
                 raise OwnerRecoveryError('caller', 'stale_boot_incarnation', expected_binding['thread_id'],
                                          detail='The selected owner epoch was recorded on another or unknown kernel boot.')
         return state, marker['epoch'], binding, marker
@@ -1180,8 +1195,12 @@ def _has_unsettled_work(connection):
         problems.append('unclassified_renewal_state')
     if any(row['state'] == 'pending' for row in renewals):
         problems.append('pending_renewal')
+    start_states = ('pending', 'starting', 'started', 'unknown', 'not_in_queue', 'withdrawn')
+    turn_outcomes = (None, 'completed', 'failed', 'interrupted')
     if any(event['delivery'] not in ('pending', 'dispatching', 'uncertain', 'native_queued', 'cancelled', 'expired')
            or event.get('withdraw_state', 'none') not in ('none', 'unknown', 'consumed', 'not_pending', 'withdrawn')
+           or event.get('start_state') not in start_states
+           or event.get('turn_outcome') not in turn_outcomes
            or type(event['acknowledged']) is not int or event['acknowledged'] not in (0, 1)
            for event in events):
         problems.append('unclassified_event_state')
@@ -1907,7 +1926,7 @@ class Recovery:
                 for kind, value in _ref_highwater(connection).items():
                     highwater[kind] = max(highwater[kind], value)
         if new_state.exists():
-            _verify_state_epoch(new_state, epoch, current)
+            _verify_state_epoch(new_state, epoch, current, expected_boot_id=captured['boot_id'])
         else:
             staging_parent = self.root / '.owner-recovery-pending'
             staging_parent.mkdir(mode=0o700, exist_ok=True)
@@ -1920,7 +1939,7 @@ class Recovery:
                     'binding': current, 'boot_id': captured['boot_id'], 'created': int(time.time()),
                     'previous_epoch': old_epoch, 'archive_epoch': archive_epoch})
                 _install_ref_tables(state_stage, highwater)
-                _verify_state_epoch(state_stage, epoch, current)
+                _verify_state_epoch(state_stage, epoch, current, expected_boot_id=captured['boot_id'])
                 os.replace(state_stage, new_state)
                 _fsync_dir(incarnations_dir)
             finally:
@@ -1980,11 +1999,15 @@ class Recovery:
         previous_archives.append({'epoch': archive_epoch, 'manifest_sha256': archive_digest})
         selection = {'format': SELECTION_FORMAT, 'thread_id': current['thread_id'],
             'epoch': epoch, 'selected': 'incarnations/' + epoch, 'binding': current,
+            'boot_id': captured['boot_id'],
             'archives': previous_archives,
             'last_recovery': {'preview_token': preview, 'receipt': receipt}}
         # The stable binding marker is the final commit point and remains a
         # mismatch barrier for legacy ModelAPI clients.
-        _atomic_json(thread_root / 'binding.json', selection, before_replace=commit_check)
+        def verify_prepared_state(atomic_temp=None):
+            commit_check(atomic_temp)
+            _verify_state_epoch(new_state, epoch, current, expected_boot_id=captured['boot_id'])
+        _atomic_json(thread_root / 'binding.json', selection, before_replace=verify_prepared_state)
         _verify_selection(thread_root, selection)
         return receipt
 
@@ -1993,7 +2016,12 @@ class Recovery:
         if marker:
             epoch_path = source_state / 'owner-epoch.json'
             try:
-                return _read_json(epoch_path).get('boot_id')
+                epoch = _read_json(epoch_path)
+                if (not isinstance(epoch, dict) or epoch.get('format') != EPOCH_FORMAT or
+                        epoch.get('epoch') != marker.get('epoch') or epoch.get('binding') != marker.get('binding')):
+                    return None
+                boot_id = _valid_boot_id(epoch.get('boot_id'))
+                return boot_id if boot_id == _valid_boot_id(marker.get('boot_id')) else None
             except (OSError, ValueError, TypeError):
                 return None
         return None
@@ -2099,13 +2127,17 @@ def _verify_tree_unchanged(source, expected, *, ignore_managed=False, ignore_pat
         raise ValueError('owner source state changed after its preview')
 
 
-def _verify_state_epoch(state, epoch, binding):
+def _verify_state_epoch(state, epoch, binding, *, expected_boot_id=None):
     _safe_private_dir(state)
     if _valid_binding(_read_json(Path(state) / 'binding.json')) != binding:
         raise ValueError('new owner epoch binding failed verification')
     data = _read_json(Path(state) / 'owner-epoch.json')
-    if data.get('format') != EPOCH_FORMAT or data.get('epoch') != epoch or data.get('binding') != binding:
+    if (not isinstance(data, dict) or data.get('format') != EPOCH_FORMAT or
+            data.get('epoch') != epoch or data.get('binding') != binding):
         raise ValueError('new owner epoch evidence failed verification')
+    boot_id = _valid_boot_id(data.get('boot_id'))
+    if expected_boot_id is not None and boot_id != _valid_boot_id(expected_boot_id):
+        raise ValueError('new owner epoch boot identity differs from the captured current boot')
     connection = sqlite3.connect('file:' + urllib.parse.quote(str(Path(state) / 'journal.sqlite3'), safe='/') + '?mode=ro&immutable=1', uri=True)
     try:
         result = connection.execute('PRAGMA integrity_check').fetchone()
@@ -2123,7 +2155,7 @@ def _verify_selection(thread_root, marker):
     if selected != marker:
         raise ValueError('stable owner selection failed read-back verification')
     state = Path(thread_root) / marker['selected']
-    _verify_state_epoch(state, marker['epoch'], marker['binding'])
+    _verify_state_epoch(state, marker['epoch'], marker['binding'], expected_boot_id=marker['boot_id'])
 
 
 def _history_rows(connection, category, limit, offset):

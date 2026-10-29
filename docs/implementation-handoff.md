@@ -7,6 +7,13 @@ below remains the separately qualified preview.10 rollout.
 
 ## Current scope and entry points
 
+The separately authorized release pass has completed review corrections and the
+351-test final source gate. Preview.11 includes strict boot-evidence and journal
+classification checks added after the closed native sample. Artifact publication,
+fetched-byte verification and scoped managed rollout are tracked separately;
+the installed preview.10 receipt below remains historical evidence until those
+gates complete. See [release review](owner-recovery.md#release-review-2026-10-29).
+
 Codex Plus supplies bounded observation, later checks, same-daemon peer
 coordination and independent static reports around native Codex. Native Codex
 owns its conversations, goals, execution policy and daemons. Worker workflows

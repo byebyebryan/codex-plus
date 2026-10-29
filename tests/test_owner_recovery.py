@@ -217,6 +217,48 @@ class OwnerRecoveryTests(unittest.TestCase):
         self.assertEqual(frozen, binding(A))
         self.assertEqual(receipt['boot_id'], second_boot)
 
+    def test_corrupt_or_mismatched_boot_identity_cannot_prove_old_owner_gone(self):
+        self.legacy_state(A, binding(A, pid=2147483013))
+        with self.make_recovery() as api:
+            self.recover_clean(api)
+        thread_root = self.root / A
+        selected, _epoch, _binding, marker = owners.selected_state(thread_root)
+        epoch_path = selected / 'owner-epoch.json'
+        epoch = json.loads(epoch_path.read_text())
+        marker_path = thread_root / 'binding.json'
+        marker_value = json.loads(marker_path.read_text())
+        original_epoch = epoch_path.read_bytes()
+
+        # Even if the process proof says the exact old tuple is alive, malformed
+        # persisted boot metadata must not turn it into evidence of a reboot.
+        invalid = 'corrupt-but-nonempty'
+        epoch['boot_id'] = invalid
+        marker_value['boot_id'] = invalid
+        owners._atomic_json(epoch_path, epoch)
+        owners._atomic_json(marker_path, marker_value)
+        corrupt_marker = marker_path.read_bytes()
+        corrupt_epoch = epoch_path.read_bytes()
+        self.backend.identity.update(pid=900001, start_ticks='901', executable='/fixture/third-codex')
+        with patch('codex_plus.owner_recovery._process_proof', return_value=False):
+            with self.make_recovery() as api:
+                status = api.status()
+                self.assertIn('state=corrupt_or_incomplete', status)
+                with self.assertRaisesRegex(ValueError, 'canonical nonzero UUID'):
+                    api.recover(expected_preview='owner-preview:' + 'a' * 64, confirm=True)
+        self.assertEqual(marker_path.read_bytes(), corrupt_marker)
+        self.assertEqual(epoch_path.read_bytes(), corrupt_epoch)
+
+        # A valid UUID is still insufficient when the stable selector and epoch
+        # disagree about which boot owns the selected state.
+        marker_value['boot_id'] = '33333333-3333-4333-8333-333333333333'
+        epoch['boot_id'] = json.loads(original_epoch)['boot_id']
+        owners._atomic_json(epoch_path, epoch)
+        owners._atomic_json(marker_path, marker_value)
+        with self.make_recovery() as api:
+            status = api.status()
+        self.assertIn('state=corrupt_or_incomplete', status)
+        self.assertIn('selected owner boot identity differs from the stable owner marker', status)
+
     def test_acknowledged_event_with_unknown_turn_outcome_is_preserved_and_does_not_block(self):
         old = binding(A, pid=2147483002)
         event = self.recipient_message(B, binding(B), old, turn_id=TURN_OLD)
@@ -311,6 +353,42 @@ class OwnerRecoveryTests(unittest.TestCase):
                 with self.make_recovery() as api:
                     status = api.status()
                 self.assertIn('unresolved_source_owner', status)
+
+    def test_event_start_and_turn_outcomes_are_classified_but_null_remains_allowed(self):
+        cases = (
+            ('settled_unknown_turn_outcome', 'started', None, True),
+            ('unclassified_turn_outcome', 'started', 'future_unclassified', False),
+            ('unclassified_start_state', 'future_unclassified', None, False),
+        )
+        for index, (name, start_state, turn_outcome, clean) in enumerate(cases):
+            with self.subTest(case=name):
+                self.root = Path(self.tmp.name) / ('event-classification-' + str(index))
+                self.root.mkdir(mode=0o700)
+                state = self.legacy_state(A, binding(A, pid=2147483060 + index))
+                store = Store(state)
+                try:
+                    job = store.create('message', {'prompt': 'fixture', 'sender': binding(B),
+                        'message_kind': 'request', 'duration': 20})
+                    event = store.emit(job, 'fixture', 'message')
+                    store.db.execute("UPDATE jobs SET intent='completed' WHERE id=?", (job,))
+                    store.db.execute('''UPDATE events SET delivery='native_queued',acknowledged=1,
+                        withdraw_state='none',start_state=?,turn_id=?,turn_outcome=? WHERE id=?''',
+                        (start_state, TURN_OLD, turn_outcome, event))
+                finally:
+                    store.close()
+                with self.make_recovery() as api:
+                    status = api.status()
+                    token = next(line.split('=', 1)[1] for line in status.splitlines()
+                                 if line.startswith('expected_preview='))
+                    if clean:
+                        self.assertIn('state=clean_rollover_available', status)
+                        receipt = json.loads(api.recover(expected_preview=token, confirm=True))
+                        self.assertEqual(receipt['state'], 'recovered')
+                    else:
+                        self.assertIn('unclassified_event_state', status)
+                        self.assertIn('state=rollover_refused', status)
+                        with self.assertRaisesRegex(ValueError, 'clean rollover is refused'):
+                            api.recover(expected_preview=token, confirm=True)
 
     def test_outgoing_receipts_require_exact_settled_recipient_evidence(self):
         cases = (
@@ -473,6 +551,34 @@ class OwnerRecoveryTests(unittest.TestCase):
         self.assertEqual(receipt['state'], 'recovered')
         self.assertEqual(len(owners.archive_entries(self.root, A)), 1)
 
+    def test_prepared_epoch_boot_is_rechecked_before_marker_commit(self):
+        state = self.legacy_state(A, binding(A, pid=2147483052))
+        original_binding = (state / 'binding.json').read_bytes()
+        with self.make_recovery() as api:
+            status = api.status()
+            token = next(line.split('=', 1)[1] for line in status.splitlines()
+                         if line.startswith('expected_preview='))
+            verify_tree = owners._verify_tree_unchanged
+            tampered = []
+
+            def alter_prepared_epoch(source, expected, **kwargs):
+                result = verify_tree(source, expected, **kwargs)
+                if kwargs.get('ignore_paths') and not tampered:
+                    candidates = list((state / 'incarnations').iterdir())
+                    self.assertEqual(len(candidates), 1)
+                    epoch_path = candidates[0] / 'owner-epoch.json'
+                    epoch = json.loads(epoch_path.read_text())
+                    epoch['boot_id'] = '44444444-4444-4444-8444-444444444444'
+                    owners._atomic_json(epoch_path, epoch)
+                    tampered.append(True)
+                return result
+
+            with patch.object(owners, '_verify_tree_unchanged', side_effect=alter_prepared_epoch):
+                with self.assertRaisesRegex(ValueError, 'captured current boot'):
+                    api.recover(expected_preview=token, confirm=True)
+        self.assertTrue(tampered)
+        self.assertEqual((state / 'binding.json').read_bytes(), original_binding)
+
     def test_partial_unrelated_process_fd_census_is_reported_but_not_a_gate(self):
         self.legacy_state(A, binding(A, pid=2147483009))
         partial = {'holder': None, 'partial': True, 'unreadable_processes': 1,
@@ -513,7 +619,9 @@ class OwnerRecoveryTests(unittest.TestCase):
         thread_root.mkdir(mode=0o700)
         epoch = 'e-' + 'a' * 32
         marker = {'format': owners.SELECTION_FORMAT, 'thread_id': A, 'epoch': epoch,
-            'selected': 'incarnations/' + epoch, 'binding': binding(A), 'archives': [], 'last_recovery': None}
+            'selected': 'incarnations/' + epoch, 'binding': binding(A),
+            'boot_id': '11111111-1111-4111-8111-111111111111',
+            'archives': [], 'last_recovery': None}
         owners._atomic_json(thread_root / 'binding.json', marker)
         outside = Path(self.tmp.name) / 'outside'
         outside.mkdir(mode=0o700)
