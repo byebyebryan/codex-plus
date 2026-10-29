@@ -15,10 +15,14 @@ remain explicitly invoked; a generic goal loop does not activate them.
 The selected [owner-recovery pass](owner-recovery.md) follows the 2026-10-29
 investigation. It implements explicit clean same-thread rollover, bootstrap
 diagnosis and immutable inspectable history, while refusing live or uncertain
-work. It is an unreleased preview.11 source candidate. No recovered incident
+work. It is an unreleased preview.11 source candidate. The loop completed with
+348 passing fixture tests, reproducible relocated packages and seven completed
+owned native turns on 0.165.0. Two fresh messages were handled; old unknown turn
+outcomes remained unknown. The actors/helpers are closed and the original owner
+and real incident archives are preserved. No recovered incident
 state is replayed; no existing owner, installed release or managed configuration
-is changed by this source work. The implementation and acceptance loop is in
-progress; the recovery document records its contract and evidence.
+is changed by this source work. The recovery document records the qualified
+artifact revision, evidence limits and deferred publication/deployment gates.
 
 The **preview.10 publication and managed rollout is complete**. Release source
 `078c630` supplies workers, monitoring and reporting under one tag; dotfiles main

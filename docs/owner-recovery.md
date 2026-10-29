@@ -181,8 +181,44 @@ The reviewed candidate passes all **348 fixture tests**, including 22 dedicated
 recovery tests, plus the 128-file inventory and whitespace checks. The external
 Pages build verifies 234 local links/assets/anchors. Runtime packaging retains
 the exact preview.9/.10 inventories for rollback verification; recovery approval
-is not silently added to existing auto-approved controls. The isolated package
-and bounded native acceptance are the next gates.
+is not silently added to existing auto-approved controls.
+
+The final isolated runtime is source `ae108c7d68513ceb81803df284cd146444b30c37`,
+with 25 payload members plus its manifest. Two builds match SHA-256
+`763adea15542fed9d147f0e36414bbf33892fc6e058cf19f5c1ba945270d7444`.
+Relocated installation verifies, and the new verifier accepts the actual
+preview.10 runtime/report payload members. Pre-existing incident bytecode in the
+managed runtime was preserved; its extra-file inventory finding was not cleared
+or normalized into an installation pass.
+
+The bounded native recipe completed on the existing Codex **0.165.0** owner:
+
+| Scene | Result |
+| --- | --- |
+| Stale caller | Normal discovery refused, then native model calls to bootstrap status and explicit clean recovery succeeded. |
+| Stale recipient | Discovery/inspection worked after caller recovery; the send refused before registration and the model identified the recipient boundary. |
+| Independent recipient recovery | Explicit clean recovery succeeded; the saved outgoing receipt remained readable as accepted with unknown native turn completion. |
+| Fresh messages | Two separately authorized information messages were admitted and acknowledged; both callback turns completed. No refused/uncertain send was automatically replayed. |
+| History and cleanup | Both archives verify, original legacy journal bytes remain identical, and the seeded acknowledged outcome remains unknown. Both actors are archived/unloaded; no fixture MCP or coordinator remains. The original owner and both real incident archives are unchanged. |
+
+The recipe used **seven completed native turns**, including two message callbacks,
+two explicit clean rollovers and two fresh messages. There were no provider-failed
+turns. The stale state/history was invented; the test did not replace a live daemon
+or modify a real conversation. All model inference in the recipe used Luna.
+
+Initial rollover/delivery used the immutable `01e19be` candidate. A subsequent
+diagnostic wording fix removed nested caller instructions from recipient errors;
+its regression passes, and fixture configuration then selected the final `ae108c7`
+package for receipt inspection and the second message. Both owned adapters
+reported preview.11 and 17 tools. Reported version/configuration is separate from
+loaded-memory payload attestation; no general process-memory verification is
+claimed. The control and delivery paths were unchanged by that wording fix.
+
+Private fixture receipts and raw captures remain outside committed source under
+the owner's repair-evidence directory. This pass does not establish long-run
+reliability, an actual under-load owner replacement, general 0.165.0 compatibility,
+physical TUI behavior or personal UX acceptance. The release compatibility
+baseline remains 0.162.1.
 
 Only positively loaded recovering callers are needed. Settled cached outgoing
 receipts do not require loading closed peers. Missing or corrupt archives report

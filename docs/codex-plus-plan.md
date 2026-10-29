@@ -16,6 +16,12 @@ Execution selected through the Luna goal loop on 2026-10-29 after read-only
 investigation. The [bounded contract](owner-recovery.md) distinguishes correct
 fail-closed ownership from the missing supported lifecycle recovery path.
 
+The local source loop is complete: 348 fixture tests, package reproducibility,
+relocated installation, required source gates and bounded native acceptance pass.
+Seven completed turns cover two clean rollovers and two new handled messages;
+owned actors/helpers are closed. The recovery document retains the actual native
+and loaded-code limits. The candidate is committed locally, not published/applied.
+
 The unreleased preview.11 candidate supplies bootstrap diagnosis, explicit
 clean rollover for the same exact positively loaded thread, persistent reference
 identity and read-only historical receipts. Each endpoint is recovered separately.
