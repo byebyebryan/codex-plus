@@ -1,6 +1,9 @@
 # Implementation handoff
 
-Updated 2026-10-22. Continue in `/home/bryan/code/codex-plus` on Snap.
+Updated 2026-10-29. The owner-recovery source candidate is isolated on Starship
+in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
+the older report checkout and the existing worktrees. Installed release state
+below remains the separately qualified preview.10 rollout.
 
 ## Current scope and entry points
 
@@ -8,6 +11,14 @@ Codex Plus supplies bounded observation, later checks, same-daemon peer
 coordination and independent static reports around native Codex. Native Codex
 owns its conversations, goals, execution policy and daemons. Worker workflows
 remain explicitly invoked; a generic goal loop does not activate them.
+
+The selected [owner-recovery pass](owner-recovery.md) follows the 2026-10-29
+investigation. It implements explicit clean same-thread rollover, bootstrap
+diagnosis and immutable inspectable history, while refusing live or uncertain
+work. It is an unreleased preview.11 source candidate. No recovered incident
+state is replayed; no existing owner, installed release or managed configuration
+is changed by this source work. The implementation and acceptance loop is in
+progress; the recovery document records its contract and evidence.
 
 The **preview.10 publication and managed rollout is complete**. Release source
 `078c630` supplies workers, monitoring and reporting under one tag; dotfiles main

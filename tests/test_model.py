@@ -12,6 +12,7 @@ from unittest.mock import patch
 from codex_plus.model import MODEL_GUIDANCE, ModelAPI, native_context, tool_definitions, validate_arguments
 from codex_plus.model_server import Server
 from codex_plus.store import Store
+from codex_plus import cli, owner_recovery as owners
 from test_peers import A, B, CHILD, OWNER, ordinary
 
 
@@ -42,6 +43,7 @@ class Backend:
     def call(self, method, params, timeout=None):
         self.calls.append((method, copy.deepcopy(params)))
         if method == 'thread/loaded/list': return {'data': list(self.rows), 'nextCursor': None}
+        if method == 'thread/queue/list': return {'data': [], 'nextCursor': None}
         identity = params['threadId']
         if method == 'thread/read': return {'thread': copy.deepcopy(self.rows[identity])}
         if method == 'thread/goal/get': return {'goal': None}
@@ -128,6 +130,179 @@ class ModelTests(unittest.TestCase):
         with self.api(): pass
         with patch.object(self.backend, 'bind', return_value={**OWNER, 'pid': 101, 'thread_id': A}):
             with self.assertRaises(Exception): self.api()
+
+    def recovery(self, thread=A, turn=TURN_A):
+        return owners.Recovery(self.root, OWNER['requested_socket'],
+            {'thread_id': thread, 'turn_id': turn}, client_factory=lambda *a, **k: self.backend)
+
+    def stale(self, thread=A):
+        old = {**OWNER, 'pid': 99, 'start_ticks': 'retired', 'thread_id': thread}
+        cli.atomic_json(self.root / thread / 'binding.json', old)
+        return old
+
+    def recover_caller(self, thread=A, turn=TURN_A):
+        with patch('codex_plus.owner_recovery._process_proof', return_value=True), \
+             patch('codex_plus.owner_recovery._open_state_processes', return_value={'holder': None, 'partial': False, 'unreadable_processes': 0, 'reasons': []}), \
+             self.recovery(thread, turn) as recovery:
+            status = recovery.status()
+            token = next(line.split('=', 1)[1] for line in status.splitlines() if line.startswith('expected_preview='))
+            return recovery.recover(expected_preview=token, confirm=True)
+
+    def test_bootstrap_tools_work_when_normal_caller_state_refuses(self):
+        with self.api(): pass
+        self.stale()
+        def api_factory(root, requested, context, **kwargs):
+            return ModelAPI(root, requested, context, client_factory=lambda *a, **k: self.backend, **kwargs)
+        def recovery_factory(root, requested, context):
+            return owners.Recovery(root, requested, context, client_factory=lambda *a, **k: self.backend)
+        server = Server(self.root, OWNER['requested_socket'], api_factory=api_factory, recovery_factory=recovery_factory)
+        def invoke(name, arguments):
+            return server.handle({'jsonrpc': '2.0', 'id': 1, 'method': 'tools/call',
+                'params': {'name': name, 'arguments': arguments, '_meta': meta()}})['result']
+        refused = invoke('peer_list', {})
+        self.assertTrue(refused['isError'])
+        self.assertEqual(refused['structuredContent']['role'], 'caller')
+        self.assertFalse(refused['structuredContent']['intent_registered'])
+        with patch('codex_plus.owner_recovery._process_proof', return_value=True), \
+             patch('codex_plus.owner_recovery._open_state_processes', return_value={'holder': None, 'partial': False, 'unreadable_processes': 0, 'reasons': []}):
+            diagnosis = invoke('owner_status', {})
+            self.assertFalse(diagnosis['isError'])
+            token = next(line.split('=', 1)[1] for line in diagnosis['content'][0]['text'].splitlines() if line.startswith('expected_preview='))
+            no_confirmation = invoke('owner_recover', {'expected_preview': token, 'confirm': False})
+            self.assertTrue(no_confirmation['isError'])
+            recovered = invoke('owner_recover', {'expected_preview': token, 'confirm': True})
+            self.assertFalse(recovered['isError'], recovered)
+            repeated = invoke('owner_recover', {'expected_preview': token, 'confirm': True})
+            self.assertEqual(recovered, repeated)
+        self.assertFalse(invoke('peer_list', {})['isError'])
+        self.assertTrue(all(method in ('thread/loaded/list', 'thread/read', 'thread/turns/list', 'thread/goal/get', 'thread/queue/list')
+                            for method, _ in self.backend.calls))
+
+    def test_stale_recipient_refuses_registration_without_recovering_it(self):
+        with self.api() as api:
+            ref, _ = self.discover(api)
+            destination = self.root / B
+            destination.mkdir(mode=0o700)
+            old = self.stale(B)
+            self.assertIn('redwood samples', api.call('peer_inspect', {'peer': ref}))
+            with self.assertRaises(owners.OwnerRecoveryError) as failure:
+                api.call('peer_send', {'peer': ref, 'message': 'fixture only'})
+            self.assertEqual(failure.exception.role, 'recipient')
+            self.assertFalse((destination / 'journal.sqlite3').exists())
+            self.assertEqual(cli.binding(destination), old)
+            self.assertEqual(api.store.db.execute("SELECT COUNT(*) FROM model_refs WHERE kind='message'").fetchone()[0], 0)
+
+    def test_rollover_keeps_old_peer_refs_and_labels_read_only(self):
+        with self.api() as api:
+            old_ref, _ = self.discover(api)
+        self.stale()
+        self.recover_caller()
+        with self.api() as api:
+            with self.assertRaisesRegex(ValueError, 'historical reference is read-only'):
+                api.call('peer_send', {'peer': old_ref, 'message': 'must not send'})
+            new_ref, _ = self.discover(api)
+            self.assertNotEqual(old_ref, new_ref)
+            with self.assertRaisesRegex(ValueError, 'label.*archived'):
+                api.call('peer_inspect', {'peer': 'validation'})
+            self.assertIn('redwood samples', api.call('peer_inspect', {'peer': new_ref}))
+            self.assertIn('Archived history:', api.call('watch_list', {}))
+            self.assertIn('Archived history:', api.call('wake_list', {}))
+            self.assertEqual(api.store.jobs(), [])
+
+    def test_late_archived_callback_cannot_create_fresh_intent(self):
+        with self.api() as api:
+            job = api.store.create('message', {'duration': 120, 'prompt': 'old fixture', 'followup': 'old fixture'})
+            event = api.store.emit(job, 'old fixture', 'message')
+            api.store.admitted(event, 'old-submission')
+            api.store.link_turn(event, str(uuid.uuid4()))
+            api.store.acknowledge(event)
+            api.store.settle(job)
+        self.stale()
+        self.recover_caller()
+        self.backend.turns[A][0]['items'] = [{'type': 'userMessage', 'clientId': event}]
+        with self.api() as api:
+            with self.assertRaisesRegex(ValueError, 'archived owner incarnation'):
+                api.call('wake_schedule', {'after': 1, 'prompt': 'must not register'})
+            self.assertEqual(api.store.jobs(), [])
+
+    def test_opposite_direction_sends_refuse_busy_state_without_deadlock_or_registration(self):
+        self.backend.turns[B][0]['status'] = 'inProgress'
+        with self.api() as caller:
+            ref, _ = self.discover(caller)
+            with self.api(B, TURN_B) as recipient:
+                reverse = recipient._remember('peer', A, {**OWNER, 'thread_id': A}, 'paired fixture')
+                for api, peer in ((caller, ref), (recipient, reverse)):
+                    with self.assertRaises(owners.OwnerRecoveryError) as failure:
+                        api.call('peer_send', {'peer': peer, 'message': 'busy fixture'})
+                    self.assertEqual(failure.exception.role, 'recipient')
+                    self.assertEqual(failure.exception.code, 'busy')
+                    self.assertEqual(api.store.jobs(), [])
+                    self.assertEqual(api.store.db.execute("SELECT COUNT(*) FROM model_refs WHERE kind='message'").fetchone()[0], 0)
+            self.assertIn('Registered m1', caller.call('peer_send', {'peer': ref, 'message': 'fresh fixture'}))
+
+    def test_bootstrap_recovery_retains_allowlist_and_native_identity_validation(self):
+        allowlist = Path(self.tmp.name) / 'allowlist.json'
+        allowlist.write_text(json.dumps([B]))
+        def forbidden(*args, **kwargs):
+            raise AssertionError('unapproved recovery connected to native owner')
+        server = Server(self.root, OWNER['requested_socket'], allowlist=allowlist,
+            api_factory=forbidden, recovery_factory=forbidden)
+        for name, arguments in (('owner_status', {}),
+                ('owner_recover', {'expected_preview': 'owner-preview:' + '0' * 64, 'confirm': True}),
+                ('owner_status', {'thread_id': B})):
+            result = server.handle({'jsonrpc': '2.0', 'id': 1, 'method': 'tools/call',
+                'params': {'name': name, 'arguments': arguments, '_meta': meta()}})['result']
+            self.assertTrue(result['isError'])
+        self.assertFalse(self.root.exists())
+        self.assertEqual(self.backend.calls, [])
+
+    def test_both_endpoint_rollovers_preserve_outgoing_history_and_fresh_messaging(self):
+        with self.api() as sender:
+            ref, _ = self.discover(sender)
+            sender.call('peer_send', {'peer': ref, 'message': 'old accepted fixture', 'kind': 'request'})
+        with closing(Store(self.root / B)) as store:
+            old_event = store.events()[0]
+            store.admitted(old_event['id'], 'old-fixture-submission')
+            store.link_turn(old_event['id'], TURN_B)
+        self.backend.turns[B][0]['status'] = 'inProgress'
+        self.backend.turns[B][0]['items'] = [{'type': 'userMessage', 'clientId': old_event['id']}]
+        with self.api(B, TURN_B) as recipient:
+            recipient.call('event_ack', {'outcome': 'accepted', 'detail': 'fixture handling only'})
+            recipient.store.settle(old_event['job_id'])
+        replacement = {**OWNER, 'pid': 101, 'start_ticks': 'replacement', 'executable': '/fixture/new-native'}
+        self.backend.identity = replacement
+        with patch('codex_plus.peers.listener_identity', return_value=replacement), \
+             patch.object(self.backend, 'bind', side_effect=lambda identity, **kw: {**replacement, 'thread_id': identity}):
+            self.recover_caller()
+            # The old recipient receipt is still readable before it rolls over.
+            with self.api() as sender:
+                text = sender.call('message_status', {'message': 'm1'})
+                self.assertIn('recipient accepted', text)
+                self.assertIn('turn not yet known', text)
+            self.backend.turns[B][0]['id'] = str(uuid.uuid4())
+            self.backend.turns[B][0]['items'] = []
+            self.recover_caller(B, self.backend.turns[B][0]['id'])
+            before = [owners._tree_manifest(path / 'source')['sha256']
+                for thread in (A, B) for _, path, _ in owners.archive_entries(self.root, thread)]
+            with self.api() as sender:
+                text = sender.call('message_status', {})
+                self.assertIn('m1: intent completed', text)
+                self.assertIn('recipient accepted', text)
+                self.assertIn('remain unknown', text)
+                with self.assertRaisesRegex(ValueError, 'historical reference is read-only'):
+                    sender.call('message_cancel', {'message': 'm1'})
+                sender.call('peer_list', {})
+                ref = sender.store.db.execute("SELECT ref FROM model_refs WHERE kind='peer' AND identity=?", (B,)).fetchone()['ref']
+                self.assertIn('Registered m2', sender.call('peer_send', {'peer': ref, 'message': 'fresh fixture'}))
+                page = sender.call('message_status', {'limit': 1})
+                self.assertIn('m2: intent active', page)
+                self.assertIn('next_cursor: archive:0', page)
+                history = sender.call('message_status', {'limit': 1, 'cursor': 'archive:0'})
+                self.assertIn('m1: intent completed', history)
+                self.assertNotIn('next_cursor:', history)
+            after = [owners._tree_manifest(path / 'source')['sha256']
+                for thread in (A, B) for _, path, _ in owners.archive_entries(self.root, thread)]
+            self.assertEqual(before, after)
 
     def test_unapproved_caller_does_not_connect_or_create_private_state(self):
         with self.assertRaises(ValueError): self.api(allowed={B})

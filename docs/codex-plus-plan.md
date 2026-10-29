@@ -1,6 +1,6 @@
 # Codex Plus implementation plan
 
-Updated 2026-10-22. Codex CLI/TUI remains the daily interface and its existing
+Updated 2026-10-29. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are
 installed and enabled on Snap, Starship and Carbon. Current sources are reconciled.
@@ -9,6 +9,25 @@ Real-source soak and personal UX acceptance remain separate from synthetic proof
 Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
+
+## Owner recovery: clean rollover and inspectable history
+
+Execution selected through the Luna goal loop on 2026-10-29 after read-only
+investigation. The [bounded contract](owner-recovery.md) distinguishes correct
+fail-closed ownership from the missing supported lifecycle recovery path.
+
+The unreleased preview.11 candidate supplies bootstrap diagnosis, explicit
+clean rollover for the same exact positively loaded thread, persistent reference
+identity and read-only historical receipts. Each endpoint is recovered separately.
+Live helpers, active/replacing jobs and uncertain/unacknowledged delivery refuse
+rollover; quarantine and intent migration are outside this first slice. Unknown
+native turn completion remains unknown even after acknowledged handling.
+
+Keep candidate work isolated from the older Starship report checkout and other
+worktrees. Meaningful fixtures, archive/idempotency/concurrency review, relocated
+package checks and the bounded fresh-actor MCP recipe precede source acceptance.
+No release publication, managed pin/apply, real-session reset or native daemon
+restart belongs to this loop. Installed preview.10 remains selected.
 
 ## Preview.10 publication and deployment
 

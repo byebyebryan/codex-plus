@@ -13,6 +13,7 @@ import subprocess
 import sys
 import time
 import uuid
+from contextlib import nullcontext
 
 from .engine import Engine
 from .context import existing_socket
@@ -78,7 +79,11 @@ def binding(root: Path) -> dict:
     if path.is_symlink():
         raise ValueError('binding must not be a symlink')
     try:
-        return json.loads(path.read_text())
+        value = json.loads(path.read_text())
+        from .owner_recovery import selected_state, SELECTION_FORMAT
+        if isinstance(value, dict) and value.get('format') == SELECTION_FORMAT:
+            return selected_state(root)[2]
+        return value
     except FileNotFoundError as error:
         raise ValueError('bind this private state directory to an existing conversation first') from error
 
@@ -270,6 +275,38 @@ def main(argv=None, *, before_write=None) -> int:
     args = parser().parse_args(argv)
     os.umask(0o077)
     root = private_directory(args.state)
+    from .owner_recovery import selected_state, ARCHIVE_FORMAT, SELECTION_FORMAT
+    for ancestor in (root, root.parent):
+        manifest_path = ancestor / 'manifest.json'
+        if manifest_path.is_file() and not manifest_path.is_symlink():
+            if manifest_path.stat().st_size <= 1024 * 1024 and json.loads(manifest_path.read_text()).get('format') == ARCHIVE_FORMAT:
+                raise ValueError('archived owner state is immutable; use owner_status for read-only history')
+    if (root / 'binding.json').is_file():
+        value = json.loads((root / 'binding.json').read_text())
+        if isinstance(value, dict) and value.get('format') == SELECTION_FORMAT:
+            root = selected_state(root)[0]
+    guard = nullcontext()
+    managed_container = None
+    if before_write is None and args.operation != 'serve':
+        # ModelAPI already owns caller/recipient locks. Standalone operations
+        # against a managed thread layout must share that same stable boundary.
+        container = root.parent.parent if root.parent.name == 'incarnations' else root
+        try:
+            identity = str(uuid.UUID(container.name))
+        except ValueError:
+            identity = None  # Arbitrary standalone CLI state has no MCP layout.
+        if identity is not None:
+            from .owner_recovery import thread_locks
+            guard = thread_locks(container.parent, [identity])
+            managed_container = container
+    with guard:
+        if managed_container is not None and (managed_container / 'binding.json').is_file():
+            if selected_state(managed_container)[0] != root:
+                raise ValueError('owner selection changed or the requested state is historical; inspect owner_status')
+        return _main(args, root, before_write)
+
+
+def _main(args, root, before_write):
     if args.operation == 'serve':
         serve(root)
         return 0

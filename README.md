@@ -49,6 +49,11 @@ messages with quoted purpose, clearer follow-up outcomes and reported MCP-versio
 diagnosis. The guides explain how to return to unfinished work; see [released and source features](docs/getting-started.md#released-and-source-features).
 Updating a guide or checkout does not upgrade an installed runtime.
 
+The unreleased **preview.11 source candidate** adds explicit diagnosis and clean
+recovery after a native owner incarnation changes, with immutable history and
+refusal of unsettled work. Installed preview.10 does not provide these operations.
+See the [recovery contract and acceptance](docs/owner-recovery.md).
+
 | Capability | What is available |
 | --- | --- |
 | Watches | Quiet command/script observation, authenticated endpoint access, passive peer reads and configured MCP inspection. |

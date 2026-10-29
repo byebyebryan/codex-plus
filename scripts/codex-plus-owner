@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+"""Inspect owner recovery or explicitly roll over one clean exact thread."""
+import argparse
+import json
+import os
+from pathlib import Path
+import sys
+
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from codex_plus.context import existing_socket, resolve
+from codex_plus.owner_recovery import Recovery
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--state-root', type=Path)
+    parser.add_argument('--socket')
+    parser.add_argument('--thread', default=os.environ.get('CODEX_THREAD_ID'), help='Exact positively loaded thread; no cold resume')
+    operations = parser.add_subparsers(dest='operation', required=True)
+    status = operations.add_parser('status')
+    status.add_argument('--incarnation')
+    status.add_argument('--reference')
+    status.add_argument('--category', choices=['summary', 'jobs', 'events', 'references', 'handling'], default='summary')
+    status.add_argument('--limit', type=int, default=20)
+    status.add_argument('--offset', type=int, default=0)
+    recover = operations.add_parser('recover')
+    recover.add_argument('--expected-preview', required=True)
+    recover.add_argument('--confirm', action='store_true')
+    args = parser.parse_args()
+    if not args.thread:
+        parser.error('select an exact --thread or CODEX_THREAD_ID')
+    os.umask(0o077)
+    try:
+        root = resolve().state_root(args.state_root)
+        requested = existing_socket(args.socket)
+        with Recovery(root, requested, {'thread_id': args.thread}, require_active=False) as api:
+            if args.operation == 'status':
+                print(api.status(incarnation=args.incarnation, reference=args.reference,
+                    category=args.category, limit=args.limit, offset=args.offset))
+            else:
+                print(api.recover(expected_preview=args.expected_preview, confirm=args.confirm))
+        return 0
+    except (OSError, ValueError, KeyError, RuntimeError, TimeoutError) as error:
+        print(json.dumps({'error': str(error)}), file=sys.stderr)
+        return 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

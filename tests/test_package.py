@@ -138,6 +138,22 @@ class PackageTests(unittest.TestCase):
         package.activate(prefix, '3' * 40)
         self.assertEqual(package.verify_install(installed)['version'], '0.1.0-preview.3')
 
+    def test_released_unified_previews_remain_selectable_without_recovery_files(self):
+        for number in (9, 10):
+            version = '0.1.0-preview.' + str(number)
+            files = {name: self.files[name] for name in package.PREVIEW_TEN_FILES}
+            files['codex_plus/__init__.py'] = ('VERSION = ' + repr(version) + '\n').encode()
+            revision = str(number % 10) * 40
+            metadata = package.manifest(files, revision)
+            metadata['version'] = version
+            prefix = self.root / ('released-' + str(number))
+            installed = package.install(self.archive(metadata=metadata, files=files), prefix)
+            package.activate(prefix, revision)
+            self.assertEqual(package.verify_install(installed)['version'], version)
+            self.assertNotIn('codex_plus/owner_recovery.py', metadata['files'])
+            self.assertNotIn('scripts/codex-plus-owner', metadata['files'])
+            self.assertNotIn('owner_recover', package.mcp_config(prefix)['tools'])
+
     def test_coordinator_from_previous_verified_release_is_recognized_by_new_runtime(self):
         old_files = {name: self.files[name] for name in package.PREVIOUS_RUNTIME_FILES}
         old_meta = package.manifest(old_files, '3'*40); old_meta['version'] = '0.1.0-preview.1'

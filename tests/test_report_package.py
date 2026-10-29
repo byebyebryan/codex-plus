@@ -74,6 +74,20 @@ class ReportPackageTests(unittest.TestCase):
         installed = package.install(self.archive(), prefix); package.activate(prefix, '8' * 40)
         self.assertEqual(package.verify_install(installed)['version'], '0.1.0-preview.8')
 
+    def test_released_unified_previews_remain_verifiable(self):
+        for number in (9, 10):
+            version = '0.1.0-preview.' + str(number)
+            self.content = {name: value for name, value in self.content.items() if name in package.FILES}
+            self.content['codex_plus/__init__.py'] = ('VERSION = ' + repr(version) + '\n').encode()
+            self.content.update(package.plugins(version))
+            revision = str(number % 10) * 40
+            self.metadata = package.manifest(self.content, revision)
+            self.metadata['version'] = version
+            prefix = self.root / ('released-' + str(number))
+            installed = package.install(self.archive(), prefix)
+            package.activate(prefix, revision)
+            self.assertEqual(package.verify_install(installed)['version'], version)
+
     def test_checksums_manifest_and_linked_members_fail_before_install(self):
         archive = self.archive()
         with self.assertRaises(ValueError): package.install(archive, self.root / "wrong", "0" * 64)

@@ -1,5 +1,10 @@
 # Codex Plus releases and monitoring installation
 
+The current source candidate is unreleased preview.11. Its [owner recovery
+contract](owner-recovery.md) adds explicit clean rollover and archived inspection;
+the released and managed preview.10 described below does not include them.
+Source version preparation does not publish an artifact or upgrade a process.
+
 The runtime is a Linux/Unix preview qualified against Codex 0.162.1. It uses
 Python 3.11 or newer and RTK for the existing native status/coordinator command
 paths. It requires an already running owning daemon and loaded independent

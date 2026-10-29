@@ -33,7 +33,8 @@ PREVIOUS_RUNTIME_FILES = (
 )
 PREVIEW_TWO_FILES = (*PREVIOUS_RUNTIME_FILES, 'codex_plus/access.py')
 PREVIEW_THREE_FILES = (*PREVIEW_TWO_FILES, 'codex_plus/context.py', 'scripts/codex-plus-context')
-RUNTIME_FILES = (*PREVIEW_THREE_FILES, 'codex_plus/doctor.py', 'scripts/codex-plus-doctor')
+PREVIEW_TEN_FILES = (*PREVIEW_THREE_FILES, 'codex_plus/doctor.py', 'scripts/codex-plus-doctor')
+RUNTIME_FILES = (*PREVIEW_TEN_FILES, 'codex_plus/owner_recovery.py', 'scripts/codex-plus-owner')
 COMPATIBILITY = {'os': 'linux', 'python': '>=3.11', 'codex': '0.162.1',
                  'rtk': 'required', 'transport': 'existing local Unix daemon'}
 SCOPED_CONTROLS = ('watch_start', 'watch_cancel', 'watch_renew', 'watch_recover',
@@ -69,6 +70,8 @@ def manifest(files, source_revision):
 def version_files(version):
     if version == VERSION:
         return RUNTIME_FILES
+    if version in ('0.1.0-preview.9', '0.1.0-preview.10'):
+        return PREVIEW_TEN_FILES
     if version == '0.1.0-preview.3':
         return PREVIEW_THREE_FILES
     if version == '0.1.0-preview.2':

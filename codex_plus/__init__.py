@@ -1,3 +1,3 @@
 """Local Codex Plus watch coordinator candidate; native conversation ownership stays external."""
 
-VERSION = '0.1.0-preview.10'
+VERSION = '0.1.0-preview.11'

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from contextlib import redirect_stdout
+from contextlib import contextmanager, redirect_stdout
 import io
 import json
 import math
@@ -16,6 +16,7 @@ from .native import Client, RpcError
 from .peers import PeerReader, metadata, thread_id
 from .presentation import clean_text, compact_ref, label, quote
 from .store import Store, private_directory, wake_duration
+from . import owner_recovery as owners
 
 
 MODEL_GUIDANCE = """Codex Plus supplies session-local peer, watch and one-shot wakeup tools.
@@ -83,6 +84,13 @@ retain pending uncertainty and never silently restart a source or native owner.
 Hide helper paths, UUIDs, resource recipes and raw JSON from routine chat. Explain
 unavailable sources, gaps, expiry and uncertain delivery when they matter. Do not
 repeat an uncertain send. Detailed tools/options remain available for inspection.
+If the native owner changes, use owner_status for diagnosis before ordinary tools.
+Only an explicit user request authorizes owner_recover of this conversation's
+clean state, using its current preview and confirm=true. Never recover a recipient
+as a side effect of sending. Active or uncertain work refuses rollover; there is
+no force/reset option. Recovery archives history and starts fresh control without
+replaying intent. Historical references remain read-only. Use owner_status with
+an incarnation/reference to inspect prior work and retain unknown outcomes.
 """
 
 
@@ -119,6 +127,13 @@ def tool_definitions(max_duration=86400, max_events=1000):
         'mcp_arguments': {'type': 'object', 'description': 'Exact inspection tool arguments; authentication stays in the configured connection.'},
         'snapshot_fields': {'type': 'array', 'items': _string(), 'minItems': 1, 'maxItems': 32}}
     definitions = [
+        ('owner_status', 'Diagnose this conversation\'s owner binding without starting work, even when normal tools refuse. Optionally inspect a known recipient or bounded immutable archived history. Missing or incomplete evidence refuses recovery.',
+         {'peer': peer, 'incarnation': _string('An archived incarnation from owner_status.'),
+          'reference': _string('A historical reference to inspect; never retargeted.'),
+          'category': {'type': 'string', 'enum': ['summary', 'jobs', 'events', 'references', 'handling']},
+          'limit': _number(50, 1, True), 'offset': _number(100000, 0, True)}, []),
+        ('owner_recover', 'Explicitly roll this conversation\'s clean state over to its verified new owner incarnation. Requires the unchanged owner_status preview and explicit confirmation. Archives old state, preserves history, and sends no input or source work. Active or uncertain state refuses; no force option.',
+         {'expected_preview': _string('Exact owner_status preview token.', 128), 'confirm': {'type': 'boolean'}}, ['expected_preview', 'confirm']),
         ('peer_list', 'Discover loaded independent peers with bounded recent agent context. Children are excluded from ordinary selection; inspect them only on request. Completeness and uncertainty are explicit.',
          {'limit': _number(100, 1, True), 'include_children': {'type': 'boolean'}}, []),
         ('peer_inspect', 'Read one verified peer passively. Returns bounded agent/plan text, phase and goal status; no user prompts/tool outputs and no peer resume.',
@@ -150,13 +165,13 @@ def tool_definitions(max_duration=86400, max_events=1000):
         ('wake_cancel', 'Cancel the selected one-shot reminder, or close attention on a failed/interrupted follow-up while retaining receipts. Preserve native work; already consumed input cannot be retracted. Never replace a cancelled reminder.',
          {'wake': _string('A reminder reference returned by wake_schedule or wake_list.')}, ['wake']),
     ]
-    reads = {'peer_list', 'peer_inspect', 'watch_list', 'watch_inspect', 'message_status', 'wake_list'}
+    reads = {'owner_status', 'peer_list', 'peer_inspect', 'watch_list', 'watch_inspect', 'message_status', 'wake_list'}
     # These describe effects, not authorization. Reads may maintain the caller's
     # private reference cache; controls create/cancel jobs, send, or record handling.
     return [{'name': name, 'description': description,
              'annotations': {'readOnlyHint': name in reads,
-                             'destructiveHint': name in ('watch_cancel', 'wake_cancel', 'peer_send', 'message_cancel'),
-                             'idempotentHint': name in reads or name in ('watch_cancel', 'wake_cancel', 'message_cancel'),
+                             'destructiveHint': name in ('owner_recover', 'watch_cancel', 'wake_cancel', 'peer_send', 'message_cancel'),
+                             'idempotentHint': name in reads or name in ('owner_recover', 'watch_cancel', 'wake_cancel', 'message_cancel'),
                              'openWorldHint': False},
              'inputSchema': {'type': 'object', 'properties': properties, 'required': required, 'additionalProperties': False}}
             for name, description, properties, required in definitions]
@@ -219,12 +234,16 @@ class ModelAPI:
         self.definitions = tool_definitions(max_duration, max_events)
         self.client = client_factory(requested, experimental=True)
         self.store = None
+        self._state_guard = None
         try:
             self.frozen = self.client.bind(context['thread_id'])
             caller = PeerReader(self.client).validate(self.frozen)['peer']
             self.caller_label = label(caller['name'])
-            self.state = private_directory(self.root / context['thread_id'])
-            self._bind_state(self.state, self.frozen)
+            guard = owners.thread_locks(self.root, [context['thread_id']])
+            guard.__enter__()
+            self._state_guard = guard
+            self.thread_root = private_directory(self.root / context['thread_id'])
+            self.state, self.epoch, self.selection = self._bind_state(self.thread_root, self.frozen)
             self.store = Store(self.state)
             self.store.db.executescript('''
                 CREATE TABLE IF NOT EXISTS model_refs (
@@ -234,14 +253,25 @@ class ModelAPI:
                 CREATE TABLE IF NOT EXISTS model_responses (
                     event_id TEXT PRIMARY KEY REFERENCES events(id),
                     turn_id TEXT NOT NULL, outcome TEXT NOT NULL, detail TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS model_ref_counters (
+                    kind TEXT PRIMARY KEY, next_value INTEGER NOT NULL CHECK(next_value>=0));
             ''')
             self.current = self._current_turn()
         except BaseException:
             self.close(); raise
 
     def close(self):
-        if self.store is not None: self.store.close()
-        self.client.close()
+        try:
+            if self.store is not None:
+                self.store.close()
+                self.store = None
+        finally:
+            try:
+                if self._state_guard is not None:
+                    self._state_guard.__exit__(None, None, None)
+                    self._state_guard = None
+            finally:
+                self.client.close()
 
     def __enter__(self): return self
     def __exit__(self, *args): self.close()
@@ -249,9 +279,11 @@ class ModelAPI:
     def _bind_state(self, state, frozen):
         path = state / 'binding.json'
         if path.exists():
-            if cli.binding(state) != frozen: raise ValueError('frozen native owner changed')
+            selected, epoch, _, marker = owners.selected_state(state, expected_binding=frozen)
+            return selected, epoch, marker
         else:
             cli.atomic_json(path, frozen)
+            return state, 'legacy', None
 
     def _current_turn(self):
         page = self.client.call('thread/turns/list', {'threadId': self.context['thread_id'],
@@ -269,6 +301,14 @@ class ModelAPI:
 
     def _mutable(self):
         self.current = self._current_turn()  # Recheck interruption while a tool is in flight.
+        if self.client.bind(self.context['thread_id']) != self.frozen:
+            raise owners.OwnerRecoveryError('caller', 'owner_changed_during_operation', self.context['thread_id'])
+        selected, _, _, _ = owners.selected_state(self.thread_root, expected_binding=self.frozen)
+        if selected != self.state:
+            raise ValueError('selected incarnation changed; no intent written')
+        client_ids = [item.get('clientId') for item in self.current.get('items', []) if item.get('type') == 'userMessage']
+        if owners.historical_incoming(self.root, self.context['thread_id'], client_ids, self.context['turn_id']):
+            raise ValueError('this callback belongs to an archived owner incarnation; no new action or continuation')
         incoming = self._incoming()
         if incoming:
             job = self.store.job(incoming['job_id'])
@@ -285,16 +325,40 @@ class ModelAPI:
                 ref = row['ref']
                 if display: self.store.db.execute('UPDATE model_refs SET label=? WHERE kind=? AND ref=?', (label(display), kind, ref))
             else:
-                count = self.store.db.execute('SELECT COUNT(*) FROM model_refs WHERE kind=?', (kind,)).fetchone()[0]
-                ref = {'peer': 'p', 'watch': 'w', 'message': 'm', 'wake': 't'}[kind] + str(count + 1)
+                ref = owners.allocate_reference(self.store.db, kind)
                 self.store.db.execute('INSERT INTO model_refs VALUES (?,?,?,?,?)', (kind, ref, identity, encoded, label(display) if display else ''))
         return ref
 
-    def _reference(self, kind, reference):
+    def _reference(self, kind, reference, *, allow_history=False):
         exact = self.store.db.execute('SELECT * FROM model_refs WHERE kind=? AND ref=?', (kind, reference)).fetchone()
+        if exact is None:
+            historical = owners.historical_ref(self.root, self.context['thread_id'], kind, reference)
+            if historical:
+                if allow_history:
+                    return historical
+                raise ValueError('historical reference is read-only; inspect owner_status history and rediscover for fresh control')
+            if owners.historical_label_exists(self.root, self.context['thread_id'], kind, reference):
+                raise ValueError('this label also belongs to archived history; use a fresh exact reference without retargeting')
         rows = [exact] if exact else list(self.store.db.execute('SELECT * FROM model_refs WHERE kind=? AND label=?', (kind, reference)))
         if len(rows) != 1: raise ValueError('reference is missing or ambiguous; discover/inspect and clarify the intended task')
         return dict(rows[0])
+
+    @contextmanager
+    def _recipient_guard(self, thread, *, registering=False):
+        if thread == self.context['thread_id']:
+            raise ValueError('the calling conversation is not an independent recipient')
+        guard = owners.thread_locks(self.root, [thread], timeout=0)
+        try:
+            guard.__enter__()
+        except TimeoutError as error:
+            if registering:
+                raise owners.OwnerRecoveryError('recipient', 'busy', self.context['thread_id'], thread,
+                    'Recipient state is in another model operation or recovery.') from error
+            raise
+        try:
+            yield
+        finally:
+            guard.__exit__(None, None, None)
 
     def _peer(self, reference, write=False):
         row = self._reference('peer', reference)
@@ -442,6 +506,8 @@ class ModelAPI:
             lines.append('Use scope=history for settled registrations; history is retained.')
         if page['next_cursor']:
             lines.append('next_cursor: ' + page['next_cursor'])
+        if self.selection:
+            lines.append(owners.history_summary(self.root, self.context['thread_id']))
         return '\n'.join(lines)
 
     def _watch_cancel(self, watch):
@@ -524,76 +590,91 @@ class ModelAPI:
         self._mutable()
         duration = min(120, self.max_duration) if duration is None else duration
         row, frozen, info = self._peer(peer, write=True)
-        destination = private_directory(self.root / frozen['thread_id'])
-        self._bind_state(destination, frozen)
-        result = self._cli(destination, 'peer_send', '--sender', self.context['thread_id'], '--kind', kind, '--duration', str(duration), '--message', message)
-        ref = self._remember('message', result['event_id'], frozen, row['label'] or info['name'])
+        with self._recipient_guard(frozen['thread_id'], registering=True):
+            thread_root = private_directory(self.root / frozen['thread_id'])
+            if (thread_root / 'binding.json').exists():
+                destination, _, _ = owners.recipient_state(thread_root, frozen, self.context['thread_id'])
+            else:
+                cli.atomic_json(thread_root / 'binding.json', frozen)
+                destination = thread_root
+            result = self._cli(destination, 'peer_send', '--sender', self.context['thread_id'], '--kind', kind, '--duration', str(duration), '--message', message)
+            ref = self._remember('message', result['event_id'], frozen, row['label'] or info['name'])
         return 'Registered ' + ref + ' to ' + label(row['label'] or info['name']) + ': ' + result['state'] + '. This is durable intent, not recipient acceptance or execution; use message_status for handling. Do not repeat this send.'
 
     def _message_status(self, message=None, limit=20, cursor=None):
         if message is not None:
             if cursor is not None or limit != 20:
                 raise ValueError('choose a message reference or outgoing-message pagination')
-            return self._message_receipt(self._reference('message', message))
+            return self._message_receipt(self._reference('message', message, allow_history=True))
         params = []
         where = "kind='message'"
-        if cursor is not None:
+        archive_offset = None
+        if cursor is not None and cursor.startswith('archive:'):
+            value = cursor.removeprefix('archive:')
+            if not value.isdecimal() or len(value) > 6 or int(value) > 100000 or not self.selection:
+                raise ValueError('invalid archived outgoing-message cursor')
+            archive_offset = int(value)
+        elif cursor is not None:
             position = self.store.db.execute("SELECT rowid FROM model_refs WHERE kind='message' AND ref=?", (cursor,)).fetchone()
             if position is None: raise ValueError('invalid outgoing-message cursor')
             where += ' AND rowid<?'
             params.append(position['rowid'])
         total = self.store.db.execute("SELECT COUNT(*) FROM model_refs WHERE kind='message'").fetchone()[0]
-        rows = list(self.store.db.execute('SELECT * FROM model_refs WHERE ' + where + ' ORDER BY rowid DESC LIMIT ?', [*params, limit + 1]))
+        rows = [] if archive_offset is not None else list(self.store.db.execute('SELECT * FROM model_refs WHERE ' + where + ' ORDER BY rowid DESC LIMIT ?', [*params, limit + 1]))
         lines = ["This conversation's recorded outgoing messages, newest first; cached receipts do not prove fresh recipient activity."]
-        for row in rows[:limit]:
+        def render(row):
             lines.append('To ' + label(row['label'], 'recorded peer') + ':')
             try:
                 lines.append(self._message_receipt(row))
             except (OSError, ValueError, sqlite3.Error) as error:
                 lines.append(row['ref'] + ': receipt unavailable; ' + clean_text(str(error), 256) +
                              '. Delivery/handling unknown; do not resend from this result.')
-        lines.append('Showing ' + str(min(len(rows), limit)) + ' of ' + str(total) + ' recorded outgoing messages.')
+        for row in rows[:limit]:
+            render(row)
+        lines.append('Showing ' + str(min(len(rows), limit)) + ' of ' + str(total) +
+                     (' outgoing messages in this incarnation.' if self.selection else ' recorded outgoing messages.'))
         if len(rows) > limit:
             lines.append('next_cursor: ' + rows[limit - 1]['ref'])
+        elif self.selection:
+            offset = archive_offset or 0
+            remaining = limit - len(rows)
+            try:
+                historical = owners.historical_refs(self.root, self.context['thread_id'], 'message',
+                    limit=max(1, remaining), offset=offset, page=True)
+                if remaining:
+                    lines.append('Archived outgoing receipts: ' + str(len(historical)) + ' shown from offset ' + str(offset) + '.')
+                    for row in historical:
+                        render(row)
+                    offset += len(historical)
+                more = bool(historical) if not remaining else len(historical) == remaining and bool(owners.historical_refs(
+                    self.root, self.context['thread_id'], 'message', limit=1, offset=offset, page=True))
+                if more:
+                    lines.append('next_cursor: archive:' + str(offset))
+            except (OSError, ValueError, sqlite3.Error) as error:
+                lines.append('Archived outgoing coverage incomplete; outcomes remain unknown: ' + clean_text(str(error), 256))
+        if self.selection:
+            lines.append(owners.history_summary(self.root, self.context['thread_id']))
         return '\n'.join(lines)
 
     def _message_receipt(self, row):
         frozen = json.loads(row['binding'])
-        state = self.root / frozen['thread_id']
-        if not (state / 'journal.sqlite3').is_file():
-            raise ValueError('recipient receipt journal is unavailable')
-        private_directory(state)
-        if cli.binding(state) != frozen: raise ValueError('recipient state owner changed')
-        with_store = Store(state)
-        try:
-            receipt = with_store.event(row['identity'])
-            job = with_store.job(receipt['job_id'])
-            if job['kind'] != 'message' or job['spec'].get('sender') != self.frozen:
-                raise ValueError('this caller does not own the outgoing message')
-            exists = with_store.db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='model_responses'").fetchone()
-            response = with_store.db.execute('SELECT * FROM model_responses WHERE event_id=?', (row['identity'],)).fetchone() if exists else None
-        finally:
-            with_store.close()
-        text = row['ref'] + ': intent ' + job['intent'] + '; ' + receipt['delivery'] + '; withdrawal ' + receipt['withdraw_state'] + '; turn ' + str(receipt['turn_outcome'] or 'not yet known') + '; handling ' + ('acknowledged' if receipt['acknowledged'] else 'not acknowledged')
-        if response: text += '; recipient ' + response['outcome'] + ': ' + clean_text(response['detail'], 1024)
-        return (text + '. Receipt/acceptance does not prove an external effect.\nStored ' +
-                label(job['spec'].get('message_kind', 'information')) + ':\n' +
-                quote(clean_text(job['spec']['prompt'], 512)))
+        with self._recipient_guard(frozen['thread_id']):
+            return owners.historical_message_receipt(self.root, self.context['thread_id'], dict(row))
 
     def _message_cancel(self, message):
         self._mutable()
         row = self._reference('message', message)
         frozen = json.loads(row['binding'])
-        destination = self.root / frozen['thread_id']
-        if cli.binding(destination) != frozen: raise ValueError('recipient state owner changed')
-        recipient = Store(destination)
-        try:
-            event = recipient.event(row['identity'])
-            job = recipient.job(event['job_id'])
-            if job['kind'] != 'message' or job['spec'].get('sender') != self.frozen:
-                raise ValueError('this caller does not own the outgoing message')
-        finally: recipient.close()
-        self._cli(destination, 'cancel', job['id'])
+        with self._recipient_guard(frozen['thread_id']):
+            destination, _, _ = owners.recipient_state(self.root / frozen['thread_id'], frozen, self.context['thread_id'])
+            recipient = Store(destination)
+            try:
+                event = recipient.event(row['identity'])
+                job = recipient.job(event['job_id'])
+                if job['kind'] != 'message' or job['spec'].get('sender') != self.frozen:
+                    raise ValueError('this caller does not own the outgoing message')
+            finally: recipient.close()
+            self._cli(destination, 'cancel', job['id'])
         return 'Cancellation requested for ' + row['ref'] + '. Recipient work is preserved; completed handling cannot be retracted. Inspect message_status for exact withdrawal/handling receipts.'
 
     def _event_ack(self, outcome='received', detail=''):
@@ -656,6 +737,8 @@ class ModelAPI:
             lines.append('Use scope=history for settled reminders; history is retained.')
         if page['next_cursor']:
             lines.append('next_cursor: ' + page['next_cursor'])
+        if self.selection:
+            lines.append(owners.history_summary(self.root, self.context['thread_id']))
         return '\n'.join(lines)
 
     def _wake_cancel(self, wake):
