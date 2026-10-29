@@ -188,6 +188,9 @@ class ModelTests(unittest.TestCase):
             with self.assertRaises(owners.OwnerRecoveryError) as failure:
                 api.call('peer_send', {'peer': ref, 'message': 'fixture only'})
             self.assertEqual(failure.exception.role, 'recipient')
+            self.assertNotIn('caller_owner_state=', str(failure.exception))
+            self.assertNotIn('Run owner_status in this conversation', str(failure.exception))
+            self.assertIn('recipient must run owner_status', str(failure.exception))
             self.assertFalse((destination / 'journal.sqlite3').exists())
             self.assertEqual(cli.binding(destination), old)
             self.assertEqual(api.store.db.execute("SELECT COUNT(*) FROM model_refs WHERE kind='message'").fetchone()[0], 0)

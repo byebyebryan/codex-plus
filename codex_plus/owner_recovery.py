@@ -359,8 +359,11 @@ def recipient_state(thread_root, current_binding, caller_thread):
             raise ValueError('saved recipient binding differs from its current exact owner')
         return state, epoch, marker
     except (OSError, ValueError, KeyError, TypeError) as error:
+        detail = error.detail if isinstance(error, OwnerRecoveryError) else str(error)
+        if isinstance(error, OwnerRecoveryError):
+            detail = 'The saved recipient owner differs from its verified current incarnation.'
         raise OwnerRecoveryError('recipient', 'stale_or_unavailable_incarnation', caller_thread,
-                                 current_binding.get('thread_id'), str(error)) from error
+                                 current_binding.get('thread_id'), detail) from error
 
 
 def _tree_manifest(root, *, ignore_managed=False, ignore_paths=()):
