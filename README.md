@@ -54,6 +54,11 @@ recovery after a native owner incarnation changes, with immutable history and
 refusal of unsettled work. Older installed releases require an explicit upgrade.
 See the [recovery contract and acceptance](docs/owner-recovery.md).
 
+The [October 31 qualification pass](docs/native-qualification-results.md) checks
+preview.11 on Snap's native 0.166.0 pair and records an unreleased correction for
+cancelled source errors in current watch attention. Installed releases and the
+declared compatibility baseline remain unchanged.
+
 | Capability | What is available |
 | --- | --- |
 | Watches | Quiet command/script observation, authenticated endpoint access, passive peer reads and configured MCP inspection. |

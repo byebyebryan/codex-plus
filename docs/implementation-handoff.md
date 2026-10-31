@@ -7,29 +7,46 @@ selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect norma
 
 ## Current scope and entry points
 
-The selected pass is [native qualification and operational clarity](codex-plus-plan.md#planned-pass-native-qualification-and-operational-clarity),
-authorized for a goal loop after the 2026-10-31 overview and planning review.
-Execution starts with the baseline and remains within the recorded trial budget.
-The plan records
-research gates, a two-actor native recipe, finite budgets, small-fix criteria and
-completion boundaries. Completed passes below remain historical evidence.
+The [native qualification and operational clarity pass](native-qualification-results.md)
+completed 2026-10-31 within the [selected plan](codex-plus-plan.md#planned-pass-native-qualification-and-operational-clarity).
+Two owned independent conversations used 17 native turns across the installed
+preview.11 run and one affected repeat on the existing Snap OSS 0.166.0 pair.
+Peer messages, blocker follow-up, normal MCP inspection, a reminder, fresh recap,
+explicit stop, invented clean recovery/history and foreground interruption have
+their scenario limits in the results. Both actors are archived/unloaded, queues
+are empty and no fixture process remains. The observer's initial invocation
+failure and conflicting fixture limits are retained; the repeat's command watch
+was registered by the controller CLI, not by a natural-language actor request.
+
+Unreleased correction `9804d99` removes explicitly cancelled terminal source
+errors from current watch attention while retaining history and unresolved
+delivery. It passes 353 tests, a regression that failed before the fix, two
+identical package builds and relocated CLI/MCP discovery. Native candidate
+inspection confirmed zero current entries and preserved error history. All
+139 protected local paths and 13 baseline native/report-related process
+identities match baseline; selected releases, private configuration and the two
+untracked bytecode files are preserved. Publication, release-version selection,
+push and chezmoi rollout remain separate work.
 
 The overview's read-only checks found Snap OSS's selected preview.11 manifests
 valid and this conversation's two MCPs reporting preview.11. Both CLI and owner
-reported native 0.166.0; compatibility remains unestablished for that pair. Snap
-OSS reporting now verifies over HTTP 200, and the public landing/architecture
+reported native 0.166.0; general compatibility remains unestablished, with bounded
+scenario evidence now recorded above. Snap OSS reporting now verifies over HTTP
+200, and the public landing/architecture
 pages return 200 with preview.11 content. This refreshes those local facts only;
 it does not attest loaded payload bytes or re-audit Snap work, Starship or Carbon.
 The October 29 rollout and native qualification records retain their dated scope.
 
-Planning-only validation passes: the clean 128-file candidate inventory and
-worker checks, 18 existing Pages tests, whitespace checks and an external site
-build with 234 verified links/assets/anchors. The canonical inventory still
-reports the two preserved bytecode files. This is documentation validation, not
-new native-runtime acceptance.
+Final validation passes the clean **129-file inventory**, worker checks,
+18 Pages tests, five inventory-check tests and whitespace checks. The external
+walkthrough/eight-guide build verifies 234 local links/assets/anchors and public
+metadata. The runtime's 353-test gate used Python 3.14.8; this pass started no new
+CI or public deployment. Canonical `scripts/check` fails only on the two preserved
+bytecode files; its clean tracked-file candidate passes. The earlier planning
+gate's 128-file inventory and 234-link build remain documentation-only evidence.
 
-The separately authorized release pass completed review corrections, the 351-test
-source gate, Python 3.11/3.14 CI, reproducible/fetched artifact verification and
+The separately authorized 2026-10-29 release pass completed review corrections,
+the 351-test source gate, Python 3.11/3.14 CI, reproducible/fetched artifact verification and
 scoped managed rollout. Preview.11 source `5c9ec1d` includes strict boot-evidence
 and journal classification checks added after the closed native sample. All four
 installed contexts report 17 monitoring/four report tools in fresh protocol
@@ -96,7 +113,7 @@ completed context, not the current execution scope.
 
 Start with [setup](getting-started.md), the [daily guide](daily-use.md), [worker workflows](workers.md), [architecture](architecture.md),
 [environment contract](environments.md) and [public walkthrough](https://dev.byebyebryan.com/codex-plus/).
-The [implementation plan](codex-plus-plan.md) records the proposed pass and completed
+The [implementation plan](codex-plus-plan.md) records the selected scope and completed
 contracts; the [reconciliation results](reconciliation-results.md) record the earlier
 environment/documentation pass. The [historical checkpoints](implementation-history.md) preserve
 older migration, notification, rollout and acceptance evidence.

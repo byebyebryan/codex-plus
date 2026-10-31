@@ -12,9 +12,10 @@ and [Claude context](claude-monitoring-context.md) for the historical design inp
 
 ## Planned pass: native qualification and operational clarity
 
-Selected for execution 2026-10-31 after the project overview and planning review.
-This section bounds the authorized pass; the dated passes below are completed
-evidence. Publication and managed apply remain outside this execution scope.
+Completed 2026-10-31 after the project overview, planning review and goal-loop
+request. The [results](native-qualification-results.md) record 17 bounded native
+turns and one unreleased inventory correction. The scope and gates below remain
+the execution record. Publication and managed apply were outside this pass.
 
 The outcome is an evidence-backed decision about preview.11 on the current
 native runtime, plus the smallest justified maintenance changes. Keep the native

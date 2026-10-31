@@ -204,6 +204,9 @@ class StoreTests(unittest.TestCase):
                 self.assertEqual({job['id'] for job in self.store.watch_page()['registrations']}, expected)
         lost = self.store.create('watch', self.spec)
         self.store.source(lost, 'lost')
+        self.now += 121
+        self.store.expire(lost)
+        self.assertEqual(self.store.job(lost)['intent'], 'expired')
         expected.add(lost)
         self.assertEqual({job['id'] for job in self.store.watch_page()['registrations']}, expected)
         self.assertEqual(self.store.watch_page(scope='history')['history_total'], len(expected))
