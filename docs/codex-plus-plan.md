@@ -1,6 +1,6 @@
 # Codex Plus implementation plan
 
-Updated 2026-10-29. Codex CLI/TUI remains the daily interface and its existing
+Updated 2026-10-31. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are
 installed and enabled on Snap, Starship and Carbon. Current sources are reconciled.
@@ -9,6 +9,128 @@ Real-source soak and personal UX acceptance remain separate from synthetic proof
 Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
+
+## Planned pass: native qualification and operational clarity
+
+Selected for execution 2026-10-31 after the project overview and planning review.
+This section bounds the authorized pass; the dated passes below are completed
+evidence. Publication and managed apply remain outside this execution scope.
+
+The outcome is an evidence-backed decision about preview.11 on the current
+native runtime, plus the smallest justified maintenance changes. Keep the native
+CLI/TUI, continuing thread, owning daemon, approvals and execution policy. A
+decision to retain the existing implementation with better evidence is useful;
+success does not require another feature, tool, store or service.
+
+### Starting evidence and scope
+
+Read-only checks on Snap OSS on 2026-10-31 found all three selected preview.11
+component manifests valid, and this conversation's monitoring/reporting MCPs
+reported preview.11. The client and owning daemon reported 0.166.0. The local
+report catalog verified over HTTP 200; the public landing and architecture pages
+also returned 200 and mentioned preview.11. This does not attest loaded payload
+bytes or refresh Starship, Carbon or Snap work. Carbon's reporting availability
+remains unverified since the October 29 rollout receipt.
+
+The release baseline is still native 0.162.1. The earlier 0.163.0/0.165.0 trials
+and 351-test release gate keep their recorded revision and scenario limits.
+Do not turn an installed version match or this planning snapshot into new
+compatibility acceptance. Preserve the two existing untracked bytecode files.
+
+Bryan already uses Plus successfully. Review a small number of relevant episodes
+and any supplied friction example; do not make another open-ended soak a
+prerequisite for finishing the unattended work. Use only conversation context,
+selected existing evidence or already authorized passive sources. Do not scan
+private histories broadly, export transcripts or manufacture a real workload.
+Compatibility and maintenance are the default anchor pending a more specific
+user priority.
+
+### Sequence and decision gates
+
+| Stage | Work and deliverable | Gate to continue |
+| --- | --- | --- |
+| 1. Establish the baseline | Record exact source, immutable installed artifact, selected/reported component versions, client/owner pair and protected process/config identities. Map the native methods actually used for discovery, history, queueing, permissions and MCP metadata against the installed schema and current official documentation. | Identify supported behavior and unknowns without cold-resuming real threads, enabling global experiments or changing an owner. A documentation entry alone is not replacement proof. |
+| 2. Select the smallest changes | Review existing discovery, permission, receipt, recovery and doctor fixtures. Record actual-use findings as retain, simplify, guidance/formatting fix, runtime fix or defer, with a trigger and evidence. | Each proposed change closes a reproduced gap or demonstrably removes machinery while preserving ownership, permissions, cancellation, history and uncertainty. No change is also a valid decision. |
+| 3. Qualify the installed release | Drive the bounded synthetic recipe below against the exact preview.11 installed payload on the verified existing daemon. Keep fixture MCP configuration and state private and isolated. | Record each known transition, admission, handling and outcome separately. A refused or uncertain operation is diagnosed, never blindly retried. Stop on a scope/identity/permission failure. |
+| 4. Implement selected fixes | Prefer current tools, model guidance and read-only diagnostic output. Add meaningful regressions for reproduced defects, inspect the diff and run the relevant suite. If code changed, build/verify a relocated candidate and repeat only affected native cases within the repeat budget. | Keep release-baseline evidence separate from candidate evidence. No new MCP tool, persistent store, service, adapter framework or automatic recovery enters through this maintenance scope. |
+| 5. Close the pass | Write a concise results record, current native/custom responsibility map, scenario matrix, actual cost/latency where measured, preservation receipt and remaining gaps. Reconcile current guides and handoff with dated historical results. | Every claim identifies the tested revision, native pair, environment and evidence level. Cleanup and unresolved outcomes are explicit; real-use and long-operation gaps stay open where unobserved. |
+
+The first native run tests the released artifact before candidate changes. Source
+fixtures and package checks qualify different layers. Check the official
+[app-server contract](https://learn.chatgpt.com/docs/app-server) and the actual
+installed schema together. A passive history API is useful only for its stated
+scope; it does not by itself replace observation, queueing or receipt machinery.
+Keep scheduled MCP calls on the normal model approval/authentication path.
+
+### Bounded native recipe
+
+Use at most two fresh owned independent conversations, A and B, in one existing
+daemon on Snap OSS. Do not activate a worker skill or delegate implicitly. Drive
+the scenes and fixture changes directly; Bryan need not open panes, copy prompts
+or supply UUIDs. Synthetic actor identity and allowed destinations must be
+recorded privately before control operations. Production sessions remain passive.
+
+| Scene | Required observation |
+| --- | --- |
+| Natural discovery and messaging | A resolves B from project/task context, sends at most one information message and one request within B's fixture task, and distinguishes admission from received/accepted/declined handling and completion. Ambiguity and child exclusion use existing fixtures; two actors do not establish a live ambiguity test. |
+| Peer follow-up | A observes one deliberately produced blocker/readiness change in B, reports the relevant finding and preserves the selected identity. A quiet interval records avoidable callbacks/chat separately; idle is not inferred to mean success. |
+| Command/endpoint observation | A controlled endpoint or log fixture has a known quiet interval and transition. Verify source access under the actor's existing grant, useful delivery and read/model-turn counts without real credentials or a new adapter. |
+| Configured MCP and later check | One configured fixture MCP inspection uses the normal native model/tool path; one separate one-shot reminder returns promptly and records its eventual callback outcome. Count each model turn; a due time is not an exact-time delivery promise. |
+| Interruption, recap and stop | Interrupt only an owned foreground test command and verify independent observation survives. Require fresh watch/reminder/outgoing-receipt inspection for the recap, then explicitly stop selected observation and its continuation while leaving B's work intact. Native interruption does not prove a physical Esc/TUI interaction. |
+| Clean owner recovery and history | After fixture work settles, use invented stale binding evidence only in an owned actor's isolated state. Exercise bootstrap diagnosis, one explicit clean rollover and archived inspection. Preserve unknown final outcomes. No live owner replacement, incident reset, force recovery or intent replay is part of this scene. If work is unsettled, record refusal and stop. |
+| Cleanup | Cancel only fixture registrations, reconcile admitted callbacks, verify their terminal/unknown receipts and archive/unload only the owned actors after any affected repeat. Compare protected state and owner/report process identities with baseline. |
+
+Initial limits: 16 started native turns including setup, message callbacks,
+scheduled callbacks and cleanup; at most two peer messages, three watch
+registrations (peer, command and configured MCP) and one reminder. Each watch
+has at most a five-minute lease. Admit at most two peer-watch events, one
+command-watch event and one configured-MCP inspection. The run has a
+20-minute wall-clock ceiling. These are trial caps, not product defaults or a
+polling recipe: the model chooses useful filtering and timing inside them.
+
+Reserve four of the initial turns for already admitted callbacks and cleanup.
+Stop new registrations/admissions before exhausting that reserve. Cancel bounded
+fixture intent when ending a run; do not interrupt an already consumed callback
+to manufacture a clean result. Retain any unresolved outcome.
+
+One affected repeat may use up to eight additional native turns with the same
+owned actor pair; the whole pass admits at most 24 turns and four peer messages,
+including both runs. A repeat follows a diagnosed harness/candidate correction,
+not an uncertain send. It has the same per-run registration and time limits.
+Do not expand the trial or restart an owner when a budget or gate fails.
+Record partial acceptance and the smallest further question instead.
+
+### Validation, evidence and completion
+
+Run focused existing regressions and the full fixture suite when runtime code
+changes, `rtk proxy scripts/check`, `rtk proxy git diff --check`, and the external
+Pages builder for guide changes. Validate inventory in a clean tracked-file
+candidate while preserving canonical bytecode. Add a results file to the explicit
+inventory deliberately when actual results exist; do not pre-fill acceptance.
+Worker identities, workflow metadata and enablement remain independently checked.
+
+If packaged code changes, verify reproducible archives and relocated CLI/MCP
+entry points. Record exact candidate source separately from the immutable
+preview.11 release; never overwrite its tag or assets. Presentation changes
+require actual browser checks; a source build or HTTP 200 alone is insufficient.
+This plan does not require a cosmetic site redesign or a new product surface.
+
+The unattended pass ends with reviewed findings, appropriately validated selected
+fixes or an evidence-backed no-change decision, exact source/artifact/native
+scope, completed fixture cleanup and honest remaining gaps. Optional real-source
+acceptance follows actual work through the [soak checklist](soak-checklist.md).
+It may use an already authorized passive source, but absent access is a recorded
+limit rather than a reason to request credentials or start unrelated work.
+A successful run establishes only its listed scenarios on the tested pair and
+environment. Updating the declared compatibility baseline or extending fleet
+coverage requires an explicit evidence/release decision; it is not automatic.
+
+Publication, version/release selection and live chezmoi rollout are later tasks.
+Prepare concrete validation evidence before proposing them. Preserve active
+work and managed state on all hosts; no global MCP refresh, daemon/server restart,
+real-session recovery, new cross-host transport, recurring scheduler or dashboard
+is included. Carbon hosting may be checked passively if reachable; repairs stay
+outside this pass unless a specific finding is selected and authorized.
 
 ## Owner recovery: clean rollover and inspectable history
 

@@ -1,11 +1,32 @@
 # Implementation handoff
 
-Updated 2026-10-29. The owner-recovery work is isolated on Starship
+Updated 2026-10-31. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
 the older report checkout and the existing worktrees. Preview.11 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
 ## Current scope and entry points
+
+The selected pass is [native qualification and operational clarity](codex-plus-plan.md#planned-pass-native-qualification-and-operational-clarity),
+authorized for a goal loop after the 2026-10-31 overview and planning review.
+Execution starts with the baseline and remains within the recorded trial budget.
+The plan records
+research gates, a two-actor native recipe, finite budgets, small-fix criteria and
+completion boundaries. Completed passes below remain historical evidence.
+
+The overview's read-only checks found Snap OSS's selected preview.11 manifests
+valid and this conversation's two MCPs reporting preview.11. Both CLI and owner
+reported native 0.166.0; compatibility remains unestablished for that pair. Snap
+OSS reporting now verifies over HTTP 200, and the public landing/architecture
+pages return 200 with preview.11 content. This refreshes those local facts only;
+it does not attest loaded payload bytes or re-audit Snap work, Starship or Carbon.
+The October 29 rollout and native qualification records retain their dated scope.
+
+Planning-only validation passes: the clean 128-file candidate inventory and
+worker checks, 18 existing Pages tests, whitespace checks and an external site
+build with 234 verified links/assets/anchors. The canonical inventory still
+reports the two preserved bytecode files. This is documentation validation, not
+new native-runtime acceptance.
 
 The separately authorized release pass completed review corrections, the 351-test
 source gate, Python 3.11/3.14 CI, reproducible/fetched artifact verification and
@@ -100,7 +121,7 @@ Continue with ordinary use and its evidence.
 
 ## Source, releases and installed state
 
-| Layer | Current fact |
+| Layer | Release/rollout fact recorded 2026-10-29 |
 | --- | --- |
 | Published unified release | v0.1.0-preview.11, source `5c9ec1d`; one version, tag and release manifest, with optional worker/monitoring/report archives. Fetched bytes match reproducible candidates. |
 | Managed upgrade | Pins published to dotfiles main as `68d3480`; scoped live rollout completed 2026-10-29 on all three hosts. |
