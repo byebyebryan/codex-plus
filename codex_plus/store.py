@@ -286,7 +286,10 @@ class Store:
             # terminal outcomes but cannot resolve an unknown consumed turn.
             handling = """(e.turn_outcome IS NULL OR (j.intent!='cancelled' AND
                 (e.acknowledged=0 OR e.turn_outcome IN ('failed','interrupted'))))"""
-        attention = f"""(j.intent IN ('active','replacing') OR j.source_state IN ('lost','error')
+        # Explicit cancellation resolves a terminal source error, not an
+        # uncertain admission/withdrawal or unacknowledged native input.
+        attention = f"""(j.intent IN ('active','replacing') OR j.source_state='lost'
+            OR (j.source_state='error' AND j.intent!='cancelled')
             OR EXISTS (SELECT 1 FROM events e WHERE e.job_id=j.id AND
                 (e.delivery IN ('pending','dispatching','uncertain') OR e.withdraw_state='unknown'
                  OR (e.delivery='native_queued' AND {handling} AND e.withdraw_state!='withdrawn'))))"""

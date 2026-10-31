@@ -167,6 +167,47 @@ class StoreTests(unittest.TestCase):
             Store(public)
         self.assertEqual((self.root / 'state/journal.sqlite3').stat().st_mode & 0o777, 0o600)
 
+    def test_cancelled_source_error_leaves_current_inventory_and_retains_history(self):
+        watch = self.store.create('watch', self.spec)
+        self.store.source(watch, 'error', 'source exit 1: missing endpoint argument')
+        self.store.db.execute("UPDATE jobs SET intent='completed' WHERE id=?", (watch,))
+        self.assertEqual(self.store.watch_page()['matching'], 1)
+        self.store.cancel(watch)
+        self.store.close()
+        self.store = Store(self.root / 'state', clock=lambda: self.now)
+        self.assertEqual(self.store.watch_page()['registrations'], [])
+        history = self.store.watch_page(scope='history')
+        self.assertEqual(history['history_total'], 1)
+        saved = history['registrations'][0]
+        self.assertEqual(saved['id'], watch)
+        self.assertEqual(saved['intent'], 'cancelled')
+        self.assertEqual(saved['source_state'], 'error')
+        self.assertEqual(saved['source_detail'], 'source exit 1: missing endpoint argument')
+
+    def test_cancelled_error_keeps_unresolved_delivery_and_current_lost_source_visible(self):
+        expected = set()
+        for state in ('uncertain', 'withdrawal_unknown', 'unacknowledged'):
+            with self.subTest(state=state):
+                watch = self.store.create('watch', self.spec)
+                expected.add(watch)
+                self.store.source(watch, 'error')
+                event = self.store.emit(watch, 'owned fixture event')
+                self.store.reserve(event)
+                if state == 'uncertain':
+                    self.store.uncertain(event, 'admission reply missing')
+                else:
+                    self.store.admitted(event, 'native-input')
+                    if state == 'withdrawal_unknown':
+                        self.store.acknowledge(event)
+                        self.store.withdrawal(event, 'unknown', 'withdrawal reply missing')
+                self.store.cancel(watch)
+                self.assertEqual({job['id'] for job in self.store.watch_page()['registrations']}, expected)
+        lost = self.store.create('watch', self.spec)
+        self.store.source(lost, 'lost')
+        expected.add(lost)
+        self.assertEqual({job['id'] for job in self.store.watch_page()['registrations']}, expected)
+        self.assertEqual(self.store.watch_page(scope='history')['history_total'], len(expected))
+
     def test_queue_start_reservation_rechecks_intent_and_expiry(self):
         for stopped in ('cancel', 'expiry'):
             with self.subTest(stopped=stopped):
