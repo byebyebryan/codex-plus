@@ -7,16 +7,21 @@ selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect norma
 
 ## Current scope and entry points
 
-The selected [everyday reliability and native packaging pass](codex-plus-plan.md#next-pass-everyday-reliability-and-native-packaging)
-is in progress following the explicit goal-loop request. It starts with the stale current-release
-claims in setup/architecture, adds opt-in readable output to the existing doctor,
-reviews bounded selected real-use evidence and tests whether native plugin
-packaging simplifies distribution. Independent-session follow-up is the anchor.
-The default finish is a validated local candidate and an adopt/partial-fit/defer
-packaging decision; missing field access does not block the independent work.
-Preview.12 remains selected, active owners are preserved and release/deployment
-are separate follow-on gates. The detailed plan defines any owned native trial
-bounds and preserves worker identities and explicit invocation.
+The [everyday reliability and native packaging pass](reliability-packaging-results.md)
+is complete as a local candidate. Current-release claims are corrected and checked
+by the Pages builder; the existing doctor adds opt-in `--human` while retaining
+default JSON and its exit behavior. Code candidate `bceda12` passes 364 tests on
+Python 3.11/3.14 and reproducible relocated archive checks. It retains the source
+version constant only for private validation; it must not replace preview.12's
+published assets. The final tracked-file inventory is 130 files.
+
+Native plugin discovery works but prefixes skill names; worker registration and
+installed-plugin caller metadata remain unqualified. The decision is partial fit:
+retain archives/chezmoi and defer unified plugin distribution. Selected diagnostic
+and historical incident evidence does not complete real-work follow-up acceptance.
+This pass starts no native actors, model turns, watches or messages. All 1,349
+protected paths and 26 recorded native/report process identities match baseline.
+Preview.12 remains selected; publication, push and deployment are separate gates.
 
 The separately authorized review follow-up closes ordinary endpoint setup and
 live cancellation with three completed owned native turns on Snap OSS 0.166.0.

@@ -49,6 +49,12 @@ messages with quoted purpose, clearer follow-up outcomes and reported MCP-versio
 diagnosis. The guides explain how to return to unfinished work; see [released and source features](docs/getting-started.md#released-and-source-features).
 Updating a guide or checkout does not upgrade an installed runtime.
 
+The unreleased source candidate adds `--human` to the existing read-only doctor
+and checks current-release guide claims during Pages builds. A native plugin
+spike is a partial fit: discovery prefixes skill names and worker registration
+remains unqualified. Existing archives and chezmoi remain the distribution path.
+See the [review and packaging results](docs/reliability-packaging-results.md).
+
 **Preview.11** adds explicit diagnosis and clean
 recovery after a native owner incarnation changes, with immutable history and
 refusal of unsettled work. Older installed releases require an explicit upgrade.

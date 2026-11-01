@@ -10,12 +10,16 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
-## Next pass: everyday reliability and native packaging
+<a id="next-pass-everyday-reliability-and-native-packaging"></a>
+
+## Completed pass: everyday reliability and native packaging
 
 Selected 2026-10-31 after the preview.12 review and explicit goal-loop request.
-Execution is in progress. The default finish is a reviewed,
-validated local candidate, a bounded field-evidence record and a packaging
-decision. A later release/publication/deployment has its own acceptance gates.
+Completed with a reviewed local candidate and a partial-fit decision for native
+plugins. The [results](reliability-packaging-results.md) record the release-doc
+gate, readable doctor, 364 tests on Python 3.11/3.14, reproducible private artifacts,
+selected field evidence and preservation checks. Representative real-work follow-up
+remains open. A later release/publication/deployment has its own acceptance gates.
 
 Keep the native CLI/TUI, continuing conversation, owning daemon and normal tool
 approval/authentication paths. Anchor the pass on two independent active sessions
