@@ -3,8 +3,30 @@
 Completed 2026-11-01 as a local documentation/site candidate under the
 [selected plan](codex-plus-plan.md#planned-pass-agent-first-lifecycle-guidance).
 Guide and presentation candidate `e1b2d17` follows planning commit `995a7c6`.
-Publication, product releases and production installation changes remain outside
-this pass. Plugin migration stays deferred.
+The separately authorized publication is recorded below; product releases and
+production installation changes remain outside this pass. Plugin migration stays
+deferred.
+
+## Publication: 2026-11-01
+
+Reviewed source `52ab312` is pushed to personal github.com main. The
+[Pages workflow](https://github.com/byebyebryan/codex-plus/actions/runs/41338091807)
+and [source validation](https://github.com/byebyebryan/codex-plus/actions/runs/41338091834)
+passed. Both Python 3.11/3.14 jobs ran 376 tests and verified the release build.
+The 14-file deployed artifact matches the reviewed local build, including the
+exact Markdown export. All 13 served HTML/Markdown/SVG/sitemap files return HTTP
+200 with artifact-identical bytes; the hidden `.nojekyll` marker is checked in
+the artifact. All 45 public browser checks pass with zero script errors.
+
+The existing Pages settings/workflow were used without permission or host changes.
+No runtime release, managed deployment, fleet mutation or daemon restart was
+performed. Earlier native/fixture acceptance limits are unchanged; the idle
+ephemeral fixture was not touched. The publication-only CI observer is stopped.
+All 596 protected paths match the before record. Both OSS/work native owner
+identities are unchanged. At the post-publication check, 12 of 13 baseline
+native/report process identities remain; one other Codex process exited during
+the window. No process-control action targeted it, and its cause is unclassified.
+See the [deployment receipt](pages-deployment.md#agent-first-lifecycle-publication-2026-11-01).
 
 ## Review and refinement: 2026-11-01
 

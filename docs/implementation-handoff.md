@@ -5,6 +5,21 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.13 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
+## Lifecycle guide publication
+
+Completed 2026-11-01 under Bryan's separate publish/deploy request. Reviewed
+source `52ab312` and its preceding documentation commits are pushed to personal
+github.com main. Pages build/deploy and Python 3.11/3.14 validation pass; each
+Python job ran 376 tests and verified a complete release build. The deployed
+14-file site matches the reviewed build, and all 13 served files return HTTP 200
+with identical bytes. All 45 public browser checks pass. The agent guide is now
+public at `/manage/` and its exact Markdown export at `/manage.md`.
+
+See the [publication receipt](pages-deployment.md#agent-first-lifecycle-publication-2026-11-01).
+This is a documentation deployment: no new product version/assets, runtime apply,
+fleet mutation or daemon restart. Earlier fixture and native-acceptance limits
+remain unchanged. The local-candidate sections below retain their dated scope.
+
 ## Lifecycle review and refinement
 
 Completed 2026-11-01 against the local lifecycle candidate. The guide now routes
@@ -22,8 +37,8 @@ export, 299 checked local links and 15 consistent current-release claims. See th
 
 No new native actors, watches or messages were created, and the earlier idle
 ephemeral fixture was not touched. Runtime sources, production configuration,
-installed selections and active processes are unchanged. This remains a local
-candidate; publication and live installation changes are separate actions.
+installed selections and active processes are unchanged. That review left a local
+candidate; the publication receipt above records its subsequent deployment.
 
 ## Completed local pass: agent-first installation and maintenance
 
@@ -50,10 +65,11 @@ persisted rollout, and unsubscribe from a new connection leaves it loaded. No
 daemon restart was attempted. Owned preview servers and the manual MCP child are
 stopped; all 596 protected paths and 13 baseline process identities match.
 
-The candidate is committed locally. Pages publication follows review and needs
-no runtime release or fleet repin. No production installation, watch, peer message,
-push, publication, deployment or restart was performed. The two prior plugin
-documentation commits and existing untracked bytecode files remain preserved.
+That preparation pass committed the candidate locally and performed no production
+installation, watch, peer message, push, publication, deployment or restart.
+The publication receipt above records its subsequent deployment without a runtime
+release or fleet repin. The prior plugin documentation commits and existing
+untracked bytecode files remain preserved.
 
 ## Plugin exploration: isolated installation works; migration deferred
 

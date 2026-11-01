@@ -10,6 +10,11 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
+The separately authorized lifecycle-guide publication completed 2026-11-01 from
+reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agent-first-lifecycle-publication-2026-11-01).
+This documentation deployment needs no runtime release or fleet apply. The
+preparation/refinement contracts below retain their original scope.
+
 ## Completed refinement: lifecycle instructions and presentation
 
 Selected and completed 2026-11-01 after review of the local lifecycle candidate.

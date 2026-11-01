@@ -13,9 +13,9 @@ passed all 12 scene states and controls, five guide pages, desktop/mobile layout
 and diagram loading, with zero browser errors. The github.io project URL redirects
 to the inherited domain. The publication contract follows.
 
-## Agent-first lifecycle candidate: 2026-11-01
+## Agent-first lifecycle publication: 2026-11-01
 
-The local candidate adds `/manage/` and `/manage.md` from the single authored
+Published source `52ab312` adds `/manage/` and `/manage.md` from the single authored
 `docs/manage-agent.md`. README, landing and setup lead with short agent requests;
 `/start/` remains the human overview. Nine HTML guides and one raw Markdown export
 are in the explicit public inventory. The builder rejects a missing or changed
@@ -30,10 +30,20 @@ The follow-up review also checks all seven rendered requests appear exactly once
 preserves attributed table cells and gives copy buttons distinct accessible names.
 
 The existing Pages workflow already watches `docs/**`, the builder and tests;
-no workflow permission or host setting change is required. This candidate has
-not been pushed or published. Publishing it later changes documentation only,
-not product release versions, runtime selections or active processes. Dated
-publication receipts below retain their original guide counts and scope.
+no workflow permission or host setting change was required. The personal account
+pushed the reviewed source to main. [Pages build/deploy](https://github.com/byebyebryan/codex-plus/actions/runs/41338091807)
+and [source validation](https://github.com/byebyebryan/codex-plus/actions/runs/41338091834)
+passed; both Python 3.11/3.14 jobs ran 376 tests and verified a complete release
+build. This did not publish replacement runtime assets.
+
+All 14 deployed artifact files match the reviewed local build. All 13 served
+HTML/Markdown/SVG/sitemap files returned HTTP 200 with identical bytes, including
+the authored raw guide. The artifact validates 299 local links/assets/anchors and
+15 current-release claims. Forty-five public browser checks pass at desktop/mobile
+widths with zero script errors, including action names, keyboard/clipboard fallback
+and no-JavaScript access. Publication changes documentation only; no runtime
+release, chezmoi apply or daemon restart was needed. Dated receipts below retain
+their original guide counts and scope.
 
 ## Site contents
 
