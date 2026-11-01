@@ -4,6 +4,20 @@ Choose the part that helps your work: delegate a task, follow a running job or
 publish a browser handoff. One Codex Plus release supplies optional component
 archives and keeps native Codex as your daily interface.
 
+## Install or manage with your agent
+
+Give your coding agent the [plain Markdown guide](https://dev.byebyebryan.com/codex-plus/manage.md)
+and the action you want:
+
+> Read https://dev.byebyebryan.com/codex-plus/manage.md and install Codex Plus on this machine.
+
+For an existing installation, say “upgrade my existing Codex Plus installation.”
+The [agent guide](manage-agent.md) also covers inspection, configuration, rollback,
+cleanup and uninstall. It discovers the configuration owner and uses verified
+release archives while preserving your settings, reports and active work.
+It does not require an installed Plus runtime to begin. The rest of this page is
+an overview for choosing components and understanding the setup.
+
 ## Choose what to install
 
 | You want to… | Install | First request |

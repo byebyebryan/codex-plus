@@ -13,10 +13,29 @@ passed all 12 scene states and controls, five guide pages, desktop/mobile layout
 and diagram loading, with zero browser errors. The github.io project URL redirects
 to the inherited domain. The publication contract follows.
 
+## Agent-first lifecycle candidate: 2026-11-01
+
+The local candidate adds `/manage/` and `/manage.md` from the single authored
+`docs/manage-agent.md`. README, landing and setup lead with short agent requests;
+`/start/` remains the human overview. Nine HTML guides and one raw Markdown export
+are in the explicit public inventory. The builder rejects a missing or changed
+raw export and derives all seven action requests from that same guide. Install
+and upgrade cards use the shared text on the landing page. Copy buttons have
+manual-selection fallback, and the requests remain readable without JavaScript.
+Self-site links become relative for local previews; authored absolute guide links
+also work when an agent fetches raw Markdown from the site root.
+
+The existing Pages workflow already watches `docs/**`, the builder and tests;
+no workflow permission or host setting change is required. This candidate has
+not been pushed or published. Publishing it later changes documentation only,
+not product release versions, runtime selections or active processes. Dated
+publication receipts below retain their original guide counts and scope.
+
 ## Site contents
 
 - Interactive walkthrough at the root, from `docs/presentation/index.html`.
-- [Setup](getting-started.md), which separates worker, monitoring and report installation.
+- [Install and manage](manage-agent.md), the primary agent lifecycle guide, plus its exact plain Markdown export.
+- [Setup](getting-started.md), the human overview of workers, monitoring and reporting.
 - [Daily use](daily-use.md), [Luna and workers](workers.md), [architecture](architecture.md),
   [environments](environments.md), [soak checklist](soak-checklist.md), [reporting](html-report-usage.md) and
   [installation](runtime-distribution.md), rendered as HTML guides.
@@ -37,7 +56,7 @@ deploy job. The github-pages environment and Pages concurrency group own deploym
 No personal credential is stored in the repository or site artifact.
 
 `scripts/build-pages` uses GitHub’s Markdown API through `gh api --hostname
-github.com` to render the eight public guides. GitHub Actions supplies its temporary
+github.com` to render the nine public guides. GitHub Actions supplies its temporary
 repository token; local builds use the selected personal github.com authentication.
 Rendering requires network access. No JavaScript library/CDN is needed by the site.
 

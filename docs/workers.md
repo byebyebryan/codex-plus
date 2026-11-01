@@ -89,22 +89,20 @@ skills do not automatically register a watch or reminder.
 
 ## Installation
 
-For an unmanaged conventional Codex home, clone the repository and copy the
-two agents and four worker skills. Run these commands from the parent directory
-where you want the checkout:
+Use the [agent lifecycle guide](manage-agent.md#install-or-upgrade-through-the-configuration-owner)
+for the complete procedure. It installs the two current agents and four workflow
+skills from a verified worker release archive and preserves your configuration
+owner, local changes and skill disable preferences. The human
+[setup overview](getting-started.md) explains component selection.
 
-```sh
-git clone https://github.com/byebyebryan/codex-plus.git
-mkdir -p ~/.codex/agents ~/.agents/skills
-cp codex-plus/agents/*.toml ~/.codex/agents/
-cp -R codex-plus/skills/luna-task codex-plus/skills/luna-goal-loop codex-plus/skills/worker-task codex-plus/skills/worker-goal-loop ~/.agents/skills/
-```
-
-The paths follow the official [custom agent](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents)
+For an unmanaged conventional home, native agents live under `~/.codex/agents`
+and user skills under `~/.agents/skills`. The official
+[custom agent](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents)
 and [local skill](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills)
-documentation. For another Codex home, use its agent directory and the skill
-location supported by your client. If chezmoi owns these paths, update its
-source and published pins through that installation method.
+references describe discovery. Confirm supported locations for alternate homes;
+user skills can be shared. If chezmoi owns these paths, update its source and
+published pins through that owner. Copying from moving main is a source-development
+choice, not the released installation procedure.
 
 The bundle also contains the separate `skills/html-report` skill. Add it when
 you configure the report component; the four worker skills above do not install

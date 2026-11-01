@@ -1,5 +1,9 @@
 # Using the HTML report component
 
+For installation and maintenance, give your agent the
+[canonical lifecycle guide](manage-agent.md). This page remains the component
+reference for artifacts, configuration and behavior.
+
 The source implementation supplies durable static snapshots, a static catalog,
 standalone CLI, provider-neutral skill and optional local report MCP. Publishing
 does not start Codex or a browser. With `server_autostart = true`, CLI/MCP publish

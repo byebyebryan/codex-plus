@@ -11,10 +11,17 @@ language.
 > [Luna & workers](https://dev.byebyebryan.com/codex-plus/workers/) ·
 > [Daily use](https://dev.byebyebryan.com/codex-plus/daily-use/)
 
+**Install or manage with your agent:** give it the
+[agent guide](https://dev.byebyebryan.com/codex-plus/manage.md) and say
+“Install Codex Plus” or “Upgrade my existing installation.” The
+[HTML guide](https://dev.byebyebryan.com/codex-plus/manage/) has copyable requests
+for inspection, configuration, rollback, cleanup and uninstall too.
+
 ## Start here
 
-Start with the [setup guide](docs/getting-started.md) to choose workers,
-monitoring or reporting. With the relevant components installed, open an
+Use the [agent guide](docs/manage-agent.md) for installation and maintenance;
+the [setup overview](docs/getting-started.md) explains workers, monitoring and
+reporting for reference. With the relevant components installed, open an
 ordinary Codex session and say, for example:
 
 - “$luna-task Investigate the importer failure and return a reproduction.”
@@ -36,7 +43,7 @@ Read the [daily-use guide](docs/daily-use.md), open the
 
 Workers, monitoring and reporting share **one Codex Plus version and release**.
 Choose the component archives you need in the setup guide; an existing managed setup can use these requests
-directly. The public site includes the walkthrough and eight HTML guides. Their
+directly. The public site includes the walkthrough and nine HTML guides. Their
 Markdown sources and technical evidence are linked below.
 
 ## Current status
@@ -119,6 +126,7 @@ is managed with Kitty/chezmoi.
 
 | HTML guide | For | Markdown source |
 | --- | --- | --- |
+| [Install & manage](https://dev.byebyebryan.com/codex-plus/manage/) | Give your agent one guide for the installation lifecycle. | [Source](docs/manage-agent.md) |
 | [Get started](https://dev.byebyebryan.com/codex-plus/start/) | Choose components and follow the right setup path. | [Source](docs/getting-started.md) |
 | [Daily use](https://dev.byebyebryan.com/codex-plus/daily-use/) | Natural requests, useful follow-up, stopping and reports. | [Source](docs/daily-use.md) |
 | [Luna & workers](https://dev.byebyebryan.com/codex-plus/workers/) | Tasks, goal loops, adaptive delegation and worker installation. | [Source](docs/workers.md) |
@@ -207,7 +215,8 @@ new evidence call for primary diagnosis rather than repeated worker cycling.
 
 ## Installation
 
-Choose components in the [setup guide](docs/getting-started.md). The
+Use the [agent lifecycle guide](docs/manage-agent.md) as the primary setup and
+maintenance procedure. Choose components in the [setup overview](docs/getting-started.md). The
 [worker installation steps](docs/workers.md#installation) install two agents and
 four worker workflows; the HTML report skill is a separate optional addition.
 The [runtime guide](docs/runtime-distribution.md) and

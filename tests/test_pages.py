@@ -173,6 +173,13 @@ class PagesTests(unittest.TestCase):
         self.assertEqual(pages.rewrite_link('getting-started.md#choose-what-to-install', './'),
                          './start/#choose-what-to-install')
 
+    def test_self_site_links_work_in_local_previews_and_raw_guide(self):
+        self.assertEqual(pages.rewrite_link(pages.SITE + 'manage.md', '../'), '../manage.md')
+        self.assertEqual(pages.rewrite_link(pages.SITE + 'installation/#upgrade-rollback-and-activation', '../'),
+                         '../installation/#upgrade-rollback-and-activation')
+        self.assertEqual(pages.rewrite_link('https://example.invalid/codex-plus/manage.md', '../'),
+                         'https://example.invalid/codex-plus/manage.md')
+
     def test_guide_contents_links_and_skip_target_are_accessible(self):
         body = pages.headings('<h1>Workers</h1><h2>Choose &amp; review</h2><h2>Choose &amp; review</h2>')
         result = pages.guide_page('workers.md', 'workers', 'Luna & workers', body, '')
@@ -199,7 +206,39 @@ class PagesTests(unittest.TestCase):
         (root / 'assets/architecture.svg').write_text('<svg/>')
         (root / '.nojekyll').write_text('')
         pages.write_sitemap(root)
+        pages.write_raw_guides(root)
         return root
+
+    def test_raw_agent_guide_is_exact_and_required(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.publication_fixture(directory)
+            raw = root / 'manage.md'
+            self.assertEqual(raw.read_bytes(), (ROOT / 'docs/manage-agent.md').read_bytes())
+            raw.write_text('stale instructions')
+            with self.assertRaisesRegex(ValueError, 'raw guide differs'):
+                pages.validate_publication(root)
+            raw.unlink()
+            with self.assertRaisesRegex(ValueError, 'public file inventory differs'):
+                pages.validate_publication(root)
+
+    def test_agent_requests_share_authored_text_and_keep_manual_copy(self):
+        requests = pages.lifecycle_requests((ROOT / 'docs/manage-agent.md').read_text())
+        self.assertEqual(len(requests), 7)
+        self.assertIn(requests['Install'], pages.action_cards(requests))
+        body = '<h1>Manage</h1><table><tr><td>Install</td><td>' + requests['Install'] + '</td></tr></table>'
+        page = pages.guide_page('manage-agent.md', 'manage', 'Manage', body, '', requests)
+        self.assertIn('hidden data-copy-request="' + requests['Install'] + '"', page)
+        self.assertIn('Plain Markdown for your agent', page)
+        self.assertIn('copy it manually', page)
+        self.assertIn('<td>' + requests['Install'], page)
+        self.assertEqual(pages.rewrite_link('manage-agent.md#roll-back', '../'), '../manage/#roll-back')
+
+    def test_agent_requests_refuse_missing_actions_or_another_guide(self):
+        text = (ROOT / 'docs/manage-agent.md').read_text()
+        for changed in (text.replace('| Upgrade | Read', '| Other | Read'),
+                        text.replace(pages.SITE + 'manage.md', pages.SITE + 'wrong.md')):
+            with self.assertRaisesRegex(ValueError, 'canonical Markdown guide'):
+                pages.lifecycle_requests(changed)
 
     def test_publication_has_exact_route_inventory_and_sitemap(self):
         with tempfile.TemporaryDirectory() as directory:

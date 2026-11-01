@@ -1,5 +1,9 @@
 # Codex Plus releases and monitoring installation
 
+For installation and maintenance, give your agent the
+[canonical lifecycle guide](manage-agent.md). This page remains the component
+reference for artifacts, configuration and behavior.
+
 Preview.13 adds readable doctor output and retains preview.12 verification and
 rollback support. It preserves explicit clean rollover and archived inspection through the
 [owner recovery contract](owner-recovery.md). Publishing or selecting an archive
