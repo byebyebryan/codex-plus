@@ -10,6 +10,94 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
+<a id="planned-pass-native-plugin-installation-and-distribution-fit"></a>
+
+## Selected pass: native plugin installation and distribution fit
+
+Planned and selected for a goal loop on 2026-11-01 after Bryan asked whether plugin
+packaging has hard blockers or merits another exploration pass. Execute the
+bounded private trials below, commit coherent progress and preserve active work.
+Preview.13 archives and chezmoi remain the qualified production delivery.
+
+### Question and evidence baseline
+
+Can a native plugin make monitoring/reporting easier to install and maintain
+while preserving the native CLI, owning daemon, continuing conversations and
+explicit worker invocation? Compare the actual user steps with today's archives
+and chezmoi. Packaging is useful only if it reduces setup or maintenance without
+requiring a second installer, compatibility framework or runtime coordinator.
+
+The [earlier spike](reliability-packaging-results.md#native-plugin-spike) proves
+discovery and relocation, not installed execution. Its unchanged skill names
+became `codex-plus-spike:luna-task` and similarly prefixed names. This is an
+observed incompatibility with an exact invocation-preserving replacement, not a
+reason to reject a monitoring/reporting plugin before testing it. Native custom
+agent registration remains unestablished; retain the existing worker agent and
+skill installation as the initial comparison path.
+
+The official [packaging guide](https://developers.openai.com/plugins/build/plugins)
+documents skills, MCP declarations, component namespaces and local/Git marketplace
+distribution. The installed CLI reports 0.166.0 and exposes plugin add/remove and
+marketplace management; help output is not installation proof. Some guide steps
+use the desktop app, so establish the actual supported CLI path instead of
+assuming a desktop UI or restart is mandatory.
+
+There is one explicit external distribution gate: official
+[local-MCP submission](https://developers.openai.com/plugins/deploy/desktop-only)
+requires an approved partner and an allowlisted submitting organization. Our
+eligibility is unknown. Public-directory submission is separate from a private
+local/Git marketplace trial and is outside this pass. Do not replace local MCP
+with a hosted service merely to obtain a directory listing.
+
+### Work sequence and decision gates
+
+| Stage | Investigation or bounded trial | Required evidence |
+| --- | --- | --- |
+| 1. Qualify the installation scope | Refresh installed CLI help, official docs and native plugin schemas. Locate supported marketplace, cache, enablement and policy scopes. Determine what an install/remove operation can write before running it. | An explicit fixture scope, expected writes and cleanup recipe that preserve active native homes, owners and MCPs. A project enablement setting alone does not prove that installation caches are isolated. If installation needs a global mutation or restart, finish the read-only work and record the exact remaining requirement. |
+| 2. Prepare the smallest candidate | Reuse current release source, entry points and unified version. Prepare a private marketplace and portable manifest outside the checkout. Begin with monitoring/reporting MCP declarations; add the report skill to check native naming. Inspect custom-agent support separately, without activating a worker. | File/provenance inventory and a reproducible package. No copied credentials, private transcripts or product state. Existing worker names and invocation remain available through their current installation. No hooks or custom bootstrap installer. |
+| 3. Prove actual native installation | In the qualified scope, install with the supported native path and invoke the plugin through a fresh owned conversation on the existing daemon. Inspect native server/tool names and `${PLUGIN_ROOT}` expansion. Make a caller-bound read through the normal MCP tool route. | Native installation and enabled state, actual server startup, verified caller metadata and exact owner/environment binding. Harness-supplied metadata or path expansion cannot satisfy this gate. A missing or conflicting identity must refuse without weakening validation. |
+| 4. Prove a useful interaction | Use two explicitly owned synthetic conversations: A watches B, receives one useful progress change and follows up through normal messaging. Exercise explicit stop and inspect handling receipts. Publish one small report to an isolated fixture store with automatic hosting disabled. | The same owning conversation receives and handles the event; delivery, acknowledgement and task outcome remain distinct. Stop prevents later source callbacks, and report bytes/catalog are correct. No contact with unrelated active sessions or changes to shared report hosting. |
+| 5. Check policies and coexistence | Exercise available native approval/denial paths, exact MCP tool routing and plugin enable/disable behavior. Inspect OSS/work configuration and state boundaries. Check duplicate legacy/plugin servers and the doctor's assumptions about top-level names. | Permissions come from the verified native caller; MCP inspections retain normal approval routing. Each tested scope exposes one intended server per component. Namespaced routing and diagnostics are truthful. Untested work-home behavior stays explicitly unqualified rather than extrapolated from OSS. |
+| 6. Check maintenance and review fit | Test a second private candidate, disable/remove and rollback within the same scope. Inspect cache retention and captured running code. Check monitoring-only/reporting-only use through supported native controls before considering extra packages. | Existing processes keep usable captured code or the precise native limitation is recorded. User journals, reports and worker installation survive. Reverting the fixture restores the baseline. Compare the concrete install/update/rollback steps with archives/chezmoi and make an adopt, hybrid or defer decision. |
+
+Before any dependent trial, resolve and record its supported installation scope
+and owned synthetic actor identities. Creating those actors belongs to execution
+of this plan; no existing active conversation becomes a fixture. Prefer two owned
+actors; allow one fresh observer only if needed to distinguish updated selection
+from captured running code. Repeat an affected case only to resolve a specific failure.
+Keep all raw receipts private and record CLI/owner versions, package revision,
+policy, environment and whether each assertion came from parsing, a harness or
+actual native operation. An OSS result does not qualify work or the fleet.
+
+### Compatibility decisions and finish line
+
+Namespaced skills may be used inside the private fixture to learn native behavior;
+that does not accept a production rename. Keep `$luna-task`, `$luna-goal-loop`,
+`$worker-task` and `$worker-goal-loop` unchanged during exploration. If a supported
+custom-agent component exists, qualify discovery/registration separately before
+considering worker delivery. Otherwise a plugin for monitoring/reporting with
+native workers remains a candidate; do not fabricate agent registration through
+install hooks or add aliases solely to mask the namespace.
+
+Caller identity, caller permissions, owner/environment isolation and preservation
+are adoption gates. A failure there stops the dependent trial and is recorded as
+a blocker for that route. Unsupported custom-agent registration blocks a full
+replacement, while the narrower plugin route can still be evaluated. A native
+workflow that needs more setup than the existing delivery is a valid defer result.
+
+Leave a reviewed local candidate, exact setup/rollback instructions, evidence by
+gate and a short recommendation explaining what becomes simpler and what remains
+on the existing path. Use existing package tooling and tests; if packaged code
+changes, run the relevant tests and clean-candidate inventory/worker checks plus
+`rtk proxy git diff --check`. Keep worker checks separate from watch acceptance.
+Deliberately update the explicit inventory only for necessary new tracked files.
+No new runtime feature is required to make the packaging trial pass.
+
+Publication, official-directory submission, chezmoi migration, fleet application,
+production plugin settings, daemon restarts and global MCP refresh are outside
+this planned pass. Qualification may finish with a precise remaining native or
+manual prerequisite; complete the independent research and candidate work first.
+
 <a id="selected-pass-preview13-publication-and-preservation-first-rollout"></a>
 
 ## Completed pass: preview.13 publication and preservation-first rollout

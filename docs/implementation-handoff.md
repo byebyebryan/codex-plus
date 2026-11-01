@@ -5,6 +5,22 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.13 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
+## Selected exploration: native plugin installation
+
+The [plugin installation and distribution-fit plan](codex-plus-plan.md#planned-pass-native-plugin-installation-and-distribution-fit)
+was selected for a goal loop on 2026-11-01. No fundamental blocker has been demonstrated for a
+monitoring/reporting plugin alongside the existing native worker installation.
+The earlier spike did find changed skill names and left custom-agent registration,
+installed-plugin caller identity, policy and maintenance unqualified. These remain
+explicit gates rather than evidence of successful installation.
+
+The selected pass will qualify a private installation scope, test native operation
+and compare actual setup/maintenance steps before choosing adopt, hybrid or defer.
+Official public-directory submission of local MCP plugins has a separate partner
+allowlisting gate; our eligibility is unknown. Installation and synthetic actor
+trials depend on the recorded scope gate. Existing worker invocation, qualified
+preview.13 delivery and active owners must remain unchanged.
+
 ## Preview.13 publication and rollout
 
 Completed 2026-11-01 under the [selected plan](codex-plus-plan.md#selected-pass-preview13-publication-and-preservation-first-rollout).
