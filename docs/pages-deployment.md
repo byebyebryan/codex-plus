@@ -51,6 +51,12 @@ The builder refuses a non-empty destination or an output inside the checkout.
 It rewrites supported guide links to relative site routes, gives headings stable
 anchors, preserves links to technical GitHub sources, and validates every local
 page/asset/fragment before upload. Generated files remain outside committed source.
+It also checks identified current-release claims in the README, setup,
+architecture, installation and walkthrough against the authoritative source
+version, and checks that the worker guide names all four worker workflows and
+the reporting skill. Historical release references remain valid. If current
+claim wording changes, update its focused matcher in the builder alongside it.
+These consistency checks do not prove publication or installed adoption.
 Update the diagram SVG alongside Mermaid changes; a mismatched source hash fails
 rather than publishing a stale diagram.
 

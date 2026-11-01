@@ -2,8 +2,11 @@
 import importlib.machinery
 import importlib.util
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
+
+from codex_plus import VERSION
 
 ROOT = Path(__file__).resolve().parents[1]
 loader = importlib.machinery.SourceFileLoader('pages_builder', str(ROOT / 'scripts/build-pages'))
@@ -13,6 +16,54 @@ loader.exec_module(pages)
 
 
 class PagesTests(unittest.TestCase):
+    def release_fixture(self, directory):
+        root = Path(directory)
+        for name in (*pages.CURRENT_RELEASE_CLAIMS, 'docs/workers.md', 'codex_plus/__init__.py'):
+            target = root / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / name, target)
+        return root
+
+    def test_current_guide_claims_match_the_authoritative_version(self):
+        self.assertGreater(pages.validate_current_guides(), 0)
+
+    def test_stale_setup_claim_is_rejected_without_rejecting_historical_features(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.release_fixture(directory)
+            path = root / 'docs/getting-started.md'
+            path.write_text(path.read_text().replace(f'**v{VERSION}** supplies', '**v0.0.0-preview.0** supplies'))
+            with self.assertRaisesRegex(ValueError, 'stale current-release claim in docs/getting-started.md'):
+                pages.validate_current_guides(root)
+
+    def test_stale_managed_architecture_claim_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.release_fixture(directory)
+            path = root / 'docs/architecture.md'
+            path.write_text(path.read_text().replace('and Carbon select ' + VERSION.split('-', 1)[-1], 'and Carbon select preview.0'))
+            with self.assertRaisesRegex(ValueError, 'stale current-release claim in docs/architecture.md'):
+                pages.validate_current_guides(root)
+
+    def test_historical_release_evidence_is_allowed_outside_current_claims(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.release_fixture(directory)
+            path = root / 'docs/getting-started.md'
+            path.write_text(path.read_text() + '\nHistorical preview.11 used v0.1.0-preview.11.\n')
+            pages.validate_current_guides(root)
+
+    def test_missing_current_claim_and_named_worker_workflow_are_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.release_fixture(directory)
+            path = root / 'docs/workers.md'
+            original = path.read_text()
+            path.write_text(original.replace('$luna-goal-loop', '$other-loop'))
+            with self.assertRaisesRegex(ValueError, 'named workflow missing.*luna-goal-loop'):
+                pages.validate_current_guides(root)
+            path.write_text(original)
+            path = root / 'docs/getting-started.md'
+            path.write_text(path.read_text().replace('supplies the released workflows', 'supplies workflows'))
+            with self.assertRaisesRegex(ValueError, 'current-release claim missing'):
+                pages.validate_current_guides(root)
+
     def test_environment_guide_is_public_and_keeps_fragment(self):
         self.assertEqual(pages.rewrite_link('environments.md#selection-and-overrides', '../'),
                          '../environments/#selection-and-overrides')

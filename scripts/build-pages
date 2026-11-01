@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import html
 from html.parser import HTMLParser
@@ -40,6 +41,24 @@ DESCRIPTIONS = {
     "soak-checklist.md": "Record useful outcomes and friction during ordinary work, with private evidence and clear acceptance limits.",
     "html-report-usage.md": "Publish immutable HTML reports, organize the project catalog and configure independent hosting.",
     "runtime-distribution.md": "Verify and install the monitoring runtime, configure its MCP tools and select immutable releases.",
+}
+CURRENT_RELEASE_CLAIMS = {
+    "README.md": (
+        r"\*\*v([^*]+)\*\* includes",
+        r"Snap, Starship and Carbon select \*\*v([^*]+)\*\*",
+    ),
+    "docs/getting-started.md": (r"\*\*v([^*]+)\*\* supplies the released workflows",),
+    "docs/architecture.md": (
+        r"Codex Plus `v([^`]+)` unifies",
+        r"and Carbon select (preview\.\d+)\s+artifacts",
+    ),
+    "docs/runtime-distribution.md": (
+        r"(?m)^\[v([^\]]+)\]\(https://github.com/byebyebryan/codex-plus/releases/tag/v",
+        r"(?m)^\[v[^\]]+\]\(https://github.com/byebyebryan/codex-plus/releases/tag/v([^\)]+)\)",
+        r"(?m)^\| (?:Workers|Monitoring|Reporting) \| `codex-plus-(?:workers|runtime|report)-([\w.+-]+)\.tar\.gz`",
+        r"Snap, Starship and Carbon select workers, monitoring and reporting \*\*([^*]+)\*\*",
+    ),
+    "docs/presentation/index.html": (r"Codex Plus (preview\.\d+)\.", r"Available in (preview\.\d+)"),
 }
 STYLE = """
 :root{color-scheme:light;--paper:#f6f4ee;--ink:#202e2c;--teal:#185b50;--line:#d7ddd4}
@@ -284,7 +303,32 @@ def validate(output: Path) -> int:
     return count
 
 
+def validate_current_guides(root: Path = ROOT) -> int:
+    """Check current claims explicitly; historical release references remain valid."""
+    assignments = ast.parse((root / "codex_plus/__init__.py").read_text()).body
+    version = next(ast.literal_eval(node.value) for node in assignments
+                   if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "VERSION" for t in node.targets))
+    count = 0
+    for name, patterns in CURRENT_RELEASE_CLAIMS.items():
+        text = (root / name).read_text()
+        for pattern in patterns:
+            values = re.findall(pattern, text)
+            if not values:
+                raise ValueError(f"current-release claim missing in {name}: {pattern}")
+            for value in values:
+                actual = version.split("-", 1)[0] + "-" + value if value.startswith("preview.") else value
+                if actual != version:
+                    raise ValueError(f"stale current-release claim in {name}: {value}; expected {version}")
+                count += 1
+    workers = (root / "docs/workers.md").read_text()
+    for workflow in ("$luna-task", "$luna-goal-loop", "$worker-task", "$worker-goal-loop", "skills/html-report"):
+        if workflow not in workers:
+            raise ValueError(f"named workflow missing from worker guide: {workflow}")
+    return count
+
+
 def build(output: Path) -> None:
+    claims = validate_current_guides()
     output = output.resolve()
     if output == ROOT or output.is_relative_to(ROOT):
         raise ValueError("Pages output must be outside the source checkout")
@@ -320,7 +364,7 @@ def build(output: Path) -> None:
     write_sitemap(output)
     count = validate(output)
     validate_publication(output)
-    print(f"Built walkthrough + {len(GUIDES)} guides; {count} local links/assets/anchors and public metadata verified: {output}")
+    print(f"Built walkthrough + {len(GUIDES)} guides; {count} local links/assets/anchors, {claims} current-release claims and public metadata verified: {output}")
 
 
 def main() -> None:
