@@ -1,13 +1,15 @@
 # Everyday reliability and native packaging results
 
 Completed 2026-10-31 under the [selected plan](codex-plus-plan.md#completed-pass-everyday-reliability-and-native-packaging).
+The [review correction](#review-correction-release-claim-boundaries) completed
+2026-11-01 and supersedes the initial source-equality guide check.
 The local candidate repairs current-release documentation consistency and adds
 readable output to the existing doctor. Native plugins are a **partial fit**;
 retain the existing component archives and chezmoi distribution. Representative
 real-work follow-up remains an open acceptance item.
 
 This pass publishes no release or site and changes no managed installation.
-Preview.12 source `f6ec874` remains selected. The reviewed code candidate is
+Preview.12 source `f6ec874` remains selected. The initial reviewed code candidate was
 `bceda12e3dd652bab5659ab3bcc2d1e37f28f246`; its private test artifacts retain the
 unchanged preview.12 version constant and are not replacements for that published
 tag or its assets. A later release must select a new immutable version.
@@ -15,9 +17,9 @@ tag or its assets. A later release must select a new immutable version.
 ## Documentation consistency
 
 The setup and architecture guides incorrectly called preview.11 current after
-the preview.12 rollout. Both claims are corrected. The existing Pages builder
-now checks 15 identified current-release claims against the source version and
-checks that the worker guide names all four worker workflows and the separate
+the preview.12 rollout. Both claims are corrected. The initial Pages builder
+gate compared 15 identified current-release claims against the source version and
+checked that the worker guide names all four worker workflows and the separate
 reporting skill. It fails before rendering when a required claim is missing or
 stale. Historical release evidence remains valid.
 
@@ -26,6 +28,57 @@ claims, named workflow coverage and legitimate historical versions. The stale
 setup claim failed before correction. These focused matchers need deliberate
 updates if current-claim wording changes; they are not a general prose audit or
 proof of publication, installed adoption or complete semantic accuracy.
+
+## Review correction: release-claim boundaries
+
+Completed 2026-11-01 under the
+[correction plan](codex-plus-plan.md#planned-pass-release-claim-boundaries-and-candidate-readiness).
+Reviewed local candidate `b45728b` corrects the gate and its test entry point.
+Fresh private copies reproduced both false rejections before the fix: source
+preview.13 with published/managed preview.12, and published preview.13 with
+managed preview.12. Direct `python3 -B tests/test_pages.py` also failed because
+the test imported the runtime `VERSION` without the repository on its import
+path; unittest discovery alone had hidden that entry-point failure.
+
+The existing README declarations now independently anchor published-release
+and managed-selection guide claims. Source `VERSION` still owns all component
+artifact versions; the checker does not import it or use it to assert publication
+or deployment. Each anchor must be unique and well formed. Contradictions report
+their domain, file, actual version and expected anchor. No ledger, service,
+runtime API or CI workaround was added.
+
+Self-contained documentation fixtures exercise aligned versions, candidate lag,
+rollout lag, combined lag, rollback and differing version bases. Negative cases
+retain released/managed claim checks, release link label/target and all three
+archive checks, missing/duplicate/malformed anchors and named-workflow coverage.
+Historical evidence remains accepted. The installation guide explains the
+separate authorities and the check's offline limits.
+
+- All **369 tests** pass on Python **3.11.10** and **3.14.8**. Both direct Pages
+  invocation and discovery pass all **28 Pages tests** without `PYTHONPATH`.
+  The Pages workflow's five inventory tests also pass. These are local checks of
+  the existing CI commands; no remote CI run or public deployment was triggered.
+- Three complete external builds cover the unchanged published/managed baseline
+  and both formerly rejected transitions. Each builds the walkthrough and eight
+  guides, validating **234 links/assets/anchors** and **15 current claims**.
+  A contradictory published claim still fails before output creation. Fixture
+  preview.13 pages are private test output, not a new published release.
+- Actual Chromium checks cover landing, setup, architecture and installation
+  pages for all three variants at 1440px and 390px: **24 page checks**, with no
+  page errors or horizontal overflow. They verify the released link and managed
+  text independently. Desktop/mobile installation screenshots were inspected.
+- The clean **130-file inventory**, worker metadata and whitespace checks pass.
+  All files in the 18-file worker, 25-file monitoring and 21-file reporting
+  source inventories remain byte-identical; both canonical bytecode files are
+  preserved. This gate correction changes no packaged file, so the earlier
+  artifact qualification is retained rather than repeated.
+
+The local correction is ready for a separate release/publication decision.
+The source version, published preview.12 assets, managed selections and active
+native processes were not changed. This pass starts no native actors, watches
+or messages and adds no field-soak or compatibility qualification. Fleet
+preservation counts later in this record belong to the initial pass; this
+correction did not re-audit those hosts. Unified plugins remain deferred.
 
 ## Readable diagnosis
 

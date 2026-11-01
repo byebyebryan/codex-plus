@@ -1,25 +1,26 @@
 # Implementation handoff
 
-Updated 2026-10-31. The owner-recovery work was isolated on Starship
+Updated 2026-11-01. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
 the older report checkout and the existing worktrees. Preview.12 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
 ## Current scope and entry points
 
-The subsequent read-only review found a release-sequencing defect in the new
-guide gate: it rejects both source ahead of publication and publication ahead of
-managed selection. Both valid transitions were reproduced in private fixtures.
-The [planned correction](codex-plus-plan.md#planned-pass-release-claim-boundaries-and-candidate-readiness)
-separates published and managed guide anchors from source artifact versioning,
-adds transition regressions and ends with a reviewed local candidate. Planning
-validation also reproduced a failing direct Pages-test invocation: its new
-`VERSION` import cannot find `codex_plus`, while discovery passes all 23 tests.
-The correction must qualify both existing CI entry points. An explicit goal-loop
-request now selects local implementation, validation and cohesive commits.
-Push, publication and managed apply remain outside this pass. The four prior
-commits through `22333f9` remain local and unpushed at this starting review;
-the recorded full-suite/artifact results below predate this newly identified gap.
+The [release-claim boundary correction](reliability-packaging-results.md#review-correction-release-claim-boundaries)
+completed 2026-11-01 under the
+[selected plan](codex-plus-plan.md#planned-pass-release-claim-boundaries-and-candidate-readiness).
+Candidate `b45728b` checks published and managed guide declarations independently
+of source artifact versioning, accepting release/rollout lag and rollback while
+rejecting contradictory claims. Self-contained fixtures repair the direct Pages
+test invocation. All 369 tests pass on Python 3.11/3.14; both direct Pages tests
+and discovery work without `PYTHONPATH`. Three external guide builds verify all
+15 claims and 234 links/assets/anchors each; 24 focused browser checks pass.
+The clean 130-file inventory and worker checks pass. All three component source
+inventories and the two preserved bytecode files are unchanged. No native actors
+or new artifact qualification were needed. Commits remain local; push, version
+selection, publication and managed apply are separate actions. The earlier
+364-test/artifact receipt below retains its original candidate and dated scope.
 
 The [everyday reliability and native packaging pass](reliability-packaging-results.md)
 is complete as a local candidate. Current-release claims are corrected and checked

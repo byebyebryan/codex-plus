@@ -1,6 +1,6 @@
 # Codex Plus implementation plan
 
-Updated 2026-10-31. Codex CLI/TUI remains the daily interface and its existing
+Updated 2026-11-01. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are
 installed and enabled on Snap, Starship and Carbon. Current sources are reconciled.
@@ -10,12 +10,18 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
-## Planned pass: release-claim boundaries and candidate readiness
+<a id="planned-pass-release-claim-boundaries-and-candidate-readiness"></a>
+
+## Completed pass: release-claim boundaries and candidate readiness
 
 Selected 2026-10-31 by an explicit goal-loop request after review of the four
-local reliability/packaging commits through `22333f9`. Execution ends with a
-reviewed local candidate and cohesive commits; publication and managed
-installation remain separate actions.
+local reliability/packaging commits through `22333f9`; completed 2026-11-01.
+Candidate `b45728b` separates published and managed guide checks and repairs
+direct Pages-test invocation. All 369 tests pass on Python 3.11/3.14; three
+external guide builds and 24 focused browser checks pass. The
+[review-correction results](reliability-packaging-results.md#review-correction-release-claim-boundaries)
+record evidence and limits. The execution contract below is retained; publication
+and managed installation remain separate actions.
 
 ### Problem and intended result
 
