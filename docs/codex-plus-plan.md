@@ -10,6 +10,141 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
+## Next pass: everyday reliability and native packaging
+
+Selected 2026-10-31 after the preview.12 review and explicit goal-loop request.
+Execution is in progress. The default finish is a reviewed,
+validated local candidate, a bounded field-evidence record and a packaging
+decision. A later release/publication/deployment has its own acceptance gates.
+
+Keep the native CLI/TUI, continuing conversation, owning daemon and normal tool
+approval/authentication paths. Anchor the pass on two independent active sessions
+within one daemon. Worker children remain separate from peer discovery, and the
+four worker workflows retain their identities and explicit invocation behavior.
+
+### Starting evidence and selected scope
+
+The review found source main `2c482e0` matches its remote and CI/Pages pass.
+Preview.12 source `f6ec874` is selected with verified component manifests on Snap
+OSS/work, Starship and Carbon; both MCPs are enabled. Native clients and owners
+report 0.166.0. The declared 0.162.1 baseline and the bounded later-version trial
+evidence remain distinct. These are dated observations, to refresh at execution.
+
+Two reproduced documentation defects lead the work: getting-started still calls
+preview.11 the current release, and architecture still describes the preview.11
+managed rollout as current. The published pages contain those stale statements.
+Successful rendering, links and browser interaction did not catch their meaning.
+The existing doctor supplies useful structured evidence but only JSON output.
+
+Native plugin packaging is a research question. The official
+[packaging guide](https://developers.openai.com/plugins/build/plugins) describes
+skills, MCP configuration, local marketplaces and plugin-scoped server policy.
+It does not by itself establish that our installed CLI can install and exercise
+this bundle unattended, or preserve custom agents and existing invocation names.
+Compare current documentation with the installed CLI and schema before a trial.
+
+### Sequence, deliverables and decision gates
+
+| Stage | Work and deliverable | Acceptance / decision |
+| --- | --- | --- |
+| 1. Refresh the baseline | Record source/remote state, published and selected release identities, native client/owner pair, relevant configuration and protected process identities. Recheck existing source/schema evidence for any proposed native simplification. | Preserve concurrent edits, private state, old payloads and active sessions. Separate selection, reported versions, verified bytes and native scenario evidence. |
+| 2. Repair release consistency | Correct the two stale current-release claims; review README, setup, daily use, architecture, installation, workers and walkthrough together. Add a small semantic consistency gate in the existing Pages validation path. | A stale current-release claim fails the gate; legitimate historical preview.11 evidence still passes. Cover all four named worker workflows and the separate reporting skill. Avoid another release ledger or broad documentation rewrite. |
+| 3. Make diagnosis readable | Add opt-in `--human` output to the existing doctor, rendering its existing evidence. Keep JSON as the default, preserve its schema and exit behavior, and document the short operator command. | Summarize environment, selected component versions/revisions, integrity, enabled MCPs, native client/owner and loaded-version evidence. Missing evidence stays unknown. Do not infer loaded code from selection or source liveness from silence. |
+| 4. Review useful real-work episodes | Review up to three selected existing episodes, led by independent-session follow-up, then endpoint/log observation and configured MCP inspection where evidence exists. Use the existing private soak-note format. | Record request, intended target/condition, useful follow-up, quiet behavior, continuation, recap and stop; distinguish handling from task completion. Measure latency/cost only when available. Classify findings as retain, guidance, runtime fix or defer. |
+| 5. Spike native plugin packaging | Prepare a minimal private candidate and a capability/installation comparison with the existing archives and chezmoi path. Validate manifests, relocation, discovery and protocol startup before considering a live native check. | Return adopt, partial fit or defer, with exact evidence and remaining acceptance. Proceed toward adoption only if it reduces installation work while preserving native ownership, policy, environment separation and existing workflow identities. |
+| 6. Review and close | Review the complete diff and findings, validate selected changes, reconcile the handoff/guides and record the remaining manual or field questions. | Deliver a concrete local candidate and packaging decision. Missing field access or a failed plugin-fit gate does not hold the documentation/doctor work open indefinitely. |
+
+### Documentation and diagnostic boundaries
+
+Choose the smallest release-consistency mechanism after inspecting the current
+builder: reuse one current-release declaration or check narrowly identified
+current-release sections. Preserve dated managed receipts and historical version
+tables. Do not mechanically replace every older version with the source version,
+or treat a source version bump as proof that a release is published or deployed.
+
+The doctor formatter consumes the existing diagnostic result. It adds no store,
+MCP tool, fleet scanner or background process. Its cases include a healthy
+selection, a selected/reported mismatch, unavailable native metadata, an
+unqualified native version, missing/invalid payloads and an alternate Codex home.
+The JSON and human views must express the same uncertainty. A quiet watch's
+cached `starting` label remains a separate research finding; changing it requires
+positive native startup evidence, not a formatter heuristic or added heartbeat.
+
+### Field evidence and bounded native checks
+
+Use supplied context, selected receipts or already authorized passive sources.
+Active real sessions may be inspected read-only; this plan does not authorize
+messages, interruptions, new observation or job actions against them. Do not scan
+private histories broadly, export transcripts or manufacture production work.
+If no suitable episode is available, record the missing field acceptance and
+finish the independent deliverables. An elapsed week or a quiet run is not proof
+of operational reliability.
+
+Do not repeat the prior 20-turn qualification merely to re-establish unchanged
+behavior. If a selected fix or packaging question needs native evidence, use
+fresh owned fixtures only, within the existing verified daemon where supported.
+The combined ceiling is two independent actors, eight native turns with two
+reserved for settlement/cleanup, one watch of at most five minutes/two events and
+one peer message. CLI/schema inspection and MCP initialize/tools-list precede
+model turns. No worker workflow is implicitly activated. Record a specific
+question and expected receipt before spending that budget; stop and retain
+uncertainty on a scope, access or identity failure.
+
+### Plugin feasibility gates
+
+Check these independently; a valid manifest alone is not installation acceptance:
+
+- The installed CLI supports the required discovery, installation and loading
+  path. Distinguish CLI authoring/catalog commands from actual client installation.
+- Bundled local MCP commands run after relocation and receive the verified native
+  caller metadata required by Plus. Both server identities, instructions and tool
+  policies remain usable; duplicate legacy/plugin MCP loading is avoided.
+- Existing worker agents, all four explicit skill invocations and the reporting
+  skill remain available without changing their meaning or activating them.
+  Unsupported agent packaging or changed skill names is an explicit partial fit.
+- Snap OSS/work and alternate-home state/report paths remain separate. Credentials,
+  journals and report stores stay outside the plugin and release archives.
+- Optional components and enable/disable preferences remain practical. Upgrading
+  a plugin must not invalidate code captured by an existing MCP process or remove
+  the current immutable-release rollback path.
+
+Prepare artifacts outside the checkout and production plugin directories. A live
+check must use a supported private configuration path that preserves active
+homes and the existing owner; otherwise stop at static/protocol evidence and
+document the exact remaining installation step. Do not register a marketplace,
+refresh global MCPs, restart a daemon or switch the fleet during this spike.
+If the result needs substantial adapters or parallel installation machinery,
+prefer the existing distribution path and record why.
+
+### Validation, finish line and follow-on publication
+
+Use focused existing tests for semantic release consistency and the doctor;
+check that each new regression catches its intended defect or ambiguity. Run
+the full fixture suite when packaged Python changes, `rtk proxy scripts/check`
+against a clean tracked-file candidate, and `rtk proxy git diff --check`.
+Preserve canonical bytecode and validate workers independently. For changed
+guides, build outside the checkout and inspect actual browser output as well as
+links, version claims and named workflow coverage.
+
+If packaged code changes, verify reproducible archives and relocated doctor/CLI
+and MCP startup. Keep the candidate source identity separate from preview.12;
+the old tag/assets and selected fleet release stay immutable. Record actual
+results before adding a results document to the explicit file inventory.
+Commit cohesive validated slices when execution is requested, and leave the
+local review, evidence limits and any manual acceptance steps clear.
+
+Source/artifact validation is the default finish line. Publication would select
+a new immutable preview, fetch/verify its assets, verify CI/public Pages delivery
+and browser acceptance, then update chezmoi URLs/revisions/checksums/validators
+together before scoped host applies. A plugin distribution change requires its
+own adoption decision; it is not automatically included in that rollout.
+
+Cross-host messaging, a recurring scheduler, a dashboard, automatic owner
+recovery, native exit interception and Carbon hosting repair remain separate
+feature/operations decisions. Record unrelated baseline check failures separately
+from this pass's gates. No daemon/report-server restart or active-work disruption
+is part of the planned pass or its prospective managed rollout.
+
 ## Planned pass: native qualification and operational clarity
 
 Completed 2026-10-31 after the project overview, planning review and goal-loop

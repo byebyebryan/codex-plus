@@ -7,6 +7,17 @@ selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect norma
 
 ## Current scope and entry points
 
+The selected [everyday reliability and native packaging pass](codex-plus-plan.md#next-pass-everyday-reliability-and-native-packaging)
+is in progress following the explicit goal-loop request. It starts with the stale current-release
+claims in setup/architecture, adds opt-in readable output to the existing doctor,
+reviews bounded selected real-use evidence and tests whether native plugin
+packaging simplifies distribution. Independent-session follow-up is the anchor.
+The default finish is a validated local candidate and an adopt/partial-fit/defer
+packaging decision; missing field access does not block the independent work.
+Preview.12 remains selected, active owners are preserved and release/deployment
+are separate follow-on gates. The detailed plan defines any owned native trial
+bounds and preserves worker identities and explicit invocation.
+
 The separately authorized review follow-up closes ordinary endpoint setup and
 live cancellation with three completed owned native turns on Snap OSS 0.166.0.
 The source kept running after its one change callback and stopped only after the
