@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import ast
 import hashlib
 import html
 from html.parser import HTMLParser
@@ -43,22 +42,25 @@ DESCRIPTIONS = {
     "runtime-distribution.md": "Verify and install the monitoring runtime, configure its MCP tools and select immutable releases.",
 }
 CURRENT_RELEASE_CLAIMS = {
-    "README.md": (
-        r"\*\*v([^*]+)\*\* includes",
-        r"Snap, Starship and Carbon select \*\*v([^*]+)\*\*",
-    ),
-    "docs/getting-started.md": (r"\*\*v([^*]+)\*\* supplies the released workflows",),
-    "docs/architecture.md": (
-        r"Codex Plus `v([^`]+)` unifies",
-        r"and Carbon select (preview\.\d+)\s+artifacts",
-    ),
-    "docs/runtime-distribution.md": (
-        r"(?m)^\[v([^\]]+)\]\(https://github.com/byebyebryan/codex-plus/releases/tag/v",
-        r"(?m)^\[v[^\]]+\]\(https://github.com/byebyebryan/codex-plus/releases/tag/v([^\)]+)\)",
-        r"(?m)^\| (?:Workers|Monitoring|Reporting) \| `codex-plus-(?:workers|runtime|report)-([\w.+-]+)\.tar\.gz`",
-        r"Snap, Starship and Carbon select workers, monitoring and reporting \*\*([^*]+)\*\*",
-    ),
-    "docs/presentation/index.html": (r"Codex Plus (preview\.\d+)\.", r"Available in (preview\.\d+)"),
+    # Each domain's README declaration anchors only that domain's replicas.
+    "published": {
+        "README.md": (r"\*\*v([^*]+)\*\* includes",),
+        "docs/getting-started.md": (r"\*\*v([^*]+)\*\* supplies the released workflows",),
+        "docs/architecture.md": (r"Codex Plus `v([^`]+)` unifies",),
+        "docs/runtime-distribution.md": (
+            r"(?m)^\[v([^\]]+)\]\(https://github.com/byebyebryan/codex-plus/releases/tag/v",
+            r"(?m)^\[v[^\]]+\]\(https://github.com/byebyebryan/codex-plus/releases/tag/v([^\)]+)\)",
+            r"(?m)^\| (?:Workers|Monitoring|Reporting) \| `codex-plus-(?:workers|runtime|report)-([\w.+-]+)\.tar\.gz`",
+        ),
+        "docs/presentation/index.html": (r"Codex Plus (preview\.\d+)\.", r"Available in (preview\.\d+)"),
+    },
+    "managed": {
+        "README.md": (r"Snap, Starship and Carbon select \*\*v([^*]+)\*\*",),
+        "docs/architecture.md": (r"and Carbon select (preview\.\d+)\s+artifacts",),
+        "docs/runtime-distribution.md": (
+            r"Snap, Starship and Carbon select workers, monitoring and reporting \*\*([^*]+)\*\*",
+        ),
+    },
 }
 STYLE = """
 :root{color-scheme:light;--paper:#f6f4ee;--ink:#202e2c;--teal:#185b50;--line:#d7ddd4}
@@ -304,22 +306,30 @@ def validate(output: Path) -> int:
 
 
 def validate_current_guides(root: Path = ROOT) -> int:
-    """Check current claims explicitly; historical release references remain valid."""
-    assignments = ast.parse((root / "codex_plus/__init__.py").read_text()).body
-    version = next(ast.literal_eval(node.value) for node in assignments
-                   if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "VERSION" for t in node.targets))
+    """Check published and managed claims independently of source/artifact versions."""
+    readme = (root / "README.md").read_text()
     count = 0
-    for name, patterns in CURRENT_RELEASE_CLAIMS.items():
-        text = (root / name).read_text()
-        for pattern in patterns:
-            values = re.findall(pattern, text)
-            if not values:
-                raise ValueError(f"current-release claim missing in {name}: {pattern}")
-            for value in values:
-                actual = version.split("-", 1)[0] + "-" + value if value.startswith("preview.") else value
-                if actual != version:
-                    raise ValueError(f"stale current-release claim in {name}: {value}; expected {version}")
-                count += 1
+    for domain, claims in CURRENT_RELEASE_CLAIMS.items():
+        anchors = re.findall(claims["README.md"][0], readme)
+        if len(anchors) != 1:
+            reason = "missing" if not anchors else "ambiguous"
+            raise ValueError(f"{reason} {domain} release anchor in README.md: found {len(anchors)}")
+        version = anchors[0]
+        if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?"
+                            r"(?:\+[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?", version):
+            raise ValueError(f"malformed {domain} release anchor in README.md: {version!r}")
+        for name, patterns in claims.items():
+            text = (root / name).read_text()
+            for pattern in patterns:
+                values = re.findall(pattern, text)
+                if not values:
+                    raise ValueError(f"{domain} release claim missing in {name}: {pattern}")
+                for value in values:
+                    actual = version.split("-", 1)[0] + "-" + value if value.startswith("preview.") else value
+                    if actual != version:
+                        raise ValueError(f"inconsistent {domain} release claim in {name}: {value}; "
+                                         f"expected {version} from README.md")
+                    count += 1
     workers = (root / "docs/workers.md").read_text()
     for workflow in ("$luna-task", "$luna-goal-loop", "$worker-task", "$worker-goal-loop", "skills/html-report"):
         if workflow not in workers:

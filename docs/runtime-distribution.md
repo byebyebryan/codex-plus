@@ -30,10 +30,18 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 | Monitoring | `codex-plus-runtime-0.1.0-preview.12.tar.gz` |
 | Reporting | `codex-plus-report-0.1.0-preview.12.tar.gz` |
 
-`codex_plus/__init__.py` is the authoritative version. Both MCP adapters, report
-plugin manifests and all component manifests use it. The worker archive retains
+`codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
+adapters, report plugin manifests and all component manifests use it. The worker archive retains
 the existing default and optional legacy identities; packaging does not enable
 legacy skills or change explicit workflow invocation.
+
+The README's released-version declaration anchors published-release guide claims;
+its separate managed-deployment declaration anchors installation claims. Pages
+checks each group for internal consistency. Source may advance before publication,
+and publication may precede rollout or remain ahead after a rollback. Those gaps
+are valid. The guide check does not query GitHub or hosts: published assets and
+dated deployment receipts still require their own verification. Neither a source
+version nor a guide declaration establishes the code loaded by a running process.
 
 Preview.10's recap/history and loaded-MCP metadata refinements are retained. See
 [feature availability](getting-started.md#released-and-source-features) and

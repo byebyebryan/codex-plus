@@ -2,11 +2,8 @@
 import importlib.machinery
 import importlib.util
 from pathlib import Path
-import shutil
 import tempfile
 import unittest
-
-from codex_plus import VERSION
 
 ROOT = Path(__file__).resolve().parents[1]
 loader = importlib.machinery.SourceFileLoader('pages_builder', str(ROOT / 'scripts/build-pages'))
@@ -16,32 +13,111 @@ loader.exec_module(pages)
 
 
 class PagesTests(unittest.TestCase):
-    def release_fixture(self, directory):
+    def release_fixture(self, directory, *, source='0.1.0-preview.12',
+                        published='0.1.0-preview.12', managed='0.1.0-preview.12'):
         root = Path(directory)
-        for name in (*pages.CURRENT_RELEASE_CLAIMS, 'docs/workers.md', 'codex_plus/__init__.py'):
+        published_short = published.split('-', 1)[-1]
+        managed_short = managed.split('-', 1)[-1]
+        files = {
+            'README.md': (f'## Current status\n\n**v{published}** includes released features.\n\n'
+                          f'Snap, Starship and Carbon select **v{managed}** for all components.\n'),
+            'docs/getting-started.md': f'**v{published}** supplies the released workflows.\n',
+            'docs/architecture.md': (f'Codex Plus `v{published}` unifies components.\n'
+                                     f'Snap, Starship and Carbon select {managed_short} artifacts.\n'),
+            'docs/runtime-distribution.md': (
+                f'[v{published}](https://github.com/byebyebryan/codex-plus/releases/tag/v{published})\n\n'
+                f'| Workers | `codex-plus-workers-{published}.tar.gz` |\n'
+                f'| Monitoring | `codex-plus-runtime-{published}.tar.gz` |\n'
+                f'| Reporting | `codex-plus-report-{published}.tar.gz` |\n\n'
+                f'Snap, Starship and Carbon select workers, monitoring and reporting **{managed_short}**.\n'),
+            'docs/presentation/index.html': f'Codex Plus {published_short}. Available in {published_short}\n',
+            'docs/workers.md': '$luna-task $luna-goal-loop $worker-task $worker-goal-loop skills/html-report\n',
+            'codex_plus/__init__.py': f'VERSION = {source!r}\n',
+        }
+        for name, text in files.items():
             target = root / name
             target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(ROOT / name, target)
+            target.write_text(text)
         return root
 
-    def test_current_guide_claims_match_the_authoritative_version(self):
-        self.assertGreater(pages.validate_current_guides(), 0)
+    def test_current_guide_claims_match_their_documented_anchors(self):
+        self.assertEqual(pages.validate_current_guides(), 15)
+
+    def test_release_transitions_allow_independent_versions(self):
+        cases = (
+            ('0.1.0-preview.12', '0.1.0-preview.12', '0.1.0-preview.12'),
+            ('0.1.0-preview.13', '0.1.0-preview.12', '0.1.0-preview.12'),
+            ('0.1.0-preview.13', '0.1.0-preview.13', '0.1.0-preview.12'),
+            ('0.1.0-preview.14', '0.1.0-preview.13', '0.1.0-preview.12'),
+            ('0.1.0-preview.13', '0.1.0-preview.13', '0.1.0-preview.11'),
+            ('0.2.0-preview.1', '0.1.0-preview.13', '0.1.0-preview.12'),
+            ('0.3.0-preview.1', '0.1.0-preview.13', '0.2.0-preview.12'),
+        )
+        for source, published, managed in cases:
+            with self.subTest(source=source, published=published, managed=managed), tempfile.TemporaryDirectory() as directory:
+                root = self.release_fixture(directory, source=source, published=published, managed=managed)
+                self.assertEqual(pages.validate_current_guides(root), 13)
+
+    def test_guide_consistency_does_not_require_a_source_version_module(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.release_fixture(directory)
+            (root / 'codex_plus/__init__.py').unlink()
+            self.assertEqual(pages.validate_current_guides(root), 13)
 
     def test_stale_setup_claim_is_rejected_without_rejecting_historical_features(self):
         with tempfile.TemporaryDirectory() as directory:
             root = self.release_fixture(directory)
             path = root / 'docs/getting-started.md'
-            path.write_text(path.read_text().replace(f'**v{VERSION}** supplies', '**v0.0.0-preview.0** supplies'))
-            with self.assertRaisesRegex(ValueError, 'stale current-release claim in docs/getting-started.md'):
+            path.write_text(path.read_text().replace('**v0.1.0-preview.12** supplies', '**v0.0.0-preview.0** supplies'))
+            with self.assertRaisesRegex(ValueError, 'inconsistent published release claim in docs/getting-started.md.*expected 0.1.0-preview.12'):
                 pages.validate_current_guides(root)
 
     def test_stale_managed_architecture_claim_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             root = self.release_fixture(directory)
             path = root / 'docs/architecture.md'
-            path.write_text(path.read_text().replace('and Carbon select ' + VERSION.split('-', 1)[-1], 'and Carbon select preview.0'))
-            with self.assertRaisesRegex(ValueError, 'stale current-release claim in docs/architecture.md'):
+            path.write_text(path.read_text().replace('and Carbon select preview.12', 'and Carbon select preview.0'))
+            with self.assertRaisesRegex(ValueError, 'inconsistent managed release claim in docs/architecture.md.*expected 0.1.0-preview.12'):
                 pages.validate_current_guides(root)
+
+    def test_release_link_label_target_and_each_archive_are_checked(self):
+        claims = ('[v0.1.0-preview.12]', '/tag/v0.1.0-preview.12)',
+                  'workers-0.1.0-preview.12.tar.gz', 'runtime-0.1.0-preview.12.tar.gz',
+                  'report-0.1.0-preview.12.tar.gz')
+        for claim in claims:
+            with self.subTest(claim=claim), tempfile.TemporaryDirectory() as directory:
+                root = self.release_fixture(directory)
+                path = root / 'docs/runtime-distribution.md'
+                path.write_text(path.read_text().replace(claim, claim.replace('preview.12', 'preview.0')))
+                with self.assertRaisesRegex(ValueError, 'inconsistent published release claim in docs/runtime-distribution.md'):
+                    pages.validate_current_guides(root)
+
+    def test_managed_installation_claim_uses_managed_anchor(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.release_fixture(directory, published='0.1.0-preview.13')
+            path = root / 'docs/runtime-distribution.md'
+            path.write_text(path.read_text().replace('**preview.12**', '**preview.13**'))
+            with self.assertRaisesRegex(ValueError, 'inconsistent managed release claim in docs/runtime-distribution.md.*expected 0.1.0-preview.12'):
+                pages.validate_current_guides(root)
+
+    def test_missing_duplicate_and_malformed_anchors_are_rejected(self):
+        anchors = {
+            'published': '**v0.1.0-preview.12** includes released features.',
+            'managed': 'Snap, Starship and Carbon select **v0.1.0-preview.12** for all components.',
+        }
+        for domain, anchor in anchors.items():
+            replacements = {
+                'missing': '',
+                'ambiguous': anchor + '\n' + anchor,
+                'malformed': anchor.replace('0.1.0-preview.12', 'not-a-version'),
+            }
+            for reason, replacement in replacements.items():
+                with self.subTest(domain=domain, reason=reason), tempfile.TemporaryDirectory() as directory:
+                    root = self.release_fixture(directory)
+                    path = root / 'README.md'
+                    path.write_text(path.read_text().replace(anchor, replacement))
+                    with self.assertRaisesRegex(ValueError, f'{reason} {domain} release anchor in README.md'):
+                        pages.validate_current_guides(root)
 
     def test_historical_release_evidence_is_allowed_outside_current_claims(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -61,7 +137,7 @@ class PagesTests(unittest.TestCase):
             path.write_text(original)
             path = root / 'docs/getting-started.md'
             path.write_text(path.read_text().replace('supplies the released workflows', 'supplies workflows'))
-            with self.assertRaisesRegex(ValueError, 'current-release claim missing'):
+            with self.assertRaisesRegex(ValueError, 'published release claim missing'):
                 pages.validate_current_guides(root)
 
     def test_environment_guide_is_public_and_keeps_fragment(self):
