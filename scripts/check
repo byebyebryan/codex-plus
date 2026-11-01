@@ -60,6 +60,7 @@ EXPECTED_FILES = {
     "docs/native-alignment-results.md",
     "docs/native-qualification-results.md",
     "docs/reliability-packaging-results.md",
+    "docs/lifecycle-guidance-results.md",
     "tests/test_pages.py",
     "docs/monitoring-spike-results.md",
     "docs/coordinator-loop-results.md",

@@ -5,29 +5,35 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.13 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
-## Next planned pass: agent-first installation and maintenance
+## Completed local pass: agent-first installation and maintenance
 
-Bryan reviewed the plugin exploration and prioritized lifecycle instructions over
-another delivery mechanism. The [new plan](codex-plus-plan.md#planned-pass-agent-first-lifecycle-guidance)
-makes one agent guide the primary install/upgrade/manage/cleanup/uninstall route,
-with short site prompts and the existing human overview as reference. Proposed
-outputs are `docs/manage-agent.md`, `/manage/` and a same-source `/manage.md` export;
-none exists yet. Existing archive installers and configuration owners remain in
-place. Plugin migration is parked; its evidence below remains valid.
+The [selected plan](codex-plus-plan.md#planned-pass-agent-first-lifecycle-guidance)
+is complete as a local candidate. [The agent guide](manage-agent.md), `/manage/`
+and its exact `/manage.md` export now provide seven short lifecycle requests.
+README, landing and setup lead to that route; the human overview and component
+references remain available. Existing archive installers and configuration owners
+remain in place. Plugin migration is parked; its evidence below remains valid.
 
-The planning inspection found two concrete recipe gaps: worker setup currently
-copies moving main although a verified worker release archive exists, and neither
-package CLI exposes uninstall/prune. Resolve those in release-aware instructions
-and precise ownership/dependency checks; do not invent commands or delete captured
-code. The plan specifies fixture and optional isolated agent-prompt acceptance,
-configuration-owner boundaries, selected/loaded evidence, rollback and retained
-data. It changes no product runtime, version, active owner or worker invocation.
+Candidate `e1b2d17` replaces moving-main worker setup with verified release
+provenance and documents preservation/defer paths for cleanup and uninstall.
+Both published preview.12/.13 artifact sets verify. Eighteen disposable lifecycle
+checks, three failed-upgrade assertions and four synthetic manager assertions pass.
+A fresh owned native actor completed read-only inspection from the short prompt;
+agent-led installation and native MCP activation remain unqualified. The final
+site passes 27 browser checks and all 58 relevant existing tests. See the
+[full results and limits](lifecycle-guidance-results.md), including the corrected
+first-trial collector failure.
 
-This is a planning-only update. Execution should first leave a reviewed local
-guide/site candidate; Pages publication follows review and needs no runtime
-release or fleet repin. No installation, actor, watch, push, deployment or restart
-has been performed for this plan. The two prior plugin documentation commits and
-the existing untracked bytecode files remain preserved.
+The successful durable actor is archived/unloaded. One initial ephemeral test
+thread remains loaded and idle: native archive/resume/delete reject its missing
+persisted rollout, and unsubscribe from a new connection leaves it loaded. No
+daemon restart was attempted. Owned preview servers and the manual MCP child are
+stopped; all 596 protected paths and 13 baseline process identities match.
+
+The candidate is committed locally. Pages publication follows review and needs
+no runtime release or fleet repin. No production installation, watch, peer message,
+push, publication, deployment or restart was performed. The two prior plugin
+documentation commits and existing untracked bytecode files remain preserved.
 
 ## Plugin exploration: isolated installation works; migration deferred
 

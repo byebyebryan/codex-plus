@@ -24,6 +24,8 @@ and upgrade cards use the shared text on the landing page. Copy buttons have
 manual-selection fallback, and the requests remain readable without JavaScript.
 Self-site links become relative for local previews; authored absolute guide links
 also work when an agent fetches raw Markdown from the site root.
+The [acceptance record](lifecycle-guidance-results.md) separates released-artifact,
+disposable command, fresh-agent inspection and final browser evidence.
 
 The existing Pages workflow already watches `docs/**`, the builder and tests;
 no workflow permission or host setting change is required. This candidate has

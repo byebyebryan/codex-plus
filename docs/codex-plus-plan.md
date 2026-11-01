@@ -12,7 +12,13 @@ and [Claude context](claude-monitoring-context.md) for the historical design inp
 
 <a id="planned-pass-agent-first-lifecycle-guidance"></a>
 
-## Planned pass: agent-first installation and maintenance
+## Completed local pass: agent-first installation and maintenance
+
+Completed 2026-11-01. The [local candidate and acceptance record](lifecycle-guidance-results.md)
+cover the canonical guide, HTML/plain-Markdown routes, shared action prompts,
+verified disposable lifecycle commands and a bounded fresh-agent inspection.
+Publication and live installation changes remain separate. The execution contract
+below retains the original scope and acceptance boundaries.
 
 Planned 2026-11-01 following review of the plugin exploration. The useful next
 outcome is a person giving their agent one documentation link and an action:
@@ -22,9 +28,9 @@ overview explains choices and provides the technical references. Plugin migratio
 is parked. Existing archives, immutable releases, workers and configuration owners
 remain the implementation underneath this experience.
 
-This entry records a plan, not an installation or execution receipt. A later
-execution pass should leave a reviewed local documentation/site candidate and
-bounded acceptance evidence. Public Pages publication follows review; a docs-only
+This entry records the execution contract; the linked results record actual
+acceptance and limitations. The pass leaves a reviewed local documentation/site
+candidate and bounded evidence. Public Pages publication follows review; a docs-only
 publication needs no product-version bump, replacement release assets or fleet
 apply. No live installation changes are needed to prepare the candidate.
 
@@ -143,9 +149,8 @@ automated retention service. If executing the documented procedure reveals a
 runtime defect that cannot be handled truthfully, record the exact gap and assess
 a separate minimal fix instead of expanding this pass silently.
 
-This planning turn writes only the plan/handoff. The later local execution pass
-does not authorize production install/upgrade/uninstall, publication, a push,
-chezmoi deployment or fleet mutation. After review, Pages can publish the guide
+The local execution pass does not authorize production install/upgrade/uninstall,
+publication, a push, chezmoi deployment or fleet mutation. After review, Pages can publish the guide
 through the personal github.com account without changing installed runtimes.
 
 <a id="planned-pass-native-plugin-installation-and-distribution-fit"></a>
