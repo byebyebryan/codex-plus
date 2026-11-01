@@ -7,6 +7,20 @@ selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect norma
 
 ## Current scope and entry points
 
+The subsequent read-only review found a release-sequencing defect in the new
+guide gate: it rejects both source ahead of publication and publication ahead of
+managed selection. Both valid transitions were reproduced in private fixtures.
+The [planned correction](codex-plus-plan.md#planned-pass-release-claim-boundaries-and-candidate-readiness)
+separates published and managed guide anchors from source artifact versioning,
+adds transition regressions and ends with a reviewed local candidate. Planning
+validation also reproduced a failing direct Pages-test invocation: its new
+`VERSION` import cannot find `codex_plus`, while discovery passes all 23 tests.
+The correction must qualify both existing CI entry points. An explicit goal-loop
+request now selects local implementation, validation and cohesive commits.
+Push, publication and managed apply remain outside this pass. The four prior
+commits through `22333f9` remain local and unpushed at this starting review;
+the recorded full-suite/artifact results below predate this newly identified gap.
+
 The [everyday reliability and native packaging pass](reliability-packaging-results.md)
 is complete as a local candidate. Current-release claims are corrected and checked
 by the Pages builder; the existing doctor adds opt-in `--human` while retaining

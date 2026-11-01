@@ -10,6 +10,122 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
+## Planned pass: release-claim boundaries and candidate readiness
+
+Selected 2026-10-31 by an explicit goal-loop request after review of the four
+local reliability/packaging commits through `22333f9`. Execution ends with a
+reviewed local candidate and cohesive commits; publication and managed
+installation remain separate actions.
+
+### Problem and intended result
+
+The new `validate_current_guides` compares every identified current-release and
+managed-selection claim with the source `VERSION`. Review reproduced two false
+failures: an unreleased preview.13 source with accurate preview.12 guides, and
+preview.13 released guides with an accurate preview.12 fleet selection. The same
+gate runs in the fixture suite and before Pages rendering, so either valid
+transition can block CI/publication.
+
+Planning validation also reproduced a test-entry-point defect: the Pages
+workflow's direct `python3 -B tests/test_pages.py` invocation fails with
+`ModuleNotFoundError: No module named 'codex_plus'` at its new `VERSION` import.
+Unittest discovery passes the same 23 tests. Both entry points must work from a
+clean checkout; a passing discovery run does not qualify the Pages workflow.
+
+The result should be a small correction to that existing gate, meaningful
+transition regressions and a reviewed local candidate. Keep one product release
+version across the three component archives. Separating evidence about source,
+publication and installation does not introduce separate component versions.
+
+### Authority and consistency contract
+
+| Evidence | Authority and comparison rule |
+| --- | --- |
+| Source and built artifacts | `codex_plus/__init__.py` continues to own the source version used by package manifests and both MCP adapters. Existing release tests enforce artifact agreement; the guide checker does not treat it as proof of publication or installation. |
+| Published-release guide claims | Reuse the existing full-version declaration in README's Current status as the published-guide anchor. Compare released-workflow prose, architecture's release statement, installation release label/tag/archive names and walkthrough release claims against this anchor. Require exactly one matching anchor. |
+| Managed deployment claims | Reuse the separate full-version declaration in README's managed deployment details as the managed-guide anchor. Compare the installation Current managed state and architecture's managed-selection statement against this anchor. Preserve the existing rollout date, source revision and receipt link as dated evidence. Require exactly one matching anchor. |
+| Reported or loaded code | Keep the doctor's existing selected/reported distinction. No documentation comparison establishes a connected process's version or loaded bytes. |
+
+The two README anchors are independent. They are explicit declarations for
+consistency checks, not online attestations of GitHub assets or the fleet.
+Do not query GitHub, hosts or native sessions from the guide validator. Expand
+short `preview.N` references using their own domain's full-version anchor, never
+the source version or the other domain. Missing, ambiguous or malformed anchors
+fail with the file, domain and reason; contradictory replicas report the actual
+and expected versions. Do not require the domains to be equal or impose release
+ordering: a documented rollback can leave managed selection behind publication.
+
+Keep dated historical references outside current-claim matching and retain the
+named-workflow gate. If real deployment evidence shows different host selections,
+replace the aggregate claim with accurate scoped wording and deliberately update
+its checks; never edit receipts to manufacture agreement.
+
+### Work sequence and acceptance
+
+| Stage | Work | Acceptance |
+| --- | --- | --- |
+| 1. Refresh and reproduce | Recheck source/remote status, concurrent edits and the two preserved bytecode files. Reproduce both release-transition failures and direct test invocation in fresh private fixtures. | Both valid transitions fail before the fix; direct invocation fails before loading tests. No real host, native actor, watch or message is needed. |
+| 2. Separate the comparisons | Change `scripts/build-pages` and `tests/test_pages.py`, keeping the existing explicit claim inventory and builder entry point. Use the independent README anchors above and make test fixtures independent of the imported runtime `VERSION`. | Both valid transitions pass; an inconsistent published claim and an inconsistent managed claim still fail independently. Direct and discovery test invocation both work without an external `PYTHONPATH` setting. No new ledger, configuration file, service or runtime API. |
+| 3. Exercise the boundaries | Add the transition cases below and retain missing-claim, historical-reference and named-workflow coverage. Review domain normalization and diagnostics. | Tests distinguish valid lag from contradictory documentation and catch missing/duplicate anchors. They do not assume every domain equals imported `VERSION`. |
+| 4. Reconcile the guides | Clarify that source version ownership describes built artifacts, while publication and dated installation claims have their own evidence. Update the results note and handoff to explain the review correction. | No claimed release, rollout or qualification advances merely because source or prose changed. Completed-pass evidence remains dated and intact. |
+| 5. Validate and review | Run the exact Pages direct-test command and full existing fixture discovery on Python 3.11/3.14, clean-candidate inventory/worker checks and whitespace checks. Build the guides outside the checkout and inspect affected pages. | Both existing CI entry points pass in a clean checkout without an external `PYTHONPATH` setting. Both valid transitions also pass in isolated fixture builds; a contradictory claim fails before rendering. Review the complete diff for weakened checks or unrelated edits. |
+| 6. Leave a release-ready decision | Record the candidate revision, actual checks, remaining field limits and a proposed immutable release identity if publication is requested next. | Deliver reviewed local source and truthful documentation. Cohesive commits follow an execution request; pushing, releasing, Pages publication and chezmoi application remain separate actions. |
+
+Use existing build/fixture tooling in fresh private directories and the normal
+authenticated renderer; keep credentials and raw runtime evidence outside source.
+No new files are expected, so the explicit inventory should remain 130 files.
+Validate a clean tracked-file candidate without deleting canonical bytecode or
+concurrent work.
+Browser review is limited to affected content and release links; repeat broader
+interactive walkthrough checks only if layout or behavior changes.
+
+The validation commands include both `rtk proxy python3 -B tests/test_pages.py`
+and `rtk proxy python3 -B -m unittest discover -s tests -p 'test_*.py'`, plus the
+Pages workflow's inventory tests. Prefer self-contained fixtures over adding an
+import-path workaround or changing workflows to conceal the failing entry point.
+
+### Required transition cases
+
+| Source / published guide / managed guide | Expected result |
+| --- | --- |
+| preview.12 / preview.12 / preview.12 | Pass the existing aligned baseline. |
+| preview.13 / preview.12 / preview.12 | Pass an unreleased source candidate. |
+| preview.13 / preview.13 / preview.12 | Pass a published release before rollout. |
+| preview.14 / preview.13 / preview.12 | Pass independent source and deployment lag. |
+| preview.13 / preview.13 / preview.11 | Pass an explicitly documented rollback with internally consistent managed claims. |
+| Source 0.2.0-preview.1; published 0.1.0-preview.13; managed 0.1.0-preview.12 | Pass; abbreviated claims resolve within their domain. |
+| Any published replica contradicts the published anchor | Fail with a published-domain diagnostic. |
+| Any managed replica contradicts the managed anchor | Fail with a managed-domain diagnostic. |
+| Missing, duplicate or malformed authoritative declaration | Fail before rendering; never fall back to source equality. |
+| Older historical evidence outside current sections | Pass while still checking current claims and all named workflows. |
+
+These tests establish documentation consistency. They cannot detect an entire
+domain being coherently outdated against external reality; publication and
+deployment acceptance must continue to verify their actual receipts.
+
+### Finish line and deferred work
+
+This pass is local candidate readiness. It does not bump the product version,
+replace preview.12 assets, push main, publish Pages, update chezmoi pins, apply to
+hosts or reload active MCPs. Publication would subsequently choose a new immutable
+version, verify source/artifacts and fetched assets, then verify public delivery.
+Managed rollout would update URLs, revision, checksums and validators together,
+apply only the reviewed Plus targets and verify installed selections while
+preserving active owners, private state and older releases. Changed fleet claims
+follow those receipts, allowing publication and rollout to finish separately.
+
+The existing `--human` doctor candidate remains in scope for final review, with
+its JSON/default behavior and evidence limits preserved. Its packaged code is
+unchanged by this planned gate fix; repeat artifact qualification only if a
+packaged file changes or a new release is selected.
+
+Keep unified native-plugin distribution deferred on its recorded invocation-name
+and worker-registration gates. Representative real-work follow-up remains a
+separate acceptance item to collect when an appropriate episode exists; it does
+not require another synthetic actor loop here. Quiet-source startup labeling,
+new monitoring features, cross-host messaging, recovery behavior and native
+compatibility expansion remain outside this correction.
+
 <a id="next-pass-everyday-reliability-and-native-packaging"></a>
 
 ## Completed pass: everyday reliability and native packaging
