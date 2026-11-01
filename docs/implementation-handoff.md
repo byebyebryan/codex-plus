@@ -2,20 +2,28 @@
 
 Updated 2026-11-01. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.12 is published and
+the older report checkout and the existing worktrees. Preview.13 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
-## Preview.13 publication and rollout in progress
+## Preview.13 publication and rollout
 
-The 2026-11-01 approval selects the reviewed reliability candidate for a new
-immutable unified release and scoped chezmoi rollout on Snap OSS/work, Starship
-and Carbon. The [selected plan](codex-plus-plan.md#selected-pass-preview13-publication-and-preservation-first-rollout)
-requires preview.12 verification/rollback support, clean Python 3.11/3.14 checks,
-reproducible and fetched asset verification, public guide acceptance and independent
-host preservation checks. Preview.12 remains selected until rollout acceptance.
-Existing daemons/report servers are preserved; loaded MCP processes reconnect
-normally. Earlier local-candidate scopes below are historical.
+Completed 2026-11-01 under the [selected plan](codex-plus-plan.md#selected-pass-preview13-publication-and-preservation-first-rollout).
+Release source `5e6c9dd` and dotfiles pin `29d4d1d` (rollout receipt `8b191e6`) are published. Snap OSS/work,
+Starship and Carbon select verified preview.13 workers, monitoring and reporting.
+Both installed doctor formats and fresh MCP protocol discovery pass in all four
+contexts. All 369 tests pass on Python 3.11/3.14; five fetched assets match two
+reproducible builds and relocated qualification. Release CI and public guide
+checks pass independently. See the [full receipt](reliability-packaging-results.md#preview13-publication-and-managed-rollout).
 
+All 1,349 protected paths are preserved except the three intentional worker
+version/provenance metadata updates; all 26 recorded native/report process
+identities and HTTP baselines match. Canonical chezmoi sources have the scoped pin
+commit and empty target diffs while preserving divergent history and 25/0/2
+unrelated dirty paths on Snap/Starship/Carbon. No daemon/report-server restart or
+global MCP refresh occurred. Loaded MCP processes reconnect normally; this
+conversation still reports preview.11 against selected preview.13. Ordinary-use
+follow-up acceptance remains open, and unified plugin distribution stays deferred.
+The earlier local-candidate scopes below are historical.
 
 ## Current scope and entry points
 
@@ -201,16 +209,16 @@ Continue with ordinary use and its evidence.
 
 ## Source, releases and installed state
 
-| Layer | Release/rollout fact recorded 2026-10-31 |
+| Layer | Release/rollout fact recorded 2026-11-01 |
 | --- | --- |
-| Published unified release | v0.1.0-preview.12, source `f6ec874`; one version, tag and release manifest, with optional worker/monitoring/report archives. All five fetched assets match reproducible candidates. |
-| Managed upgrade | Pins `b9deff9`, validator correction `3bbbe87` and receipt `5f6bc9a` published to dotfiles main; scoped rollout and canonical source synchronization completed on all three hosts. |
-| Earlier artifacts retained | Preview.11 source `5c9ec1d` and earlier runtime/report releases remain available for captured processes and rollback. |
-| Snap | Workers, monitoring and reporting preview.12 selected and verified in OSS/work; both HTTP endpoints remain 200 with unchanged catalog bytes. |
-| Starship | All three preview.12 payloads verified; private configuration, native owners, old releases and HTTP bytes preserved. |
-| Carbon | All three preview.12 payloads verified; private configuration and native owners preserved; HTTP already unavailable. |
-| Native compatibility | Bounded owned Snap OSS trials on 0.166.0; release baseline remains 0.162.1. Installed protocol discovery in all four contexts is separate from blanket native compatibility or long-run qualification. |
-| Source | Cancelled terminal source errors leave current attention while history and uncertain delivery remain visible; preview.11 verification and rollback are retained. |
+| Published unified release | v0.1.0-preview.13, source `5e6c9dd`; one version, tag and release manifest, with optional worker/monitoring/report archives. All five fetched assets match two reproducible builds. |
+| Managed upgrade | Dotfiles pin `29d4d1d` is published; scoped rollout and canonical source synchronization completed on all three hosts while preserving divergent history and unrelated work. |
+| Earlier artifacts retained | Preview.12 source `f6ec874` and earlier runtime/report releases remain available for captured processes and rollback; new installers verify actual preview.12 archives. |
+| Snap | All three preview.13 payloads, both doctor formats and fresh 17/four-tool MCP discovery verify in OSS/work; both HTTP endpoints retain identical 200 catalog bytes. |
+| Starship | All three preview.13 payloads, both doctor formats and fresh MCP discovery verify; private configuration, native owners, old releases and HTTP bytes are preserved. |
+| Carbon | All three preview.13 payloads, both doctor formats and fresh MCP discovery verify; private configuration and native owners are preserved; HTTP was already unavailable. |
+| Native compatibility | Bounded earlier owned Snap OSS trials on 0.166.0; release baseline remains 0.162.1. Installed protocol discovery is separate from blanket compatibility or long operation. |
+| Source | Readable doctor output and independent published/managed guide checks; preview.12 verification and rollback remain available. |
 | Notification delivery | Native Codex to terminal. Formatting belongs to Kitty/chezmoi. Enrichment and the 349 inspector are parked/retired. |
 
 Source documentation may advance beyond the selected immutable artifacts.

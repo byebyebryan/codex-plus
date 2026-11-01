@@ -3,16 +3,16 @@
 Completed 2026-10-31 under the [selected plan](codex-plus-plan.md#completed-pass-everyday-reliability-and-native-packaging).
 The [review correction](#review-correction-release-claim-boundaries) completed
 2026-11-01 and supersedes the initial source-equality guide check.
-The local candidate repairs current-release documentation consistency and adds
-readable output to the existing doctor. Native plugins are a **partial fit**;
-retain the existing component archives and chezmoi distribution. Representative
-real-work follow-up remains an open acceptance item.
+The reviewed reliability work repairs current-release documentation consistency
+and adds readable output to the existing doctor. Native plugins are a **partial
+fit**; retain component archives and chezmoi distribution. Representative real-work
+follow-up remains an open acceptance item.
 
-This pass publishes no release or site and changes no managed installation.
-Preview.12 source `f6ec874` remains selected. The initial reviewed code candidate was
-`bceda12e3dd652bab5659ab3bcc2d1e37f28f246`; its private test artifacts retain the
-unchanged preview.12 version constant and are not replacements for that published
-tag or its assets. A later release must select a new immutable version.
+The separately authorized [preview.13 publication and managed rollout](#preview13-publication-and-managed-rollout)
+completed on 2026-11-01. Earlier local-candidate receipts below retain their dated
+scope: the initial code candidate `bceda12e3dd652bab5659ab3bcc2d1e37f28f246`
+used the unchanged preview.12 constant only for private qualification and did not
+replace that published tag or its assets.
 
 ## Documentation consistency
 
@@ -99,7 +99,7 @@ optional components or unavailable metadata retain their existing successful
 diagnostic exit status; invalid configuration or payloads still return failure.
 The tests cover alternate homes, mixed and invalid selections, unavailable or
 unqualified native versions, reported mismatches, unknown metadata and both CLI
-formats. Published preview.12 archives do not have this new source-only flag.
+formats. Preview.13 publishes this flag; older preview.12 archives retain their original CLI.
 
 A read-only check of the development conversation supplied a useful real
 example: all selected component manifests verify preview.12, while its connected
@@ -218,3 +218,74 @@ chezmoi edit/apply, global MCP refresh or fleet migration occurred. The next
 release can carry the documentation gate and doctor formatter through the
 existing publication and managed-rollout gates. Representative daily-use
 evidence and any future plugin adoption remain separate decisions.
+
+## Preview.13 publication and managed rollout
+
+Completed 2026-11-01 after Bryan approved release and scoped deployment. Immutable
+source `5e6c9dde392e8fa3e33b6901c0afe68116c77d94` supplies unified
+**v0.1.0-preview.13** workers, monitoring and reporting. It includes the readable
+doctor, independent published/managed guide checks and explicit preview.12
+verification and rollback support. Bumping the version first reproduced unsupported
+preview.12 errors in both installers; the expanded regressions pass after the fix.
+No worker agent/skill payload or workflow identity changed.
+
+All **369 tests** pass on Python **3.11.10** and **3.14.8**; direct Pages invocation
+passes all **28 tests** without `PYTHONPATH`. The clean **130-file inventory**,
+worker metadata and whitespace checks pass. Two complete builds reproduce all
+**five assets** byte for byte. Every downloaded GitHub asset matches those builds;
+the unified verifier checks exact inventories, modes, versions, source revision
+and checksums. The new tooling also verifies the actual prior preview.12 archives.
+Relocated installations pass both doctor formats and MCP initialize/tools-list
+checks with **17 monitoring** and **four report tools**, without creating state.
+Release CI passes Python 3.11/3.14 independently of local qualification.
+
+The guide build validates **234 local links/assets/anchors** and **15 current
+claims**. Browser qualification covers **60 scene states** and **24 guide loads**
+at desktop, tablet and mobile widths, with no page errors or horizontal overflow.
+Publication initially retained managed preview.12 claims; managed claims advanced
+only after the following host acceptance. CI and actual public delivery remain
+separate checks.
+
+Dotfiles pin `29d4d1d` (rollout receipt `8b191e6`) advances component URLs, source revision, fetched checksums,
+selectors and dedicated/umbrella validators together. The focused update was
+published from an isolated upstream checkout. All three canonical sources received
+scoped commits preserving their divergent histories and unrelated changes: **25**
+paths on Snap, **zero** on Starship and **two** on Carbon. The default source's
+scoped diff is empty on every host. Plus, split-home and report validators pass;
+report qualification includes isolated installation on all three supported profiles.
+
+Each host's reviewed status/diff/script-excluded dry-run contains only two new
+immutable payloads, two selectors and the worker version manifest. Payload
+verification precedes selector apply. Exact installed inventory/hash/mode checks
+pass for **25 monitoring**, **23 reporting** and **18 worker files** per host.
+Fresh installed MCP commands report preview.13 with 17/four tools in Snap OSS,
+Snap work, Starship and Carbon. Both installed doctor formats verify aligned
+components and enabled MCP configuration in all four contexts.
+
+Of **1,349 protected paths**, **1,346** remain byte/mode/link identical; only the
+three worker version/provenance manifests advance. All **26 recorded native/report
+process identity tuples** remain present. Private config/auth, agents/skills,
+report configuration and every pre-existing immutable release are preserved.
+The three healthy report endpoints remain HTTP 200 with identical catalog bytes;
+Carbon was unavailable before rollout and remains so. Carbon uses the trusted
+Starship SSH hop without bypassing host-key checks. No daemon/report-server
+restart, global MCP refresh, native configuration apply, recovery or intent replay
+occurred. Existing processes reconnect normally.
+
+The development conversation's read-only doctor demonstrates the boundary:
+selected files verify preview.13 while connected monitoring/reporting metadata
+still reports preview.11. Native client and owner are 0.166.0; the declared
+qualification baseline remains 0.162.1. Protocol discovery and bounded earlier
+native trials do not establish blanket native compatibility or long operation.
+
+Passive current watch, reminder and outgoing-message receipts contain no ordinary
+follow-up episode in this conversation. No workload was manufactured and no real
+session was messaged or interrupted. Real-work follow-up, long unattended operation
+and personal UX acceptance remain open; native plugin distribution stays deferred.
+Private rollout evidence remains outside source in a mode-0700 workspace.
+
+The full dotfiles `scripts/check` passes the Plus pins/materialized workers,
+split-home and preference-preservation gates, then fails in the unchanged OpenCode
+block because the installed binary rejects `--pure`. That block is byte-identical
+to upstream baseline `28d3655`; this rollout preserves its unrelated retirement
+work. Dedicated reporting qualification passes independently of that early exit.

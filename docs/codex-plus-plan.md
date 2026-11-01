@@ -10,7 +10,9 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
-## Selected pass: preview.13 publication and preservation-first rollout
+<a id="selected-pass-preview13-publication-and-preservation-first-rollout"></a>
+
+## Completed pass: preview.13 publication and preservation-first rollout
 
 Selected 2026-11-01 after review and Bryan's explicit approval to publish and
 roll out the reliability candidate. The existing native CLI, owning daemons,
@@ -30,7 +32,11 @@ worker identities and explicit invocation remain unchanged.
 6. Commit and push dated receipts. Review suitable passive ordinary-use evidence
    if available; synthetic results do not close real-work acceptance.
 
-The prior completed passes below retain their original scopes and evidence.
+Publication and scoped rollout completed on 2026-11-01. Release source `5e6c9dd`
+and dotfiles pin `29d4d1d` are published; all four contexts verify preview.13.
+The [acceptance receipt](reliability-packaging-results.md#preview13-publication-and-managed-rollout)
+records artifacts, CI, guides, installed/protocol checks, preservation and open
+ordinary-use limits. The contract above and prior passes below retain their scopes.
 
 <a id="planned-pass-release-claim-boundaries-and-candidate-readiness"></a>
 

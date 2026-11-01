@@ -16,8 +16,8 @@ coordinator owns bounded observation, timers, event admission and receipts.
 
 Codex Plus `v0.1.0-preview.13` unifies workers, monitoring and reporting under one
 version, source commit and release. Optional archives retain each component's
-dependencies and configuration. Snap, Starship and Carbon select preview.12
-artifacts from `f6ec874` following the scoped managed rollout on 2026-10-31.
+dependencies and configuration. Snap, Starship and Carbon select preview.13
+artifacts from `5e6c9dd` following the scoped managed rollout on 2026-11-01.
 Managed configuration, selected artifacts and already loaded processes
 are different layers: existing MCP processes adopt new code on normal reconnect.
 Journals, report data and hosting remain runtime-owned.

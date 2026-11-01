@@ -98,12 +98,12 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Snap, Starship and Carbon select **v0.1.0-preview.12** for workers, monitoring and
-reporting from source `f6ec874` through chezmoi. The scoped rollout on 2026-10-31
-verified exact component payloads and fresh MCP discovery in all four contexts,
-while preserving native owners, private configuration and old releases. Report
-HTTP checks match the starting baseline; Carbon's endpoint remains unavailable.
-See the [rollout receipt](docs/native-qualification-results.md#preview12-publication-and-managed-rollout).
+Snap, Starship and Carbon select **v0.1.0-preview.13** for workers, monitoring and
+reporting from source `5e6c9dd` through chezmoi. The scoped rollout on 2026-11-01
+verified exact payloads, both doctor formats and fresh MCP discovery in all four
+contexts while preserving native owners, private configuration and old releases.
+Report HTTP checks match baseline; Carbon's endpoint remains unavailable.
+See the [rollout receipt](docs/reliability-packaging-results.md#preview13-publication-and-managed-rollout).
 Existing processes adopt new code on normal
 reconnect. The [implementation handoff](docs/implementation-handoff.md) records
 source, release and installed state.
