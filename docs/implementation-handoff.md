@@ -5,21 +5,31 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.13 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
-## Selected exploration: native plugin installation
+## Plugin exploration: isolated installation works; migration deferred
 
-The [plugin installation and distribution-fit plan](codex-plus-plan.md#planned-pass-native-plugin-installation-and-distribution-fit)
-was selected for a goal loop on 2026-11-01. No fundamental blocker has been demonstrated for a
-monitoring/reporting plugin alongside the existing native worker installation.
-The earlier spike did find changed skill names and left custom-agent registration,
-installed-plugin caller identity, policy and maintenance unqualified. These remain
-explicit gates rather than evidence of successful installation.
+The [plugin distribution-fit loop](codex-plus-plan.md#planned-pass-native-plugin-installation-and-distribution-fit)
+completed 2026-11-01 with a defer-migration recommendation. Native CLI 0.166.0
+installs, lists, rolls back, upgrades and removes the private candidate without a
+desktop app or new daemon. Forty unchanged release source files plus two portable
+manifests form a reproducible local candidate; native installation preserves its
+bytes/modes. Manual installed-payload stdio probes discover 17 monitoring/four
+reporting tools and publish/retrieve a private report with hosting disabled.
 
-The selected pass will qualify a private installation scope, test native operation
-and compare actual setup/maintenance steps before choosing adopt, hybrid or defer.
-Official public-directory submission of local MCP plugins has a separate partner
-allowlisting gate; our eligibility is unknown. Installation and synthetic actor
-trials depend on the recorded scope gate. Existing worker invocation, qualified
-preview.13 delivery and active owners must remain unchanged.
+Version changes delete the previous cache directory. Captured stdio servers keep
+answering, but the removed version's helper path cannot be launched. Safe native
+active updates are unqualified. The existing owner sees the private-home plugin
+as uninstalled/disabled; no supported private installation scope on that owner
+was qualified. Caller metadata, native policy/coexistence and the dependent
+A-watches-B trials remain open. No native actor was created. See the
+[full evidence and remaining scope](reliability-packaging-results.md#plugin-installation-follow-up-isolated-cli-and-lifecycle-gates).
+
+All 596 protected paths and 13 baseline native/report process identities match.
+The private install/marketplace are removed, both owned stdio processes closed,
+and the private report/candidates retained. Workers, preview.13 managed selections,
+production config and active owners are unchanged. Official local-MCP directory
+submission separately requires partner allowlisting; our eligibility is unknown.
+No runtime code, new installer, publication, push or managed deployment is part
+of this research result.
 
 ## Preview.13 publication and rollout
 

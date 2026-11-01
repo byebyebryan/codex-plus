@@ -12,12 +12,17 @@ and [Claude context](claude-monitoring-context.md) for the historical design inp
 
 <a id="planned-pass-native-plugin-installation-and-distribution-fit"></a>
 
-## Selected pass: native plugin installation and distribution fit
+## Completed exploration: native plugin installation and distribution fit
 
-Planned and selected for a goal loop on 2026-11-01 after Bryan asked whether plugin
-packaging has hard blockers or merits another exploration pass. Execute the
-bounded private trials below, commit coherent progress and preserve active work.
-Preview.13 archives and chezmoi remain the qualified production delivery.
+Planned, selected and completed as a finite research loop on 2026-11-01. The
+[installation follow-up](reliability-packaging-results.md#plugin-installation-follow-up-isolated-cli-and-lifecycle-gates)
+proves isolated native CLI installation/removal, manual installed-payload protocol
+and reporting, explicit local-catalog rollback/upgrade and reproducible candidate
+bytes. It also proves prior cache paths are removed. Existing-owner installed
+operation remains gated; the dependent synthetic actor trials did not start.
+The result is defer migration, with a prepared local research candidate and a
+precise remaining acceptance scope. Preview.13 archives and chezmoi remain the
+qualified production delivery. The execution contract below retains its scope.
 
 ### Question and evidence baseline
 

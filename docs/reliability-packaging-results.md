@@ -14,6 +14,11 @@ scope: the initial code candidate `bceda12e3dd652bab5659ab3bcc2d1e37f28f246`
 used the unchanged preview.12 constant only for private qualification and did not
 replace that published tag or its assets.
 
+The [plugin installation follow-up](#plugin-installation-follow-up-isolated-cli-and-lifecycle-gates)
+completed on 2026-11-01. Native CLI installation works in an isolated home;
+cache pruning and the lack of a qualified private installation scope on the
+existing owner keep production plugin migration deferred.
+
 ## Documentation consistency
 
 The setup and architecture guides incorrectly called preview.11 current after
@@ -180,6 +185,122 @@ plugin setting was added. A later packaging-only trial would need a supported
 private installation scope, native server startup and a verified caller-bound
 operation, followed by policy, duplicate-server, environment and rollback checks.
 It should first decide whether changed invocation names are acceptable.
+
+## Plugin installation follow-up: isolated CLI and lifecycle gates
+
+Completed 2026-11-01 under the
+[plugin distribution-fit plan](codex-plus-plan.md#planned-pass-native-plugin-installation-and-distribution-fit).
+This is a finite packaging qualification with a **defer migration** result.
+It changes no product runtime code, worker invocation or production installation.
+Native installed-plugin execution remains unqualified; the dependent actor trials
+did not start. The isolated CLI and maintenance probes below are actual execution,
+not inferences from help or discovery.
+
+### Scope and candidate
+
+The installed CLI and existing Snap OSS owner are 0.166.0. The generated
+experimental schema, installed CLI help and matching upstream tag were inspected.
+The native [plugin manager](https://github.com/openai/codex/blob/rust-v0.166.0/codex-rs/core-plugins/src/manager.rs)
+installs into its selected home's store and calls `set_user_plugin_enabled`.
+Its [store](https://github.com/openai/codex/blob/rust-v0.166.0/codex-rs/core-plugins/src/store.rs)
+derives cache/data roots from that home. The inspected API and
+[plugin configuration](https://github.com/openai/codex/blob/rust-v0.166.0/codex-rs/config/src/types.rs)
+offer no qualified per-thread installation-home override. Source inspection
+explains the write boundary; the isolated CLI probe verifies its concrete writes.
+
+A private `CODEX_HOME`, marketplace, data/config/state roots and report store were
+created outside the checkout. No authentication file or credentials were copied,
+no daemon was started there, and no real-home marketplace or plugin setting was
+written. The existing owner was used only for passive fixture discovery. No
+native synthetic conversation, model turn, message, watch or reminder was started.
+
+Both candidates reuse the exact 40-file union of the existing monitoring and
+reporting source inventories. They include the report skill and exclude worker
+skills/agent TOMLs. Preview.12 comes from release source `f6ec874`; preview.13
+comes from `5e6c9dd`. Each keeps that release's product version and adds only
+portable `plugin.json` and `mcp.json`, for **42 plugin files**. The trial identity
+is `codex-plus-trial@codex-plus-private-trial`, with `codex_plus` and `html_report`
+server declarations. Discovery returns `codex-plus-trial:html-report`.
+
+The stdio trial manifest supplies explicit private fixture configuration. A
+separate portable preview.13 candidate removes those host/fixture paths and
+inherits normal environment/config selection. Native CLI installation of that
+portable candidate preserves all 42 file bytes and modes. Two deterministic
+candidate archives are identical. The prepared archive, checksum, provenance,
+reproduction scripts and raw receipts remain private research artifacts outside
+source; no new installer, public artifact or supported distribution is introduced.
+
+### Observed gates
+
+| Gate | Result and limit |
+| --- | --- |
+| Native CLI installation | Pass in the isolated home. `plugin marketplace add`, `plugin add` and `plugin list --json --available` report preview.13 installed and enabled. Registration creates the private `config.toml`; installation changes it and creates 42 cached files. The CLI warns that PATH aliases cannot be created under `/tmp`; installation still succeeds and no such helper is created. |
+| Existing-owner installation scope | Not qualified. Passive `plugin/read` on the existing owner discovers both server declarations and the prefixed report skill, but reports this plugin uninstalled and disabled, both before and after private-home installation. The owner identity is unchanged. Installing into another home does not install into this owner; its `plugin/install` surface has no home argument. No real-home installation was attempted. |
+| Installed payload protocol | Pass for manual stdio launches of the actual isolated installation: preview.13 reports 17 monitoring/four reporting tools. The harness expands `${PLUGIN_ROOT}`; native plugin startup/expansion and caller injection are still unqualified. |
+| Metadata boundary | A monitoring `watch_list` call without native metadata refuses before creating the fixture state root. No metadata was fabricated or validation weakened. A successful native caller-bound operation remains gated. |
+| Reporting functionality | A manual stdio call publishes one 75-byte owned HTML fixture, updates its private catalog and retrieves it. Autostart is disabled, the URL is unconfigured and delivery is unchecked. This establishes stored bytes, not HTTP delivery, native approval or browser rendering. |
+| Rollback and upgrade | Selecting preview.12 in the local fixture catalog and reinstalling succeeds; selecting preview.13 again also succeeds and restores identical payload bytes. Each switch removes the prior cached version. This qualifies explicit local-catalog selection/reinstallation, not a first-class rollback command or automatic rollback policy. |
+| Captured processes | Both already-running manual stdio servers continue to report preview.13 after its cache directory is removed. The reporting server can still retrieve the fixture. The removed version's `scripts/codex-plus-watch` path no longer exists, and a direct Python launch fails with exit 2. Some captured code keeps working; this does not qualify safe native live upgrades. |
+| Removal and data | Native `plugin remove` removes the trial cache; marketplace removal clears its registration. The isolated config returns to empty. The report snapshot, catalog and original HTML survive, and captured reporting can still retrieve the snapshot before its process exits. No real journal existed in this fixture, so journal preservation is not established. |
+| Permissions, duplication and environment isolation | Native installed-plugin approvals, denial paths, effective MCP names, duplicate legacy/plugin behavior, component enablement and OSS/work separation remain unqualified. No work-home or fleet trial occurred. |
+
+The first report probe omitted the required `schema = 1` in its fixture config
+and was correctly rejected before report creation. The fixture was corrected and
+only the affected private protocol/lifecycle probe repeated. Product code did not
+change. Both manual stdio processes were closed after their probes.
+
+### Why migration remains deferred
+
+The private CLI installation gate is closed successfully; a desktop app is not
+needed for that bounded operation on this CLI. It does not close the different
+gate of installed plugin execution on the existing daemon. Completing that gate
+would need an explicitly scoped native-home installation or another supported
+scope that actually belongs to that owner. A project enablement setting alone
+does not isolate installation writes. Do not create a second daemon, copy a
+cache into the live home or install globally to manufacture a passing result.
+
+Cache pruning is an observed retention mismatch with today's immutable archive
+installation. `codex_plus.cli.ensure_coordinator` derives its helper wrapper from
+the captured module path; reporting server control also derives a source wrapper.
+Native cache updates remove those paths. Whether native refresh behavior safely
+replaces affected servers/helpers needs actual native acceptance; the manual
+stdio result neither proves all running tasks fail nor proves upgrades are safe.
+Do not add a private code-retention service, installation hook or compatibility
+layer merely to make plugins appear equivalent to existing delivery.
+
+The next acceptance scope would first qualify real native installation and
+caller-bound reads, then A-watches-B/stop, approvals and coexistence, and finally
+an active native update with helper continuity. Preserve native workers during
+that run. The existing doctor assumes top-level legacy server names and archive
+selections; assess any necessary diagnostics against observed plugin inventory
+instead of treating its current output as plugin acceptance.
+
+Official [local-MCP directory submission](https://developers.openai.com/plugins/deploy/desktop-only)
+has an additional approved-partner/organization-allowlisting gate; our eligibility
+is unknown. The [local/Git marketplace route](https://developers.openai.com/plugins/build/plugins)
+is separate. Neither public-directory eligibility nor custom-agent registration
+needs to be solved to run the narrower monitoring/reporting experiment, but both
+remain relevant to a complete replacement.
+
+**Recommendation:** retain preview.13 archives/chezmoi and the current worker
+installation. Keep the prepared native plugin as a research candidate. The
+syntax and CLI route work; full adoption has not demonstrated a simpler, equally
+robust lifecycle. Revisit when a controlled native installation trial is in scope
+and the active-update retention gate can be exercised without disturbing work.
+
+All **596 protected paths** and all **13 baseline native/report process
+identities** match before/after the local trials, including both existing
+untracked bytecode files. Existing selections and owners remain intact. The
+private installation is removed, its configuration is empty, and it has no auth
+file or daemon directories. Private report evidence and prepared candidates are
+retained for review. No publication, push, managed apply or global MCP refresh
+occurred.
+
+All **55 focused tests** pass: 28 Pages, 21 existing package and six reporting
+MCP tests. The clean tracked-file candidate passes the 130-file inventory and
+separate worker/skill validation; `git diff --check` passes. All 40 candidate
+product files also match the canonical release source bytes. No new runtime
+test or broader native compatibility claim follows from these checks.
 
 ## Validation and preservation
 
