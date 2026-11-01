@@ -69,7 +69,7 @@ foreground turns. Both runs stayed inside their 20-minute ceiling and the
 | Candidate inventory correction | Through the relocated candidate MCP, current watch inspection showed zero entries; history still contained all three cancelled initial watches, including the source error. |
 | Affected endpoint repeat | The corrected self-contained script polled the controlled endpoint **70 times**. During **69.0 seconds** before the transition, 69 reads produced zero model callbacks. The known transition produced one acknowledged callback, started 1.5 seconds after the change and completed 8.3 seconds after it. |
 | Foreground interruption | In the repeat, known endpoint reads established a working observer before interruption. Reads continued afterward with the same coordinator identity; the subsequent transition was delivered. This proves native turn interruption, not a physical Esc/TUI interaction. |
-| Final stop | A cancelled the fresh observation, inspected its completed/acknowledged event, retained earlier error history and created no continuation. Both native fixture queues were empty before archival. |
+| Final stop | A cancelled the fresh observation after its event limit had already stopped the source, inspected its completed/acknowledged event, retained earlier error history and created no continuation. This did not qualify cancellation of a running observer; the separately authorized follow-up below does. Both native fixture queues were empty before archival. |
 
 The initial run registered three watches and one reminder, admitted two peer
 events, one MCP inspection and one reminder callback, and sent two messages.
@@ -170,3 +170,44 @@ long-running real-source operation, physical TUI behavior and personal UX
 acceptance remain unestablished. The corrected candidate is committed locally;
 push, publication, version selection and scoped chezmoi rollout remain later
 decisions. No additional feature is required before that release review.
+
+## Review follow-up: ordinary setup and live cancellation
+
+Separately authorized 2026-10-31 after review identified the stop-evidence gap.
+One fresh owned independent conversation used the existing Snap OSS native
+0.166.0 daemon and the candidate's unchanged watch/store path. It reported
+preview.11 before the release-version bump. The earlier actors and their fixture
+instructions were not reused. No real peer was contacted or interrupted.
+
+The request was ordinary language: “Watch the packaging status endpoint for me.
+Keep quiet while it is unchanged and let me know when the status changes.” The
+actor read the prepared source's invocation/output contract and registered it
+through the configured MCP itself. No controller CLI registration was needed.
+
+All **three native turns completed**: setup, one acknowledged change callback
+and explicit stop. There were **34 quiet endpoint reads** before the controlled
+change, no callbacks during that interval and **56 total reads**. After the change
+callback completed, positive endpoint reads and a `running` source receipt
+established that observation continued. The request “Stop watching the packaging
+status” arrived with **246.4 seconds left**, **one of four** source events used
+and active intent. Cancellation produced `intent=cancelled`, `source_state=stopped`
+and detail `cancelled`, rather than an expiry or event-limit receipt.
+
+The endpoint changed again after stop. During the measured **30.3-second** check,
+there were **zero further endpoint reads or native callbacks** and no renewal or
+replacement. The sole callback remained acknowledged/completed, the native queue
+was empty and only the owned fixture was archived/unloaded. Its private endpoint
+and controller were closed. This closes the ordinary setup and running-source
+cancellation gaps for this bounded local fixture; it does not broaden physical
+TUI, real-source, provider or fleet compatibility acceptance.
+
+Preview.12 packages the attention correction and explicitly retains preview.11
+monitoring/reporting verification and rollback. The new rollback regression and
+existing reporting version matrix exercise that release boundary independently
+of the native watch trial. Publication and managed rollout receipts follow the
+release gates; they do not replace the scenario limits above.
+
+Release preparation passes **354 tests**, the clean 129-file inventory, worker
+validation and whitespace checks. The preview.12 verifier also validates the
+actually selected preview.11 monitoring/reporting trees without changing them.
+The external site build validates all eight guides and 234 links/assets/anchors.

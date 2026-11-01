@@ -152,10 +152,10 @@ unknown outcome remains visible until a terminal receipt is recorded. A missing
 receipt stays unknown even if the coordinator has exited; it is not inferred as
 success or automatically retried. Unresolved delivery/withdrawal also stays visible.
 
-In the **unreleased source candidate**, explicitly cancelling a watch also closes
+In **preview.12 and later**, explicitly cancelling a watch also closes
 attention for a known terminal source error. The error stays in history;
 uncertain delivery or withdrawal and unacknowledged native input stay visible.
-Installed preview.11 retains the earlier behavior. See the
+Preview.11 retains the earlier behavior. See the
 [qualification and correction](native-qualification-results.md).
 
 Detailed inspection shows up to three event receipts with unresolved delivery

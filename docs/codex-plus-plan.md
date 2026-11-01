@@ -17,6 +17,13 @@ request. The [results](native-qualification-results.md) record 17 bounded native
 turns and one unreleased inventory correction. The scope and gates below remain
 the execution record. Publication and managed apply were outside this pass.
 
+The separately authorized review follow-up adds three completed native turns,
+qualifying ordinary endpoint setup and cancellation while the observer is still
+running. The [follow-up record](native-qualification-results.md#review-follow-up-ordinary-setup-and-live-cancellation)
+keeps that new evidence separate. Bryan subsequently authorized preview.12
+publication and scoped chezmoi deployment; active work and native owners remain
+protected, with no global refresh or daemon/report-server restart.
+
 The outcome is an evidence-backed decision about preview.11 on the current
 native runtime, plus the smallest justified maintenance changes. Keep the native
 CLI/TUI, continuing thread, owning daemon, approvals and execution policy. A

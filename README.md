@@ -44,7 +44,7 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.11** includes bounded reminder history, rediscoverable outgoing
+**v0.1.0-preview.12** includes bounded reminder history, rediscoverable outgoing
 messages with quoted purpose, clearer follow-up outcomes and reported MCP-version
 diagnosis. The guides explain how to return to unfinished work; see [released and source features](docs/getting-started.md#released-and-source-features).
 Updating a guide or checkout does not upgrade an installed runtime.
@@ -55,9 +55,10 @@ refusal of unsettled work. Older installed releases require an explicit upgrade.
 See the [recovery contract and acceptance](docs/owner-recovery.md).
 
 The [October 31 qualification pass](docs/native-qualification-results.md) checks
-preview.11 on Snap's native 0.166.0 pair and records an unreleased correction for
-cancelled source errors in current watch attention. Installed releases and the
-declared compatibility baseline remain unchanged.
+preview.11 on Snap's native 0.166.0 pair and records the preview.12 correction for
+cancelled source errors in current watch attention. A separate review follow-up
+qualifies ordinary endpoint setup and cancellation of a running observer. The
+declared compatibility baseline remains unchanged.
 
 | Capability | What is available |
 | --- | --- |

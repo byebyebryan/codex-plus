@@ -1,6 +1,7 @@
 # Codex Plus releases and monitoring installation
 
-Preview.11 adds explicit clean rollover and archived inspection through the
+Preview.12 closes current attention for explicitly cancelled terminal source errors
+and retains explicit clean rollover and archived inspection through the
 [owner recovery contract](owner-recovery.md). Publishing or selecting an archive
 does not reload an already running process. Managed rollout is recorded separately
 below.
@@ -13,8 +14,9 @@ operation, native owner replacement and personal UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.11](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.11)
-includes explicit clean native-owner recovery and inspectable history. Workers, monitoring
+[v0.1.0-preview.12](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.12)
+includes the cancelled-source attention correction, preview.11 verification and
+rollback support, explicit clean native-owner recovery and inspectable history. Workers, monitoring
 and reporting share one
 version, source commit, GitHub tag and release. A reporting-only fix still advances
 the product version; release notes identify which capabilities changed. Components
@@ -24,9 +26,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.11.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.11.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.11.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.12.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.12.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.12.tar.gz` |
 
 `codex_plus/__init__.py` is the authoritative version. Both MCP adapters, report
 plugin manifests and all component manifests use it. The worker archive retains
@@ -197,7 +199,8 @@ admission is never blindly repeated.
 Retain an older release's package script with its payload. Verifiers accept
 explicit version inventories; for a preview.9 rollback, verify with its retained
 script before reselecting through the configuration owner. The current verifier
-does not recognize every intervening preview version. Verification and selection
+does not recognize every intervening preview version. Preview.12 explicitly
+retains preview.11 monitoring and reporting verification/selection. Verification and selection
 do not require restarting a captured process.
 
 The managed rollout must keep release URLs, revisions, fetched checksums, runtime

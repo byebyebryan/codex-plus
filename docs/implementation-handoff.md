@@ -7,6 +7,17 @@ selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect norma
 
 ## Current scope and entry points
 
+The separately authorized review follow-up closes ordinary endpoint setup and
+live cancellation with three completed owned native turns on Snap OSS 0.166.0.
+The source kept running after its one change callback and stopped only after the
+explicit request, before expiry and below its event limit. A post-stop endpoint
+change produced no reads or callbacks during 30.3 seconds. The fresh actor is
+archived/unloaded and its endpoint/controller are closed. See the
+[follow-up evidence](native-qualification-results.md#review-follow-up-ordinary-setup-and-live-cancellation).
+Preview.12 release preparation includes the attention correction and explicit
+preview.11 monitoring/reporting verification and rollback support. Publication
+and scoped managed rollout are now authorized; record their receipts separately.
+
 The [native qualification and operational clarity pass](native-qualification-results.md)
 completed 2026-10-31 within the [selected plan](codex-plus-plan.md#planned-pass-native-qualification-and-operational-clarity).
 Two owned independent conversations used 17 native turns across the installed

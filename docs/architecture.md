@@ -138,7 +138,7 @@ remain in history. Missing terminal evidence remains unknown even after a
 coordinator exits. Inspection does not retry or infer success. Uncertain delivery
 or withdrawal remains visible independently of that attention state.
 
-The unreleased source candidate also removes an explicitly cancelled terminal
+Preview.12 also removes an explicitly cancelled terminal
 source error from current watch attention. The existing history keeps the error;
 unresolved admission, withdrawal and unacknowledged input remain current. This
 changes the existing query only; see the
