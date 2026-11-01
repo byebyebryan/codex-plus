@@ -74,8 +74,10 @@ def lifecycle_requests(markdown: str) -> dict[str, str]:
     return requests
 
 
-def copy_control(request: str) -> str:
-    return ('<button type="button" class="copy-action" hidden data-copy-request="' +
+def copy_control(request: str, action: str) -> str:
+    return ('<button type="button" class="copy-action" aria-label="' +
+            html.escape('Copy ' + action.lower() + ' request', quote=True) +
+            '" hidden data-copy-request="' +
             html.escape(request, quote=True) + '">Copy request</button>'
             '<span class="copy-result" role="status"></span>')
 
@@ -83,14 +85,24 @@ def copy_control(request: str) -> str:
 def action_cards(requests: dict[str, str]) -> str:
     return '<div class="agent-actions">' + ''.join(
         '<article><h3>' + name + '</h3><p>' + html.escape(requests[name]) + '</p>' +
-        copy_control(requests[name]) + '</article>' for name in ('Install', 'Upgrade')) + '</div>'
+        copy_control(requests[name], name) + '</article>' for name in ('Install', 'Upgrade')) + '</div>'
 
 
 def action_table(body: str, requests: dict[str, str]) -> str:
+    actions = {request: name for name, request in requests.items()}
+    seen: list[str] = []
+
     def cell(match):
-        text = html.unescape(re.sub(r'<[^>]*>', '', match[1]))
-        return '<td>' + match[1] + (copy_control(text) if text in requests.values() else '') + '</td>'
-    return re.sub(r'<td>(.*?)</td>', cell, body, flags=re.S)
+        text = html.unescape(re.sub(r'<[^>]*>', '', match[2])).strip()
+        if text not in actions:
+            return match[0]
+        seen.append(text)
+        return '<td' + match[1] + '>' + match[2] + copy_control(text, actions[text]) + '</td>'
+
+    result = re.sub(r'<td\b([^>]*)>(.*?)</td>', cell, body, flags=re.S)
+    if sorted(seen) != sorted(actions):
+        raise ValueError('rendered agent action requests must each appear once')
+    return result
 
 
 def write_raw_guides(output: Path, source_root: Path = ROOT) -> None:

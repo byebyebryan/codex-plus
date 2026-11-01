@@ -5,6 +5,26 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.13 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
+## Lifecycle review and refinement
+
+Completed 2026-11-01 against the local lifecycle candidate. The guide now routes
+read-only and partial installations explicitly, pins the public GitHub host and
+preserves custom monitoring bounds/allowlists as well as paths and policy. The
+builder preserves attributed table cells, checks that all seven rendered action
+requests appear exactly once and gives copy buttons distinct accessible names.
+
+All 61 targeted tests and 45 browser checks pass. The three new regressions fail
+against the previous builder. Released preview.13 generators pass five custom
+configuration checks; a host-pinned metadata download succeeds with an inherited
+enterprise host. The site still has nine HTML guides, an identical raw Markdown
+export, 299 checked local links and 15 consistent current-release claims. See the
+[review receipt](lifecycle-guidance-results.md#review-and-refinement-2026-11-01).
+
+No new native actors, watches or messages were created, and the earlier idle
+ephemeral fixture was not touched. Runtime sources, production configuration,
+installed selections and active processes are unchanged. This remains a local
+candidate; publication and live installation changes are separate actions.
+
 ## Completed local pass: agent-first installation and maintenance
 
 The [selected plan](codex-plus-plan.md#planned-pass-agent-first-lifecycle-guidance)

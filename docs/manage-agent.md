@@ -26,6 +26,14 @@ An upgrade request includes changing ordinary installation pins through their
 owner; ask only for missing scope, a meaningful choice or an action beyond the
 request. Complete independent preparation before reporting a manual prerequisite.
 
+Start with environment discovery below. For **Inspect**, perform read-only
+verification and diagnostics, then stop; no release download or repair is needed.
+For **Configure**, change only the requested settings. **Roll back**, **Clean up**
+and **Uninstall** use their action sections and retained provenance; they do not
+begin by installing a newer release. Only **Install** and **Upgrade** follow the
+new-release installation sequence. Fetch missing provenance only when needed for
+the requested action and available under existing access.
+
 ## Inspect the existing environment
 
 Identify the target machine and effective `CODEX_HOME`, including launcher/env
@@ -43,26 +51,31 @@ For a generic fresh install, propose workers, monitoring and reporting together;
 honor an explicit partial selection. Reporting's skill is optional; legacy Terra
 workers are an explicit separate choice.
 
-The current preview requires Linux, Python 3.11+ and RTK for monitoring's native
-command paths. Git and network access support fetching release/verifier sources.
+The current runtime preview requires Linux and Python 3.11+; monitoring's native
+command paths also require RTK. Workers alone use native agent/skill support.
+Git and network access support fetching release/verifier sources.
 Optional automatic report hosting uses tmux; an external static server can serve
 reports instead. Check prerequisites without upgrading native Codex or changing
 system services automatically. Workers require the named native models and custom
 agent/skill support; do not substitute models silently. See the recorded native
 compatibility limits in the [runtime reference](https://dev.byebyebryan.com/codex-plus/installation/).
 
-When present, run the installed read-only diagnostics with the discovered prefixes:
+When a runtime is installed, choose `DIAGNOSTICS` as its verified release
+directory: `MONITOR/current` or, for a reporting-only setup, `REPORT/current`.
+Run its read-only diagnostics in the intended native home with discovered prefixes:
 
 ```sh
-rtk proxy python3 -B MONITOR/current/scripts/codex-plus-context
-rtk proxy python3 -B MONITOR/current/scripts/codex-plus-doctor --human --runtime-prefix MONITOR --report-prefix REPORT --worker-prefix WORKERS --no-native
+rtk proxy env CODEX_HOME=CODEX_HOME_PATH python3 -B DIAGNOSTICS/scripts/codex-plus-context
+rtk proxy env CODEX_HOME=CODEX_HOME_PATH python3 -B DIAGNOSTICS/scripts/codex-plus-doctor --human --runtime-prefix MONITOR --report-prefix REPORT --worker-prefix WORKERS --no-native
 ```
 
 Uppercase names and example paths in commands are parameters for the agent to
 resolve, not literal user commands. Use absolute paths. Prefix shell commands
 with RTK in environments that require it. The context command describes its own
 environment; pass the same explicit overrides used by the installed MCPs. A
-report-only installation also supplies the doctor. `--no-native` checks files
+workers-only setup has no runtime doctor; verify its retained manifest and copied
+agent/skill files instead. Do not add a missing component just to diagnose it.
+`--no-native` checks files
 and configuration without contacting native sessions. Omit it only for an
 authorized read against an existing owner. Never start a daemon to make diagnosis
 pass. Keep a private before/after record of affected files and process identities;
@@ -83,13 +96,14 @@ For example, with an existing personal github.com `gh` connection:
 ```sh
 rtk proxy gh api --hostname github.com --paginate 'repos/byebyebryan/codex-plus/releases?per_page=100' --jq '.[] | select(.draft == false) | {tag_name, prerelease, published_at, assets: [.assets[].name]}'
 rtk proxy gh api --hostname github.com repos/byebyebryan/codex-plus/releases/tags/TAG
-rtk proxy gh release download TAG --repo byebyebryan/codex-plus --dir STAGE/assets
+rtk proxy gh release download TAG --repo github.com/byebyebryan/codex-plus --dir STAGE/assets
 rtk proxy git clone --branch TAG --single-branch --depth 1 https://github.com/byebyebryan/codex-plus.git STAGE/source
 rtk proxy git -C STAGE/source rev-parse HEAD
 rtk proxy python3 -B STAGE/source/scripts/codex-plus-release verify STAGE/assets
 ```
 
 Use a new private staging directory outside the installation and source checkout.
+Keep `github.com` explicit when `gh` also has an enterprise host configured.
 The public GitHub REST/download URLs can be used without `gh` or an account; do
 not change authentication or copy tokens to staging. Download the three archives,
 `release.json` and `SHA256SUMS` from that exact tag. Record their expected asset
@@ -180,10 +194,17 @@ rtk proxy python3 -B MONITOR/current/scripts/codex-plus-package mcp-config --pre
 rtk proxy python3 -B REPORT/current/scripts/codex-plus-report-package mcp-config --prefix REPORT --codex-home CODEX_HOME_PATH --config REPORT_CONFIG
 ```
 
-Carry forward an existing monitoring `--state-root` or `--socket` argument when
-present. Home-bound generators deliberately clear inherited component environment
+Run only the selected component generator. On an existing setup, carry forward
+monitoring's `--state-root`, `--socket`, `--allowlist`, `--max-duration` and
+`--max-events`, plus reporting's `--config`, when set. Keep disabled servers
+disabled (`--disabled`), preserve peer-send policy and merge other custom settings
+through their owner. Regenerating with defaults must not silently reset an
+existing bound, approval choice or path.
+
+Home-bound generators deliberately clear inherited component environment
 overrides; merely leaving those variables in the agent's shell does not preserve
-an old explicit path. Compare effective paths with the before record before apply.
+an old explicit path. Compare effective arguments, paths, limits and tool policy
+with the before record before apply.
 
 These commands **print JSON objects**, not TOML and not live config changes.
 Translate the selected `mcp_servers.codex_plus` and `mcp_servers.html_report`

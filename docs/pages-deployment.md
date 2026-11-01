@@ -26,6 +26,8 @@ Self-site links become relative for local previews; authored absolute guide link
 also work when an agent fetches raw Markdown from the site root.
 The [acceptance record](lifecycle-guidance-results.md) separates released-artifact,
 disposable command, fresh-agent inspection and final browser evidence.
+The follow-up review also checks all seven rendered requests appear exactly once,
+preserves attributed table cells and gives copy buttons distinct accessible names.
 
 The existing Pages workflow already watches `docs/**`, the builder and tests;
 no workflow permission or host setting change is required. This candidate has

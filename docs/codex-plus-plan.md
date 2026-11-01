@@ -10,6 +10,25 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
+## Completed refinement: lifecycle instructions and presentation
+
+Selected and completed 2026-11-01 after review of the local lifecycle candidate.
+The [review receipt](lifecycle-guidance-results.md#review-and-refinement-2026-11-01)
+records the fixes, regression evidence and browser acceptance. Keep the same
+guide, release tools and site routes. Pin the public GitHub host in download
+examples; make read-only/partial-install routing explicit; preserve existing
+monitoring limits, allowlists and custom paths when regenerating configuration.
+Give action copy buttons distinct accessible names, preserve rendered table
+attributes and reject missing/duplicate action cells instead of silently losing
+controls. Add focused builder regression cases and check the generated pages in
+the browser, including clipboard fallback and no-JavaScript access.
+
+Use private fixtures and read-only released-tool checks. No native actors,
+ephemeral-thread cleanup, watches, messages, production installation, daemon
+restart, push or publication is needed. Preserve the two existing bytecode files
+and record clean-inventory validation separately. Finish a reviewed local commit
+and append findings/acceptance to the existing lifecycle results.
+
 <a id="planned-pass-agent-first-lifecycle-guidance"></a>
 
 ## Completed local pass: agent-first installation and maintenance

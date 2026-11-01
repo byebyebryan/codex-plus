@@ -6,6 +6,42 @@ Guide and presentation candidate `e1b2d17` follows planning commit `995a7c6`.
 Publication, product releases and production installation changes remain outside
 this pass. Plugin migration stays deferred.
 
+## Review and refinement: 2026-11-01
+
+Review of candidate `a6b7ece` found three concrete gaps. The download example
+left the GitHub host implicit; the configuration procedure named paths but did
+not explicitly retain custom allowlists and duration/event bounds; and the
+rendered-table matcher silently omitted copy controls when cells had attributes.
+The guide now pins `github.com`, retains all generator options and disabled/tool
+policy choices, and routes read-only, reporting-only and workers-only diagnosis
+without adding components. The builder preserves cell markup/attributes and
+rejects missing, changed or duplicate rendered requests. Each copy button has
+an action-specific accessible name.
+
+Three new behavioral regression tests fail against the prior builder and pass
+with the correction. All 61 targeted tests pass: 35 Pages, five inventory checks
+and 21 component-package tests. A fresh site build verifies nine HTML guides,
+the byte-identical Markdown export, 299 local links/assets/anchors and 15 current
+release claims. Forty-five browser checks pass with zero script errors, including
+all nine accessible action controls at desktop/mobile widths, keyboard copying,
+clipboard-denial fallback and no-JavaScript access. Screenshots were inspected.
+
+The released preview.13 generators pass five checks using private paths and
+disabled server entries: retained custom monitoring arguments, reporting config,
+peer-send approval choice, disabled components and cleared inherited environment
+overrides. An explicit-host `release.json` download succeeds with an inherited
+enterprise host and matches preview.13's recorded full revision. These are
+read-only generator/metadata checks, not a new installation or native activation.
+
+The clean 132-file candidate passes inventory and separate worker validation;
+the checkout's canonical check still reports only the two preserved bytecode
+files. No new native actors, watches, peer messages, runtime changes, production
+installations, daemon restarts, push or publication are part of this refinement.
+The earlier ephemeral fixture is outside this pass and was not touched. The
+owned preview server is stopped. All 596 protected paths and 13 baseline native/
+report process identities match the fresh before record. The original command
+and actor receipts below keep their dated scope.
+
 ## Result
 
 [One authored agent guide](manage-agent.md) covers install, upgrade, inspection,

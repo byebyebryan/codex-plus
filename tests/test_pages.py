@@ -225,13 +225,43 @@ class PagesTests(unittest.TestCase):
         requests = pages.lifecycle_requests((ROOT / 'docs/manage-agent.md').read_text())
         self.assertEqual(len(requests), 7)
         self.assertIn(requests['Install'], pages.action_cards(requests))
-        body = '<h1>Manage</h1><table><tr><td>Install</td><td>' + requests['Install'] + '</td></tr></table>'
+        body = '<h1>Manage</h1><table>' + ''.join(
+            '<tr><td>' + name + '</td><td>' + request + '</td></tr>'
+            for name, request in requests.items()) + '</table>'
         page = pages.guide_page('manage-agent.md', 'manage', 'Manage', body, '', requests)
         self.assertIn('hidden data-copy-request="' + requests['Install'] + '"', page)
         self.assertIn('Plain Markdown for your agent', page)
         self.assertIn('copy it manually', page)
         self.assertIn('<td>' + requests['Install'], page)
         self.assertEqual(pages.rewrite_link('manage-agent.md#roll-back', '../'), '../manage/#roll-back')
+
+    def test_rendered_agent_requests_preserve_table_attributes_and_markup(self):
+        requests = pages.lifecycle_requests((ROOT / 'docs/manage-agent.md').read_text())
+        body = '<table>' + ''.join(
+            '<tr><td align="left">\n<span>' + request + '</span>\n</td></tr>'
+            for request in requests.values()) + '</table>'
+        result = pages.action_table(body, requests)
+        self.assertEqual(result.count('<td align="left">'), 7)
+        self.assertEqual(result.count('data-copy-request='), 7)
+        self.assertIn('<span>' + requests['Upgrade'] + '</span>', result)
+
+    def test_rendered_agent_requests_refuse_missing_duplicate_or_changed_cells(self):
+        requests = pages.lifecycle_requests((ROOT / 'docs/manage-agent.md').read_text())
+        cells = ['<td>' + request + '</td>' for request in requests.values()]
+        for invalid in (cells[:-1], cells + cells[:1],
+                        [cell.replace('installation.', 'installation today.') for cell in cells]):
+            with self.subTest(body=invalid):
+                with self.assertRaisesRegex(ValueError, 'rendered agent action requests'):
+                    pages.action_table('<table><tr>' + ''.join(invalid) + '</tr></table>', requests)
+
+    def test_agent_copy_controls_have_distinct_accessible_names(self):
+        requests = pages.lifecycle_requests((ROOT / 'docs/manage-agent.md').read_text())
+        body = '<table>' + ''.join('<tr><td>' + request + '</td></tr>'
+                                  for request in requests.values()) + '</table>'
+        result = pages.action_table(body, requests)
+        for name in requests:
+            self.assertIn('aria-label="Copy ' + name.lower() + ' request"', result)
+        self.assertIn('aria-label="Copy install request"', pages.action_cards(requests))
 
     def test_agent_requests_refuse_missing_actions_or_another_guide(self):
         text = (ROOT / 'docs/manage-agent.md').read_text()
