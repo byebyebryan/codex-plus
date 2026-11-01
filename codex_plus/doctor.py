@@ -171,17 +171,74 @@ def diagnose(*, runtime_prefix=None, report_prefix=None, worker_prefix=None,
     return result
 
 
+def human_text(value):
+    # Paths and reported metadata must stay on one inert terminal line.
+    return re.sub(r'[\x00-\x1f\x7f-\x9f]', lambda match: '\\x%02x' % ord(match[0]), str(value))
+
+
+def format_human(result):
+    """Present the same diagnostic evidence without adding probes or conclusions."""
+    environment = result['environment']
+    lines = [f"Codex Plus doctor {human_text(result['tool_version'])}",
+             f"Environment: {human_text(environment['environment_key'])}"]
+    for label, key in (('Codex home', 'codex_home'), ('State', 'state_root'),
+                       ('Report config', 'report_config'), ('Reports', 'report_data_root')):
+        lines.append(f"  {label}: {human_text(environment[key])}")
+    lines.extend([f"Configuration: {human_text(result['config_state'])}",
+                  f"Selected components: {human_text(result['release_alignment'])}"])
+    for name, row in result['components'].items():
+        state = row['state']
+        identity = f"{human_text(row['version'])}; " if state == 'manifest_verified' else ''
+        lines.append(f"  {name}: {identity}{human_text(state).replace('_', ' ')}")
+        if row.get('source_revision'):
+            lines.append('    Source: ' + human_text(row['source_revision']))
+        lines.append('    Path: ' + human_text(row.get('selected_path', row['prefix'])))
+        if row.get('detail'): lines.append('    Detail: ' + human_text(row['detail']))
+    native = result['native']
+    if native.get('state') == 'not_checked':
+        lines.append('Native: not checked (--no-native)')
+    else:
+        owner = native.get('owner_status', {})
+        lines.extend([
+            'Native client: ' + human_text(native['client_version']),
+            'Native owner: ' + human_text(owner.get('appServerVersion', 'unknown'))
+                + ' (' + human_text(owner.get('status', owner.get('state', 'unknown'))) + ')',
+            '  Recorded qualification baseline: ' + human_text(native.get('qualified_version') or 'unknown'),
+            '  Client qualification: ' + human_text(native['qualification']).replace('_', ' '),
+            '  Owner qualification: ' + human_text(native.get('owner_qualification', 'not_established')).replace('_', ' '),
+            '  ' + human_text(native['qualification_note']),
+        ])
+    lines.append('MCP configuration:')
+    for name, row in result['mcp_configuration'].items():
+        enabled = row['enabled']
+        state = 'not configured' if not row['configured'] else (
+            'enabled' if enabled is True else 'disabled' if enabled is False else 'unknown enabled setting')
+        lines.append(f'  {name}: {state}')
+    loaded = result['loaded_mcp']
+    lines.append('Loaded MCP metadata: ' + human_text(loaded['state']).replace('_', ' '))
+    for name, row in loaded.get('servers', {}).items():
+        lines.append(f"  {name}: {human_text(row['state'])}; reported {human_text(row.get('reported_version') or 'unknown')}; "
+                     f"selected {human_text(row.get('selected_version') or 'unknown')}; "
+                     f"{human_text(row['version_alignment']).replace('_', ' ')}")
+    if loaded.get('detail'): lines.append('  ' + human_text(loaded['detail']))
+    if loaded.get('note'): lines.append('  ' + human_text(loaded['note']))
+    lines.extend([human_text(result['integrity_note']), human_text(result['activation_note'])])
+    return '\n'.join(lines)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     for option in ('runtime-prefix', 'report-prefix', 'worker-prefix', 'state-root', 'report-config'):
         parser.add_argument('--' + option, type=Path)
     parser.add_argument('--no-native', action='store_true', help='Only inspect selected files and configuration')
+    parser.add_argument('--human', action='store_true', help='Readable summary of the same evidence; default output is JSON')
     parser.add_argument('--thread', help='Inspect native MCP version metadata for this positively loaded conversation; defaults to CODEX_THREAD_ID')
     args = vars(parser.parse_args(argv))
+    human = args.pop('human')
     args['check_native'] = not args.pop('no_native')
     try:
         result = diagnose(**args)
-        print(json.dumps(result, indent=2))
+        print(format_human(result) if human else json.dumps(result, indent=2))
         return 1 if result['config_state'] == 'unreadable_or_invalid' or any(row['state'] == 'invalid' for row in result['components'].values()) else 0
     except (OSError, ValueError, TypeError) as error:
-        print(json.dumps({'error': str(error)})); return 1
+        print('Codex Plus doctor: ERROR: ' + human_text(error) if human else json.dumps({'error': str(error)})); return 1

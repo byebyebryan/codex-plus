@@ -32,6 +32,7 @@ documentation or selecting an archive does not reload an existing MCP process.
 | Added in preview.10 | Bounded reminder history, outgoing-message rediscovery with kind and quoted purpose, pending/failed follow-up visibility, and reported MCP-version diagnosis for one loaded conversation. |
 | Added in preview.11 | Explicit owner diagnosis and clean same-thread rollover, with immutable archived history. Active or uncertain intent refuses recovery. See the [contract and acceptance](owner-recovery.md). |
 | Added in preview.12 | Explicit watch cancellation closes attention for a terminal source error while preserving history and unresolved delivery. See the [native qualification results](native-qualification-results.md). |
+| Unreleased source candidate | The existing read-only doctor accepts `--human` for readable diagnostics. JSON remains the default; published preview.12 archives retain their original CLI. |
 
 The “What am I still waiting on?” example uses preview.10's inspection
 improvements. See [daily use](daily-use.md#inspect-follow-up-health) for its

@@ -91,12 +91,18 @@ installations. The selected `CODEX_HOME` chooses MCP configuration and native
 status queries; managed state/report path overrides are reflected. `--no-native`
 limits diagnosis to local files and configuration.
 
+The unreleased source candidate adds `--human` for a readable summary of the
+same evidence. For example, run `rtk proxy scripts/codex-plus-doctor --human`
+from this checkout. JSON remains the default, with the same schema and exit
+statuses in both modes. Preview.12's published archives retain JSON output;
+selecting that release does not add the source candidate's flag.
+
 The result reports optional/missing or legacy installations, local manifest
 integrity, aligned/mixed component versions, enabled MCP configuration and native
 client/owner versions. It never starts or restarts a daemon, MCP process, watch or
 report server. Selected files and enabled config do not establish already loaded
-process versions. Codex 0.163.0 is currently outside the recorded 0.162.1 native
-release qualification baseline. This release has bounded owned 0.163.0
+process versions. The recorded native release qualification baseline is
+Codex 0.162.1. This release also has bounded owned 0.163.0
 trials; daily use and fixture CI do not silently extend that evidence to blanket
 compatibility or long unattended operation.
 
