@@ -4,7 +4,9 @@ Completed 2026-10-31 on Snap OSS, within the
 [selected pass](codex-plus-plan.md#planned-pass-native-qualification-and-operational-clarity).
 Retain the native integration and existing tools. One reproduced inventory issue
 needed a small correction; another service, store, tool or transport was not
-justified. Publication and fleet rollout are separate work.
+justified. The separately authorized review follow-up and
+[preview.12 publication/rollout](#preview12-publication-and-managed-rollout)
+completed afterward; the initial scope and limits below remain recorded.
 
 ## Exact scope
 
@@ -14,10 +16,10 @@ justified. Publication and fleet rollout are separate work.
 | Installed release tested first | Preview.11, source `5c9ec1d4368d6c5908f6a041f3081349fa5b2fd6`; immutable selected monitoring payload passes its 25-file manifest verification. Worker and reporting manifests also verify. |
 | Native pair | Client and existing owning daemon report **0.166.0**, Snap OSS. The exact listener process incarnation stayed unchanged. |
 | Test conversations | Two fresh independent conversations in that daemon, using the inherited `gpt-6.1-sol` selection and XHigh effort. No worker workflow was invoked. Real sessions received no messages or interruptions. |
-| Correction candidate | Unreleased source **`9804d9941007cba7f772799e92a431c54b75c412`**, built and installed only under the private evidence directory. |
+| Initial correction candidate | Then-unreleased source **`9804d9941007cba7f772799e92a431c54b75c412`**, built and installed only under the private evidence directory during the initial pass. |
 | Candidate artifact | Two identical builds; SHA-256 **`7e443b816646076613f4b48292fda43b0b90f434413713eea1d8490c4c4065a6`**. Relocated CLI and MCP initialize/tools-list pass with 17 tools. |
 
-The candidate still reports preview.11 because no release version was selected.
+The initial candidate reported preview.11 because no release version was selected.
 Its source revision, manifest and process command path distinguish it from the
 immutable published release. Neither a version string nor selected files attest
 general process-memory contents. Published assets, managed pins and installation
@@ -167,9 +169,8 @@ journals remain private outside committed source.
 This is bounded Snap OSS evidence. Snap work, Starship and Carbon were not
 requalified. General 0.166.0 compatibility, provider/credential recovery,
 long-running real-source operation, physical TUI behavior and personal UX
-acceptance remain unestablished. The corrected candidate is committed locally;
-push, publication, version selection and scoped chezmoi rollout remain later
-decisions. No additional feature is required before that release review.
+acceptance remain unestablished. That pass left the corrected candidate committed
+locally; the subsequent release decision and receipts are recorded below.
 
 ## Review follow-up: ordinary setup and live cancellation
 
@@ -211,3 +212,63 @@ Release preparation passes **354 tests**, the clean 129-file inventory, worker
 validation and whitespace checks. The preview.12 verifier also validates the
 actually selected preview.11 monitoring/reporting trees without changing them.
 The external site build validates all eight guides and 234 links/assets/anchors.
+
+## Preview.12 publication and managed rollout
+
+Separately authorized and completed 2026-10-31. Unified release
+**v0.1.0-preview.12** selects source
+**`f6ec874fa12f2cb080c2f931adcbba1117231c6b`**. The release contains workers,
+monitoring and reporting, plus its manifest and checksum list. All five fetched
+assets match two independent builds. Existing tags, assets and old installed
+releases were retained. Subsequent documentation commits do not change that
+immutable release source.
+
+| Component | Published archive SHA-256 |
+| --- | --- |
+| Workers | `abb6048ecf8fd9328fd40eb740686c9905db71c87c480031eec3d903363c4dd8` |
+| Monitoring | `5e666418b4ceb82a80e05cdbd3c6cbb01429dec912f54501a33a722759382894` |
+| Reporting | `effc82f6b8ef013aebc1733bfef9230e96b7c6466c13f1f172f2f97620a206b3` |
+
+The exact release source passes **354 tests** on Python 3.14.8, the clean
+129-file inventory and worker checks, relocated CLI/MCP checks and whitespace
+checks. GitHub CI passes on Python 3.11 and 3.14. Public Pages delivery matches
+all 12 built files. Actual browser checks cover 60 illustrative scene states and
+24 guide visits at desktop, tablet and narrow mobile widths, without page errors
+or horizontal overflow. These presentation checks remain separate from the
+native scenario evidence above.
+
+Chezmoi pin commit `b9deff9`, umbrella-validator correction `3bbbe87` and rollout
+receipt `5f6bc9a` were published directly to dotfiles main. Each host's scoped
+status, diff and script-excluded dry-run passed before apply. The new immutable
+monitoring/reporting payloads were verified before their current selectors
+changed. Worker payload bytes are unchanged; provenance metadata advances.
+
+| Host/context | Installed acceptance |
+| --- | --- |
+| Snap OSS/work | Exact 25-file monitoring, 23-file reporting and 18-file worker payloads; fresh MCP command probes in both contexts report preview.12 with 17 monitoring and four reporting tools. Both report HTTP endpoints remain 200 with unchanged catalog bytes. |
+| Starship | The same exact payload and fresh MCP checks pass; report HTTP remains 200 with unchanged catalog bytes. |
+| Carbon | The same exact payload and fresh MCP checks pass; its report HTTP endpoint remains unavailable as before. Deployment used the trusted Starship SSH hop. |
+
+All five scoped target groups converge. Canonical chezmoi sources now select
+preview.12 too, so later normal applies retain the release. Starship fast-forwarded
+to published `5f6bc9a`; scoped local commits on Snap (`20d237c`) and Carbon
+(`ee95225`) preserve their existing history and unrelated working edits. All 25
+pre-existing dirty paths on Snap and both on Carbon retain their content, except
+the deliberately updated Plus assertions within Snap's already edited checker.
+Those local history-preserving commits were not pushed over published history.
+
+All **1,186 protected paths** and **26 recorded native/report process identity
+tuples** match the deployment baseline. This includes private configuration/auth,
+agents/skills, report configuration and old immutable payloads. No native daemon
+or report server was restarted; no global MCP refresh, native configuration apply,
+owner recovery, real-peer message or incident replay occurred. Installed protocol
+probes do not prove adoption by already loaded MCP processes; those adopt the
+selected release on normal reconnect.
+
+Dedicated Plus/report validators and isolated report installation across three
+profiles pass. The full dotfiles check passes the Plus gates and then fails in
+the unchanged OpenCode integration because its installed binary rejects
+`--pure`. That checker block is byte-identical to baseline `35d5368`. Full
+dotfiles validation therefore remains incomplete; the unrelated pending OpenCode
+retirement was preserved. Raw scripts, captures, journals and preservation
+receipts remain private outside committed source.

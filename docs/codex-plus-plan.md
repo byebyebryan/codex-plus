@@ -14,15 +14,17 @@ and [Claude context](claude-monitoring-context.md) for the historical design inp
 
 Completed 2026-10-31 after the project overview, planning review and goal-loop
 request. The [results](native-qualification-results.md) record 17 bounded native
-turns and one unreleased inventory correction. The scope and gates below remain
+turns and one inventory correction later released in preview.12. The scope and gates below remain
 the execution record. Publication and managed apply were outside this pass.
 
 The separately authorized review follow-up adds three completed native turns,
 qualifying ordinary endpoint setup and cancellation while the observer is still
 running. The [follow-up record](native-qualification-results.md#review-follow-up-ordinary-setup-and-live-cancellation)
-keeps that new evidence separate. Bryan subsequently authorized preview.12
-publication and scoped chezmoi deployment; active work and native owners remain
-protected, with no global refresh or daemon/report-server restart.
+keeps that new evidence separate. The subsequently authorized preview.12
+publication and scoped chezmoi deployment completed on Snap OSS/work, Starship
+and Carbon, preserving active work and native owners without a global refresh or
+daemon/report-server restart. See the
+[release and rollout receipt](native-qualification-results.md#preview12-publication-and-managed-rollout).
 
 The outcome is an evidence-backed decision about preview.11 on the current
 native runtime, plus the smallest justified maintenance changes. Keep the native

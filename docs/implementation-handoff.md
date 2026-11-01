@@ -2,7 +2,7 @@
 
 Updated 2026-10-31. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.11 is published and
+the older report checkout and the existing worktrees. Preview.12 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
 ## Current scope and entry points
@@ -14,11 +14,19 @@ explicit request, before expiry and below its event limit. A post-stop endpoint
 change produced no reads or callbacks during 30.3 seconds. The fresh actor is
 archived/unloaded and its endpoint/controller are closed. See the
 [follow-up evidence](native-qualification-results.md#review-follow-up-ordinary-setup-and-live-cancellation).
-Preview.12 release preparation includes the attention correction and explicit
+Preview.12 source `f6ec874` includes the attention correction and explicit
 preview.11 monitoring/reporting verification and rollback support. Publication
-and scoped managed rollout are now authorized; record their receipts separately.
+and scoped managed rollout completed on Snap OSS/work, Starship and Carbon.
+All five fetched assets match two builds; 354 tests, Python 3.11/3.14 CI, public
+Pages delivery and actual browser checks pass. Installed payloads and fresh MCP
+protocol discovery verify preview.12. All 1,186 protected paths and 26 recorded
+native/report process identities match baseline. Default chezmoi sources now
+select this release while retaining unrelated edits and divergent local history.
+The full dotfiles check passes Plus gates, then encounters the unchanged OpenCode
+`--pure` failure. See the
+[publication and rollout receipt](native-qualification-results.md#preview12-publication-and-managed-rollout).
 
-The [native qualification and operational clarity pass](native-qualification-results.md)
+The initial [native qualification and operational clarity pass](native-qualification-results.md)
 completed 2026-10-31 within the [selected plan](codex-plus-plan.md#planned-pass-native-qualification-and-operational-clarity).
 Two owned independent conversations used 17 native turns across the installed
 preview.11 run and one affected repeat on the existing Snap OSS 0.166.0 pair.
@@ -29,17 +37,18 @@ are empty and no fixture process remains. The observer's initial invocation
 failure and conflicting fixture limits are retained; the repeat's command watch
 was registered by the controller CLI, not by a natural-language actor request.
 
-Unreleased correction `9804d99` removes explicitly cancelled terminal source
+Correction `9804d99`, now released in preview.12, removes explicitly cancelled terminal source
 errors from current watch attention while retaining history and unresolved
-delivery. It passes 353 tests, a regression that failed before the fix, two
+delivery. That pass passed 353 tests, a regression that failed before the fix, two
 identical package builds and relocated CLI/MCP discovery. Native candidate
 inspection confirmed zero current entries and preserved error history. All
 139 protected local paths and 13 baseline native/report-related process
 identities match baseline; selected releases, private configuration and the two
 untracked bytecode files are preserved. Publication, release-version selection,
-push and chezmoi rollout remain separate work.
+push and chezmoi rollout were outside that initial pass; the receipt above records
+their subsequent completion.
 
-The overview's read-only checks found Snap OSS's selected preview.11 manifests
+The initial overview's read-only checks found Snap OSS's selected preview.11 manifests
 valid and this conversation's two MCPs reporting preview.11. Both CLI and owner
 reported native 0.166.0; general compatibility remains unestablished, with bounded
 scenario evidence now recorded above. Snap OSS reporting now verifies over HTTP
@@ -48,10 +57,10 @@ pages return 200 with preview.11 content. This refreshes those local facts only;
 it does not attest loaded payload bytes or re-audit Snap work, Starship or Carbon.
 The October 29 rollout and native qualification records retain their dated scope.
 
-Final validation passes the clean **129-file inventory**, worker checks,
+That initial pass's final validation passed the clean **129-file inventory**, worker checks,
 18 Pages tests, five inventory-check tests and whitespace checks. The external
 walkthrough/eight-guide build verifies 234 local links/assets/anchors and public
-metadata. The runtime's 353-test gate used Python 3.14.8; this pass started no new
+metadata. The runtime's 353-test gate used Python 3.14.8; that initial pass started no new
 CI or public deployment. Canonical `scripts/check` fails only on the two preserved
 bytecode files; its clean tracked-file candidate passes. The earlier planning
 gate's 128-file inventory and 234-link build remain documentation-only evidence.
@@ -149,16 +158,16 @@ Continue with ordinary use and its evidence.
 
 ## Source, releases and installed state
 
-| Layer | Release/rollout fact recorded 2026-10-29 |
+| Layer | Release/rollout fact recorded 2026-10-31 |
 | --- | --- |
-| Published unified release | v0.1.0-preview.11, source `5c9ec1d`; one version, tag and release manifest, with optional worker/monitoring/report archives. Fetched bytes match reproducible candidates. |
-| Managed upgrade | Pins published to dotfiles main as `68d3480`; scoped live rollout completed 2026-10-29 on all three hosts. |
-| Earlier artifacts retained | Preview.10 source `078c630` and earlier runtime/report releases remain available for captured processes and rollback. |
-| Snap | Workers, monitoring and reporting preview.11 selected and verified in OSS/work; work HTTP 200 unchanged, OSS HTTP already unavailable. |
-| Starship | All three preview.11 payloads verified; private configuration, native owners, old releases and HTTP bytes preserved. |
-| Carbon | All three preview.11 payloads verified; private configuration and native owners preserved; HTTP already unavailable. |
-| Native compatibility | All four client/owner contexts report 0.165.0; release baseline remains 0.162.1. Bounded older-revision owned trials do not establish blanket compatibility or long-run qualification. |
-| Source | Explicit clean owner recovery with immutable history, strict boot evidence and uncertain-work refusal, packaged as preview.11. |
+| Published unified release | v0.1.0-preview.12, source `f6ec874`; one version, tag and release manifest, with optional worker/monitoring/report archives. All five fetched assets match reproducible candidates. |
+| Managed upgrade | Pins `b9deff9`, validator correction `3bbbe87` and receipt `5f6bc9a` published to dotfiles main; scoped rollout and canonical source synchronization completed on all three hosts. |
+| Earlier artifacts retained | Preview.11 source `5c9ec1d` and earlier runtime/report releases remain available for captured processes and rollback. |
+| Snap | Workers, monitoring and reporting preview.12 selected and verified in OSS/work; both HTTP endpoints remain 200 with unchanged catalog bytes. |
+| Starship | All three preview.12 payloads verified; private configuration, native owners, old releases and HTTP bytes preserved. |
+| Carbon | All three preview.12 payloads verified; private configuration and native owners preserved; HTTP already unavailable. |
+| Native compatibility | Bounded owned Snap OSS trials on 0.166.0; release baseline remains 0.162.1. Installed protocol discovery in all four contexts is separate from blanket native compatibility or long-run qualification. |
+| Source | Cancelled terminal source errors leave current attention while history and uncertain delivery remain visible; preview.11 verification and rollback are retained. |
 | Notification delivery | Native Codex to terminal. Formatting belongs to Kitty/chezmoi. Enrichment and the 349 inspector are parked/retired. |
 
 Source documentation may advance beyond the selected immutable artifacts.
