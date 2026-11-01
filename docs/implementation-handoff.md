@@ -5,6 +5,30 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.13 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
+## Next planned pass: agent-first installation and maintenance
+
+Bryan reviewed the plugin exploration and prioritized lifecycle instructions over
+another delivery mechanism. The [new plan](codex-plus-plan.md#planned-pass-agent-first-lifecycle-guidance)
+makes one agent guide the primary install/upgrade/manage/cleanup/uninstall route,
+with short site prompts and the existing human overview as reference. Proposed
+outputs are `docs/manage-agent.md`, `/manage/` and a same-source `/manage.md` export;
+none exists yet. Existing archive installers and configuration owners remain in
+place. Plugin migration is parked; its evidence below remains valid.
+
+The planning inspection found two concrete recipe gaps: worker setup currently
+copies moving main although a verified worker release archive exists, and neither
+package CLI exposes uninstall/prune. Resolve those in release-aware instructions
+and precise ownership/dependency checks; do not invent commands or delete captured
+code. The plan specifies fixture and optional isolated agent-prompt acceptance,
+configuration-owner boundaries, selected/loaded evidence, rollback and retained
+data. It changes no product runtime, version, active owner or worker invocation.
+
+This is a planning-only update. Execution should first leave a reviewed local
+guide/site candidate; Pages publication follows review and needs no runtime
+release or fleet repin. No installation, actor, watch, push, deployment or restart
+has been performed for this plan. The two prior plugin documentation commits and
+the existing untracked bytecode files remain preserved.
+
 ## Plugin exploration: isolated installation works; migration deferred
 
 The [plugin distribution-fit loop](codex-plus-plan.md#planned-pass-native-plugin-installation-and-distribution-fit)

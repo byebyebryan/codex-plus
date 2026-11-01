@@ -10,6 +10,144 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
+<a id="planned-pass-agent-first-lifecycle-guidance"></a>
+
+## Planned pass: agent-first installation and maintenance
+
+Planned 2026-11-01 following review of the plugin exploration. The useful next
+outcome is a person giving their agent one documentation link and an action:
+install, upgrade, inspect/change configuration, roll back, clean up or uninstall.
+Agent instructions are the primary setup and maintenance route; the human setup
+overview explains choices and provides the technical references. Plugin migration
+is parked. Existing archives, immutable releases, workers and configuration owners
+remain the implementation underneath this experience.
+
+This entry records a plan, not an installation or execution receipt. A later
+execution pass should leave a reviewed local documentation/site candidate and
+bounded acceptance evidence. Public Pages publication follows review; a docs-only
+publication needs no product-version bump, replacement release assets or fleet
+apply. No live installation changes are needed to prepare the candidate.
+
+### Intended user experience and defaults
+
+The README, landing page and `/start/` make “Install or manage with your agent”
+the primary setup action. Provide short copyable prompts for install, upgrade,
+inspection/configuration, rollback, cleanup and uninstall. For example:
+
+> Read the Codex Plus agent guide at <GUIDE_URL> and upgrade my installation.
+
+Resolve real links during implementation; do not publish placeholder URLs.
+The prompt supplies intent. Discovery of paths, configuration ownership, current
+versions and commands belongs in the guide, not in a long user prompt.
+
+Use one authored `docs/manage-agent.md`, rendered at `/manage/`, with addressable
+action sections and a same-site plain Markdown export at `/manage.md`. The HTML
+page, raw Markdown and copyable prompts must refer to the same authored content.
+Retain `/start/` as the human overview and keep existing guide routes/anchors
+working. The guide can be read by an ordinary coding agent with file/shell/network
+access; it must not require Codex Plus tools or an installed setup skill to begin.
+Human instructions and component references should link to the canonical agent
+procedure rather than maintain competing install recipes.
+
+For a generic fresh installation, propose all three components and briefly explain
+their purposes; honor an explicit partial selection. For existing installations,
+preserve the selected components, explicit opt-outs, approval choices and custom
+paths. Default upgrade target is the newest published, non-draft Codex Plus release,
+including previews for a preview installation. Resolve it once to an exact tag,
+source revision and artifact checksums before writes. Honor an explicit version
+or user hold policy. An ordinary manager pin records the current installation;
+updating that pin through its owner is part of a requested upgrade, not a reason
+for another permission question. Enumerate published releases and check preview
+handling instead of assuming an API's “latest” alias covers them. Do not infer a
+release from the version in a moving checkout or website.
+
+### Evidence baseline and gaps to close
+
+Monitoring and reporting already supply verify, install, activate, verify-install
+and MCP-config operations. The unified release supplies `release.json`,
+`SHA256SUMS` and three component archives. Workers have a verified archive and
+`workers.json`, while the current human worker recipe clones moving main and
+copies files. Prefer the reviewed worker archive for released installation; keep
+source-development instructions explicitly separate. Avoid creating another
+installer to orchestrate these existing operations.
+
+There is no package-level uninstall or prune command in the inspected monitoring
+and reporting CLIs. Cleanup must describe exact owned files and actual dependency
+checks, not invent flags or promise automatic garbage collection. A private
+release manifest proves payload identity; it alone does not prove that no running
+process still needs that release. Keep a release when its use cannot be determined.
+Modified/copied worker files require provenance comparison and preservation of
+local changes rather than deletion based only on a familiar path or name.
+
+Today's public guides cover installation/rollback across several component pages
+but do not provide one complete agent lifecycle procedure. The Pages builder has
+an explicit HTML inventory, guide map, sitemap and link/claim checks; the Markdown
+export and new route must join those existing checks deliberately.
+
+### Procedure contract
+
+| Step or action | Required behavior and evidence |
+| --- | --- |
+| Inspect first | Establish the target machine/environment, effective native home and explicit component overrides, installation/configuration owner, selected components and revisions, local modifications and available read-only diagnostics. A native profile name is not proof of a separate home. Missing ownership/provenance remains unknown. |
+| Resolve a release | Use the named public repository and published release metadata. Record the selected tag/revision and reviewed artifact identities; verify downloaded bytes and component manifests before activation. Fetch release-compatible verifier/instruction sources where required. A self-consistent checksum file does not independently authenticate its publisher. An offline inspection can finish without an upgrade; it must not substitute moving main when release discovery is unavailable. |
+| Install | Check declared prerequisites and supported platform. Use the chosen component archives and existing installers. Install only the two current worker agents and four current worker workflows when workers are selected; keep legacy Terra and the report skill as separately selected additions. Integrate only the relevant MCP/config entries through the existing configuration owner. Preserve the primary model, unrelated config, credentials and explicit policy choices. |
+| Upgrade | Install/verify the new immutable revisions before selecting them. For a manager-owned installation, update that owner's URLs/revision/checksums and relevant validators together, render/dry-run and apply only requested targets. Do not directly overwrite managed outputs. Keep prior payloads, reports, journals and active process identities; a selected version change does not prove a loaded process changed. |
+| Inspect or configure | Use the existing context and doctor tools; preserve read-only inspection as read-only. Change only the requested component/settings. Keep user opt-outs and native approval behavior. Report native owner unavailability without starting/replacing a daemon or weakening identity validation. |
+| Roll back | Verify a compatible retained previous release and reselect it through its configuration owner. Explain the distinction between selection and loaded code. Do not replay pending intent or treat rollback as journal migration, native owner recovery or a process restart. |
+| Clean up | Begin with exact candidate paths and provenance. Remove only verified, inactive installation material covered by the cleanup request. Retain selected releases, releases needed by captured processes and anything whose use/ownership is uncertain. No cleanup-by-age rule or automatic data eviction. |
+| Uninstall | Through the configuration owner, disable/remove only the requested Plus wiring and owned worker files. Identify affected Plus observers/MCP/report helpers before any termination; settle requested component shutdown explicitly and preserve unrelated native work. Defer payload removal when an active dependency remains. Retain reports, journals, source HTML and user config by default; data deletion needs a separate explicit request. Other components and environments must keep working. |
+| Finish | Return a concise receipt: action, target environment, configuration owner, selected version/components, verified files/config, observed loaded version or unknown, retained data/rollback, deferred cleanup and any normal reconnect needed. Distinguish configured, protocol-tested and native tool operation; claim only checks actually performed. |
+
+An install/upgrade request authorizes the scoped procedure without repeated
+confirmation of reversible steps. Ask only for missing scope, a meaningful user
+choice or an action beyond the request. Avoid unnecessary global restarts, MCP
+refreshes, source rebuilds and model-turn feature demonstrations. A manual native
+prerequisite should be stated precisely after completing independent preparation.
+Do not claim an unknown host/platform, unavailable model or untested native client
+has been qualified merely because its files install.
+
+### Work sequence and acceptance gates
+
+| Stage | Work | Finish condition |
+| --- | --- | --- |
+| 1. Qualify the recipes | Map all actions to current released scripts, archive inventories and configuration-owner behavior. Compare the Niri Plus agent/human guide pattern. Resolve release discovery, verifier bootstrapping, worker provenance, config merge boundaries and cleanup ownership. | A concrete command/source map; each missing capability has a truthful preservation/defer path. No guessed flags, dependency-cycle installer or silently moving-main installation. |
+| 2. Author the canonical guide | Write `docs/manage-agent.md` with an early action router, discovery, managed/unmanaged branches, concrete commands, expected results and action-specific stopping conditions. Reconcile component references and the short human overview. | All selected actions are executable from ordinary agent tools. Paths remain discovered parameters, and requested intent is sufficient without a long user-authored recipe. |
+| 3. Present it on the site | Add the guide HTML and Markdown export, concise action prompts and a visible primary setup entry on README/landing/start. Reuse existing copy-control behavior with a non-JavaScript fallback. Update public inventory, guide navigation, sitemap, workflow path filters and publication notes as needed. | Both links work without authentication or an installed Plus runtime. Existing routes, worker workflow names, release/managed claim boundaries and responsive/keyboard behavior remain intact. |
+| 4. Exercise disposable installations | Walk the authored commands against verified published artifacts in private prefixes and synthetic config/state roots. Cover fresh full and partial setup, repeated install, a supported upgrade/rollback pair, modified worker/config preservation, managed render/dry-run, cleanup refusal for an uncertain dependency and uninstall with retained data. Run a bounded fresh agent walkthrough from the short prompt if a supported isolated actor scope is available. | Record actual commands/outcomes and preserved bytes. Repeated actions converge without duplicate config or deleting local changes. A filesystem/protocol walkthrough is not native activation proof; an executed command walkthrough is not proof a fresh agent followed the guide. Keep either unrun gate explicit. |
+| 5. Review and prepare publication | Review the actual generated site and raw instructions together, run the appropriate existing checks and inspect the final diff/inventories. Record source, fixture, browser and agent-prompt evidence separately. | A local candidate ready for review/publication, with exact changes, qualified scenarios and remaining gaps. No product release or chezmoi repin is necessary for a documentation-only candidate. |
+
+Fixture operations own only temporary install/config/report/state roots. Preserve
+real homes, auth, selected releases, unrelated source drift, active native/report
+processes and old releases. Do not copy credentials into fixtures or restart a
+daemon. A native actor, if qualified for the bounded prompt test, must be fresh,
+explicitly owned and use the existing daemon; other active conversations remain
+passive. Keep transcripts, process details and raw receipts outside committed
+source. The preparation pass need not create any actor to author the guide.
+
+Run `rtk proxy scripts/check`, the relevant existing Pages/package/worker checks
+and `rtk proxy git diff --check`. Add focused tests only for meaningful changed
+builder behavior such as Markdown export, inventory and link handling. Update the
+explicit source inventory deliberately when adding the guide. Preserve the two
+existing untracked bytecode files; if their known inventory failure remains,
+report it and run the same validator on a clean tracked-file candidate. Build the
+site outside the checkout; verify raw Markdown equality, local links, old/new
+routes, action copy text, mobile/keyboard behavior and no-JavaScript access.
+
+### Scope and decision boundary
+
+Expected edits are documentation, presentation, the existing Pages builder and
+focused validation. Keep the product version and current immutable release assets
+unchanged. Do not introduce plugin distribution, an installed management skill,
+another daemon, install hooks, a background updater, a parallel installer or an
+automated retention service. If executing the documented procedure reveals a
+runtime defect that cannot be handled truthfully, record the exact gap and assess
+a separate minimal fix instead of expanding this pass silently.
+
+This planning turn writes only the plan/handoff. The later local execution pass
+does not authorize production install/upgrade/uninstall, publication, a push,
+chezmoi deployment or fleet mutation. After review, Pages can publish the guide
+through the personal github.com account without changing installed runtimes.
+
 <a id="planned-pass-native-plugin-installation-and-distribution-fit"></a>
 
 ## Completed exploration: native plugin installation and distribution fit
