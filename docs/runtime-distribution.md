@@ -1,7 +1,7 @@
 # Codex Plus releases and monitoring installation
 
-Preview.12 closes current attention for explicitly cancelled terminal source errors
-and retains explicit clean rollover and archived inspection through the
+Preview.13 adds readable doctor output and retains preview.12 verification and
+rollback support. It preserves explicit clean rollover and archived inspection through the
 [owner recovery contract](owner-recovery.md). Publishing or selecting an archive
 does not reload an already running process. Managed rollout is recorded separately
 below.
@@ -14,9 +14,9 @@ operation, native owner replacement and personal UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.12](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.12)
-includes the cancelled-source attention correction, preview.11 verification and
-rollback support, explicit clean native-owner recovery and inspectable history. Workers, monitoring
+[v0.1.0-preview.13](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.13)
+includes readable doctor output, independent published/managed guide checks and
+preview.12 verification and rollback support. It retains explicit clean native-owner recovery and inspectable history. Workers, monitoring
 and reporting share one
 version, source commit, GitHub tag and release. A reporting-only fix still advances
 the product version; release notes identify which capabilities changed. Components
@@ -26,9 +26,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.12.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.12.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.12.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.13.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.13.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.13.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains
@@ -99,11 +99,10 @@ installations. The selected `CODEX_HOME` chooses MCP configuration and native
 status queries; managed state/report path overrides are reflected. `--no-native`
 limits diagnosis to local files and configuration.
 
-The unreleased source candidate adds `--human` for a readable summary of the
+Preview.13 adds `--human` for a readable summary of the
 same evidence. For example, run `rtk proxy scripts/codex-plus-doctor --human`
 from this checkout. JSON remains the default, with the same schema and exit
-statuses in both modes. Preview.12's published archives retain JSON output;
-selecting that release does not add the source candidate's flag.
+statuses in both modes. Older preview.12 archives retain their original JSON-only CLI.
 
 The result reports optional/missing or legacy installations, local manifest
 integrity, aligned/mixed component versions, enabled MCP configuration and native

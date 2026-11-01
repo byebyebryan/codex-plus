@@ -154,22 +154,25 @@ class PackageTests(unittest.TestCase):
             self.assertNotIn('scripts/codex-plus-owner', metadata['files'])
             self.assertNotIn('owner_recover', package.mcp_config(prefix)['tools'])
 
-    def test_preview_eleven_selection_and_rollback_preserve_recovery_capabilities(self):
-        files = dict(self.files)
-        files['codex_plus/__init__.py'] = b"VERSION = '0.1.0-preview.11'\n"
-        metadata = package.manifest(files, '4' * 40)
-        metadata['version'] = '0.1.0-preview.11'
-        prefix = self.root / 'preview-eleven'
-        old = package.install(self.archive(metadata=metadata, files=files), prefix)
-        package.activate(prefix, '4' * 40)
-        captured = (prefix / 'current/scripts/codex-plus-watch').resolve()
-        self.assertEqual(package.verify_install(old)['version'], '0.1.0-preview.11')
-        self.assertTrue((old / 'codex_plus/owner_recovery.py').is_file())
-        package.install(self.archive(), prefix)
-        package.activate(prefix, '1' * 40)
-        self.assertEqual(captured.parent.parent, old)
-        package.activate(prefix, '4' * 40)
-        self.assertEqual((prefix / 'current').resolve(), old)
+    def test_released_recovery_previews_remain_selectable_after_upgrade_and_rollback(self):
+        for number in (11, 12):
+            with self.subTest(number=number):
+                version = '0.1.0-preview.' + str(number)
+                files = dict(self.files)
+                files['codex_plus/__init__.py'] = ('VERSION = ' + repr(version) + '\n').encode()
+                metadata = package.manifest(files, '4' * 40)
+                metadata['version'] = version
+                prefix = self.root / ('released-' + str(number))
+                old = package.install(self.archive(metadata=metadata, files=files), prefix)
+                package.activate(prefix, '4' * 40)
+                captured = (prefix / 'current/scripts/codex-plus-watch').resolve()
+                self.assertEqual(package.verify_install(old)['version'], version)
+                self.assertTrue((old / 'codex_plus/owner_recovery.py').is_file())
+                package.install(self.archive(), prefix)
+                package.activate(prefix, '1' * 40)
+                self.assertEqual(captured.parent.parent, old)
+                package.activate(prefix, '4' * 40)
+                self.assertEqual((prefix / 'current').resolve(), old)
 
     def test_coordinator_from_previous_verified_release_is_recognized_by_new_runtime(self):
         old_files = {name: self.files[name] for name in package.PREVIOUS_RUNTIME_FILES}

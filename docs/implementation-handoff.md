@@ -5,6 +5,18 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.12 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
+## Preview.13 publication and rollout in progress
+
+The 2026-11-01 approval selects the reviewed reliability candidate for a new
+immutable unified release and scoped chezmoi rollout on Snap OSS/work, Starship
+and Carbon. The [selected plan](codex-plus-plan.md#selected-pass-preview13-publication-and-preservation-first-rollout)
+requires preview.12 verification/rollback support, clean Python 3.11/3.14 checks,
+reproducible and fetched asset verification, public guide acceptance and independent
+host preservation checks. Preview.12 remains selected until rollout acceptance.
+Existing daemons/report servers are preserved; loaded MCP processes reconnect
+normally. Earlier local-candidate scopes below are historical.
+
+
 ## Current scope and entry points
 
 The [release-claim boundary correction](reliability-packaging-results.md#review-correction-release-claim-boundaries)

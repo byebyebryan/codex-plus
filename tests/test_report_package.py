@@ -75,7 +75,7 @@ class ReportPackageTests(unittest.TestCase):
         self.assertEqual(package.verify_install(installed)['version'], '0.1.0-preview.8')
 
     def test_released_unified_previews_remain_verifiable(self):
-        for number in (9, 10, 11):
+        for number in (9, 10, 11, 12):
             version = '0.1.0-preview.' + str(number)
             self.content = {name: value for name, value in self.content.items() if name in package.FILES}
             self.content['codex_plus/__init__.py'] = ('VERSION = ' + repr(version) + '\n').encode()

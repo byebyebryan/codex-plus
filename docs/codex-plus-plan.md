@@ -10,6 +10,28 @@ Read the [implementation handoff](implementation-handoff.md) for current state,
 [managed activation](managed-activation-results.md) for host-specific acceptance,
 and [Claude context](claude-monitoring-context.md) for the historical design input.
 
+## Selected pass: preview.13 publication and preservation-first rollout
+
+Selected 2026-11-01 after review and Bryan's explicit approval to publish and
+roll out the reliability candidate. The existing native CLI, owning daemons,
+worker identities and explicit invocation remain unchanged.
+
+1. Advance the unified version to preview.13, retain preview.12 validation and
+   rollback support, and qualify a clean committed candidate on Python 3.11/3.14.
+2. Compare two complete builds, qualify relocated payloads and fresh MCP protocol
+   discovery, then publish a new immutable tag and five verified release assets.
+3. Publish guides with independent published/managed declarations. Release claims
+   advance with publication; managed claims advance only after host acceptance.
+4. Prepare the focused chezmoi pin and validator update in an isolated upstream
+   checkout. Preserve divergent canonical history and unrelated working changes.
+5. Apply only reviewed Plus targets on Snap OSS/work, Starship and Carbon. Verify
+   payloads, rollback availability, private state, process identities and existing
+   report HTTP baselines. No daemon/report-server restart or global MCP refresh.
+6. Commit and push dated receipts. Review suitable passive ordinary-use evidence
+   if available; synthetic results do not close real-work acceptance.
+
+The prior completed passes below retain their original scopes and evidence.
+
 <a id="planned-pass-release-claim-boundaries-and-candidate-readiness"></a>
 
 ## Completed pass: release-claim boundaries and candidate readiness

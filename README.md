@@ -44,13 +44,14 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.12** includes bounded reminder history, rediscoverable outgoing
-messages with quoted purpose, clearer follow-up outcomes and reported MCP-version
-diagnosis. The guides explain how to return to unfinished work; see [released and source features](docs/getting-started.md#released-and-source-features).
+**v0.1.0-preview.13** includes readable doctor output, independent published and
+managed guide checks, and preview.12 verification and rollback support. It retains
+bounded reminder history, rediscoverable outgoing messages and reported MCP-version
+diagnosis; see [released and source features](docs/getting-started.md#released-and-source-features).
 Updating a guide or checkout does not upgrade an installed runtime.
 
-The unreleased source candidate adds `--human` to the existing read-only doctor
-and checks current-release guide claims during Pages builds. A native plugin
+Use `--human` with the existing read-only doctor for a readable summary; JSON
+remains the default. Pages builds check current-release guide claims. A native plugin
 spike is a partial fit: discovery prefixes skill names and worker registration
 remains unqualified. Existing archives and chezmoi remain the distribution path.
 See the [review and packaging results](docs/reliability-packaging-results.md).
