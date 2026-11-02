@@ -1,9 +1,113 @@
 # Implementation handoff
 
-Updated 2026-11-01. The owner-recovery work was isolated on Starship
+Updated 2026-11-02. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
 the older report checkout and the existing worktrees. Preview.14 is published and
 selected on Snap OSS/work, Starship and Carbon; selected and loaded versions remain distinct.
+
+## Selected proposal: primary, Luna and one escalation target
+
+Bryan's post-research decisions are reconciled in the
+[selected design](worker-routing-design.md#selected-design-primary-luna-and-one-escalation-target)
+and [next plan](codex-plus-plan.md#selected-plan-primary-luna-and-optional-escalation).
+The user chooses the native primary; adaptive routing offers direct work, useful
+Luna assignments and one opt-in escalation target. Terra can select Sol or
+Astra; Sol can select Astra; defaults are none. Reviews and second opinions use
+that same target, with no separate review flag or quality/economy selector.
+The operational tiers are Astra / Sol+Terra / Luna, with no claim of a universal
+capability ordering or automatic Sol/Terra cost substitution.
+
+Only three worker roles are needed: existing Luna/Sol plus a proposed Astra
+role. Terra is a normal primary and needs no automatic worker role. Escalation
+configuration uses the request/existing user guidance, keeping native pins and
+managed ownership. No recursive escalation, automatic primary switch or
+concealed alternative target is authorized. Unknown primary metadata holds
+automatic escalation; the source helper is still an unpublished candidate,
+and worker-only installations retain direct/Luna use without monitoring.
+
+This pass reconciles planning/report material only. No skill, native agent,
+runtime configuration or installed artifact was changed. Older proposals below
+remain historical context and are superseded by the selected proposal.
+The reconciled plan passes the clean repository gate, five validator fixtures,
+four skill validators and 123 local documentation links/anchors. All 91
+protected non-document source files are unchanged; the two pre-existing bytecode
+files remain outside the clean export. The revised report's HTTP bytes, both
+viewport loads and 16 policy-control checks verify locally and when served.
+These checks validate the plan/report structure, not native model routing.
+
+## Research candidate: model facts and routing preferences
+
+This earlier candidate is superseded by the selected proposal above; its
+quality/balanced/economy selector is not part of V1.
+
+The latest [focused capability research](worker-routing-study.md#focused-capability-evidence-astra-sol-and-terra-2026-11-02)
+reviews independent Codex/agent evaluations and mixed first-person experiences.
+It supports conditional priors rather than an Astra > Sol > Terra capability
+ladder: Sol has strong coding value, Terra is a general coding candidate, and
+Astra is a possible frontier alternative. Some Terra workloads reverse its
+nominal token-price advantage; effort/harness choices matter. The
+[draft refinement](worker-routing-design.md#capability-evidence-refinement-after-focused-research)
+removes automatic Astra-as-upgrade language. Public CSV score arithmetic was
+checked without running inference. Native access/fit and our own accepted-task
+savings remain separate, unproved gates.
+The focused research goal is complete as documentation/report work. A clean
+export passes repository/skill validation and five validator fixtures; 117
+documentation links and all 91 protected non-document source files verify.
+The capability report's HTTP bytes and desktop/mobile data controls verify.
+Planning edits remain local/uncommitted and preserve the prior research work;
+native worker inference, implementation and deployment have not started.
+
+The 2026-11-02 [research follow-up](worker-routing-study.md#follow-up-model-facts-and-routing-preference-2026-11-02)
+and [draft design](worker-routing-design.md#draft-model-aware-routing-preferences-2026-11-02)
+separate attributed model facts, native eligibility, user configuration and the
+initiating primary. High/mid/low expresses a quality/balanced/economy preference
+among credible task-specific routes without fixing a model or weakening
+acceptance. The general design includes Luna, Terra, Sol and Astra, with live
+eligibility scoped to each session. Terra's absence here does not exclude it
+from supported profiles or other environments. Explicit Luna task/goal-loop
+workflows keep their separate Luna-only contract.
+Terra is a general worker candidate, including coding/configuration and
+investigation. Its advertised writing/visual positioning is source context,
+not an established task-routing advantage or a dedicated assignment bucket.
+The current official Standard credit table puts Terra at half Sol's rates,
+correcting the earlier opposite working premise; included subscription usage
+and actual accepted-task cost remain separate questions.
+
+The [next qualification plan](codex-plus-plan.md#research-pass-model-aware-worker-preferences)
+can use Astra/Sol/Luna while Terra access remains unqualified here, with
+Terra-present/absent and Terra-primary policy fixtures kept distinct from native
+execution. The older Terra gate applies to this environment's execution, not
+to general design support or all routing research. Source
+selected-primary inspection and the prior Luna handoff are useful prerequisites;
+they do not prove Astra execution or the new routing policy. This research
+updated planning documentation and published a separate HTML review report.
+It ran no model/worker trial, account catalog refresh, skill installation,
+release/fleet publication or native-owner lifecycle action. Current skills,
+native agent pins and invocation rules remain unchanged. The second research
+review settles V1 on request/user-guidance preferences and native role pins,
+with no new persistent configuration schema. All 22 documented policy cases
+were reviewed as tabletop decisions, including first-use access, worker-only
+exclusions, changing primary/preferences and unavailable billing telemetry.
+See the [review findings](worker-routing-design.md#second-research-review-findings-and-readiness).
+
+The initial research snapshot passed the clean 133-file repository gate,
+382 existing fixture tests and all four worker skill validators. The subsequent
+general-Terra/initiating-primary refinement passes the clean repository gate,
+five existing validator tests, 110 local documentation links/anchors and
+`git diff --check`; non-document source is unchanged. The working
+checkout's strict inventory still rejects its two pre-existing untracked
+bytecode files; they remain preserved. All 91 non-document source files match
+HEAD. Research cases are a proposed qualification matrix, not executed routing
+tests. No new functionality or savings claim follows from these checks.
+
+The second review passes the clean repository gate, five validator fixtures,
+all four worker skill validators, 112 local documentation links/anchors and
+whitespace checks. The HTML report's published bytes verify over HTTP; both
+local and published copies pass two viewport loads and 18 interactive states
+in an owned browser. The report publisher started its configured shared report
+server and left it running; this is separate from native agent ownership.
+Review/report captures remain private and outside source. No worker-policy
+implementation, source commit/push or managed deployment occurred in this pass.
 
 ## Preview.14 worker correction published and deployed
 
@@ -133,7 +237,7 @@ candidate; the publication receipt above records its subsequent deployment.
 
 ## Completed local pass: agent-first installation and maintenance
 
-The [selected plan](codex-plus-plan.md#planned-pass-agent-first-lifecycle-guidance)
+The [selected plan](codex-plus-plan.md#completed-local-pass-agent-first-installation-and-maintenance)
 is complete as a local candidate. [The agent guide](manage-agent.md), `/manage/`
 and its exact `/manage.md` export now provide seven short lifecycle requests.
 README, landing and setup lead to that route; the human overview and component
@@ -164,7 +268,7 @@ untracked bytecode files remain preserved.
 
 ## Plugin exploration: isolated installation works; migration deferred
 
-The [plugin distribution-fit loop](codex-plus-plan.md#planned-pass-native-plugin-installation-and-distribution-fit)
+The [plugin distribution-fit loop](codex-plus-plan.md#completed-exploration-native-plugin-installation-and-distribution-fit)
 completed 2026-11-01 with a defer-migration recommendation. Native CLI 0.166.0
 installs, lists, rolls back, upgrades and removes the private candidate without a
 desktop app or new daemon. Forty unchanged release source files plus two portable
@@ -190,7 +294,7 @@ of this research result.
 
 ## Preview.13 publication and rollout
 
-Completed 2026-11-01 under the [selected plan](codex-plus-plan.md#selected-pass-preview13-publication-and-preservation-first-rollout).
+Completed 2026-11-01 under the [selected plan](codex-plus-plan.md#completed-pass-preview13-publication-and-preservation-first-rollout).
 Release source `5e6c9dd` and dotfiles pin `29d4d1d` (rollout receipt `8b191e6`) are published. Snap OSS/work,
 Starship and Carbon select verified preview.13 workers, monitoring and reporting.
 Both installed doctor formats and fresh MCP protocol discovery pass in all four
@@ -212,7 +316,7 @@ The earlier local-candidate scopes below are historical.
 
 The [release-claim boundary correction](reliability-packaging-results.md#review-correction-release-claim-boundaries)
 completed 2026-11-01 under the
-[selected plan](codex-plus-plan.md#planned-pass-release-claim-boundaries-and-candidate-readiness).
+[selected plan](codex-plus-plan.md#completed-pass-release-claim-boundaries-and-candidate-readiness).
 Candidate `b45728b` checks published and managed guide declarations independently
 of source artifact versioning, accepting release/rollout lag and rollback while
 rejecting contradictory claims. Self-contained fixtures repair the direct Pages

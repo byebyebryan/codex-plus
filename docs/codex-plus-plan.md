@@ -1,6 +1,6 @@
 # Codex Plus implementation plan
 
-Updated 2026-11-01. Codex CLI/TUI remains the daily interface and its existing
+Updated 2026-11-02. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are
 installed and enabled on Snap, Starship and Carbon. Current sources are reconciled.
@@ -14,6 +14,172 @@ The separately authorized lifecycle-guide publication completed 2026-11-01 from
 reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agent-first-lifecycle-publication-2026-11-01).
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
+
+## Selected plan: primary, Luna and optional escalation
+
+Planned 2026-11-02 from Bryan's post-research decisions. The
+[selected design](worker-routing-design.md#selected-design-primary-luna-and-one-escalation-target)
+uses high = Astra, mid = Sol/Terra, low = Luna as operating categories. The user
+chooses the primary. Adaptive work stays in that primary, delegates useful
+bounded work to Luna, or uses one opt-in escalation target. Terra may select
+Sol or Astra; Sol may select Astra. Defaults are none. Reviews and difficult
+slices share that target; no separate review toggle, quality/economy selector,
+automatic Sol-to-Terra offload or recursive escalation ladder is part of V1.
+
+This is a documentation/review pass. The current skills, agent pins, installed
+package and owners remain outside implementation scope. The earlier research
+and native-access evidence below are retained with their original limits.
+
+### Proposed implementation sequence
+
+1. Recheck the intended source and metadata, preserve concurrent edits, and
+   refine only the two adaptive skills. Keep native primary ownership, explicit
+   invocation, fixed Luna delegation, self-contained contracts, direct native
+   control discovery and honest errors. Permission to use a configured target
+   is scoped to the existing task and does not require per-assignment approval.
+2. Resolve the optional target from the request/applicable user guidance for
+   the actual initiating primary, otherwise none. Retain native role pins and
+   requirements. Add no custom native keys or separate persistent settings file.
+   Hold automatic escalation if reliable primary metadata is unavailable;
+   direct primary/Luna work and explicit named-worker requests remain useful.
+   Qualify or promote the existing read-only context helper without making
+   worker-only installs depend on monitoring or a new service.
+3. Preserve `luna-max` and `sol-xhigh`; add the native `astra-xhigh` candidate
+   with the same contract/ownership/no-nested-delegation boundaries. Keep Terra
+   as a supported primary without creating an unnecessary Terra worker. Update
+   the explicit repository/worker inventories, release builder/verifier,
+   relevant tests and guide coverage deliberately when adding the role. No
+   installed-only patch belongs to preparation.
+4. Check the selected design's case matrix, role/model/effort pins, workflow
+   metadata and native context failure behavior. Existing static validators
+   establish structure, not model decisions. If helper/resolver behavior needs
+   code, test precedence and missing/unsupported cases rather than matching
+   new instruction prose. Keep worker validation separate from watch behavior.
+5. Run a bounded protocol pilot only when execution of this plan is selected:
+   fresh owned fixtures, at most eight worker starts and 32 model turns, no real
+   session input or lifecycle action, stop after two distinct access/provider
+   failures. Cover primary/Luna defaults, configured Astra under Sol, explicit
+   Luna despite escalation permission, honest failure, no recursive chain and
+   handoff/acceptance. Exercise the Sol role separately where useful; Terra-Sol
+   and Terra-Astra policy fixtures are not proof of a real Terra primary here.
+   No daemon restart or repeated known-failed Terra access is needed.
+6. After native viability, use a few matched small implementation/review cases
+   and ordinary-use receipts for fit, primary acceptance, corrections, elapsed
+   time and total usage. Do not recreate a large universal model-ranking study.
+   Run required source/skill/package checks and review the complete local
+   candidate before proposing publication or deployment.
+
+Exit from preparation requires a reviewable candidate and truthful per-path
+acceptance: source structure, declared roles, actual model turns, routing,
+ownership and accepted integration are distinct. Missing Terra access remains
+a named runtime gap, not a global product exclusion. Later publication and
+chezmoi application must update artifact pins/checksums/validators together,
+preserve native sessions and local instruction overrides, and separately prove
+installed selections and fresh-session behavior. This planning pass performs
+no worker-policy implementation, inference trial, release or fleet apply.
+
+## Research pass: model-aware worker preferences
+
+The [selected plan above](#selected-plan-primary-luna-and-optional-escalation)
+supersedes this earlier implementation direction. The preference selector and
+broader cross-mid-tier routing are research history; the evidence remains useful.
+
+Research completed 2026-11-02 after Bryan proposed separating model cost and
+capability information from high/mid/low preferences. See the
+[source findings](worker-routing-study.md#follow-up-model-facts-and-routing-preference-2026-11-02)
+and [draft design](worker-routing-design.md#draft-model-aware-routing-preferences-2026-11-02).
+The proposed policy considers attributed model facts, runtime eligibility,
+user configuration/preference and the initiating primary independently.
+High/mid/low would mean quality-first, balanced and economy, with the same
+acceptance standard and user-selected primary. The general supported candidate
+set includes Luna, Terra, Sol and Astra; the explicit Luna workflows retain
+their separate Luna-only delegation contract.
+
+The second research review settles the first candidate's configuration scope:
+native role pins plus existing user instructions, request-level preference,
+then balanced by default. No new persistent preference schema is part of V1.
+The design's 22 tabletop cases cover untried model access, worker-only exclusions,
+each primary, live setting changes and unavailable billing telemetry. See the
+[review findings](worker-routing-design.md#second-research-review-findings-and-readiness).
+This is design readiness for review, not runtime qualification.
+
+The subsequent [focused capability study](worker-routing-study.md#focused-capability-evidence-astra-sol-and-terra-2026-11-02)
+reviews independent evaluations and first-person experiences of the exact
+Astra/Sol/Terra models. It replaces an assumed capability ladder with conditional
+priors: Sol has strong broad coding value, Terra is a useful general candidate,
+and Astra is a frontier alternative whose benefit must be justified. Effort,
+harness, version and total usage matter. The native protocol pilot remains
+necessary; reproducing a large public model-ranking benchmark is not an initial
+prerequisite. Existing XHigh choices are provisional, not proven optimal.
+
+This research changed documentation only. It authorizes no new worker trial,
+active-session input, configuration apply, publication, deployment or restart.
+The future qualification below is a proposal for a separately selected pass.
+Terra's local native execution remains unqualified, while its documented general
+support belongs in the design, profiles and packaging/validation matrix. This
+environment can qualify the available Astra/Sol/Luna pool and exercise
+Terra-present/absent and Terra-primary cases with fixtures. Preserve the prior
+evidence and the model-catalog repair; do not require a Terra retry or treat
+local absence as a global disable.
+
+### Proposed qualification sequence
+
+1. Review the model profile and preference semantics. Use native metadata for
+   settings/limits, dated billing-specific rates for cost, and attributed
+   qualitative/local evidence for strengths. Preserve unknowns and aliases;
+   do not invent a universal capability score or copy API limits into Codex.
+   Use explicit request-level preference, existing user-guidance defaults and
+   balanced as the fallback for the pilot. Keep worker exclusions distinct from
+   primary selection, native permissions and soft preferences. Consider new
+   persistent configuration only after actual usage demonstrates the need.
+2. Review the draft's policy matrix, including Terra present/absent, each
+   initiating primary, user model exclusions/effort pins, cheaper direct
+   primary completion, same-model workers, specialization, unknown facts,
+   unsupported effort, native discovery, authorized first use, changed settings,
+   unavailable billing telemetry and exact invocation boundaries. If a
+   resolver is later needed, test candidate filtering/precedence as behavior;
+   matching phrases in instructions cannot prove model routing. Keep worker
+   validation separate from monitoring tests and runtime access evidence.
+3. In a later authorized native pilot, use only newly owned fixtures under the
+   existing daemon. Qualify explicit Astra XHigh, Sol XHigh and Luna Max workers,
+   actual result/handoff and exposed execution/reroute evidence. Then check
+   Sol-primary stronger help and Astra-primary economical delegation without
+   changing either real primary. Inspect declared controls directly, respect
+   role pins and use self-contained assignments. Genuinely missing controls,
+   spawn rejection and model execution failure retain distinct outcomes.
+   Limit the protocol stage to six scenarios, at most eight worker starts and
+   32 total model turns including correction/settlement; stop inference after
+   two distinct access/provider failures. Record which paths were exercised
+   and which remain tabletop cases. Terra's actual worker/primary execution
+   remains explicitly untested here; fixture coverage is not inference proof.
+   These are pilot bounds, not product rules.
+4. If native viability passes, select a small paired outcome comparison before
+   running it: primary-only versus adaptive execution on a bounded fix, specified
+   change, ambiguous diagnosis and evidence/documentation task. Start from
+   identical fixtures and equal acceptance checks. Include the capable Sol
+   primary baseline, not only Astra-only as the expensive comparator. Retain
+   effort settings initially, all available token categories, elapsed time,
+   repairs/takeover and rejected outcomes. Scope a separate trial budget before
+   starting this comparison; do not let it expand the protocol stage silently.
+   Treat included subscription consumption, credit pricing and API bills as
+   different measures; unavailable cost/usage telemetry remains unknown.
+5. Implement only the useful policy supported by the evidence in the two
+   adaptive skills, shared guidance and any needed native worker role. Preserve
+   both Luna workflows and existing named role identities. Keep direct primary
+   work, explicit invocation and honest failure handling. Keep native agent
+   files authoritative for execution pins and avoid a second model catalog,
+   routing daemon or compulsory escalation ladder. If the existing primary/Luna
+   policy performs as well, retain it and report the negative result.
+6. Run repository/skill/package checks and review a local candidate. Later
+   publication and chezmoi deployment must retain separate source, artifact,
+   installed, selected and runtime evidence. No installed-only patch or daemon
+   restart belongs to this unattended preparation.
+
+The research exit gate is a cited profile/preference design, explicit evidence
+limits, a reviewable case matrix and a bounded next protocol plan. It does not
+require an unrequested model trial. The implementation exit gate will instead
+require actual native handoffs and accepted task outcomes before the new policy
+is advertised as working.
 
 ## Selected pass: preview.14 worker discovery release
 

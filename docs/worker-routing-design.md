@@ -1,8 +1,170 @@
 # Worker routing design
 
-Date: 2026-10-06. Status: implemented in the adaptive skills. This note records
-the design, candidate validation, and rollout plan. See the
-[worker routing study](worker-routing-study.md) for evidence and its limits.
+Updated 2026-11-02. The shipped Sol/Luna policy remains active. The
+[selected design](#selected-design-primary-luna-and-one-escalation-target)
+below reconciles Bryan's latest decisions; implementation has not started.
+The [worker routing study](worker-routing-study.md) records evidence and limits.
+
+## Selected design: primary, Luna and one escalation target
+
+Use three operating tiers: high = Astra, mid = Sol/Terra, low = Luna. These are
+workflow categories, not a proven universal capability ranking. The user picks
+the native primary and its reasoning setting for the project. Routine adaptive
+routing chooses direct primary work, a useful Luna assignment, or one explicitly
+configured escalation target. No quality/balanced/economy selector belongs to V1.
+
+### Routes and defaults
+
+| Initiating primary | Optional automatic escalation target | Default |
+| --- | --- | --- |
+| GPT-6.1 Terra | Sol XHigh or Astra XHigh, exactly one | None |
+| GPT-6.1 Sol | Astra XHigh | None |
+| GPT-6 Astra | None in V1 | None |
+| Luna, another model or unknown identity | None in V1; explicit user assignments remain separate | None |
+
+Luna Max remains available for cohesive, bounded, verifiable assignments in
+every supported workflow. Such work can be substantial implementation or
+investigation; do not reduce it to tiny chores or require delegation when a
+handoff adds little. An equivalent Luna primary/worker pair still needs a
+benefit from separate execution. The continuing primary owns decisions,
+integration and acceptance and never switches itself to the escalation model.
+
+Do not automatically delegate Sol-primary work to Terra for nominal savings,
+or escalate Terra-primary work to Sol by default. The user can enable the latter
+when a second opinion or additional help is useful. Reviews, investigations
+and demanding implementation slices all use the same escalation option; they
+need no separate review toggle or obligatory review stage. Higher price alone
+does not establish a capability improvement.
+
+One target is a model choice, not a one-call quota. Reuse the selected worker
+for ordinary bounded corrections when useful. A Terra-to-Sol selection grants
+no implicit Sol-to-Astra chain: children return unresolved gaps to the original
+primary and do not reapply their own model as a new primary policy. Only the
+user's actual primary/configuration change can select a different route later.
+
+### Configure through existing native instruction mechanisms
+
+Keep [native agent files](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents)
+authoritative for model/effort pins. Express the
+optional escalation policy in an explicit adaptive request or applicable user
+guidance, defaulting to none when unset. A current request can override a soft
+default for its task; distinct restrictions, scope and native permissions still
+apply. No new native TOML keys, preference file or configuration hierarchy are
+needed for the first candidate. Later persistent instructions remain chezmoi
+owned and are changed only in their canonical source within deployment scope.
+
+An opt-in instruction example, not an installed setting:
+
+> In explicitly invoked adaptive worker workflows, allow Sol XHigh escalation
+> when the initiating primary is GPT-6.1 Terra, and Astra XHigh when it is
+> GPT-6.1 Sol. Otherwise use no automatic escalation. Keep Luna available for
+> useful bounded assignments.
+
+Resolve policy for the actual initiating primary, rather than a guessed host
+default. Re-read at new assignment boundaries. Existing children retain their
+contracts, settings and write ownership when the user changes the primary or
+guidance. Explicitly enabling a target authorizes suitable assignments within
+the task without a permission question for every spawn; it starts no work and
+does not itself invoke a skill. Disabling a target prevents new assignments,
+while handling an active child follows the user's stop/ownership instructions.
+
+Native loaded-thread metadata is the qualified primary source. The existing
+read-only helper is a local, unpublished candidate; a config default or model
+self-description is not an identity substitute. If trustworthy metadata is
+unavailable, use primary/Luna and report automatic escalation as held. An
+explicit user assignment to a named worker can still be honored within normal
+constraints without pretending primary detection succeeded. Worker-only
+installations keep their existing usefulness and gain no monitoring dependency.
+
+### Native execution, availability and failure handling
+
+The proposed worker roles are `luna-max` (existing), `sol-xhigh` (existing), and
+`astra-xhigh` (new candidate needed only for implementation). Preserve the
+existing named roles and legacy compatibility files. Terra remains a normal
+supported native primary; this policy needs no automatic Terra worker role.
+Role installation/declaration, account access and completed inference remain
+different evidence. General Terra support is not removed by this host's failure.
+
+Inspect actual native declarations, then call collaboration controls directly,
+outside `functions.exec`/`ALL_TOOLS`. An empty Code Mode registry excludes no
+native control. Select the exact configured role and `fork_turns="none"` with a
+self-contained contract. Honor role pin precedence; do not pretend an override
+changed a fixed model or effort. All children inherit the parent provider,
+permissions and MCP environment, and receive no nested-delegation authority.
+
+A compatible exposed route can receive its first useful authorized assignment
+without a diagnostic probe. Keep missing controls/roles, an actual rejected
+spawn, model errors and observed reroutes distinct. If the configured target
+cannot run, preserve its error and useful partial work, then continue in the
+primary where feasible or report the unresolved gap. Do not silently select a
+different target, change billing/provider, launch another Codex process or
+suggest a daemon restart. No automatic fallback ladder is part of this policy.
+
+Keep compact assignments and proportionate review. Review mode normally asks
+for findings and evidence without edits; implementation mode has explicit write
+ownership and acceptance. Stop or obtain a handoff before transferring a live
+writer's files. Escalation needs a concrete unresolved issue or useful second
+opinion, not a failed cheap attempt or a model-price comparison alone.
+
+Explicit `$luna-task` and `$luna-goal-loop` retain Luna as their only delegated
+model regardless of the escalation policy. Only explicitly invoked adaptive
+skills gain the new automatic selection rule. Direct user requests for a named
+worker or independent parallel work remain separate native actions within their
+existing authority. Generic task/goal-loop wording and skill discussions still
+activate no worker skill.
+
+### Qualification and implementation boundaries
+
+| Case | Required result |
+| --- | --- |
+| Terra/Sol with no target | Primary/Luna only; no inferred Sol/Astra opt-in. |
+| Terra with Sol selected | Sol can review or own a bounded slice; Astra is not implicitly authorized. |
+| Terra with Astra selected | Use Astra when justified; Sol is not an automatic intermediate step. |
+| Sol with Astra selected | Additional help can use Astra for a concrete reason; no Terra cost offload. |
+| Astra primary | Direct work/Luna; no automatic mid-tier worker route. |
+| Luna/other/unknown primary | Conservative primary/Luna path; no guessed escalation binding. |
+| Exact worker identity/effort differs from the target | Report the conflict; do not silently retune, alias or claim the requested selection ran. |
+| Native controls exposed despite empty Code Mode search | Discover and call the real native surface directly. |
+| Missing control/role, failed spawn or failed model turn | Report the distinct observation and partial result; no concealed fallback target. |
+| Configured Sol child sees a Sol-to-Astra default | It remains a child of the Terra task and returns its gap; no recursive chain. |
+| Primary or policy changes during a goal | Resolve the next assignment afresh; preserve active workers' contracts and ownership. |
+| Explicit Luna workflow or generic goal-loop wording | Keep current invocation and Luna-only delegation rules. |
+| Target disabled after spawn | Admit no new target assignments; follow explicit instructions for any active work. |
+| Unavailable cost telemetry or strict spend limit | Do not claim exact billing enforcement; retain stated resource constraints. |
+
+These are reviewed policy cases, not executed model-routing tests. A later
+implementation changes the two adaptive skills, adds the Astra role if needed,
+and updates guidance/package validation together. It preserves the Luna skill
+identities and fixed selections. Qualify the existing selected-primary helper
+and truthful worker-only degradation before making automatic routing claims.
+
+Then use fresh owned native fixtures under the existing daemon for settings,
+first useful handoff, no-target behavior, explicit activation, no recursive
+escalation, correction and acceptance. Keep the earlier protocol ceiling of
+eight worker starts and 32 model turns, including settlement; stop after two
+distinct access/provider failures. Terra routing cases remain tabletop/fixture
+coverage here until a real Terra primary can execute; another primary testing
+the Sol role does not prove Terra-primary routing. Do not retry known failed
+Terra access merely to satisfy this plan.
+
+Public capability evidence supplies provisional priors, so a new large local
+ranking benchmark is unnecessary. Use a few matched ordinary-use outcomes to
+check accepted integration and total effort after protocol viability. A later
+release/fleet deployment needs its own published-byte, managed-source and
+installed/runtime checks, preserving live work and chezmoi drift.
+
+This reconciliation passes the clean 133-file repository gate, five validator
+fixtures, all four worker skill validators, 123 local documentation links and
+whitespace checks. All 91 protected non-document source files are unchanged.
+The revised report's HTTP bytes and desktop/mobile controls verify; its policy
+illustration is not a native routing trial. The working checkout retains the
+same two pre-existing bytecode files rejected by its strict inventory check.
+Source planning changes remain uncommitted; no worker policy was installed.
+
+## Shipped policy and earlier research context
+
+The sections below retain the implemented policy and research chronology. The
+selected design above is the current proposal and has not been installed.
 
 The adaptive workflows should keep more work in the GPT-6.1 Sol XHigh primary
 and delegate to GPT-6 Luna Max when the assignment is clear and the expected
@@ -326,3 +488,296 @@ The ephemeral goal-loop probes could not exercise persistent goal tools. Host
 acceptance should check goal management in a persistent fresh session. This
 small sample does not establish a general savings rate, an optimal routing
 threshold, or performance on large implementation and parallel Sol assignments.
+
+## Draft: model-aware routing preferences, 2026-11-02
+
+Superseded as an implementation direction by the
+[selected design](#selected-design-primary-luna-and-one-escalation-target).
+The quality/balanced/economy selector and general cross-mid-tier dispatch below
+are retained as research history, not V1 requirements.
+
+Status: research/design candidate, with no worker-skill, agent, installed-config
+or runtime change. The [follow-up research](worker-routing-study.md#follow-up-model-facts-and-routing-preference-2026-11-02)
+supports separating facts from preference, but does not qualify routing quality.
+This draft supersedes the proposed fixed high/mid/low model assignments as the
+next hypothesis to test. It does not replace the active Sol/Luna policy.
+
+### Keep model facts and session choices separate
+
+| Input | What it describes | Authority and limits |
+| --- | --- | --- |
+| Model profile | Exact provider/model, documented strengths, supported settings, dated cost basis and useful local evidence. | Native metadata supplies supported options; attributed guidance/local results supply strengths. Unknown facts stay unknown. |
+| Native eligibility | Exposed controls/roles, current provider/account route, usable settings and any observed execution result. | Runtime/session scoped. A role declaration, catalog entry, successful spawn and completed model turn prove different things. |
+| User configuration and preference | Supplied worker-model preferences/exclusions, role/effort pins, resource constraints and high/mid/low preference. | Honor explicit constraints and existing configuration precedence. Preference influences eligible worker choices; it grants no new task authority. Unset preference uses the proposed balanced default. |
+| Initiating primary | The model/effort and active context of the conversation invoking the adaptive skill. | Read qualified native metadata. The primary keeps ownership, integration and acceptance; launching the skill does not switch it. |
+
+The route is a choice among eligible model/effort configurations and continuing
+in the primary. Keep the user-selected primary in place. Its active context,
+remaining work and integration responsibility matter even when another model
+has a lower rate. Do not infer the primary from a default config or the model's
+self-description; use qualified native metadata or report it as unknown.
+
+### Support four models, with session-specific eligibility
+
+The general design includes GPT-6 Luna, GPT-6.1 Terra, GPT-6.1 Sol and GPT-6
+Astra as normal supported model candidates. Current
+[official availability guidance](https://learn.chatgpt.com/docs/pricing#feature-availability)
+lists Terra for paid Work/Codex plans, with account/workspace and region limits.
+Treat Terra availability as an expected supported case in the product design,
+while discovering actual access for the invoking session. Bryan's current
+Terra omission/failure is a local availability case, not a global exclusion or
+evidence that Terra is generally unsupported.
+
+Keep all four profiles in the proposed reference and packaging/validation
+matrix. Terra's current model identity is `gpt-6.1-terra`; the preserved legacy
+GPT-5.6 Terra role cannot stand in for it. Initial configurations are
+Luna Max and Terra/Sol/Astra XHigh, validated against each native route. These
+execution settings remain separate from the high/mid/low routing preference.
+
+Build the eligible choices from the general supported candidates, the user's
+constraints and current native evidence. A user exclusion, a missing native
+role, an unsupported effort and an inference access failure have distinct
+meanings; none should rewrite the global model profile. Preserve unknown
+availability as unknown. Do not turn this environment's Terra absence into a
+shipped universal disable or require every environment to have all four models.
+
+A declared compatible native role/model can receive a real authorized assignment
+without a past successful execution receipt. Label its access as unverified
+until that assignment returns; the first actual assignment can establish access.
+An unknown backend result is not the same as a missing control, an unsupported
+model or a demonstrated access failure. No diagnostic inference or catalog
+refresh is required before every ordinary task. Report a rejected first attempt
+honestly and use primary takeover rather than probing through a model ladder.
+
+### Route relative to the initiating primary
+
+These are illustrative choices when each worker is available, permitted and
+useful for the actual task. Model strengths and total accepted-result effort
+still govern selection; the price ladder is not a required execution sequence.
+
+| Initiating primary | Useful adaptive options |
+| --- | --- |
+| Astra | Continue demanding connected work directly; consider Sol, Terra or Luna for useful economical assignments. |
+| Sol | Continue ordinary connected work directly; consider Terra or Luna where suitable, and Astra as a focused frontier alternative for a concrete unresolved gap. |
+| Terra | Continue ordinary implementation or investigation directly; consider Luna for useful bounded work, or Sol/Astra for a concrete unresolved gap when the expected benefit justifies the handoff. |
+| Luna | Continue within the primary's fit; the adaptive workflow can use Terra, Sol or Astra for a justified assignment while the continuing primary owns the task. |
+
+User configuration can narrow or favor these choices. For example, excluding
+Astra removes that option even under high preference; a fixed role's effort
+pin remains effective; and a Sol primary does not need another Sol worker for
+capability escalation. Another same-model context can still serve independent
+execution. Changing the primary through the user's normal model selection
+changes the next routing context without requiring a new skill identity.
+
+Worker exclusions constrain new delegated assignments. They do not silently
+replace an already selected primary outside that worker set. An explicit limit
+on the whole workflow also constrains future primary work; report a conflict
+with the current selection rather than claiming a worker setting changed it.
+Re-read the primary and relevant instructions at each new assignment boundary.
+An existing worker retains its original contract and actual execution settings;
+new preferences never silently interrupt or retarget a writer.
+
+Explicit `$luna-task` and `$luna-goal-loop` remain a separate low-cost choice:
+their only delegated model is `luna-max`, regardless of the primary, available
+higher-cost candidates or adaptive preference. Configuration and availability
+checks preserve their honest failure reporting rather than silently widening
+their model selection.
+
+### Give high/mid/low useful semantics
+
+| Setting | Proposed meaning | Effect on routing |
+| --- | --- | --- |
+| High: quality-first | Prefer additional reasoning capability or a useful frontier alternative when it plausibly improves the accepted result. | Seek justified additional help earlier for a concrete unresolved issue; clear cheap work can still use Luna. |
+| Mid: balanced | Weigh likely improvement against handoff, latency and total usage. | Keep ordinary work in a capable primary; delegate useful slices and escalate a demonstrated gap. |
+| Low: economy | Require a stronger reason to incur additional expensive execution. | Favor a credible economical route or direct primary completion; a difficult task can still justify additional frontier help. |
+
+These are soft preferences, not a dollar ceiling, model allowlist or promise to
+make the current primary cheap. Explicit resource limits remain hard constraints.
+If satisfying the task would require exceeding such a limit, report the conflict
+instead of quietly weakening the acceptance check. No setting requires a failed
+cheap attempt, a particular delegation percentage, or a mandatory reviewer.
+
+V1 provides no billing enforcement mechanism. When telemetry or the billing
+basis is unavailable, do not promise an exact spend ceiling or fabricate a
+remaining balance. A strict ceiling that cannot be honored with available
+controls must be disclosed before additional paid worker execution; a soft
+economy preference remains usable without a bill estimate.
+
+### Keep the profile small and honest
+
+A useful profile needs an exact native role binding when a fixed role is used,
+provider/model identity, allowed effort choices from the native route, a dated
+cost basis, brief documented strengths and an evidence label. Separate official
+guidance, local protocol controls and accepted repository work. Record effective
+context/modality/tool requirements only when relevant; a native catalog is not
+a local performance benchmark.
+
+Use all four normal candidates in the general profile set. The first native
+pilot here can exercise Luna, Sol and Astra while Terra remains unavailable in
+this environment. Exact Terra execution is a remaining local acceptance case,
+not a prerequisite for documenting or implementing its supported routing path.
+Test Terra-present and Terra-primary policy cases in isolated fixtures and label
+them separately from actual Terra execution. It need not occupy the middle of
+every task's ranking. An unknown model need not be assigned a speculative
+cost/capability bucket.
+
+For the first candidate, use native role files for execution pins and a compact
+attributed worker reference for supplementary facts. Accept a preference in the
+explicit adaptive-workflow request; otherwise use a default from applicable
+user guidance, then balanced if none is supplied. Reuse native configuration
+and existing instruction mechanisms for defaults and restrictions. A preference
+override does not lift a separate worker exclusion, resource limit or native
+permission. Explicit user changes to those constraints are distinct from merely
+asking for high preference. Fixed agent files keep their native precedence;
+an incompatible requested effort is reported rather than silently applied.
+
+V1 adds no persistent Plus preference file, new native config keys or additional
+configuration hierarchy. If actual usage later justifies persistence, give each
+fact one owner and have chezmoi manage only the intended preference/role targets,
+preserving local overrides. The selected-primary helper remains optional and
+read-only: workers must not become dependent on the monitoring installation.
+If reliable primary metadata is unavailable, continue in the primary or make a
+justified permitted assignment, but do not claim comparative escalation from
+an inferred primary identity.
+
+### A short routing rule is sufficient for the first candidate
+
+1. Honor the invoked workflow, task boundary, required tools/modalities and
+   explicit model/resource constraints. Preserve investigation versus write
+   ownership and the existing acceptance standard.
+2. Read the initiating primary, supplied user constraints and preference, then
+   inspect declared native controls and roles directly. Filter known-unavailable
+   models and incompatible model/effort settings for this session only. Keep
+   unknown availability explicit; do not run speculative probes during ordinary
+   tasks or assume the host's default config identifies the active primary.
+3. Consider direct primary work and useful bounded assignments. Use model
+   strengths and relevant evidence to judge the likely benefit, including the
+   cost of context transfer, review and repair.
+4. Apply the preference among credible routes. Explain the chosen route in one
+   sentence when delegation or escalation is material. A price difference alone
+   does not establish task fit; an extra same-model worker needs an independent
+   execution benefit rather than being called a capability escalation.
+5. Spawn through the actual native declaration with a self-contained assignment
+   and `fork_turns="none"` for an explicit model/effort choice. Respect fixed
+   role precedence. Verify the observed model/effort and handoff; distinguish
+   requested configuration from any available execution/reroute evidence.
+6. Review the result, resolve concrete gaps and reassess the next assignment.
+   Repeated failure without new evidence calls for diagnosis or primary takeover,
+   not cycling through a compulsory model ladder. Transfer write ownership only
+   after the writer hands off or stops, preserving useful partial changes.
+
+Example with a Sol primary: an economical bounded extraction may suit Luna at
+every preference. Ordinary implementation, configuration or investigation can
+stay in Sol or form a useful Terra assignment when eligible and justified by
+expected total effort. A hard unresolved design question can justify an Astra
+assignment when there is a concrete reason to try that frontier alternative;
+its higher price alone does not establish an upgrade from Sol. Terra is
+a general worker candidate, not a standing destination for writing or visual
+tasks. Advertised strengths alone do not establish an advantage over another
+model on those tasks. These are examples for qualification, not dispatch rules
+or proof of comparative quality.
+
+### Preserve invocation and failure behavior
+
+Only the explicitly invoked adaptive worker workflows would gain this policy.
+`$luna-task`, `$luna-goal-loop`, `luna-max`, `sol-xhigh`, and legacy identities
+retain their current meanings. Generic goal-loop requests and discussion of
+these skills still activate no worker workflow. No primary model switch or
+additional task authority follows from a preference.
+
+Native collaboration controls stay outside `functions.exec`/`ALL_TOOLS`.
+Preserve the recently corrected distinction between missing declarations or
+roles, rejected spawns and worker/model errors after startup. An empty Code
+Mode search excludes no native candidate. A genuinely missing control means no
+delegation was attempted; never label that a model failure.
+
+Terra unavailable in one session simply leaves that session's eligible pool;
+its supported profile and other sessions' choices remain intact. If needed
+help is unavailable, a capable primary may finish; otherwise disclose the unmet need.
+Do not silently alias models, change provider/billing route, repurpose a pinned
+role, launch another Codex process or recommend a restart as discovery repair.
+After an actual worker failure, report the error and use the authorized takeover
+policy. A different worker requires a justified new routing decision within the
+adaptive workflow, not a concealed substitution for a failed named assignment.
+
+### Qualify the design before implementing it
+
+| Case | Required reasoning/result |
+| --- | --- |
+| Terra present and permitted | Include its current profile and settings as a normal candidate; do not carry over a global disable from this host. |
+| Terra absent locally | Filter it for that session; keep other candidates and general Terra support intact, with no invented inference success. |
+| Terra primary | Account for the initiating Terra context, appropriate Luna assignments and justified Sol/Astra help. |
+| Astra, Sol or Luna primary | Reassess routes relative to the actual initiating model and context; no automatic primary switch. |
+| User excludes a model or pins an effort | Honor that constraint under every routing preference; do not silently override the fixed role. |
+| High preference, clear bounded slice | Luna remains a valid route when the handoff helps. |
+| Economy preference, unresolved difficult question | Stronger help remains possible within explicit constraints; acceptance is unchanged. |
+| Primary already resolved most of a small slice | Direct completion remains valid despite a cheaper candidate's token rate. |
+| Visual task with relevant local evidence | Task-specific strength can outweigh a generic ordering; tool access is checked separately. |
+| Equivalent model/effort in two labels | Do not claim capability escalation; justify separate execution if useful. |
+| Unsupported effort, context or modality | Reject that configuration without silently substituting a setting. |
+| Unknown profile, stale price or incomparable billing basis | State uncertainty; do not fabricate a precise ranking or saving. |
+| Unknown primary, provider alias or stale home default | Avoid inferred primary identity and unverified comparative claims. |
+| Empty Code Mode registry, native controls declared | Native delegation remains discoverable directly. |
+| Genuinely absent controls or role | Report the specific missing surface without an attempted-spawn claim. |
+| Spawn rejected, execution failed or model rerouted | Preserve distinct observations, actual settings and useful partial work. |
+| Explicit Luna or generic goal-loop request | Preserve each workflow's existing invocation and model boundary. |
+| Compatible declared model with no past execution | A useful authorized first assignment is possible; access is labeled unverified until its actual result. |
+| Worker exclusion omits the selected primary | Apply it to new workers; do not switch the primary or misstate a workflow-wide restriction. |
+| User changes primary/preference during the loop | Re-read at the next assignment boundary; retain existing workers' contracts and ownership. |
+| Exact spend ceiling with unavailable billing telemetry | Disclose that enforcement is unavailable before additional paid workers; never claim guaranteed spend. |
+| High preference conflicts with a worker exclusion or explicit Luna workflow | Keep the exclusion/workflow boundary; preference alone does not widen permission or model selection. |
+
+First exercise these as policy cases and review the proposed prompts against
+them; prose matching is not behavioral evidence. A later authorized isolated
+pilot must qualify exact Astra/Sol/Luna execution, both Sol and Astra primary
+contexts, useful handoffs, primary acceptance and failure handling. Compare
+primary-only and adaptive execution from equal fixtures, including the cheaper
+capable-primary baseline. Keep effort fixed initially, retain all reported token
+categories, elapsed time and repair work, and call unobservable cost unknown.
+Prefer a small accepted improvement over adding another policy mechanism.
+
+The first candidate's design choices are settled for review; it is not runtime
+qualified. Later decisions are whether usage justifies persistent preferences,
+which task-specific evidence is useful enough to retain, and whether the pilot
+shows any value beyond the existing primary/Luna policy. No trained router,
+global score, automatic profile refresher, model benchmark service or per-turn
+primary switching is necessary to test this hypothesis.
+
+### Second research review: findings and readiness
+
+The 2026-11-02 review checked all 22 policy cases above as tabletop decisions,
+not model executions or tests of an implemented router. It resolved five gaps:
+untried access versus missing controls, worker restrictions versus primary
+selection, configuration scope/precedence, changes during an active loop, and
+exact-spend claims without telemetry. These rules preserve the current native
+execution and explicit invocation boundaries.
+
+Fresh official sources confirm custom-agent pin precedence and inherited
+provider/permissions/MCP configuration, caller-scoped model metadata, and the
+separation of credit rates from subscription usage. The research supports the
+architecture but supplies no task-quality threshold for these four model/effort
+choices. The proposed next step is a bounded native protocol pilot, followed
+by paired accepted-outcome comparisons if protocol viability passes. No actual
+model, worker, catalog or owner lifecycle operation was run for this review.
+
+### Capability evidence refinement after focused research
+
+The [focused comparative study](worker-routing-study.md#focused-capability-evidence-astra-sol-and-terra-2026-11-02)
+finds useful independent coding evidence, including native Codex runs. It
+supports Sol as a strong general-purpose cost/quality choice, Terra as a real
+general coding candidate, and Astra as a possible frontier alternative. It
+does not support a universal Astra > Sol > Terra capability ladder. Preserve
+the price order as a dated rate fact, separate from these conditional priors.
+
+In particular, a Sol primary should not automatically delegate hard work to
+Astra because Astra costs more. Seek a concrete benefit for the unresolved
+question, account for handoff/review, and retain direct primary work. A Terra
+assignment is an economical candidate, not a guarantee of savings: some public
+tasks consume enough extra tokens to reverse the nominal price advantage.
+
+Effort is part of the compared configuration. Public Terra Max results differ
+materially across suites, and the current broad Codex comparison displays Sol
+and Astra at Max rather than our proposed XHigh settings. Retain exact variants,
+harnesses and evidence dates; do not promote a result from another effort or
+benchmark version into an unqualified local profile. The first candidate's
+existing effort choices remain provisional pending native fit checks.

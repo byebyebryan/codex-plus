@@ -4,6 +4,16 @@ Date: 2026-11-01. Status: selected-primary inspection qualified as a local
 candidate; three-model routing deferred behind a native execution gate. See
 the [execution contract](codex-plus-plan.md#selected-spike-primary-aware-three-model-worker-routing).
 
+Follow-up 2026-11-02: the [model-facts/preference research](worker-routing-study.md#follow-up-model-facts-and-routing-preference-2026-11-02)
+and [selected design](worker-routing-design.md#selected-design-primary-luna-and-one-escalation-target)
+provide the next direction: native primary choice, Luna and one opt-in
+escalation target, with Terra supported as a primary.
+Terra's gate below describes local execution; it is not a global availability
+claim or a reason to exclude Terra from the general design. Qualification can
+use Astra/Sol/Luna here and cover Terra-present/absent and Terra-primary policy
+fixtures separately. The native findings and execution failures below retain
+their original dated scope.
+
 ## Decision and scope
 
 Keep Sol XHigh, Terra XHigh and Luna Max as the proposed selections, with the
