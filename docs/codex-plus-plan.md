@@ -58,7 +58,13 @@ change installed skills, refresh global MCPs or restart/interfere with existing
 sessions. Archive only settled owned actors, remove only their generated trust
 entries through the version-checked native config owner, and prove preservation.
 Run repository/skill/package gates and commit validated slices before review.
-Publication and deployment remain separate.
+Publication and deployment remain separate. The review-fix pass completed with
+source fix `92be2d6`, 385 passing tests and matched native Luna/Astra/Luna results
+across three worker starts and six turns. All owned actors settled and were
+archived/unloaded; generated trust state was removed through the native owner,
+restoring the protected baseline. See the
+[matched results](worker-escalation-results.md#matched-native-permission-results)
+for evidence and limits.
 
 ### Selected implementation sequence
 

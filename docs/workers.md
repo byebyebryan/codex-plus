@@ -103,6 +103,8 @@ Or put a soft default in existing user guidance, through the owner of that file:
 
 This example installs no preference. Native role files still pin model and
 reasoning effort; no extra TOML setting or Plus preference file is needed.
+The permission is a natural-language instruction interpreted by the primary,
+not a parsed configuration flag or an enforced spending limit.
 Enabling a route starts no work or skill and permits suitable assignments within
 the authorized task without approval for every spawn. A current request can
 change a soft default; native restrictions and permissions remain effective.

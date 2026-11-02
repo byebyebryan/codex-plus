@@ -104,3 +104,71 @@ those owned entries with no runtime reload; the original config hash was restore
 All 17 protected installed/config paths match their baseline bytes/modes and the
 native daemon identity is unchanged. Private prompts, captures, session identifiers, raw configuration
 and toy implementation files remain outside committed source.
+
+## Review fixes: optional metadata and packaged documentation
+
+The subsequent review found that a reporting-only archive shipped the context
+CLI without `codex_plus.native`, causing `--primary` to raise before producing
+JSON. The fix resolves a missing caller before importing the optional client and
+returns `unknown` / `native_component_unavailable` when that module is absent.
+Only the absent native module is treated as optional; unrelated import failures
+are not concealed. No monitoring dependency, owner startup or fallback endpoint
+is added. Ordinary offline context reporting remains unchanged.
+
+The worker archive now includes this qualification record. Its relative document
+links resolve within the archive; references to the larger implementation plan
+use an immutable source URL. Tests execute the relocated real reporting archive
+with and without a caller and with no command search path, and walk relative
+links in the actual worker archive. Both regression tests fail against `a8aaa2e`
+and pass with fix `92be2d6`. The complete core suite passes 385 tests, the 135-file
+inventory and unified private build/verification. Worker roles and all four skill
+bodies/invocation metadata remain byte-identical to the review baseline.
+
+The separate matched permission trial is scoped to one fresh continuing Sol
+primary and an unchanged, intentionally defective lease fixture. The same
+read-only review request is used with escalation permission omitted, explicitly
+enabled for Astra, then revoked before a new assignment. Only the enabled/disabled
+preface changes. This is a test of the agent's interpretation of instructions;
+it introduces no parsed configuration flag or spending enforcement. The trial is
+bounded to four worker starts and twelve native conversation turns, with a stop
+after two distinct provider/access failures. The settled results below are separate from the earlier pilot evidence.
+
+
+### Matched native permission results
+
+| Permission for the next assignment | Observed worker | Result |
+| --- | --- | --- |
+| Omitted entirely | `luna-max`, loaded `gpt-6-luna` / `max` | Completed independent review through `worker-task`; no explicit Luna skill or named-worker request. |
+| Astra explicitly allowed | `astra-xhigh`, loaded `gpt-6-astra` / `xhigh` | Completed the same independent review using the permitted escalation target. |
+| Escalation explicitly revoked | Fresh `luna-max`, loaded `gpt-6-luna` / `max` | Completed the same review; the existing Astra worker received no new native turn. |
+
+All three direct native spawns used exact named roles and `fork_turns="none"`.
+The primary refreshed its own loaded selection and independently reproduced the
+returned findings on each pass. Two contract violations in the intentionally
+flawed fixture were accepted; additional concerns outside the stated contract
+were not accepted merely because a worker raised them. All fixture payload
+hashes/modes stayed unchanged. There were three worker starts and six native
+conversation turns, no provider/access errors, no nested child and no new Astra
+work after revocation, including reuse of the existing Astra context.
+
+The primary's collaboration surface exposed worker completion but limited
+worker-selection metadata; it reported that uncertainty. The independent trial
+controller corroborated the loaded worker model/effort through scoped native
+thread reads. Matching configured selection and completed inference do not
+independently establish the backend execution model or a capability ranking.
+
+The one owned primary and three children were settled, archived and positively
+absent from loaded inventory. The native-created fixture trust entry was removed
+through a version-checked config batch with no reload; the original config hash
+and all 17 protected installed/config paths match baseline. The native owner
+identity is unchanged. An initial empty-thread history read was unsupported;
+metadata-only reading before the first turn resolved that harness limitation,
+without a model retry, source workaround or owner lifecycle action.
+
+This closes the review's native opt-in coverage gap for the matched `worker-task`
+fixture. It is one bounded instruction-following result, not machine-enforced
+permission, a billing limit, an ordinary-use savings measurement or a long-goal
+lifecycle test. Terra-primary access, active-writer revocation and provider-error
+recovery retain the limits above. No new permission parser, installed policy,
+publication, deployment or real-session interruption was introduced. Captures,
+prompts and native identifiers remain private.

@@ -63,6 +63,9 @@ Read `status`, not just the command's exit code. Missing caller identity, an
 unavailable owner, an unloaded/error thread, a subagent caller, missing ancestry
 or incomplete selection fields returns `status: unknown`. It does not guess
 from configuration defaults, use another home or walk to a parent session.
+A reporting-only archive has no native client module; with a caller identity,
+`--primary` returns `status: unknown` / `native_component_unavailable` without
+contacting an owner or requiring monitoring to be installed.
 Each invocation reads fresh metadata. A `known` result is a configured selection
 snapshot; `execution_verified: false` explicitly excludes proof of the backend
 model used for a particular inference.

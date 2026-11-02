@@ -31,7 +31,7 @@ qualification refinements. Only the two adaptive skills gain the policy. The
 existing Luna role and both explicit Luna skill identities/bodies/metadata remain
 byte-identical. No new settings file or service is introduced.
 
-The clean 135-file candidate passes 383 tests, four worker skill validators and
+The initial 135-file candidate passed 383 tests, four worker skill validators and
 complete private build/verification. Two core builds are byte-reproducible. The
 Pages candidate verifies 301 local links/assets/anchors and 15 release claims.
 Three native worker starts across nine turns qualify Sol-primary/Astra review,
@@ -48,6 +48,34 @@ clean export. See the [qualification record](worker-escalation-results.md) for
 source, artifacts, model selection, accepted results and limits. No push,
 publication, release or fleet apply occurred. Older proposals below retain their
 historical limits.
+
+## Review fixes qualified locally
+
+Fix `92be2d6` makes the reporting-only context CLI return structured unknown
+selection when its optional native client is absent, and includes the qualification
+record in the worker artifact. Packaged relative documentation links are checked;
+larger-plan references use immutable source URLs. Both real-archive regressions
+fail on the previous source and pass on the fix. The complete suite now passes
+385 tests, with the same 135-file inventory, four worker skill validators and
+unified private build/verification. Roles and all four skill bodies/metadata
+remain unchanged. Permissions remain natural-language instructions.
+
+The matched native follow-up used one continuing Sol primary and the same
+read-only request: omitted escalation permission selected Luna, explicit Astra
+permission selected Astra, and revocation selected Luna again with no new turn
+on the existing Astra worker. Each completed review was independently checked
+by the primary. Three workers and six native turns settled error-free within the
+four-start/twelve-turn cap. All four owned actors were archived/unloaded, and
+fixture payload hashes/modes remained identical. The controller separately
+verified loaded worker model/effort; primary-visible metadata limits were reported.
+
+The fixture's generated trust entry was removed through the native config owner
+with version checking and no reload. All 17 protected installed/config paths and
+the daemon identity match baseline. No release, push, installed-policy patch,
+fleet apply, owner restart or real-session interruption occurred. The existing
+two bytecode files remain untracked. See the
+[review qualification](worker-escalation-results.md#matched-native-permission-results)
+for outcomes and remaining limits, including Terra and active-writer lifecycle.
 
 ## Research candidate: model facts and routing preferences
 
