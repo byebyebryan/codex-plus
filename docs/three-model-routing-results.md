@@ -139,7 +139,16 @@ baseline, including those bytecode files. The existing owner identity matches;
 all four owned actor records report `notLoaded`. All current agent and skill
 payload files remain unchanged.
 
-Complete committed-candidate package acceptance is recorded after its build.
+Committed candidate `4fe5ae6` passes the clean inventory check and a complete
+three-component release build/verification. A checksum-verified monitoring
+archive installs under a private temporary prefix; its relocated context CLI
+successfully reads the real caller's selected Sol/XHigh configuration. All 18
+worker payload files match the prior source byte-for-byte. These private build
+checks use the current source version; they are not new published release assets
+or an installation into a production prefix.
+
 Raw events, private actor identifiers, catalog copies and local evidence paths
 remain outside committed source. This pass does not publish, deploy, change
-production configuration or restart a daemon.
+production configuration or restart a daemon. The research spike is complete
+with the Terra execution gate unresolved; the continuation above is required
+before implementing or claiming the three-model adaptive workflow.

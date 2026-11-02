@@ -23,7 +23,10 @@ gates before introducing a Terra worker or claiming Terra-primary escalation.
 
 This is a local source candidate, not a release or deployment. Existing owners,
 production configuration, installed selections and unrelated bytecode are
-preserved. Final source validation and preservation evidence are in the results.
+preserved. Candidate `4fe5ae6` passes 382 tests, a clean 133-file inventory and a
+complete private release build/verification. The relocated context CLI works,
+all 18 worker payload files are unchanged and all 375 protected files match.
+The gated research pass is complete; final evidence is in the results.
 
 ## Lifecycle guide publication
 
