@@ -43,9 +43,9 @@ For OSS, use `~/.codex`, `codex-plus-oss` and `report.toml` instead. These are
 existing Snap overrides, not portable default names. Preserve them when using
 standalone monitoring/report commands, or pass the exact native MCP arguments.
 
-## Local candidate: inspect the selected primary
+## Inspect the selected primary
 
-The three-model routing spike adds an opt-in mode to the source context CLI:
+Preview.15 includes an opt-in mode in the context CLI:
 
 ```sh
 rtk proxy scripts/codex-plus-context --primary
@@ -70,10 +70,10 @@ Each invocation reads fresh metadata. A `known` result is a configured selection
 snapshot; `execution_verified: false` explicitly excludes proof of the backend
 model used for a particular inference.
 
-This is an unreleased source candidate. Current released installations do not
-gain the option automatically. The [spike results](three-model-routing-results.md)
+This mode requires preview.15 or later; updating documentation does not upgrade
+an older installed CLI. The [spike results](three-model-routing-results.md)
 record native verification and the Terra access gate. The
-[local escalation candidate](worker-escalation-results.md) uses reliable selection
+[escalation qualification](worker-escalation-results.md) uses reliable selection
 for optional adaptive escalation; explicit Luna workflows remain unchanged.
 Workers do not acquire a monitoring dependency, and missing selection metadata
 holds automatic escalation rather than guessing a primary.

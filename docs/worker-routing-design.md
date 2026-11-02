@@ -1,10 +1,9 @@
 # Worker routing design
 
-Updated 2026-11-02. The shipped Sol/Luna policy remains active. The
-[selected design](#selected-design-primary-luna-and-one-escalation-target)
-below is implemented in the local candidate; it is not released or installed.
-See the [qualification record](worker-escalation-results.md) for current evidence.
-The [worker routing study](worker-routing-study.md) records evidence and limits.
+Updated 2026-11-02. Preview.15 implements the selected primary/Luna/optional
+escalation policy below. Existing installations need an explicit upgrade. See the
+[qualification record](worker-escalation-results.md) for native evidence and limits;
+the [worker routing study](worker-routing-study.md) records the research history.
 
 ## Selected design: primary, Luna and one escalation target
 
@@ -69,8 +68,8 @@ the task without a permission question for every spawn; it starts no work and
 does not itself invoke a skill. Disabling a target prevents new assignments,
 while handling an active child follows the user's stop/ownership instructions.
 
-Native loaded-thread metadata is the qualified primary source. The existing
-read-only helper is a local, unpublished candidate; a config default or model
+Native loaded-thread metadata is the qualified primary source. The preview.15
+read-only helper supplies loaded-thread selection; a config default or model
 self-description is not an identity substitute. If trustworthy metadata is
 unavailable, use primary/Luna and report automatic escalation as held. An
 explicit user assignment to a named worker can still be honored within normal
@@ -79,8 +78,8 @@ installations keep their existing usefulness and gain no monitoring dependency.
 
 ### Native execution, availability and failure handling
 
-The candidate worker roles are `luna-max` (existing), `sol-xhigh` (existing), and
-`astra-xhigh` (new candidate). Preserve the
+The worker roles are `luna-max` (existing), `sol-xhigh` (existing), and
+`astra-xhigh` (added in preview.15). Preserve the
 existing named roles and legacy compatibility files. Terra remains a normal
 supported native primary; this policy needs no automatic Terra worker role.
 Role installation/declaration, account access and completed inference remain
@@ -160,7 +159,9 @@ from the protocol pilot.
 ## Shipped policy and earlier research context
 
 The sections below retain the implemented policy and research chronology. The
-selected design above is the local implementation candidate and has not been installed.
+selected design above is the preview.15 implementation. The sections below are
+historical policy and research snapshots; they do not add routes to the selected
+policy.
 
 The adaptive workflows should keep more work in the GPT-6.1 Sol XHigh primary
 and delegate to GPT-6 Luna Max when the assignment is clear and the expected

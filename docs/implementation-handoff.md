@@ -5,7 +5,25 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.14 is published and
 selected on Snap OSS/work, Starship and Carbon; selected and loaded versions remain distinct.
 
-## Local candidate: primary, Luna and one escalation target
+## Selected publication and deployment pass
+
+Bryan selected documentation/presentation polish, preview.15 publication and
+chezmoi deployment to Snap OSS/work, Starship and Carbon. Personal github.com
+account `byebyebryan` owns publication. Preserve native owners, active sessions,
+old releases and unrelated dotfile drift; no daemon restart or global MCP refresh.
+The new release carries the reviewed routing policy, optional-metadata fix and
+complete worker documentation. Permission remains verbal/default-off, and explicit
+Luna workflows remain Luna-only. The docs should demonstrate natural requests,
+optional escalation and revocation while retaining Terra/runtime limits.
+
+Current installed/public selection remains preview.14 until the new artifacts and
+scoped applies verify. The canonical chezmoi checkout is divergent and dirty in
+unrelated areas; prepare and publish only the Codex Plus pin/validator patch from
+an isolated current-origin checkout, then integrate its hunks through each
+canonical source without staging unrelated edits. Verify source, assets, Pages,
+managed pins, installed bytes/modes/links and loaded-process limits separately.
+
+## Preview.15 preparation: primary, Luna and one escalation target
 
 Bryan's post-research decisions are reconciled in the
 [selected design](worker-routing-design.md#selected-design-primary-luna-and-one-escalation-target)

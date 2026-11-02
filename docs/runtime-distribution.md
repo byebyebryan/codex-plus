@@ -18,8 +18,11 @@ operation, native owner replacement and personal UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.14](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.14)
-fixes native collaboration discovery in all four worker workflows and retains
+[v0.1.0-preview.15](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.15)
+adds optional primary-aware escalation, the Astra XHigh role and read-only
+primary-selection inspection with graceful reporting-only fallback. Escalation
+is instruction-based and defaults off. It preserves explicit Luna workflows,
+native collaboration discovery and
 preview.13 verification/rollback support, readable doctor output and independent
 published/managed guide checks. It retains explicit clean native-owner recovery and inspectable history. Workers, monitoring
 and reporting share one
@@ -31,9 +34,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.14.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.14.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.14.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.15.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.15.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.15.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains

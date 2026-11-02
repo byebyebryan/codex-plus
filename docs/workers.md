@@ -1,10 +1,9 @@
 # Luna workers and task workflows
 
-The local worker candidate includes three custom agents and four explicitly
-invoked worker workflows. Published preview.14 still has two agents and the
-earlier Sol/Luna policy; this candidate is not released or installed. Your current primary agent keeps decisions, integration and final
-review. A workflow can hand a useful assignment to a worker without changing
-your primary model.
+Preview.15 includes three native custom agents and four worker workflows. Your
+current primary keeps decisions, integration and acceptance. Choose an explicit
+Luna workflow, or let an adaptive workflow use direct work, useful Luna delegation
+and one optional escalation target without changing your primary model.
 
 ## Choose a workflow
 
@@ -76,7 +75,7 @@ may be easier to finish in the primary. File count or unfamiliarity alone does
 not decide the route. Compare total primary and worker usage plus corrections;
 the package does not promise a universal cost saving.
 
-## Optional escalation in the local candidate
+## Optional escalation
 
 Choose your primary normally in Codex. In explicitly invoked adaptive workflows,
 use primary/Luna by default, or configure one target for that primary:
@@ -113,7 +112,7 @@ Sol-to-Terra cost offload, default Terra-to-Sol escalation or child-to-child
 escalation chain. The primary keeps acceptance responsibility.
 
 Resolve the initiating primary from reliable loaded-thread metadata at each
-assignment boundary. The candidate's read-only `codex-plus-context --primary`
+assignment boundary. The read-only `codex-plus-context --primary`
 mode reports configured selection, not completed inference. Worker-only setups
 need no monitoring runtime: if no reliable native selection is exposed, continue
 primary/Luna work and hold automatic escalation. An explicit named-worker
@@ -122,7 +121,17 @@ identity evidence. Existing workers retain their contracts, settings and write
 ownership when the primary or policy changes; disabling a target prevents new
 assignments rather than silently cancelling active work.
 
-The [candidate qualification](worker-escalation-results.md) separates source,
+To revoke permission before the next assignment, say:
+
+> Disable automatic escalation for the next assignment. Continue suitable Luna work.
+
+That prevents new target assignments, including reuse of an existing target
+worker for new work. Active workers keep their contracts and ownership until
+completion or an explicit stop/handoff. In the matched native fixture, permission
+omitted, enabled for Astra and revoked produced Luna, Astra and Luna respectively.
+This is bounded instruction-following evidence, not a hard spending control.
+
+The [qualification](worker-escalation-results.md) separates source,
 artifact, native execution and the unavailable local Terra-primary paths.
 
 ## Native delegation and availability
@@ -167,8 +176,8 @@ skills do not automatically register a watch or reminder.
 ## Installation
 
 Use the [agent lifecycle guide](manage-agent.md#install-or-upgrade-through-the-configuration-owner)
-for the complete procedure. Published preview.14 installs its two agents and
-four workflow skills from a verified worker release archive and preserves your configuration
+for the complete procedure. Install the three native roles and four workflow
+skills from a verified preview.15 worker release archive and preserves your configuration
 owner, local changes and skill disable preferences. The human
 [setup overview](getting-started.md) explains component selection.
 
@@ -184,8 +193,8 @@ choice, not the released installation procedure.
 The bundle also contains the separate `skills/html-report` skill. Add it when
 you configure the report component; the four worker skills above do not install
 that skill or either runtime.
-The source candidate additionally packages `astra-xhigh`; its presence does not
-opt in to paid escalation or update an installation. Your client and account must
+The `astra-xhigh` role is available for permitted escalation; installing it does
+not opt in to automatic use or update an already loaded conversation. Your client and account must
 support the selected models, custom agents and skills; installation does not
 prove runtime model availability.
 

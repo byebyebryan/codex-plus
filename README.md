@@ -51,10 +51,12 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.14** includes corrected native Luna delegation discovery across
-all four worker workflows, preserving explicit invocation and routing. It retains
-readable doctor output, reminder history, outgoing-message inspection and prior
-preview verification/rollback support; see [released and source features](docs/getting-started.md#released-and-source-features).
+**v0.1.0-preview.15** includes optional primary-aware escalation in the two
+adaptive worker workflows, the `astra-xhigh` role, read-only primary selection
+and graceful reporting-only metadata fallback. Escalation defaults off and uses
+your request or existing instructions; explicit Luna workflows remain Luna-only.
+It retains the native-control discovery fix, readable diagnostics, watch history
+and preview rollback support. See [released and source features](docs/getting-started.md#released-and-source-features).
 Updating a guide or checkout does not upgrade an installed runtime.
 
 Use `--human` with the existing read-only doctor for a readable summary; JSON
@@ -81,7 +83,7 @@ declared compatibility baseline remains unchanged.
 | Returning to work | “What am I still waiting on?” combines this conversation's stored watches, reminder outcomes and outgoing receipts, with stale or missing evidence explained. |
 | Peer coordination | Contextual independent-session discovery, attributed information/requests and handling receipts within one daemon. |
 | Browser reports | Immutable static HTML, project catalog, four report MCP tools, a report skill and independent HTTP hosting. |
-| Workers | Existing two agents and four worker workflows, with unchanged identities and explicit invocation. |
+| Workers | Three native roles and four worker workflows; selective Luna and one optional escalation target, with explicit invocation. |
 
 Command polling can stay quiet without a model turn per read. Configured MCP
 checks use scheduled native model turns under normal authentication/approval;
@@ -153,11 +155,11 @@ historical usage study. Active sessions supplied passive evidence; experimental
 messaging/delivery used owned synthetic sessions. Agent Observer is not a runtime
 dependency.
 
-## Worker source candidate
+## Worker workflows
 
-The local candidate adds one optional escalation target to the two adaptive
-workflows and packages `astra-xhigh`. It is not part of published preview.14; see
-the [qualification and limits](docs/worker-escalation-results.md).
+Preview.15 adds one optional escalation target to the two adaptive workflows
+and packages `astra-xhigh`. The [qualification and limits](docs/worker-escalation-results.md)
+separate native execution evidence, conditional Terra routes and ordinary-use acceptance.
 
 Reusable workers and execution workflows keep your native user-selected primary
 with selective Luna Max delegation. The primary owns decisions, integration, review, and
@@ -186,7 +188,7 @@ single target in the request or existing applicable user guidance. Reviews and
 implementation share that target; children return gaps to the initiating primary
 without an escalation chain. No automatic Sol-to-Terra offload is introduced.
 Unknown primary metadata holds automatic escalation while primary/Luna work
-remains useful. See [examples and configuration](docs/workers.md#optional-escalation-in-the-local-candidate).
+remains useful. See [examples and configuration](docs/workers.md#optional-escalation).
 
 Escalation requires evidence: an unresolved decision, contradictory observations,
 a verification gap, or repeated failure without new evidence. Cross-module work,
@@ -231,7 +233,7 @@ new evidence call for primary diagnosis rather than repeated worker cycling.
 
 Use the [agent lifecycle guide](docs/manage-agent.md) as the primary setup and
 maintenance procedure. Choose components in the [setup overview](docs/getting-started.md). The
-[worker installation steps](docs/workers.md#installation) install two agents and
+[worker installation steps](docs/workers.md#installation) install three agents and
 four worker workflows; the HTML report skill is a separate optional addition.
 The [runtime guide](docs/runtime-distribution.md) and
 [report guide](docs/html-report-usage.md) cover their independent artifacts.

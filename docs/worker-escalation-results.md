@@ -1,8 +1,9 @@
 # Worker escalation candidate qualification
 
-Local candidate qualified 2026-11-02 on native Codex 0.166.0. This is source and
-private artifact evidence, not a published release or installed policy.
-Published and managed selections remain preview.14 from `dc19a82`.
+Native qualification completed 2026-11-02 on Codex 0.166.0. Preview.15 includes
+the policy and review fixes documented here. The historical candidate/build
+receipts below retain their original scope. Publication and host selection are
+recorded separately in the [release delivery receipt](https://github.com/byebyebryan/codex-plus/blob/main/docs/reliability-packaging-results.md).
 
 ## Implemented policy
 
