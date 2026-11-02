@@ -231,7 +231,7 @@ model to each tier: the setting can express a preference while task fit and
 actual access determine the useful candidates. This conclusion is a design
 inference, not a measured improvement to this kit. See the
 [draft design](worker-routing-design.md#draft-model-aware-routing-preferences-2026-11-02)
-and [qualification plan](codex-plus-plan.md#research-pass-model-aware-worker-preferences).
+and [qualification plan](https://github.com/byebyebryan/codex-plus/blob/295ed24061d058067e8d2a18ee39a3f55d610067/docs/codex-plus-plan.md#research-pass-model-aware-worker-preferences).
 
 ### What the current official sources establish
 

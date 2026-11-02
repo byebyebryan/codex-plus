@@ -1,4 +1,6 @@
 import json
+import posixpath
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -7,6 +9,7 @@ import tempfile
 import tarfile
 import tomllib
 import unittest
+from urllib.parse import unquote, urlsplit
 
 from codex_plus import VERSION, package, release
 from codex_plus.reports import VERSION as REPORT_VERSION, package as reports
@@ -72,6 +75,51 @@ class ReleaseTests(unittest.TestCase):
                     self.assertEqual(archive.extractfile('codex-plus-workers/' + name).read(),
                                      (self.source / name).read_bytes())
         self.assertIn('agents/astra-xhigh.toml', release.read_workers(path)['files'])
+
+    def test_reporting_only_primary_selection_is_structured_without_monitoring_or_owner(self):
+        output = self.root / 'release'; result = release.build(self.source, output)
+        component = result['components']['reporting']
+        installed = reports.install(output / component['artifact'], self.root / 'report-only', component['sha256'])
+        self.assertFalse((installed / 'codex_plus/native.py').exists())
+        environment = {'PATH': '/unavailable', 'PYTHONPATH': '', 'PYTHONDONTWRITEBYTECODE': '1',
+                       'CODEX_HOME': str(self.root / 'absent-native-home'),
+                       'XDG_CONFIG_HOME': str(self.root / 'config')}
+        script = installed / 'scripts/codex-plus-context'
+        paths = subprocess.run([sys.executable, '-B', str(script)], cwd=self.root,
+                               env=environment, capture_output=True, text=True)
+        self.assertEqual(paths.returncode, 0, paths.stderr)
+        self.assertFalse(json.loads(paths.stdout)['daemon_checked'])
+        for caller, reason in (('', 'caller_thread_unavailable'),
+                               ('01a00000-0000-7000-8000-000000000001', 'native_component_unavailable')):
+            with self.subTest(caller=bool(caller)):
+                primary = subprocess.run([sys.executable, '-B', str(script), '--primary'], cwd=self.root,
+                    env={**environment, 'CODEX_THREAD_ID': caller}, capture_output=True, text=True)
+                self.assertEqual(primary.returncode, 0, primary.stderr)
+                self.assertEqual(primary.stderr, '')
+                self.assertEqual(json.loads(primary.stdout), {'status': 'unknown',
+                    'source': 'loaded_thread_configuration', 'execution_verified': False, 'reason': reason})
+        self.assertFalse((self.root / 'absent-native-home').exists())
+
+    def test_worker_archive_relative_document_links_resolve_inside_the_artifact(self):
+        output = self.root / 'release'; result = release.build(self.source, output)
+        with tarfile.open(output / result['components']['workers']['artifact'], 'r:gz') as archive:
+            prefix = 'codex-plus-workers/'
+            content = {member.name.removeprefix(prefix): archive.extractfile(member).read()
+                       for member in archive if member.isfile()}
+        self.assertIn('docs/worker-escalation-results.md', set(content))
+        links = 0
+        for name, data in content.items():
+            if not name.startswith('docs/') or not name.endswith('.md'):
+                continue
+            for target in re.findall(r'\]\(([^)\s]+)\)', data.decode()):
+                url = urlsplit(target)
+                if url.scheme or url.netloc or not url.path:
+                    continue
+                resolved = posixpath.normpath(posixpath.join(posixpath.dirname(name), unquote(url.path)))
+                with self.subTest(document=name, target=target):
+                    self.assertIn(resolved, set(content))
+                links += 1
+        self.assertGreater(links, 0)
 
     def test_mixed_revision_paths_modified_bytes_and_checksum_file_are_rejected(self):
         output = self.root / 'release'; metadata = release.build(self.source, output)

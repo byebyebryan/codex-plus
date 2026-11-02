@@ -37,6 +37,29 @@ implementation and bounded native pass: three worker starts across nine turns,
 results satisfy the local-candidate exit gate below; publication and deployment
 remain a later pass.
 
+### Selected review fixes and permission-boundary trial
+
+Bryan selected a fix goal loop after review found a reporting-only primary lookup
+crash, an omitted linked worker document and incomplete native opt-in coverage.
+Keep this a local candidate. Make the optional native import degrade to structured
+unknown metadata without adding a monitoring dependency. Include the qualification
+record in workers and check the packaged relative documentation links. Validate
+both regressions against the old source and through relocated real archives.
+
+Use one fresh owned Sol-primary fixture and the same read-only review request
+with permission omitted, then Astra allowed, then escalation revoked. No explicit
+Luna skill or named-worker request should replace adaptive routing. A suitable
+independent review makes the worker route observable. Verify actual selected
+roles, worker-turn deltas, completed results and primary acceptance rather than
+scoring the model's description of hypothetical choices. Cap this trial at four
+worker starts and twelve native conversation turns, including corrections and
+settlement; stop after two distinct provider/access failures. Do not retry Terra,
+change installed skills, refresh global MCPs or restart/interfere with existing
+sessions. Archive only settled owned actors, remove only their generated trust
+entries through the version-checked native config owner, and prove preservation.
+Run repository/skill/package gates and commit validated slices before review.
+Publication and deployment remain separate.
+
 ### Selected implementation sequence
 
 1. Recheck the intended source and metadata, preserve concurrent edits, and

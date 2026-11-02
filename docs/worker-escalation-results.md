@@ -7,7 +7,7 @@ Published and managed selections remain preview.14 from `dc19a82`.
 ## Implemented policy
 
 The [selected design](worker-routing-design.md#selected-design-primary-luna-and-one-escalation-target)
-and [implementation plan](codex-plus-plan.md#selected-plan-primary-luna-and-optional-escalation)
+and [implementation plan](https://github.com/byebyebryan/codex-plus/blob/295ed24061d058067e8d2a18ee39a3f55d610067/docs/codex-plus-plan.md#selected-plan-primary-luna-and-optional-escalation)
 keep the native user-selected primary, useful Luna assignments and one opt-in
 escalation target. Terra can select Sol or Astra; Sol can select Astra. Defaults
 are none. Reviews and demanding implementation use the same option. There is no

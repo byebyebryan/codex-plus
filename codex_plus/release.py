@@ -14,6 +14,7 @@ from .reports import package as reports
 
 
 WORKER_FILES = ('LICENSE', 'docs/worker-routing-design.md', 'docs/worker-routing-study.md',
+                'docs/worker-escalation-results.md',
                 'agents/luna-max.toml', 'agents/sol-xhigh.toml', 'agents/astra-xhigh.toml',
                 'legacy/agents/terra-xhigh.toml',
                 *(f'skills/{name}/{file}' for name in ('luna-task', 'luna-goal-loop', 'worker-task', 'worker-goal-loop')

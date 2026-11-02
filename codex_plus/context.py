@@ -119,13 +119,17 @@ def describe(*, state_root=None, report_config=None, socket=None):
 
 def primary_selection(socket=None):
     """Read this caller's loaded primary selection, never execution telemetry."""
-    from .native import Client, RpcError
-
     unknown = {'status': 'unknown', 'source': 'loaded_thread_configuration',
                'execution_verified': False}
     thread_id = os.environ.get('CODEX_THREAD_ID')
     if not thread_id or len(thread_id) > 128:
         return {**unknown, 'reason': 'caller_thread_unavailable'}
+    try:
+        from .native import Client, RpcError
+    except ModuleNotFoundError as error:
+        if error.name != __package__ + '.native':
+            raise
+        return {**unknown, 'reason': 'native_component_unavailable'}
     try:
         # bind verifies listener ownership and positive loaded inventory. Do not
         # resume a thread to obtain metadata or consult another native home.
