@@ -30,6 +30,16 @@ The correction is a local source candidate. Published preview.13 workers at
 chezmoi repin/apply or daemon restart is part of this source fix. Keep private
 probe evidence outside Git and preserve the earlier Terra/catalog work.
 
+Fix commit `d3b7a38` builds and verifies a complete private release candidate.
+Its worker archive matches all 18 source payloads; exactly the four skill bodies
+and shipped routing design changed, with the other 13 payloads unchanged. The
+four extracted skills pass validation too. The fetched published preview.13
+worker artifact still identifies `5e6c9dd`; all four installed skills in Snap
+OSS/work and Starship match that old artifact. Starship's role still selects
+Luna/Max. No published or installed payload contains this correction yet.
+The generated site verifies 301 links/assets/anchors and 15 release claims;
+source and installed/runtime acceptance remain separate from distribution.
+
 ## Local candidate: native catalog ownership repair
 
 The [repair results](three-model-routing-results.md#native-catalog-repair-candidate)
