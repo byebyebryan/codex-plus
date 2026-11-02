@@ -80,6 +80,78 @@ Both failed fixtures and both successful control fixtures are archived and
 unloaded. Only those four newly owned actors received input or lifecycle
 operations. No child-worker or peer-message trial was started.
 
+## Native catalog repair candidate
+
+The subsequent 2026-11-01 goal loop qualifies a local fix in the canonical
+chezmoi provider integration. This is separate from the Codex Plus runtime
+candidate, product version and the deferred three-tier worker behavior.
+
+Both production homes still select the same managed snapshot lacking Terra.
+Removing an output key from a managed template alone would retain the old live
+key during merge. The candidate therefore:
+
+- omits `model_catalog_json` for the OpenAI default and its ChatGPT profile,
+  restoring native discovery rather than periodically copying a bundle;
+- retires only the integration's exact old catalog paths, preserving custom
+  catalog paths and explicit machine overrides;
+- provides a catalog-only apply that preserves all other settings and refuses
+  a provider transition; Plus/report-only scopes retain their boundaries;
+- retains Ori's OpenRouter catalog, complete metadata and worker aliases; and
+- handles an optional OpenRouter default separately, since native profiles
+  overlay the base config and cannot unset its catalog.
+
+That last case needs a subscription compatibility snapshot. The refresh helper
+uses native `debug models` in separate empty staging homes, references each
+selected home's existing native credential file without copying or interpreting
+its tokens, and requires a newly written, current-version, identity-scoped native
+cache. A successful command with silent bundled fallback is rejected. Default
+and Work account catalogs remain separate. Explicit offline fallback exports the
+installed native bundle and records that source; it never uses Ori's stale native
+snapshot. Publication remains atomic, preserves earlier generations and rejects
+foreign paths. There is no background or launch-time refresh. Compatibility
+snapshots require manual refresh when models or account selection change.
+
+The current compatibility exporter supports file-backed ChatGPT login;
+keyring-only export is not qualified and fails closed. Normal native discovery
+keeps its native authentication behavior. Native inference access remains
+unproven by these metadata tests.
+
+Validation uses synthetic credentials and a loopback catalog, with no real
+account request, shared daemon or inference turn. Native 0.166.0 fetches a
+new fixture entry absent from the stale Ori snapshot, preserves its complete
+metadata, distinguishes two account identities, rejects failed-online fallback,
+and selects the correct instructions in all eight combinations of root provider,
+explicit billing profile and native home. Managed tests cover exact-path
+migration, custom/machine choices, byte convergence, narrow apply preservation,
+Luna/Max metadata, malformed/missing exports, freshness/version/identity failures,
+foreign publication paths and failure preservation.
+
+`check-codex-openrouter --native /opt/openai-codex/bin/codex` passes. The full
+chezmoi check passes its relevant Codex/worker/split/provider gates, then fails
+in the existing Claude/OpenRouter fixture because its temporary home lacks
+staged Niri components. The pre-change baseline reproduces the same failure;
+it is not repaired or bypassed here. Codex Plus's clean 133-file inventory and
+40 existing check/Pages tests pass; the pre-existing untracked bytecode is
+preserved outside that clean candidate.
+
+Actual-config dry runs on Snap pass for both native homes. Their semantic
+config delta contains exactly one removed key, `model_catalog_json`; both
+rendered ChatGPT profiles also omit it. Eleven protected live config/profile,
+auth and catalog paths retain their original bytes/modes/targets. Both owners
+predate this goal and remain running; their complete inventories still omit
+Terra and still select the old snapshot. This confirms preparation without
+claiming installation or loaded acceptance.
+
+The candidate changes seven chezmoi paths: three shared config/profile templates,
+the Work ChatGPT profile wrapper, the existing refresh helper, its existing check
+script and provider documentation. Those paths overlap uncommitted provider work
+in a divergent tree, so keep the baseline and focused patch separate before any
+commit/publication there. No production helper/config/catalog, auth, worker,
+release selection or daemon restart is part of preparation. Apply the reviewed
+catalog-only delta and the two explicit profiles at a later authorized boundary,
+verify the effective config and loaded inventory independently, then qualify
+exact Terra/XHigh inference before continuing three-tier worker work.
+
 ## Supported local implementation
 
 `codex-plus-context --primary` exposes the qualified read through the existing

@@ -15,6 +15,109 @@ reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agen
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
 
+## Planned fix: native model catalog ownership
+
+Source preparation completed 2026-11-01 under Bryan's subsequent goal-loop
+request. The preferred native path, inheritance compatibility path, catalog-only
+migration and isolated native regressions are qualified. See the
+[repair results](three-model-routing-results.md#native-catalog-repair-candidate).
+The candidate remains local in canonical chezmoi source; production catalog
+selection, live-owner visibility and exact Terra inference acceptance are pending.
+The original execution/rollout boundaries below remain in force.
+
+Planned 2026-11-01 after Bryan reported that Terra remains absent following a
+daemon restart and requested a proper fix plan. This prerequisite belongs to
+the canonical chezmoi provider/catalog integration, before further Codex Plus
+worker routing changes. This entry records planning only; it authorizes no live
+apply, catalog publication, model trial or owner lifecycle operation by itself.
+
+### Confirmed problem and intended behavior
+
+Both native homes select the same managed `bundled-models.json` snapshot, which
+omits GPT-6.1 Terra. The installed native binary's bundled catalog includes it.
+The restarted owner's effective configuration still selects the managed
+snapshot. The refresh helper copies that fallback from Ori's generated output.
+Official native catalog documentation says a local `model_catalog_json` takes
+precedence over remote discovery. Restarting alone cannot update those bytes.
+
+Restore native OpenAI catalog ownership wherever supported, while retaining
+Ori/OpenRouter's catalog only where its provider needs it. Do not hardcode Terra
+into an old model list or copy Sol metadata to another model. A future native
+model addition must reach normal native discovery without an Ori update. Catalog
+visibility, a loaded owner's inventory and successful backend inference are
+separate acceptance stages; the earlier Terra inference error is still open.
+
+### Execution sequence
+
+1. Capture current effective defaults/profiles, catalog targets and hashes,
+   installed native version and owner identities on Snap OSS/work. Inspect
+   canonical target-specific edits against published source. The chezmoi tree
+   already has divergent history and overlapping uncommitted provider/profile
+   work: preserve that baseline, prepare only this fix and do not pull/reset or
+   publish unrelated history. Do not expand host/provider admission.
+2. Qualify catalog selection in disposable native configurations, including
+   OpenAI and OpenRouter defaults plus both explicit billing profiles. Preferred
+   outcome: native OpenAI uses its own discovery/bundled fallback with no custom
+   catalog override. Prove that an OpenRouter-root catalog does not leak into
+   the ChatGPT profile. If native inheritance prevents that isolation, retain
+   only the required compatibility fallback and qualify refresh from current
+   native account-scoped defaults, with the installed binary's bundle reserved
+   for an explicit offline fallback. Record identity/version/freshness provenance
+   without copying credentials or creating a new authentication route. Native
+   models can change without a binary upgrade: exporting the bundled snapshot
+   once is not a durable repair. Resolve refresh/staleness behavior before
+   accepting this alternative. Do not add a catalog service, background process
+   or per-launch network refresh.
+3. Update the existing refresh helper and narrowly affected templates/merge
+   rules. The current merge preserves live keys absent from the new managed
+   overlay, so removal needs an explicit migration of the exact integration-owned
+   catalog path. Preserve user-owned catalog paths, explicit machine overrides,
+   trust, credentials, MCP policy, skill preferences and provider choice. Keep
+   scoped Plus/report config applies isolated from this migration. Preserve
+   OpenRouter aliases/capabilities, atomic catalog-generation publication,
+   previous generations and failure preservation. Ori setup stays confined to
+   an empty staging Codex home; do not operate it on real histories.
+4. Extend the existing chezmoi checks with a stale snapshot that lacks a newly
+   added native fixture model. Prove the selected native catalog exposes the
+   complete new entry and its original metadata, while OpenRouter routing and
+   Luna/Max remain correct. Cover both defaults/profiles and both homes, opt-out,
+   missing/malformed exporter output, failure preservation, owned-path migration,
+   unrelated custom catalogs and byte/semantic idempotence. Render before parsing;
+   run `scripts/check-codex-openrouter`, the appropriate root checks and
+   `git diff --check`. Avoid changing worker downloads or model/effort pins.
+5. Prepare a reviewed local candidate, source documentation and a scoped rollout
+   recipe. A later authorized apply updates only the selected helper/config/profile
+   targets and managed catalog generation, retaining the previous generation and
+   config backup for rollback. Re-read the effective native configuration and
+   owner inventory afterward. Do not assume a running owner hot-reloads catalog
+   data: qualify supported read-only refresh behavior, or record live acceptance
+   as pending its next normal/safe start. No forced restart belongs to unattended
+   preparation. Other hosts enter rollout only if the same override is present
+   and deployment is requested.
+6. After the intended native route sees Terra, use one owned isolated exact
+   Terra/XHigh inference to qualify actual access without another provider or
+   silent fallback. If it fails, retain the catalog repair's separate result and
+   investigate account/upstream eligibility using that evidence. Resume the
+   three-model routing continuation only after this execution gate passes.
+
+### Likely source boundary and exit gate
+
+The chezmoi targets are `dot_local/bin/private_executable_codex-openrouter-refresh`,
+`.chezmoitemplates/codex-portable-config.toml.tmpl`,
+`.chezmoitemplates/codex-chatgpt-profile.toml.tmpl`,
+`.chezmoitemplates/codex-openrouter-profile.toml.tmpl` when needed,
+`.chezmoitemplates/codex-config-merge.toml.tmpl`,
+`scripts/check-codex-openrouter` and its existing integration documentation.
+Respect existing changes in each path. Keep Codex Plus changes to this planning
+record and subsequent evidence unless a separate supported need emerges.
+
+Preparation is complete when the source candidate and isolated native/config
+checks pass, native catalog ownership is explicit, the stale-snapshot regression
+is covered, OpenRouter compatibility and preservation are demonstrated, and the
+scoped rollout/rollback procedure is reviewable. Report prepared files, live
+selection, loaded-owner inventory and inference acceptance independently. A local
+fix is not a deployed fix; a visible Terra entry is not inference proof.
+
 ## Selected spike: primary-aware three-model worker routing
 
 Selected 2026-11-01 after Bryan's explicit goal-loop request. Keep Sol XHigh,

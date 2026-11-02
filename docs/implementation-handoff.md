@@ -5,6 +5,31 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.13 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
+## Local candidate: native catalog ownership repair
+
+The [repair results](three-model-routing-results.md#native-catalog-repair-candidate)
+and [rollout plan](codex-plus-plan.md#planned-fix-native-model-catalog-ownership)
+record the 2026-11-01 goal loop. Both live native homes still select the stale
+managed snapshot; the installed bundle includes Terra. The canonical chezmoi
+candidate removes that override for an OpenAI default and explicitly migrates
+only integration-owned paths. `codexCatalogOnly` preserves every other live key
+and rejects a provider transition. ChatGPT profiles drop their redundant catalog
+line when the root uses OpenAI.
+
+Native profiles cannot clear an inherited catalog. For the optional OpenRouter
+default, the candidate keeps a compatibility snapshot refreshed by native Codex
+for each home's account, with fresh-cache provenance and an explicit offline
+fallback. Ori remains isolated from native credentials/history. No new catalog
+service, launch refresh, worker identity or routing policy is introduced.
+
+Focused managed checks and native 0.166.0 loopback tests pass, including eight
+provider/profile/home combinations, distinct synthetic accounts, complete new
+model metadata and rejected silent fallback. The full chezmoi gate reaches an
+unrelated Claude fixture/Niri-staging failure reproduced on the pre-change
+baseline. Preserve the divergent chezmoi history and overlapping provider edits;
+this goal does not publish them. Source-only repair is separate from installed
+configuration, a loaded owner's inventory and backend inference acceptance.
+
 ## Local candidate: three-model routing qualification
 
 The 2026-11-01 [spike](three-model-routing-results.md) qualifies selected-primary
