@@ -15,6 +15,28 @@ reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agen
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
 
+## Selected fix: native worker discovery
+
+Source correction and one local read-only Luna handoff qualified 2026-11-01;
+see the [validation and limits](worker-routing-design.md#discovery-correction-validation-2026-11-01).
+Published and installed worker skills remain at their prior managed release.
+
+Selected 2026-11-01 from Bryan's confirmed Luna discovery failure. Inspect native
+collaboration declarations rather than treating Code Mode's registry as the
+complete tool surface. Correct the four current worker skills and shared worker
+guides, preserving invocation metadata, role/model pins, adaptive routing and
+primary review. Select `luna-max` explicitly with a self-contained assignment;
+keep missing controls, failed spawn and failed execution distinct.
+
+Validate metadata/skill structure, repository fixtures and release payloads.
+Review both empty-registry/native-available and native-unavailable cases without
+adding prose-matching tests. Run one authorized tiny read-only native Luna probe
+and independently check its configured model/effort, returned result and handoff.
+Keep private runtime evidence outside source. Commit focused source changes;
+report source, candidate package, published package, installed skills and runtime
+validation separately. Existing publication/deployment boundaries and chezmoi
+ownership remain in force; do not restart owners or patch installed copies.
+
 ## Planned fix: native model catalog ownership
 
 Source preparation completed 2026-11-01 under Bryan's subsequent goal-loop

@@ -108,6 +108,50 @@ request. The Luna goal-loop description and opening rule now explicitly require
 a Luna request. Its supported invocation forms and implicit-discovery setting
 remain unchanged; a request for a loop with Luna can still select it.
 
+## Native control discovery
+
+Availability is established from the actual native tool declarations and exposed
+custom roles. Native collaboration controls are called directly, outside
+`functions.exec`, `tools.*` and `ALL_TOOLS`. A Code Mode registry search returning
+no matches is not evidence that these controls are missing. A declared native
+list control can check that control, but does not prove role availability,
+successful spawning or model execution.
+
+For a Luna assignment, explicitly select `agent_type="luna-max"` and
+`fork_turns="none"` in the declared native spawn control, with a self-contained
+contract. Retain the independent-execution requirement for `sol-xhigh`. Keep
+missing controls/roles, an actual spawn failure and worker/model execution errors
+separate in the handoff. Report actual errors and partial results; use the
+existing primary takeover policy. Do not substitute a different worker, launch
+a separate Codex process or suggest a daemon restart as a workaround for this
+discovery mistake. If a control or role is genuinely unexposed, report that
+specific limitation without claiming an attempted spawn or a model failure.
+The runtime still needs to demonstrate the selected worker's actual metadata,
+result and handoff.
+
+### Discovery correction validation: 2026-11-01
+
+The four source skills and shared guides now inspect native declarations before
+reporting availability and explicitly select the named Luna role with no forked
+history. Existing skill frontmatter, invocation metadata, role/model pins and
+routing policy are unchanged. No prose-matching regression test was added.
+
+A native Code Mode registry inspection contained no collaboration controls,
+while direct native list and spawn calls succeeded. One authorized read-only
+Luna probe returned the expected handoff. Independently read native metadata
+identified `luna-max`, `gpt-6-luna`, effort `max`, and a completed turn with no
+error. The worker correctly classified empty-registry/native-available,
+native-unavailable, rejected-spawn and worker-execution-error fixtures. The last
+three were tabletop decisions, not injected runtime failures. No implementation
+or goal-loop execution was exercised by this small probe.
+
+All four skill validators, the clean 133-file inventory and 382 fixture tests
+pass. The ordinary checkout inventory still rejects its two pre-existing
+untracked bytecode files, which remain preserved. Runtime captures stay outside
+committed source. These checks establish a source correction and one local
+native handoff, independently of published artifacts and managed installed
+skills. Publication and installation are reported separately.
+
 ## Keep orchestration light
 
 The user has previously tried OMC/OMA-style heavy orchestration and found that

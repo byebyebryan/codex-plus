@@ -59,9 +59,25 @@ writes, and require review findings to point to evidence rather than treating
 another same-model opinion as verification. Invoking this workflow does not by
 itself request parallel execution. Do not route automatically to Terra or Astra.
 
-Confirm a selected custom agent is available. If unavailable, disclose it and
-continue in the primary; do not silently choose a different paid worker. State
-the route and a brief rationale without asking the user to route the work.
+Inspect the actual native tool declarations and their exposed custom-agent roles
+before deciding delegation is unavailable. Native collaboration controls are
+called directly in their declared namespace (for example,
+`collaboration.spawn_agent`), outside `functions.exec`. They are intentionally
+absent from Code Mode's `tools.*` namespace and `ALL_TOOLS`; an empty registry
+search is not evidence that native controls are missing. A directly declared
+`collaboration.list_agents` can check that control, but does not prove that the
+Luna role, spawning, or model execution works.
+
+Distinguish missing native controls or roles (no delegation attempted), an error
+from the actual spawn call (spawn failed), and model/task errors after a worker
+starts (worker execution failed). Report the observed limitation or error and
+any partial result honestly. Do not substitute another worker, launch a separate
+Codex process, or recommend a daemon restart to work around this discovery
+mistake. Retain this workflow's existing primary takeover and routing rules.
+
+If the selected worker genuinely cannot be used, disclose the specific reason
+and continue in the primary. State the chosen route and a brief rationale
+without asking the user to route it.
 
 ## Package and delegate
 
@@ -75,9 +91,11 @@ self-contained contract containing:
 - the acceptance check and proportionate validation; and
 - unresolved decisions or conditions to return to the primary.
 
-Use the named custom agent and minimum necessary context. Prefer
-`fork_turns: "none"` when supported. Honor the client's role and model selection
-rules; a task label alone does not select a model. Use one writer by default and
+Call the declared native spawn control directly, explicitly selecting the
+named role: for Luna, use `agent_type="luna-max"` and `fork_turns="none"` for the
+self-contained contract. Select `sol-xhigh` only under the existing independent-
+execution rule. Honor the declared client schema and role/model rules; a task
+label is not role selection. Use one writer by default and
 reuse it for related corrections. Do not duplicate its implementation. Use parallel
 assignments only when independent responsibilities justify their overhead.
 

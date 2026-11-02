@@ -27,8 +27,24 @@ investigation does not authorize implementation edits. Start an implementation
 writer only when the slice's intended behavior and invariants are settled.
 Individual coding steps need not be predetermined.
 
-Confirm `luna-max` is available before delegation. If unavailable, report the
-limitation without substituting another worker or claiming a Luna loop ran.
+Inspect the actual native tool declarations and their exposed custom-agent roles
+before deciding delegation is unavailable. Native collaboration controls are
+called directly in their declared namespace (for example,
+`collaboration.spawn_agent`), outside `functions.exec`. They are intentionally
+absent from Code Mode's `tools.*` namespace and `ALL_TOOLS`; an empty registry
+search is not evidence that native controls are missing. A directly declared
+`collaboration.list_agents` can check that control, but does not prove that the
+Luna role, spawning, or model execution works.
+
+Distinguish missing native controls or roles (no delegation attempted), an error
+from the actual spawn call (spawn failed), and model/task errors after a worker
+starts (worker execution failed). Report the observed limitation or error and
+any partial result honestly. Do not substitute another worker, launch a separate
+Codex process, or recommend a daemon restart to work around this discovery
+mistake. Retain this workflow's existing primary takeover and routing rules.
+
+If Luna genuinely cannot be used, report that limitation without claiming a Luna
+assignment or loop ran; do not silently substitute another delegated model.
 When execution is ready and goal tools are available, create the explicitly
 requested goal or continue a matching active goal. Report a conflicting active
 goal instead of replacing it. Do not invent a token budget. If the user has not
@@ -47,9 +63,9 @@ Give the worker a compact, self-contained contract containing:
 - the acceptance check and proportionate validation; and
 - unresolved decisions or conditions to return to the primary.
 
-Use the named `luna-max` custom agent and minimum necessary context. Prefer
-`fork_turns: "none"` when supported. Honor the client's role and model selection
-rules; a task label alone does not select Luna. Use one writer by default, reuse
+Call the declared native spawn control directly with `agent_type="luna-max"`
+and `fork_turns="none"` for the self-contained contract. Honor the declared
+client schema and role/model rules; a task label alone does not select Luna. Use one writer by default, reuse
 it for related corrections, and do not duplicate its implementation. Use parallel
 assignments only when independent responsibilities justify their overhead.
 

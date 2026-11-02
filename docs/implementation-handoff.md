@@ -5,6 +5,31 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.13 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
+## Local worker fix: native collaboration discovery
+
+Bryan's confirmed Starship failure came from treating Code Mode's `ALL_TOOLS`
+registry as the complete native tool surface. The four worker skills now inspect
+actual native declarations, call collaboration controls directly, explicitly
+select `luna-max` with `fork_turns="none"`, and distinguish unavailable controls,
+failed spawn and failed worker execution. Shared worker guidance is aligned;
+frontmatter, invocation metadata, model/effort pins and routing remain unchanged.
+See the [validation and limits](worker-routing-design.md#discovery-correction-validation-2026-11-01).
+
+All four skill validators, the clean 133-file inventory and 382 fixture tests
+pass. The existing checkout's two untracked bytecode files are preserved; its
+ordinary strict check still reports them. The Code Mode registry has no native
+collaboration entries, but direct native list/spawn worked. One tiny read-only
+worker returned its handoff, with native metadata confirming Luna/Max and a
+completed turn without error. Missing-controls and failure classifications were
+reviewed as tabletop fixtures, not exercised as actual unavailable/error runtimes.
+This validates one local transport/model handoff, not all four complete workflows
+or the original Starship conversation.
+
+The correction is a local source candidate. Published preview.13 workers at
+`5e6c9dd` and managed installed copies are unchanged; no installed-only patch,
+chezmoi repin/apply or daemon restart is part of this source fix. Keep private
+probe evidence outside Git and preserve the earlier Terra/catalog work.
+
 ## Local candidate: native catalog ownership repair
 
 The [repair results](three-model-routing-results.md#native-catalog-repair-candidate)
