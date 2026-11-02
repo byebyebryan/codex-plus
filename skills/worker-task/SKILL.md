@@ -1,6 +1,6 @@
 ---
 name: worker-task
-description: Use only when the user invokes $worker-task or explicitly asks to use the worker-task skill. Complete one bounded task in the primary, selectively delegating clear, verifiable work to Luna. Sol workers need an independent execution benefit. Generic task or goal-loop requests and discussion of the skill do not activate it; no goal management.
+description: Use only when the user invokes $worker-task or explicitly asks to use the worker-task skill. Complete one bounded task in the primary, selectively delegating clear, verifiable work to Luna. Escalation uses one opt-in target for the initiating primary. Generic task or goal-loop requests and discussion of the skill do not activate it; no goal management.
 ---
 
 # Worker Task
@@ -10,8 +10,8 @@ skill. Generic task or goal-loop requests and discussion or editing of the skill
 do not activate it.
 
 Keep the current primary responsible for decisions, integration, and acceptance;
-the intended setup is Sol XHigh with selective Luna Max delegation. This skill
-does not change the primary model or create or manage a goal.
+selectively use Luna Max and one opt-in escalation target when useful. This
+skill does not change the primary model or create or manage a goal.
 
 ## Define and route the task
 
@@ -36,18 +36,49 @@ can still suit Luna. Complexity labels, file count, or unfamiliarity alone do
 not decide the route. Do not require an unsuccessful Luna attempt before using
 the primary, or impose a delegation quota.
 
-## Use a Sol worker for independent execution
+## Resolve optional escalation
 
-Use `sol-xhigh` only when another execution context has a concrete benefit:
-separable parallel work, an investigation with large intermediate output that
-can be distilled, or an independent review. State that benefit and account for
-handoff and acceptance effort. Difficulty beyond Luna normally stays in the
-primary; another Sol worker is not a stronger model tier.
+Keep the user's native primary and its reasoning setting. At each new assignment
+boundary, read reliable loaded-thread metadata for the initiating primary. When
+available, `codex-plus-context --primary` provides that read-only selection;
+`status="known"` is configuration evidence, not proof of completed inference.
+Do not infer identity from a host config default or a model's self-description.
+If reliable metadata is unavailable, keep primary/Luna work useful and hold
+automatic escalation; worker-only installs need no runtime or new service.
+An explicit user assignment to a named worker remains a separate native action.
 
-Separate files may still share decisions. Establish independence before parallel
-writes, and require review findings to point to evidence rather than treating
-another same-model opinion as verification. Do not route automatically to Terra
-or Astra.
+Resolve one optional target from the current request or applicable user guidance;
+otherwise use none. A request may override a soft default, but never restrictions
+or native permissions. Valid automatic routes are:
+
+| Initiating primary | Optional target | Named role |
+| --- | --- | --- |
+| `gpt-6.1-terra` | Sol XHigh OR Astra XHigh, exactly one | `sol-xhigh` OR `astra-xhigh` |
+| `gpt-6.1-sol` | Astra XHigh | `astra-xhigh` |
+| Astra, Luna, other or unknown | None | No automatic escalation |
+
+Do not guess between conflicting targets. Hold escalation until that choice is
+clear; continue useful primary/Luna work. Do not automatically offload Sol work
+to Terra or escalate Terra to Sol without opt-in. Explicit Luna workflows keep
+Luna as their only delegated model regardless of this setting.
+
+Use the configured target for a concrete unresolved issue, demanding slice or
+useful second opinion whose benefit justifies handoff and review. Reviews and
+implementation use the same target; no separate review switch or mandatory
+review stage. Higher price alone does not prove a capability improvement.
+Do not require a failed Luna attempt or a diagnostic probe before the first
+useful assignment to a compatible exposed role.
+
+One target is a model choice, not a one-call quota; bounded corrections may reuse
+it. Children return unresolved gaps to the initiating primary and receive no
+nested-delegation authority. A Terra-to-Sol child must not reapply a Sol-to-Astra
+default. Policy or primary changes affect the next assignment only: preserve
+active children's contracts, settings and write ownership. Disabling a target
+admits no new target assignments; handle active work under explicit stop and
+ownership instructions. Enabling a target starts no work, invokes no skill and
+needs no approval per suitable assignment within the authorized task.
+
+## Discover native delegation
 
 Inspect the actual native tool declarations and their exposed custom-agent roles
 before deciding delegation is unavailable. Native collaboration controls are
@@ -55,19 +86,24 @@ called directly in their declared namespace (for example,
 `collaboration.spawn_agent`), outside `functions.exec`. They are intentionally
 absent from Code Mode's `tools.*` namespace and `ALL_TOOLS`; an empty registry
 search is not evidence that native controls are missing. A directly declared
-`collaboration.list_agents` can check that control, but does not prove that the
-Luna role, spawning, or model execution works.
+`collaboration.list_agents` can check that control, but does not prove that a
+role, spawning or model execution works.
 
-Distinguish missing native controls or roles (no delegation attempted), an error
-from the actual spawn call (spawn failed), and model/task errors after a worker
-starts (worker execution failed). Report the observed limitation or error and
-any partial result honestly. Do not substitute another worker, launch a separate
-Codex process, or recommend a daemon restart to work around this discovery
-mistake. Retain this workflow's existing primary takeover and routing rules.
+Select the exact named role with its fixed model/effort. Honor native pin
+precedence and requirements; an override does not retune a pinned role. A
+missing role or incompatible pin holds that route. Do not silently alias it.
+Distinguish missing controls/roles (no delegation attempted), a rejected spawn,
+post-start worker/model errors, and an observed model reroute. Report the actual
+observation and useful partial work honestly; do not claim the requested target
+ran if the observed selection differs. Preserve the parent's provider,
+permissions and MCP environment. Do not substitute another target, change
+billing/provider, launch a separate Codex process or recommend a daemon restart.
+If the selected route cannot run, continue in the primary where feasible or
+report the unresolved gap. Do not invent an automatic fallback ladder.
 
-If the selected worker genuinely cannot be used, disclose the specific reason
-and continue in the primary. State the chosen route and a brief rationale
-without asking the user to route it.
+State the chosen route and brief rationale without asking the user to route it.
+Retain resource constraints and do not promise exact billing enforcement when
+telemetry cannot establish it.
 
 ## Delegate when useful
 
@@ -77,16 +113,18 @@ Give the selected worker a compact, self-contained contract containing:
 - owned files or responsibility, with unrelated changes to preserve;
 - invariants, non-goals, and authoritative context to inspect;
 - the acceptance check and proportionate validation; and
-- unresolved decisions or conditions to return to the primary.
+- unresolved decisions or conditions to return to the primary, including an
+  explicit prohibition on nested delegation.
 
-An investigation does not authorize implementation edits. Call the declared
+An investigation or review returns findings and evidence without implementation
+edits. Implementation requires explicit write ownership. Call the declared
 native spawn control directly, explicitly selecting the named role: for Luna,
 use `agent_type="luna-max"` and `fork_turns="none"` for the self-contained
-contract. Select `sol-xhigh` only under the existing independent-execution rule.
+contract. For configured escalation select exactly `sol-xhigh` or `astra-xhigh` as
+resolved above, also with `fork_turns="none"`.
 Honor the declared client schema and role/model rules; a task label is not role
 selection. Prefer one cohesive assignment over parallel microtasks. Do not
-duplicate
-the worker's implementation while it runs.
+duplicate the worker's implementation while it runs.
 
 ## Review and recover
 
@@ -98,9 +136,9 @@ portion. Do not require an unsuccessful Luna attempt before choosing the primary
 for work already known to need it.
 
 Before changing write ownership, obtain the handoff or stop the current writer
-and inspect partial changes. Preserve useful work. A subsequent Sol assignment
-still requires a concrete benefit from separate context or independent work;
-avoid cycling between workers. Reassess clear remaining work for Luna when useful.
+and inspect partial changes. Preserve useful work. A subsequent escalation still
+requires the configured target and a concrete benefit; avoid cycling between
+workers. Reassess clear remaining work for Luna when useful.
 
 ## Finish
 

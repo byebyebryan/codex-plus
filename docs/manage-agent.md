@@ -158,9 +158,13 @@ an immutable directory with different content.
 
 For **workers**, verify the unified release first, then extract its verified
 worker archive into a private retained directory. Its `workers.json` records
-exact member hashes/modes and source revision. Install `agents/luna-max.toml`,
+exact member hashes/modes and source revision. For published preview.14, install
+`agents/luna-max.toml`,
 `agents/sol-xhigh.toml` and both files (`SKILL.md`, `agents/openai.yaml`) from each
 of `luna-task`, `luna-goal-loop`, `worker-task` and `worker-goal-loop`.
+The local escalation candidate additionally packages `agents/astra-xhigh.toml`;
+install it only from a selected verified release that contains it, and preserve
+its fixed model/effort pins. Its presence enables no automatic escalation.
 Keep the verified archive/manifest as provenance. Do not install legacy Terra
 files by default and do not change the primary model.
 

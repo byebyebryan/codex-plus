@@ -153,10 +153,14 @@ historical usage study. Active sessions supplied passive evidence; experimental
 messaging/delivery used owned synthetic sessions. Agent Observer is not a runtime
 dependency.
 
-## Existing worker bundle
+## Worker source candidate
 
-Reusable workers and execution workflows for a Sol XHigh primary with selective
-Luna Max delegation. The primary owns decisions, integration, review, and
+The local candidate adds one optional escalation target to the two adaptive
+workflows and packages `astra-xhigh`. It is not part of published preview.14; see
+the [qualification and limits](docs/worker-escalation-results.md).
+
+Reusable workers and execution workflows keep your native user-selected primary
+with selective Luna Max delegation. The primary owns decisions, integration, review, and
 acceptance. Adaptive workflows keep work in the primary when the benefit of a
 handoff is uncertain. Workflows preserve the selected primary model.
 
@@ -164,9 +168,10 @@ handoff is uncertain. Workflows preserve the selected primary model.
 
 | Role | Model | Reasoning | Responsibility |
 | --- | --- | --- | --- |
-| Recommended primary | `gpt-6.1-sol` | `xhigh` | Decisions, difficult portions, integration, and acceptance |
+| Current primary | Selected by you in Codex | Selected by you | Decisions, difficult portions, integration, and acceptance |
 | Cheaper worker `luna-max` | `gpt-6-luna` | `max` | Clear, bounded investigation and implementation with practical verification |
-| Optional worker `sol-xhigh` | `gpt-6.1-sol` | `xhigh` | Separable parallel work, context-isolated investigation, or independent review |
+| Optional worker `sol-xhigh` | `gpt-6.1-sol` | `xhigh` | Configured escalation from Terra or explicitly assigned independent execution |
+| Optional worker `astra-xhigh` | `gpt-6-astra` | `xhigh` | Configured escalation from Sol/Terra or explicitly assigned work |
 
 Delegate to Luna when the objective, responsibility boundary, and acceptance
 check are clear and expected savings justify packaging, review, and possible
@@ -175,11 +180,13 @@ need not solve every implementation detail first. A substantial specified
 migration or focused investigation can qualify. Evolving diagnosis, shared
 decisions, and small remainders often fit primary execution better.
 
-A Sol worker needs a concrete benefit from another execution context. Difficulty
-beyond Luna normally stays with the primary; the same-model worker is not a
-stronger tier. Separate files may still depend on shared decisions. An independent
-review adds a perspective, and its findings still need evidence. Terra and Astra
-are outside automatic routing.
+Automatic escalation defaults to none. In the adaptive workflows, Terra can
+opt in to Sol XHigh OR Astra XHigh, and Sol can opt in to Astra XHigh. Set the
+single target in the request or existing applicable user guidance. Reviews and
+implementation share that target; children return gaps to the initiating primary
+without an escalation chain. No automatic Sol-to-Terra offload is introduced.
+Unknown primary metadata holds automatic escalation while primary/Luna work
+remains useful. See [examples and configuration](docs/workers.md#optional-escalation-in-the-local-candidate).
 
 Escalation requires evidence: an unresolved decision, contradictory observations,
 a verification gap, or repeated failure without new evidence. Cross-module work,
@@ -193,8 +200,8 @@ over decisions outside the execution contract.
 | --- | --- | --- |
 | `$luna-task` | One bounded task; no goal management | Luna only; primary handles difficult portions |
 | `$luna-goal-loop` | A substantial goal across cohesive assignments | Luna only; primary handles difficult portions |
-| `$worker-task` | One bounded task; no goal management | Primary or selective Luna; Sol for independent execution |
-| `$worker-goal-loop` | A substantial goal, routed per assignment | Primary or selective Luna; Sol for independent execution |
+| `$worker-task` | One bounded task; no goal management | Primary or selective Luna; one opt-in escalation target |
+| `$worker-goal-loop` | A substantial goal, routed per assignment | Primary or selective Luna; one opt-in escalation target |
 
 The Luna workflows preserve the explicit worker choice without requiring a
 workflow switch when the primary needs to help. The adaptive workflows choose
@@ -286,11 +293,11 @@ Review representative behavior as well:
   confidently assigned and verified.
 - A deeply coupled design decision stays in the primary, which may delegate
   resulting implementation when the savings justify the handoff.
-- Separable parallel work or a noisy investigation can use Sol when another
-  execution context helps.
+- A useful independent review or demanding slice can use the configured target;
+  explicit requests for separate native workers retain their own authority.
 - An ordinary failed test goes back for correction; repeated failure without new
   evidence returns to the primary.
-- An explicit Luna workflow never silently creates a Sol or Terra worker.
+- An explicit Luna workflow delegates only to Luna, even when escalation is allowed.
 
 Compare total primary-plus-worker usage, corrections, elapsed time, and accepted
 results on representative tasks. Use runtime cost data when available; do not

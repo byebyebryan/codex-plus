@@ -1,7 +1,8 @@
 # Luna workers and task workflows
 
-Codex Plus includes two custom agents and four explicitly invoked worker
-workflows. Your current primary agent keeps decisions, integration and final
+The local worker candidate includes three custom agents and four explicitly
+invoked worker workflows. Published preview.14 still has two agents and the
+earlier Sol/Luna policy; this candidate is not released or installed. Your current primary agent keeps decisions, integration and final
 review. A workflow can hand a useful assignment to a worker without changing
 your primary model.
 
@@ -11,7 +12,7 @@ your primary model.
 | --- | --- | --- |
 | One bounded task with Luna | `$luna-task` | Delegate one cohesive investigation or implementation to Luna; the primary reviews it. |
 | A substantial goal with Luna | `$luna-goal-loop` | Use Luna across useful bounded assignments until the goal and its checks are complete. |
-| One task with selective delegation | `$worker-task` | The primary decides whether to work directly, use Luna, or use Sol when a separate execution context helps. |
+| One task with selective delegation | `$worker-task` | The primary chooses direct work, useful Luna delegation, or one configured escalation target. |
 | A substantial goal with selective delegation | `$worker-goal-loop` | The primary routes each assignment and owns integration and acceptance across the goal. |
 
 Task workflows do not create or manage a goal. Goal-loop workflows use available
@@ -58,14 +59,15 @@ the primary to choose whether delegation is useful for each assignment.
 
 | Agent | Package selection | Role |
 | --- | --- | --- |
-| Current primary | Selected separately by you; intended setup is Sol XHigh | Decisions, difficult portions, integration, review and acceptance. |
+| Current primary | Selected separately by you, including Sol, Terra or Astra | Decisions, difficult portions, integration, review and acceptance. |
 | `luna-max` | `gpt-6-luna`, reasoning effort `max` | Bounded investigation, implementation and validation with a practical acceptance check. |
-| `sol-xhigh` | `gpt-6.1-sol`, reasoning effort `xhigh` | Optional worker for separable parallel work, a context-isolated investigation or independent review. |
+| `sol-xhigh` | `gpt-6.1-sol`, reasoning effort `xhigh` | Optional configured escalation from Terra, or explicitly assigned independent execution. |
+| `astra-xhigh` | `gpt-6-astra`, reasoning effort `xhigh` | Optional configured escalation from Sol or Terra, or explicitly assigned work. |
 
 The Luna workflows use Luna as their only delegated model. If Luna is unavailable,
 the primary explains that limitation rather than silently substituting a paid
 worker. Difficult portions can stay with the primary. The adaptive worker
-workflows can also use Sol when another execution context has a concrete benefit.
+workflows use the optional policy below; escalation is off when unset.
 
 Delegate when the objective, ownership boundary and acceptance check are clear,
 and expected savings justify the handoff and review. A specified migration or
@@ -73,6 +75,53 @@ focused investigation can suit Luna. Evolving diagnosis or a small remainder
 may be easier to finish in the primary. File count or unfamiliarity alone does
 not decide the route. Compare total primary and worker usage plus corrections;
 the package does not promise a universal cost saving.
+
+## Optional escalation in the local candidate
+
+Choose your primary normally in Codex. In explicitly invoked adaptive workflows,
+use primary/Luna by default, or configure one target for that primary:
+
+| Initiating primary | Optional automatic target | Default |
+| --- | --- | --- |
+| GPT-6.1 Terra | Sol XHigh OR Astra XHigh | None |
+| GPT-6.1 Sol | Astra XHigh | None |
+| Astra, Luna, another or unknown model | None in V1 | None |
+
+For example, with a Sol primary:
+
+```text
+$worker-task Review the importer migration and fix any confirmed defects.
+Allow Astra XHigh escalation for this task when a useful independent review
+or unresolved issue warrants it. Keep Luna available for bounded work.
+```
+
+Or put a soft default in existing user guidance, through the owner of that file:
+
+> In explicitly invoked adaptive worker workflows, allow Sol XHigh when the
+> initiating primary is GPT-6.1 Terra, and Astra XHigh when it is GPT-6.1 Sol.
+> Otherwise use no automatic escalation.
+
+This example installs no preference. Native role files still pin model and
+reasoning effort; no extra TOML setting or Plus preference file is needed.
+Enabling a route starts no work or skill and permits suitable assignments within
+the authorized task without approval for every spawn. A current request can
+change a soft default; native restrictions and permissions remain effective.
+Reviews and implementation share that single target. There is no automatic
+Sol-to-Terra cost offload, default Terra-to-Sol escalation or child-to-child
+escalation chain. The primary keeps acceptance responsibility.
+
+Resolve the initiating primary from reliable loaded-thread metadata at each
+assignment boundary. The candidate's read-only `codex-plus-context --primary`
+mode reports configured selection, not completed inference. Worker-only setups
+need no monitoring runtime: if no reliable native selection is exposed, continue
+primary/Luna work and hold automatic escalation. An explicit named-worker
+request remains possible. Host defaults and model self-descriptions are not
+identity evidence. Existing workers retain their contracts, settings and write
+ownership when the primary or policy changes; disabling a target prevents new
+assignments rather than silently cancelling active work.
+
+The [candidate qualification](worker-escalation-results.md) separates source,
+artifact, native execution and the unavailable local Terra-primary paths.
 
 ## Native delegation and availability
 
@@ -116,8 +165,8 @@ skills do not automatically register a watch or reminder.
 ## Installation
 
 Use the [agent lifecycle guide](manage-agent.md#install-or-upgrade-through-the-configuration-owner)
-for the complete procedure. It installs the two current agents and four workflow
-skills from a verified worker release archive and preserves your configuration
+for the complete procedure. Published preview.14 installs its two agents and
+four workflow skills from a verified worker release archive and preserves your configuration
 owner, local changes and skill disable preferences. The human
 [setup overview](getting-started.md) explains component selection.
 
@@ -133,8 +182,10 @@ choice, not the released installation procedure.
 The bundle also contains the separate `skills/html-report` skill. Add it when
 you configure the report component; the four worker skills above do not install
 that skill or either runtime.
-Your client and account must support the selected models, custom agents and
-skills; installation does not prove runtime model availability.
+The source candidate additionally packages `astra-xhigh`; its presence does not
+opt in to paid escalation or update an installation. Your client and account must
+support the selected models, custom agents and skills; installation does not
+prove runtime model availability.
 
 Workers do not require the monitoring or reporting runtime. Those components
 have their own [monitoring setup](runtime-distribution.md) and

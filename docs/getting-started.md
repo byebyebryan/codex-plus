@@ -69,10 +69,10 @@ conversations, tools, follow-up state and reports use separate contexts. See
 
 ## Set up workers
 
-Install the `luna-max` and `sol-xhigh` agent definitions and the four worker
+For published preview.14, install the `luna-max` and `sol-xhigh` agent definitions and the four worker
 workflow skills using the [worker installation steps](workers.md#installation).
 Your client and account must support custom agents, skills and the selected
-models. The intended primary is Sol XHigh; workflows keep your current primary
+models. You select the primary; workflows keep your current primary
 selection.
 
 Start with `$luna-task` for one bounded assignment. Use `$luna-goal-loop` for a

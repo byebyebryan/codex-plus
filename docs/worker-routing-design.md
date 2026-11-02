@@ -2,7 +2,8 @@
 
 Updated 2026-11-02. The shipped Sol/Luna policy remains active. The
 [selected design](#selected-design-primary-luna-and-one-escalation-target)
-below reconciles Bryan's latest decisions; implementation has not started.
+below is implemented in the local candidate; it is not released or installed.
+See the [qualification record](worker-escalation-results.md) for current evidence.
 The [worker routing study](worker-routing-study.md) records evidence and limits.
 
 ## Selected design: primary, Luna and one escalation target
@@ -78,8 +79,8 @@ installations keep their existing usefulness and gain no monitoring dependency.
 
 ### Native execution, availability and failure handling
 
-The proposed worker roles are `luna-max` (existing), `sol-xhigh` (existing), and
-`astra-xhigh` (new candidate needed only for implementation). Preserve the
+The candidate worker roles are `luna-max` (existing), `sol-xhigh` (existing), and
+`astra-xhigh` (new candidate). Preserve the
 existing named roles and legacy compatibility files. Terra remains a normal
 supported native primary; this policy needs no automatic Terra worker role.
 Role installation/declaration, account access and completed inference remain
@@ -132,9 +133,10 @@ activate no worker skill.
 | Target disabled after spawn | Admit no new target assignments; follow explicit instructions for any active work. |
 | Unavailable cost telemetry or strict spend limit | Do not claim exact billing enforcement; retain stated resource constraints. |
 
-These are reviewed policy cases, not executed model-routing tests. A later
-implementation changes the two adaptive skills, adds the Astra role if needed,
-and updates guidance/package validation together. It preserves the Luna skill
+These are policy acceptance cases; the [qualification record](worker-escalation-results.md)
+identifies which have executed native evidence. The local implementation changes
+the two adaptive skills, adds the Astra role and updates guidance/package
+validation together. It preserves the Luna skill
 identities and fixed selections. Qualify the existing selected-primary helper
 and truthful worker-only degradation before making automatic routing claims.
 
@@ -159,12 +161,13 @@ whitespace checks. All 91 protected non-document source files are unchanged.
 The revised report's HTTP bytes and desktop/mobile controls verify; its policy
 illustration is not a native routing trial. The working checkout retains the
 same two pre-existing bytecode files rejected by its strict inventory check.
-Source planning changes remain uncommitted; no worker policy was installed.
+The reviewed planning material is committed. Candidate implementation and
+qualification follow below and in the linked record; no worker policy is installed.
 
 ## Shipped policy and earlier research context
 
 The sections below retain the implemented policy and research chronology. The
-selected design above is the current proposal and has not been installed.
+selected design above is the local implementation candidate and has not been installed.
 
 The adaptive workflows should keep more work in the GPT-6.1 Sol XHigh primary
 and delegate to GPT-6 Luna Max when the assignment is clear and the expected

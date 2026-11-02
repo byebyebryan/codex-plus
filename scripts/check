@@ -24,6 +24,7 @@ EXPLICIT_ADAPTIVE_SKILLS = {"worker-task", "worker-goal-loop"}
 AGENTS = {
     "agents/luna-max.toml": ("gpt-6-luna", "max"),
     "agents/sol-xhigh.toml": ("gpt-6.1-sol", "xhigh"),
+    "agents/astra-xhigh.toml": ("gpt-6-astra", "xhigh"),
     "legacy/agents/terra-xhigh.toml": ("gpt-5.6-terra", "xhigh"),
 }
 EXPECTED_FILES = {
@@ -140,6 +141,7 @@ EXPECTED_FILES = {
     "scripts/codex-plus-report",
     "scripts/codex-plus-report-mcp",
     "scripts/codex-plus-report-package",
+    "docs/worker-escalation-results.md",
     "docs/worker-routing-design.md",
     "docs/worker-routing-study.md",
     "docs/three-model-routing-results.md",

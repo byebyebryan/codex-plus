@@ -4,6 +4,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import tarfile
+import tomllib
 import unittest
 
 from codex_plus import VERSION, package, release
@@ -47,6 +49,29 @@ class ReleaseTests(unittest.TestCase):
                 cwd=self.root, text=True, env={'HOME': str(self.root / 'home'), 'PATH': '/unavailable', 'PYTHONPATH': ''})
             self.assertFalse(json.loads(doctor)['loaded_processes_checked'])
         self.assertEqual(release.read_workers(first / result['components']['workers']['artifact'])['version'], VERSION)
+
+    def test_worker_archive_carries_exact_native_role_pins_and_explicit_invocation_metadata(self):
+        output = self.root / 'release'; result = release.build(self.source, output)
+        path = output / result['components']['workers']['artifact']
+        expected = {'luna-max': ('gpt-6-luna', 'max'),
+                    'sol-xhigh': ('gpt-6.1-sol', 'xhigh'),
+                    'astra-xhigh': ('gpt-6-astra', 'xhigh')}
+        with tarfile.open(path, 'r:gz') as archive:
+            for role, (model, effort) in expected.items():
+                member = 'codex-plus-workers/agents/' + role + '.toml'
+                data = archive.extractfile(member).read()
+                selection = tomllib.loads(data.decode())
+                self.assertEqual(selection['name'], role)
+                self.assertEqual((selection['model'], selection['model_reasoning_effort']), (model, effort))
+                self.assertEqual(data, (self.source / 'agents' / (role + '.toml')).read_bytes())
+            # Packaging preserves native activation settings and exact skill bytes,
+            # independently of any prose used to describe routing.
+            for skill in ('luna-task', 'luna-goal-loop', 'worker-task', 'worker-goal-loop'):
+                for file in ('SKILL.md', 'agents/openai.yaml'):
+                    name = 'skills/' + skill + '/' + file
+                    self.assertEqual(archive.extractfile('codex-plus-workers/' + name).read(),
+                                     (self.source / name).read_bytes())
+        self.assertIn('agents/astra-xhigh.toml', release.read_workers(path)['files'])
 
     def test_mixed_revision_paths_modified_bytes_and_checksum_file_are_rejected(self):
         output = self.root / 'release'; metadata = release.build(self.source, output)

@@ -26,11 +26,12 @@ Sol or Astra; Sol may select Astra. Defaults are none. Reviews and difficult
 slices share that target; no separate review toggle, quality/economy selector,
 automatic Sol-to-Terra offload or recursive escalation ladder is part of V1.
 
-This is a documentation/review pass. The current skills, agent pins, installed
-package and owners remain outside implementation scope. The earlier research
+Bryan selected implementation through a goal loop. Source skills, role pins and
+package validation are now in scope as a local candidate; installed packages and
+existing owners remain outside it. See the [qualification record](worker-escalation-results.md). The earlier research
 and native-access evidence below are retained with their original limits.
 
-### Proposed implementation sequence
+### Selected implementation sequence
 
 1. Recheck the intended source and metadata, preserve concurrent edits, and
    refine only the two adaptive skills. Keep native primary ownership, explicit
@@ -75,8 +76,8 @@ ownership and accepted integration are distinct. Missing Terra access remains
 a named runtime gap, not a global product exclusion. Later publication and
 chezmoi application must update artifact pins/checksums/validators together,
 preserve native sessions and local instruction overrides, and separately prove
-installed selections and fresh-session behavior. This planning pass performs
-no worker-policy implementation, inference trial, release or fleet apply.
+installed selections and fresh-session behavior. This selected pass may implement and run the bounded owned pilot. It performs
+no release, fleet apply or existing-session lifecycle action.
 
 ## Research pass: model-aware worker preferences
 

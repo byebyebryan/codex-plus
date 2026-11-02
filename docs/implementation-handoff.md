@@ -5,7 +5,7 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.14 is published and
 selected on Snap OSS/work, Starship and Carbon; selected and loaded versions remain distinct.
 
-## Selected proposal: primary, Luna and one escalation target
+## Local candidate: primary, Luna and one escalation target
 
 Bryan's post-research decisions are reconciled in the
 [selected design](worker-routing-design.md#selected-design-primary-luna-and-one-escalation-target)
@@ -17,7 +17,7 @@ that same target, with no separate review flag or quality/economy selector.
 The operational tiers are Astra / Sol+Terra / Luna, with no claim of a universal
 capability ordering or automatic Sol/Terra cost substitution.
 
-Only three worker roles are needed: existing Luna/Sol plus a proposed Astra
+Only three worker roles are needed: existing Luna/Sol plus the candidate Astra
 role. Terra is a normal primary and needs no automatic worker role. Escalation
 configuration uses the request/existing user guidance, keeping native pins and
 managed ownership. No recursive escalation, automatic primary switch or
@@ -25,15 +25,14 @@ concealed alternative target is authorized. Unknown primary metadata holds
 automatic escalation; the source helper is still an unpublished candidate,
 and worker-only installations retain direct/Luna use without monitoring.
 
-This pass reconciles planning/report material only. No skill, native agent,
-runtime configuration or installed artifact was changed. Older proposals below
-remain historical context and are superseded by the selected proposal.
-The reconciled plan passes the clean repository gate, five validator fixtures,
-four skill validators and 123 local documentation links/anchors. All 91
-protected non-document source files are unchanged; the two pre-existing bytecode
-files remain outside the clean export. The revised report's HTTP bytes, both
-viewport loads and 16 policy-control checks verify locally and when served.
-These checks validate the plan/report structure, not native model routing.
+Bryan selected the implementation goal loop after reviewing the plan. The five
+planning documents are committed as `f40b32a`. The two adaptive skill bodies and
+metadata, Sol role guidance, new Astra role, package inventory and worker guides
+are being qualified as a local candidate. The explicit Luna skill files and
+Luna model/effort stay unchanged. Installed preview.14 and current native owners
+remain outside this pass. See the [qualification record](worker-escalation-results.md)
+for source, package and runtime evidence; older proposals below retain their
+historical limits.
 
 ## Research candidate: model facts and routing preferences
 
