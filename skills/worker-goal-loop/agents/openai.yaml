@@ -1,6 +1,6 @@
 interface:
   display_name: "Worker Goal Loop"
-  short_description: "Run a goal with selective Luna delegation"
+  short_description: "Run a goal with Luna and optional escalation"
   default_prompt: "Use $worker-goal-loop to complete this goal in the primary, selectively delegating clear, verifiable assignments to Luna when the savings justify the handoff, with automatic escalation off unless one compatible target is explicitly configured."
 
 policy:

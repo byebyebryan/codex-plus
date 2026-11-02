@@ -128,6 +128,11 @@ duplicate the worker's implementation while it runs.
 
 ## Review and recover
 
+Check completed-turn state and available native worker model/effort metadata
+before claiming the selected target ran. Keep unavailable selection evidence
+explicit while reviewing any useful result; role installation alone is not
+completed execution.
+
 Inspect actual findings or diffs and validation evidence. Reuse the worker for
 clarifications and bounded corrections. An ordinary failed test is usually a
 correction. If the same failure repeats without new evidence, or a decision or

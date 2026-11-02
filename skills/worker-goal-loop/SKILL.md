@@ -140,6 +140,11 @@ assignments only when independent responsibilities justify their overhead.
 
 ## Review and recover
 
+Check completed-turn state and available native worker model/effort metadata
+before claiming the selected target ran. Keep unavailable selection evidence
+explicit while reviewing any useful result; role installation alone is not
+completed execution.
+
 At meaningful boundaries, inspect actual findings or diffs and focused
 validation. Review invariants, integration behavior, failure paths, unrelated
 changes, and test gaps. Send ordinary defects back as bounded corrections.

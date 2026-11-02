@@ -140,29 +140,22 @@ validation together. It preserves the Luna skill
 identities and fixed selections. Qualify the existing selected-primary helper
 and truthful worker-only degradation before making automatic routing claims.
 
-Then use fresh owned native fixtures under the existing daemon for settings,
-first useful handoff, no-target behavior, explicit activation, no recursive
-escalation, correction and acceptance. Keep the earlier protocol ceiling of
-eight worker starts and 32 model turns, including settlement; stop after two
-distinct access/provider failures. Terra routing cases remain tabletop/fixture
-coverage here until a real Terra primary can execute; another primary testing
-the Sol role does not prove Terra-primary routing. Do not retry known failed
-Terra access merely to satisfy this plan.
+The bounded pilot now uses three worker starts and nine native conversation
+turns under the existing 0.166.0 owner. It qualifies Sol-primary/Astra review,
+explicit Luna execution, an explicit Sol control, unavailable native controls
+and a role-pin conflict. All owned fixtures are settled and archived. See the
+[qualification record](worker-escalation-results.md) for accepted results and
+which of the case-matrix paths remain conditional. Terra routing stays fixture
+coverage until a real Terra primary can execute; another primary using the Sol
+role does not prove Terra-primary routing. Known failed Terra access was not
+retried. Private captures are outside source, and installed policy is unchanged.
 
 Public capability evidence supplies provisional priors, so a new large local
-ranking benchmark is unnecessary. Use a few matched ordinary-use outcomes to
-check accepted integration and total effort after protocol viability. A later
-release/fleet deployment needs its own published-byte, managed-source and
-installed/runtime checks, preserving live work and chezmoi drift.
-
-This reconciliation passes the clean 133-file repository gate, five validator
-fixtures, all four worker skill validators, 123 local documentation links and
-whitespace checks. All 91 protected non-document source files are unchanged.
-The revised report's HTTP bytes and desktop/mobile controls verify; its policy
-illustration is not a native routing trial. The working checkout retains the
-same two pre-existing bytecode files rejected by its strict inventory check.
-The reviewed planning material is committed. Candidate implementation and
-qualification follow below and in the linked record; no worker policy is installed.
+ranking benchmark is unnecessary. Ordinary-use receipts can later check total
+primary/worker effort, corrections and accepted integration. A later release
+needs a new selected version and synchronized published-byte/managed-source
+pins, preserving live work and chezmoi drift. No universal savings claim follows
+from the protocol pilot.
 
 ## Shipped policy and earlier research context
 

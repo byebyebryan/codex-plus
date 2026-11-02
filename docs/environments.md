@@ -69,8 +69,11 @@ model used for a particular inference.
 
 This is an unreleased source candidate. Current released installations do not
 gain the option automatically. The [spike results](three-model-routing-results.md)
-record native verification and the Terra access gate. Adaptive routing and Luna
-workflows remain unchanged; workers do not acquire a monitoring dependency.
+record native verification and the Terra access gate. The
+[local escalation candidate](worker-escalation-results.md) uses reliable selection
+for optional adaptive escalation; explicit Luna workflows remain unchanged.
+Workers do not acquire a monitoring dependency, and missing selection metadata
+holds automatic escalation rather than guessing a primary.
 
 ## Selection and overrides
 

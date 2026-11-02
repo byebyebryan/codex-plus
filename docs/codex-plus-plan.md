@@ -31,6 +31,12 @@ package validation are now in scope as a local candidate; installed packages and
 existing owners remain outside it. See the [qualification record](worker-escalation-results.md). The earlier research
 and native-access evidence below are retained with their original limits.
 
+The [candidate qualification](worker-escalation-results.md) now records the
+implementation and bounded native pass: three worker starts across nine turns,
+383 tests, source/skill/package checks and separately named runtime gaps. These
+results satisfy the local-candidate exit gate below; publication and deployment
+remain a later pass.
+
 ### Selected implementation sequence
 
 1. Recheck the intended source and metadata, preserve concurrent edits, and

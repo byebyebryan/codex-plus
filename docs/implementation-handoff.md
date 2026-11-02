@@ -25,13 +25,28 @@ concealed alternative target is authorized. Unknown primary metadata holds
 automatic escalation; the source helper is still an unpublished candidate,
 and worker-only installations retain direct/Luna use without monitoring.
 
-Bryan selected the implementation goal loop after reviewing the plan. The five
-planning documents are committed as `f40b32a`. The two adaptive skill bodies and
-metadata, Sol role guidance, new Astra role, package inventory and worker guides
-are being qualified as a local candidate. The explicit Luna skill files and
-Luna model/effort stay unchanged. Installed preview.14 and current native owners
-remain outside this pass. See the [qualification record](worker-escalation-results.md)
-for source, package and runtime evidence; older proposals below retain their
+Bryan selected the implementation goal loop after reviewing the plan. The plan
+is committed as `f40b32a`; core implementation is `295ed24`, followed by local
+qualification refinements. Only the two adaptive skills gain the policy. The
+existing Luna role and both explicit Luna skill identities/bodies/metadata remain
+byte-identical. No new settings file or service is introduced.
+
+The clean 135-file candidate passes 383 tests, four worker skill validators and
+complete private build/verification. Two core builds are byte-reproducible. The
+Pages candidate verifies 301 local links/assets/anchors and 15 release claims.
+Three native worker starts across nine turns qualify Sol-primary/Astra review,
+explicit Luna implementation despite escalation permission, an explicit Sol
+control and policy review, missing controls and a native pin conflict. All four
+owned primary fixtures and three children are settled, archived and unloaded.
+Terra-primary routes and real provider/model failures retain their evidence gaps.
+
+Installed preview.14 and existing native owners are preserved. Fixture-generated
+trust entries were removed through the version-checked native config owner with
+no reload; the original config hash is restored. All 17 protected installed/config
+paths match baseline. The same two untracked bytecode files remain outside the
+clean export. See the [qualification record](worker-escalation-results.md) for
+source, artifacts, model selection, accepted results and limits. No push,
+publication, release or fleet apply occurred. Older proposals below retain their
 historical limits.
 
 ## Research candidate: model facts and routing preferences
