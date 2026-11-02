@@ -186,6 +186,42 @@ owners and investigate that availability gate before another exact-model trial.
 The optional compatibility exporter remains a local source candidate, and no
 fleet publication or deployment is established by this Snap-only apply.
 
+## Upstream catalog omission localized
+
+After Bryan restarted the default daemon, a read-only check confirms the new
+owner uses the repaired OpenAI config with no catalog override and returns a
+complete nine-model inventory without Terra. The Work owner was not restarted
+by this investigation. Both local homes select the same ChatGPT account, so
+they are two local contexts rather than independent account tests.
+
+A separate minimal native home, containing only native provider/storage settings
+and a temporary reference to the existing login, fetched fresh account metadata
+using CLI 0.166.0. It returned nine models and omitted Terra. A direct authenticated
+GET to the documented OpenAI catalog endpoint with `client_version=0.166.0`
+then returned HTTP 200 and exactly the same nine slugs, again without Terra.
+The response specified `Cache-Control: private, no-store`; no proxy environment
+was configured. Credential bytes remained unchanged, and no inference or daemon
+lifecycle operation was used. Raw captures and account details remain private.
+
+This localizes the current omission upstream of Codex Plus, normal user/project
+config and picker filtering. It does not establish whether the cause is access
+policy, account rollout or an OpenAI defect. The selected identity's opaque plan
+label is not sufficient to infer its product entitlements. Do not advertise
+Terra by modifying a local catalog or attribute the result to a global outage.
+
+OpenAI's [October 26 launch guidance](https://learn.chatgpt.com/docs/whats-new/october-26-30-2026#use-gpt-61-terra-for-visual-reasoning-and-computer-use)
+lists Terra for paid Work/Codex plans, subject to Enterprise workspace availability
+and controls. [CLI guidance](https://learn.chatgpt.com/docs/models?surface=cli)
+requires 0.159.0 or later, which 0.166.0 satisfies. The
+[status page](https://status.openai.com/) reported no active incident during this
+check. [Workspace guidance](https://learn.chatgpt.com/docs/enterprise/workspace-model-availability)
+distinguishes Codex identity/surface access from ChatGPT picker defaults.
+
+The useful next check is the selected account/workspace's Codex model access.
+If the intended policy permits Terra, provide the sanitized catalog reproduction
+to OpenAI for account-specific investigation. Further local catalog edits or
+restarts have no supporting evidence as a remedy for this upstream response.
+
 ## Supported local implementation
 
 `codex-plus-context --primary` exposes the qualified read through the existing

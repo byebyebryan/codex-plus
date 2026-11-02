@@ -42,6 +42,17 @@ before another Terra execution trial or three-tier worker changes. The optional
 compatibility refresh helper remains a source candidate; no managed catalog
 generation, worker payload, other host or daemon restart was part of this apply.
 
+The subsequent [upstream check](three-model-routing-results.md#upstream-catalog-omission-localized)
+confirms Bryan's restarted default owner still omits Terra. A minimal native home
+and a direct authenticated OpenAI catalog GET both return the same nine models,
+with HTTP 200 upstream and no Terra. Both homes select one ChatGPT account.
+This excludes the repaired local config as the current omission's source;
+account/workspace access, rollout and an upstream defect remain to distinguish.
+Official guidance includes Terra on paid Codex plans and supports this CLI
+version; the public status page reports no active incident. Keep the raw captures
+and account details private, and use the prepared sanitized reproduction for
+an account-specific support check when appropriate.
+
 ## Local candidate: three-model routing qualification
 
 The 2026-11-01 [spike](three-model-routing-results.md) qualifies selected-primary
