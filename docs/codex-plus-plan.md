@@ -17,6 +17,10 @@ preparation/refinement contracts below retain their original scope.
 
 ## Selected pass: preview.14 worker discovery release
 
+Completed 2026-11-01: preview.14 and dotfiles pin are published and the existing
+four contexts select verified preview.14. See the [rollout receipt](reliability-packaging-results.md#preview14-worker-discovery-publication-and-rollout),
+including the unchanged dotfiles gate failure and observed Starship MCP exits.
+
 Review and publish the native collaboration discovery correction from a clean
 published-main base, excluding the separate selected-primary/Terra candidate.
 Preserve all four skill invocation contracts, model pins and adaptive routing.

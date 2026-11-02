@@ -410,3 +410,59 @@ split-home and preference-preservation gates, then fails in the unchanged OpenCo
 block because the installed binary rejects `--pure`. That block is byte-identical
 to upstream baseline `28d3655`; this rollout preserves its unrelated retirement
 work. Dedicated reporting qualification passes independently of that early exit.
+
+## Preview.14 worker discovery publication and rollout
+
+Completed 2026-11-01 under Bryan's review/publish/deploy request. Immutable
+source `dc19a8260f99b4a621899f0d1d45868c10133134` supplies unified
+**v0.1.0-preview.14** workers, monitoring and reporting. The release was assembled
+from published main with the four worker skill corrections and shared guidance;
+the separate selected-primary/Terra candidate remains outside published source.
+Native controls are discovered from actual declarations and called directly,
+with explicit `luna-max` / `fork_turns="none"` selection and distinct discovery,
+spawn and execution failures. Invocation metadata, model pins and routing are
+preserved. Runtime/report changes retain actual preview.13 upgrade/rollback
+support after the product version advances.
+
+The focused source passes **376 tests**, all four skill validators, the clean
+**132-file inventory** and whitespace checks. The final guide build checks 299
+local links/assets/anchors and 15 release claims. An owned headless Chrome pass
+checks 18 guide loads and 40 interactive scene states across desktop/mobile
+widths, with no horizontal page overflow. GitHub run `41391747929` independently
+passes Python **3.11** and **3.14**. Two full builds reproduce all **five assets**;
+every downloaded published asset matches. Actual published preview.13 runtime
+and reporting archives install, upgrade and roll back in private controls. The
+earlier one-worker native probe confirms Luna/Max metadata and a completed
+read-only handoff; unavailable/spawn-error/execution-error classifications were
+tabletop reviews, not actual failure injection or full goal-loop trials.
+
+Published dotfiles pin `59a889a` advances URLs, source revision, fetched checksums,
+selectors and dedicated/umbrella validators. Scoped canonical commits preserve
+divergent histories and concurrent work on Snap (`4b8152c`), Starship (`dc6a322`)
+and Carbon (`beb5e34`). Plus and split-home checks pass; reporting qualification
+covers exact isolated installation, CLI/MCP and convergence on all three host
+profiles. The full dotfiles gate passes its Codex/worker/split/provider checks,
+then fails because the installed OpenCode rejects `--pure`. That failing block
+is byte-identical to the published-parent baseline and is preserved here.
+
+The script-excluded rollout staged and verified immutable payloads before
+selecting them and updating the managed worker files. Installed hashes, modes,
+inventories and scoped diffs pass in Snap OSS/work, Starship and Carbon. Fresh
+MCP initialize/tools-list reports preview.14 with **17 monitoring** and **four
+report tools** in all four contexts; file-only doctor reports aligned verified
+components. These fresh probes do not establish the versions already loaded by
+other conversations.
+
+Of **1,516 protected paths**, **1,476** remain identical. The **40** intended
+changes are worker skill bodies, worker provenance/design and current selectors.
+Private config/auth, agent definitions, invocation metadata and all pre-existing
+immutable releases are preserved. Native daemon process identities remain
+unchanged. Starship Python monitoring/reporting MCP connections ended during the
+rollout and subsequent verification; their cause was not localized. These were
+identified by matching their captured command hashes to the MCP programs, not
+by treating arbitrary missing Python processes as acceptable. No lifecycle
+command or global MCP refresh was issued. Starship's configured report URL returns
+HTTP 200. Do not describe the connection exits as proven unrelated or claim that
+every process stayed alive.
+The original Starship conversation was not messaged or interrupted for a trial.
+Private snapshots, process identifiers and raw probe captures remain outside Git.

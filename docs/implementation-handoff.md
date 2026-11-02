@@ -2,27 +2,28 @@
 
 Updated 2026-11-01. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.13 is published and
-selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
+the older report checkout and the existing worktrees. Preview.14 is published and
+selected on Snap OSS/work, Starship and Carbon; selected and loaded versions remain distinct.
 
-## Preview.14: native worker discovery correction
+## Preview.14 worker correction published and deployed
 
-Bryan authorized review, publication and managed deployment of the confirmed
-Luna discovery fix. This release is assembled from published main with the four
-worker skill corrections and shared guidance. The separate selected-primary/
-Terra research candidate remains outside the release. Inspect actual native
-tool declarations; call exposed collaboration controls directly, selecting
-`luna-max` with `fork_turns="none"`; distinguish missing controls, spawn errors
-and worker execution errors. Existing activation metadata, agents and routing
-are preserved. The earlier single read-only Luna handoff confirmed native
-`gpt-6-luna` / `max` metadata and a completed turn; unavailable/error fixtures
-were tabletop reviews, not injected runtime failures.
+Bryan's confirmed native-control discovery fix is published as preview.14 from
+`dc19a82`; dotfiles pin `59a889a` is published and scoped-applied on Snap OSS/work,
+Starship and Carbon. The release excludes the separate selected-primary/Terra
+research candidate. All four worker skill bodies now inspect actual declarations
+and call collaboration controls directly with the explicit Luna role/no forked
+history. Invocation metadata, model/effort pins and routing remain unchanged.
 
-All components share preview.14. Runtime/reporting changes are release identity
-and retention of preview.13 installation/rollback support. Publish immutable
-assets and fetched checksums before changing chezmoi pins. Apply the existing
-Snap OSS/work, Starship and Carbon cohort with active native/report processes,
-private config, permission/disable preferences and older releases preserved.
+See the [publication/rollout receipt](reliability-packaging-results.md#preview14-worker-discovery-publication-and-rollout).
+All 376 focused tests pass locally and in Python 3.11/3.14 CI; four skill validators,
+reproducible fetched assets, prior-release rollback and installed inventories/modes
+verify. Fresh MCP discovery reports 17/four tools at preview.14 in all four
+contexts. The full dotfiles gate retains the unchanged OpenCode `--pure` failure.
+Of 1,516 protected paths, only 40 intended worker/selector/provenance paths changed.
+Native daemon identities remain unchanged. Starship MCP processes exited during
+the rollout and subsequent verification; their cause is unlocalized. The
+configured Starship report URL returns 200. No lifecycle action or global MCP
+refresh was issued. Existing conversations can retain older loaded MCP metadata.
 
 ## Lifecycle guide publication
 
