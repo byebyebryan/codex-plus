@@ -26,8 +26,24 @@ invariants are settled; coding steps need not be predetermined.
 
 ## Delegate
 
-Confirm `luna-max` is available. If unavailable, report the limitation; do not
-silently substitute another worker or claim delegation occurred.
+Inspect the actual native tool declarations and their exposed custom-agent roles
+before deciding delegation is unavailable. Native collaboration controls are
+called directly in their declared namespace (for example,
+`collaboration.spawn_agent`), outside `functions.exec`. They are intentionally
+absent from Code Mode's `tools.*` namespace and `ALL_TOOLS`; an empty registry
+search is not evidence that native controls are missing. A directly declared
+`collaboration.list_agents` can check that control, but does not prove that the
+Luna role, spawning, or model execution works.
+
+Distinguish missing native controls or roles (no delegation attempted), an error
+from the actual spawn call (spawn failed), and model/task errors after a worker
+starts (worker execution failed). Report the observed limitation or error and
+any partial result honestly. Do not substitute another worker, launch a separate
+Codex process, or recommend a daemon restart to work around this discovery
+mistake. Retain this workflow's existing primary takeover and routing rules.
+
+If Luna genuinely cannot be used, report that limitation without claiming a Luna
+assignment or loop ran; do not silently substitute another delegated model.
 
 Give one worker a compact, self-contained contract containing:
 
@@ -37,9 +53,9 @@ Give one worker a compact, self-contained contract containing:
 - the acceptance check and proportionate validation; and
 - unresolved decisions or conditions to return to the primary.
 
-Use the named custom agent and minimum necessary context. Prefer
-`fork_turns: "none"` when supported so the contract is self-contained. Honor the
-client's role and model selection rules; a task label alone does not select Luna.
+Call the declared native spawn control directly with `agent_type="luna-max"`
+and `fork_turns="none"` for the self-contained contract. Honor the declared
+client schema and role/model rules; a task label alone does not select Luna.
 Prefer one cohesive assignment over parallel microtasks. Do not duplicate the
 worker's implementation while it runs.
 

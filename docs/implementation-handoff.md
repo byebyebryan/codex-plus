@@ -5,6 +5,25 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.13 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
+## Preview.14: native worker discovery correction
+
+Bryan authorized review, publication and managed deployment of the confirmed
+Luna discovery fix. This release is assembled from published main with the four
+worker skill corrections and shared guidance. The separate selected-primary/
+Terra research candidate remains outside the release. Inspect actual native
+tool declarations; call exposed collaboration controls directly, selecting
+`luna-max` with `fork_turns="none"`; distinguish missing controls, spawn errors
+and worker execution errors. Existing activation metadata, agents and routing
+are preserved. The earlier single read-only Luna handoff confirmed native
+`gpt-6-luna` / `max` metadata and a completed turn; unavailable/error fixtures
+were tabletop reviews, not injected runtime failures.
+
+All components share preview.14. Runtime/reporting changes are release identity
+and retention of preview.13 installation/rollback support. Publish immutable
+assets and fetched checksums before changing chezmoi pins. Apply the existing
+Snap OSS/work, Starship and Carbon cohort with active native/report processes,
+private config, permission/disable preferences and older releases preserved.
+
 ## Lifecycle guide publication
 
 Completed 2026-11-01 under Bryan's separate publish/deploy request. Reviewed

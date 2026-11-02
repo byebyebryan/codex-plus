@@ -15,6 +15,20 @@ reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agen
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
 
+## Selected pass: preview.14 worker discovery release
+
+Review and publish the native collaboration discovery correction from a clean
+published-main base, excluding the separate selected-primary/Terra candidate.
+Preserve all four skill invocation contracts, model pins and adaptive routing.
+Keep preview.13 archives selectable after the product version advances. Run
+source, skill, package and guide gates; verify fetched published artifacts before
+updating the managed URL/revision/checksum and validator cohort. Deploy only
+Codex Plus payloads and selectors to the existing Snap OSS/work, Starship and
+Carbon installations. Preserve configuration, credentials, old releases,
+concurrent source changes and active daemon/report identities. Verify source,
+published, installed and loaded states independently; no daemon restart belongs
+to this rollout.
+
 ## Completed refinement: lifecycle instructions and presentation
 
 Selected and completed 2026-11-01 after review of the local lifecycle candidate.

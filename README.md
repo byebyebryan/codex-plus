@@ -202,6 +202,13 @@ whether delegation helps and which worker to use. An unavailable optional worker
 returns work to the primary; an explicitly requested unavailable Luna worker is
 reported without silently substituting another model.
 
+Inspect actual native tool declarations before reporting worker unavailability.
+Collaboration controls are called directly in their declared namespace; an empty
+Code Mode `ALL_TOOLS` search does not establish their absence. Select Luna with
+`agent_type="luna-max"` and `fork_turns="none"`. The
+[availability guide](docs/workers.md#native-delegation-and-availability) separates
+missing controls, spawn failures and worker/model execution errors.
+
 Activate adaptive workflows with `$worker-task`, `$worker-goal-loop`, or an
 explicit request to use the named skill. A generic "goal loop" uses the ordinary
 workflow. Discussing or editing a skill does not activate it. The adaptive skills

@@ -74,6 +74,32 @@ may be easier to finish in the primary. File count or unfamiliarity alone does
 not decide the route. Compare total primary and worker usage plus corrections;
 the package does not promise a universal cost saving.
 
+## Native delegation and availability
+
+The primary checks the actual native tool declarations and the custom roles they
+expose. Native collaboration controls are separate from Code Mode: they are not
+in `functions.exec`'s `tools.*` namespace or `ALL_TOOLS`. An empty registry search
+does not establish that delegation is unavailable.
+
+When declared, call controls directly in their native namespace. For example,
+use `collaboration.list_agents` for a read-only control check, then
+`collaboration.spawn_agent` with `agent_type="luna-max"`, `fork_turns="none"`
+and the self-contained assignment. A task name containing "Luna" does not select
+the role. A successful list call does not prove that spawning or Luna execution
+will succeed. Follow the actual declared schema for the client in use.
+
+| Observation | Report and next step |
+| --- | --- |
+| No native spawn control or selected role is exposed | Name the missing control/role; no delegation was attempted. An installed agent file does not establish callable controls. |
+| The direct spawn call returns an error | Report a spawn failure and its actual error; no successful worker execution is established. |
+| A spawned worker returns a model/task error | Report the execution failure and any partial result; use the workflow's normal primary review/takeover rules. |
+
+Keep the explicit invocation boundaries and routing above. Do not replace the
+selected worker, launch a separate Codex process, or recommend daemon restarts
+to work around the registry discovery mistake. Once a worker runs, confirm its
+native model/effort metadata and inspect the returned work; installation and a
+successful control call alone do not establish execution.
+
 ## How workers fit with watches and peers
 
 Workers are child agents assigned by the primary through native agent tools.
