@@ -15,11 +15,31 @@ reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agen
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
 
+## Selected pass: preview.14 worker discovery release
+
+Completed 2026-11-01: preview.14 and dotfiles pin are published and the existing
+four contexts select verified preview.14. See the [rollout receipt](reliability-packaging-results.md#preview14-worker-discovery-publication-and-rollout),
+including the unchanged dotfiles gate failure and observed Starship MCP exits.
+
+Review and publish the native collaboration discovery correction from a clean
+published-main base, excluding the separate selected-primary/Terra candidate.
+Preserve all four skill invocation contracts, model pins and adaptive routing.
+Keep preview.13 archives selectable after the product version advances. Run
+source, skill, package and guide gates; verify fetched published artifacts before
+updating the managed URL/revision/checksum and validator cohort. Deploy only
+Codex Plus payloads and selectors to the existing Snap OSS/work, Starship and
+Carbon installations. Preserve configuration, credentials, old releases,
+concurrent source changes and active daemon/report identities. Verify source,
+published, installed and loaded states independently; no daemon restart belongs
+to this rollout.
+
+
 ## Selected fix: native worker discovery
 
 Source correction and one local read-only Luna handoff qualified 2026-11-01;
 see the [validation and limits](worker-routing-design.md#discovery-correction-validation-2026-11-01).
-Published and installed worker skills remain at their prior managed release.
+The correction is now published and deployed in preview.14; its release
+validation remains separate from the earlier combined local candidate.
 
 Selected 2026-11-01 from Bryan's confirmed Luna discovery failure. Inspect native
 collaboration declarations rather than treating Code Mode's registry as the

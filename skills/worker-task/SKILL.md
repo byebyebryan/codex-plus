@@ -84,7 +84,8 @@ native spawn control directly, explicitly selecting the named role: for Luna,
 use `agent_type="luna-max"` and `fork_turns="none"` for the self-contained
 contract. Select `sol-xhigh` only under the existing independent-execution rule.
 Honor the declared client schema and role/model rules; a task label is not role
-selection. Prefer one cohesive assignment over parallel microtasks. Do not duplicate
+selection. Prefer one cohesive assignment over parallel microtasks. Do not
+duplicate
 the worker's implementation while it runs.
 
 ## Review and recover

@@ -51,10 +51,10 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.13** includes readable doctor output, independent published and
-managed guide checks, and preview.12 verification and rollback support. It retains
-bounded reminder history, rediscoverable outgoing messages and reported MCP-version
-diagnosis; see [released and source features](docs/getting-started.md#released-and-source-features).
+**v0.1.0-preview.14** includes corrected native Luna delegation discovery across
+all four worker workflows, preserving explicit invocation and routing. It retains
+readable doctor output, reminder history, outgoing-message inspection and prior
+preview verification/rollback support; see [released and source features](docs/getting-started.md#released-and-source-features).
 Updating a guide or checkout does not upgrade an installed runtime.
 
 Use `--human` with the existing read-only doctor for a readable summary; JSON
@@ -105,15 +105,15 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Snap, Starship and Carbon select **v0.1.0-preview.13** for workers, monitoring and
-reporting from source `5e6c9dd` through chezmoi. The scoped rollout on 2026-11-01
-verified exact payloads, both doctor formats and fresh MCP discovery in all four
-contexts while preserving native owners, private configuration and old releases.
-Report HTTP checks match baseline; Carbon's endpoint remains unavailable.
-See the [rollout receipt](docs/reliability-packaging-results.md#preview13-publication-and-managed-rollout).
-Existing processes adopt new code on normal
-reconnect. The [implementation handoff](docs/implementation-handoff.md) records
-source, release and installed state.
+Snap, Starship and Carbon select **v0.1.0-preview.14** for workers, monitoring and
+reporting from source `dc19a82` through chezmoi. The scoped rollout on 2026-11-01
+verified exact payloads, doctor output and fresh MCP discovery in all four contexts.
+Native owners, private configuration and old releases are preserved. Starship
+MCP connection exits are recorded as an audit limitation in the
+[rollout receipt](docs/reliability-packaging-results.md#preview14-worker-discovery-publication-and-rollout).
+Existing conversations can retain older loaded versions until normal reconnect.
+The [implementation handoff](docs/implementation-handoff.md) records source,
+release and installed state.
 
 Desktop notification delivery and terminal customization are outside Codex Plus.
 Native Codex alerts remain selected. Notification enrichment and lifecycle

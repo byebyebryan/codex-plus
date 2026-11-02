@@ -2,43 +2,28 @@
 
 Updated 2026-11-01. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.13 is published and
-selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
+the older report checkout and the existing worktrees. Preview.14 is published and
+selected on Snap OSS/work, Starship and Carbon; selected and loaded versions remain distinct.
 
-## Local worker fix: native collaboration discovery
+## Preview.14 worker correction published and deployed
 
-Bryan's confirmed Starship failure came from treating Code Mode's `ALL_TOOLS`
-registry as the complete native tool surface. The four worker skills now inspect
-actual native declarations, call collaboration controls directly, explicitly
-select `luna-max` with `fork_turns="none"`, and distinguish unavailable controls,
-failed spawn and failed worker execution. Shared worker guidance is aligned;
-frontmatter, invocation metadata, model/effort pins and routing remain unchanged.
-See the [validation and limits](worker-routing-design.md#discovery-correction-validation-2026-11-01).
+Bryan's confirmed native-control discovery fix is published as preview.14 from
+`dc19a82`; dotfiles pin `59a889a` is published and scoped-applied on Snap OSS/work,
+Starship and Carbon. The release excludes the separate selected-primary/Terra
+research candidate. All four worker skill bodies now inspect actual declarations
+and call collaboration controls directly with the explicit Luna role/no forked
+history. Invocation metadata, model/effort pins and routing remain unchanged.
 
-All four skill validators, the clean 133-file inventory and 382 fixture tests
-pass. The existing checkout's two untracked bytecode files are preserved; its
-ordinary strict check still reports them. The Code Mode registry has no native
-collaboration entries, but direct native list/spawn worked. One tiny read-only
-worker returned its handoff, with native metadata confirming Luna/Max and a
-completed turn without error. Missing-controls and failure classifications were
-reviewed as tabletop fixtures, not exercised as actual unavailable/error runtimes.
-This validates one local transport/model handoff, not all four complete workflows
-or the original Starship conversation.
-
-The correction is a local source candidate. Published preview.13 workers at
-`5e6c9dd` and managed installed copies are unchanged; no installed-only patch,
-chezmoi repin/apply or daemon restart is part of this source fix. Keep private
-probe evidence outside Git and preserve the earlier Terra/catalog work.
-
-Fix commit `d3b7a38` builds and verifies a complete private release candidate.
-Its worker archive matches all 18 source payloads; exactly the four skill bodies
-and shipped routing design changed, with the other 13 payloads unchanged. The
-four extracted skills pass validation too. The fetched published preview.13
-worker artifact still identifies `5e6c9dd`; all four installed skills in Snap
-OSS/work and Starship match that old artifact. Starship's role still selects
-Luna/Max. No published or installed payload contains this correction yet.
-The generated site verifies 301 links/assets/anchors and 15 release claims;
-source and installed/runtime acceptance remain separate from distribution.
+See the [publication/rollout receipt](reliability-packaging-results.md#preview14-worker-discovery-publication-and-rollout).
+All 376 focused tests pass locally and in Python 3.11/3.14 CI; four skill validators,
+reproducible fetched assets, prior-release rollback and installed inventories/modes
+verify. Fresh MCP discovery reports 17/four tools at preview.14 in all four
+contexts. The full dotfiles gate retains the unchanged OpenCode `--pure` failure.
+Of 1,516 protected paths, only 40 intended worker/selector/provenance paths changed.
+Native daemon identities remain unchanged. Starship MCP processes exited during
+the rollout and subsequent verification; their cause is unlocalized. The
+configured Starship report URL returns 200. No lifecycle action or global MCP
+refresh was issued. Existing conversations can retain older loaded MCP metadata.
 
 ## Local candidate: native catalog ownership repair
 

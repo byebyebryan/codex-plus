@@ -65,7 +65,8 @@ Give the worker a compact, self-contained contract containing:
 
 Call the declared native spawn control directly with `agent_type="luna-max"`
 and `fork_turns="none"` for the self-contained contract. Honor the declared
-client schema and role/model rules; a task label alone does not select Luna. Use one writer by default, reuse
+client schema and role/model rules; a task label alone does not select Luna.
+Use one writer by default, reuse
 it for related corrections, and do not duplicate its implementation. Use parallel
 assignments only when independent responsibilities justify their overhead.
 

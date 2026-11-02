@@ -93,8 +93,8 @@ self-contained contract containing:
 
 Call the declared native spawn control directly, explicitly selecting the
 named role: for Luna, use `agent_type="luna-max"` and `fork_turns="none"` for the
-self-contained contract. Select `sol-xhigh` only under the existing independent-
-execution rule. Honor the declared client schema and role/model rules; a task
+self-contained contract. Select `sol-xhigh` only under the existing rule
+for independent execution. Honor the declared client schema and role/model rules; a task
 label is not role selection. Use one writer by default and
 reuse it for related corrections. Do not duplicate its implementation. Use parallel
 assignments only when independent responsibilities justify their overhead.

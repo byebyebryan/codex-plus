@@ -155,7 +155,7 @@ class PackageTests(unittest.TestCase):
             self.assertNotIn('owner_recover', package.mcp_config(prefix)['tools'])
 
     def test_released_recovery_previews_remain_selectable_after_upgrade_and_rollback(self):
-        for number in (11, 12):
+        for number in (11, 12, 13):
             with self.subTest(number=number):
                 version = '0.1.0-preview.' + str(number)
                 files = dict(self.files)

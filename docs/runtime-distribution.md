@@ -18,9 +18,10 @@ operation, native owner replacement and personal UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.13](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.13)
-includes readable doctor output, independent published/managed guide checks and
-preview.12 verification and rollback support. It retains explicit clean native-owner recovery and inspectable history. Workers, monitoring
+[v0.1.0-preview.14](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.14)
+fixes native collaboration discovery in all four worker workflows and retains
+preview.13 verification/rollback support, readable doctor output and independent
+published/managed guide checks. It retains explicit clean native-owner recovery and inspectable history. Workers, monitoring
 and reporting share one
 version, source commit, GitHub tag and release. A reporting-only fix still advances
 the product version; release notes identify which capabilities changed. Components
@@ -30,9 +31,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.13.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.13.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.13.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.14.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.14.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.14.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains
@@ -79,16 +80,21 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Snap, Starship and Carbon select workers, monitoring and reporting **preview.13**,
-source `5e6c9dd`, through chezmoi following the scoped rollout on 2026-11-01. All
-three exact payloads and both doctor formats verify in each of the four contexts,
-including Snap OSS/work. Fresh MCP protocol discovery reports 17 monitoring and
-four report tools. Existing explicit storage paths, private configuration, native
-owners and old immutable releases are preserved. HTTP checks match baseline:
-Snap OSS/work and Starship remain healthy; Carbon remains unavailable. Already
-loaded MCP processes adopt the selected release on normal reconnect. See the
-[rollout receipt](reliability-packaging-results.md#preview13-publication-and-managed-rollout)
-and the earlier [environment deployment receipt](environments.md#snap-multi-environment-deployment-2026-10-15).
+Snap, Starship and Carbon select workers, monitoring and reporting **preview.14**,
+source `dc19a82`, through chezmoi following the scoped rollout on 2026-11-01.
+The four worker skills contain the native collaboration discovery correction.
+Exact inventories, payload hashes and modes verify, and native configuration,
+credentials, invocation metadata and older releases are preserved. Fresh MCP
+protocol discovery reports preview.14 with 17 monitoring and four report tools
+in Snap OSS/work, Starship and Carbon. Already loaded process versions remain
+independent of selected files.
+
+No native daemon restart or global MCP refresh was issued. Native daemon
+identities remain unchanged. Starship Python MCP connections ended during the
+rollout and later verification; their cause was not localized.
+The native owners stayed running and Starship's configured report URL returns
+HTTP 200. See the [rollout receipt](reliability-packaging-results.md#preview14-worker-discovery-publication-and-rollout)
+for preservation details and the unrelated full-dotfiles gate limit.
 
 Workers retain their own installation. The 349 inspector
 is retired, and native notifications remain selected. The earlier [managed activation report](managed-activation-results.md)

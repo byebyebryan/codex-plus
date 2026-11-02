@@ -37,7 +37,7 @@ release. Choose the archives you need from its single GitHub release; see
 
 ## Released and source features
 
-**v0.1.0-preview.13** supplies the released workflows shown in these guides. Updating
+**v0.1.0-preview.14** supplies the released workflows shown in these guides. Updating
 documentation or selecting an archive does not reload an existing MCP process.
 
 | Available in | What to expect |

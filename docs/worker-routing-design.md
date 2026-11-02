@@ -145,9 +145,11 @@ native-unavailable, rejected-spawn and worker-execution-error fixtures. The last
 three were tabletop decisions, not injected runtime failures. No implementation
 or goal-loop execution was exercised by this small probe.
 
-All four skill validators, the clean 133-file inventory and 382 fixture tests
-pass. The ordinary checkout inventory still rejects its two pre-existing
-untracked bytecode files, which remain preserved. Runtime captures stay outside
+The earlier combined local candidate passed all four skill validators, a clean
+133-file inventory and 382 fixture tests. The focused release excludes the
+separate selected-primary/Terra candidate and runs its own source/package gates.
+The development checkout's two pre-existing untracked bytecode files remain
+preserved. Runtime captures stay outside
 committed source. These checks establish a source correction and one local
 native handoff, independently of published artifacts and managed installed
 skills. Publication and installation are reported separately.
