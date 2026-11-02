@@ -9,10 +9,12 @@ selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect norma
 
 The [repair results](three-model-routing-results.md#native-catalog-repair-candidate)
 and [rollout plan](codex-plus-plan.md#planned-fix-native-model-catalog-ownership)
-record the 2026-11-01 goal loop. Both live native homes still select the stale
-managed snapshot; the installed bundle includes Terra. The canonical chezmoi
-candidate removes that override for an OpenAI default and explicitly migrates
-only integration-owned paths. `codexCatalogOnly` preserves every other live key
+record the 2026-11-01 goal loop. During preparation, both native homes selected
+the stale managed snapshot; the installed bundle includes Terra. Bryan then
+authorized the scoped local repair. Both Snap homes' config and ChatGPT profile
+files now omit the override; only that key changed semantically in each of the
+four files. The canonical chezmoi candidate explicitly migrates only
+integration-owned paths. `codexCatalogOnly` preserves every other live key
 and rejects a provider transition. ChatGPT profiles drop their redundant catalog
 line when the root uses OpenAI.
 
@@ -27,8 +29,18 @@ provider/profile/home combinations, distinct synthetic accounts, complete new
 model metadata and rejected silent fallback. The full chezmoi gate reaches an
 unrelated Claude fixture/Niri-staging failure reproduced on the pre-change
 baseline. Preserve the divergent chezmoi history and overlapping provider edits;
-this goal does not publish them. Source-only repair is separate from installed
+this goal does not publish them. Source preparation is separate from installed
 configuration, a loaded owner's inventory and backend inference acceptance.
+
+The [applied repair evidence](three-model-routing-results.md#scoped-snap-repair-applied)
+records exact rendered-byte/mode verification and 128 unchanged protected paths.
+Both daemon identities are unchanged. Fresh native `debug models` reads now
+successfully update each home's account-scoped cache to version 0.166.0, but
+both server catalogs contain nine models and omit Terra. Restarting a daemon
+alone does not address that result. Investigate account/upstream availability
+before another Terra execution trial or three-tier worker changes. The optional
+compatibility refresh helper remains a source candidate; no managed catalog
+generation, worker payload, other host or daemon restart was part of this apply.
 
 ## Local candidate: three-model routing qualification
 

@@ -21,9 +21,13 @@ Source preparation completed 2026-11-01 under Bryan's subsequent goal-loop
 request. The preferred native path, inheritance compatibility path, catalog-only
 migration and isolated native regressions are qualified. See the
 [repair results](three-model-routing-results.md#native-catalog-repair-candidate).
-The candidate remains local in canonical chezmoi source; production catalog
-selection, live-owner visibility and exact Terra inference acceptance are pending.
-The original execution/rollout boundaries below remain in force.
+The source candidate remains uncommitted in canonical chezmoi alongside existing
+provider work. Bryan subsequently authorized the scoped local repair, now applied
+to Snap OSS/work configs and ChatGPT profiles. Fresh native account discovery
+succeeds but excludes Terra in both homes; daemon restart is not the remaining
+availability remedy. Exact Terra inference acceptance remains pending. See the
+[applied repair evidence](three-model-routing-results.md#scoped-snap-repair-applied).
+The original execution/rollout boundaries below remain in force for other targets.
 
 Planned 2026-11-01 after Bryan reported that Terra remains absent following a
 daemon restart and requested a proper fix plan. This prerequisite belongs to

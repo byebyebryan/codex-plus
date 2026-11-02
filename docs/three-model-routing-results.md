@@ -152,6 +152,40 @@ catalog-only delta and the two explicit profiles at a later authorized boundary,
 verify the effective config and loaded inventory independently, then qualify
 exact Terra/XHigh inference before continuing three-tier worker work.
 
+## Scoped Snap repair applied
+
+Bryan subsequently authorized applying the fix on 2026-11-01. The reviewed
+catalog-only chezmoi apply changed exactly four targets: the root config and
+ChatGPT profile in each of Snap's default and Work homes. Each file's semantic
+delta is removal of `model_catalog_json`; installed bytes match the freshly
+reviewed renders and all four retain mode 0600. Private preimages and receipts
+are retained for rollback. Credentials, OpenRouter profiles, worker/skill files,
+the installed refresh helper and managed catalog generations are unchanged:
+128 protected paths match the before snapshot. Chezmoi repository status and HEAD are
+unchanged, retaining the divergent history and overlapping source work.
+
+Both existing daemon identities remain unchanged. Their disk-effective
+`config/read` results select OpenAI with no catalog override, while complete
+`model/list` results still omit Terra. No lifecycle operation was issued.
+
+A bounded native `codex debug models` query outside the shared owners then
+succeeded separately for each home, using the existing native ChatGPT login
+and built-in OpenAI endpoint defaults. Both wrote freshly fetched,
+identity-scoped 0.166.0 caches. Each returned nine models, with no exact
+`gpt-6.1-terra`; this was current account metadata rather than silent bundled
+fallback. Only the normal native caches were refreshed, without publishing a
+replacement managed catalog generation. No credential copied or changed, real
+conversation resumed, or inference request issued during this validation.
+
+This additional result means a daemon restart alone is not the remaining
+remedy for Terra availability. The stale local override is repaired, but the
+current account-facing catalog also omits Terra. Distinguish that observation
+from a proven account-tier restriction or universal product limitation; account
+eligibility versus upstream rollout is not yet localized. Preserve active
+owners and investigate that availability gate before another exact-model trial.
+The optional compatibility exporter remains a local source candidate, and no
+fleet publication or deployment is established by this Snap-only apply.
+
 ## Supported local implementation
 
 `codex-plus-context --primary` exposes the qualified read through the existing
