@@ -117,15 +117,55 @@ def describe(*, state_root=None, report_config=None, socket=None):
     return result
 
 
+def primary_selection(socket=None):
+    """Read this caller's loaded primary selection, never execution telemetry."""
+    from .native import Client, RpcError
+
+    unknown = {'status': 'unknown', 'source': 'loaded_thread_configuration',
+               'execution_verified': False}
+    thread_id = os.environ.get('CODEX_THREAD_ID')
+    if not thread_id or len(thread_id) > 128:
+        return {**unknown, 'reason': 'caller_thread_unavailable'}
+    try:
+        # bind verifies listener ownership and positive loaded inventory. Do not
+        # resume a thread to obtain metadata or consult another native home.
+        with Client(existing_socket(socket), timeout=5) as client:
+            client.bind(thread_id, timeout=5)
+            response = client.call('thread/read', {'threadId': thread_id}, timeout=5)
+            thread = response.get('thread') if isinstance(response, dict) else None
+    except (OSError, ValueError, TimeoutError, subprocess.SubprocessError, RpcError):
+        return {**unknown, 'reason': 'native_selection_unavailable'}
+    if not isinstance(thread, dict) or thread.get('id') != thread_id:
+        return {**unknown, 'reason': 'thread_identity_unavailable'}
+    status = thread.get('status')
+    if not isinstance(status, dict) or status.get('type') not in ('idle', 'active'):
+        return {**unknown, 'reason': 'primary_not_ready'}
+    if 'parentThreadId' not in thread:
+        return {**unknown, 'reason': 'primary_ancestry_unavailable'}
+    if thread['parentThreadId'] is not None:
+        return {**unknown, 'reason': 'caller_is_subagent'}
+    model, effort = thread.get('model'), thread.get('reasoningEffort')
+    provider = thread.get('modelProvider')
+    if not all(isinstance(value, str) and value.strip() for value in (model, effort, provider)):
+        return {**unknown, 'reason': 'selection_fields_unavailable'}
+    return {'status': 'known', 'source': 'loaded_thread_configuration',
+            'model': model, 'model_provider': provider, 'reasoning_effort': effort,
+            'execution_verified': False}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--state-root', type=Path)
     parser.add_argument('--report-config', type=Path)
     parser.add_argument('--socket')
+    parser.add_argument('--primary', action='store_true',
+                        help="Read this caller's loaded primary model/effort instead of paths")
     args = parser.parse_args(argv)
     try:
-        print(json.dumps(describe(state_root=args.state_root, report_config=args.report_config,
-                                  socket=args.socket), indent=2))
+        result = (primary_selection(args.socket) if args.primary else
+                  describe(state_root=args.state_root, report_config=args.report_config,
+                           socket=args.socket))
+        print(json.dumps(result, indent=2))
         return 0
     except (OSError, ValueError) as error:
         print(json.dumps({'error': str(error)}))

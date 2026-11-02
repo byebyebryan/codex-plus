@@ -142,6 +142,7 @@ EXPECTED_FILES = {
     "scripts/codex-plus-report-package",
     "docs/worker-routing-design.md",
     "docs/worker-routing-study.md",
+    "docs/three-model-routing-results.md",
     *AGENTS,
 }
 SKILL_PATHS = tuple(f"skills/{skill}" for skill in SKILLS) + tuple(

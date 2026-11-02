@@ -5,6 +5,26 @@ in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Prese
 the older report checkout and the existing worktrees. Preview.13 is published and
 selected on Snap OSS/work, Starship and Carbon; loaded processes reconnect normally.
 
+## Local candidate: three-model routing qualification
+
+The 2026-11-01 [spike](three-model-routing-results.md) qualifies selected-primary
+inspection through native loaded-thread metadata and an opt-in source
+`codex-plus-context --primary` mode. Eight native control turns verify selection
+changes/inheritance; the helper passes four live reads and rejects an archived
+caller. Configured selection is explicitly distinct from execution telemetry.
+
+Both exact Terra/XHigh inference attempts failed with `modelNotFound`, including
+a retry with an owned thread's private catalog override. The managed catalog
+omits Terra while the installed binary's bundled catalog includes it; the
+remaining owner-cache/account/upstream cause is unresolved. Keep adaptive
+routing, existing agents and Luna workflows unchanged. Both failed fixtures and
+both successful controls are archived/unloaded. Follow the spike's continuation
+gates before introducing a Terra worker or claiming Terra-primary escalation.
+
+This is a local source candidate, not a release or deployment. Existing owners,
+production configuration, installed selections and unrelated bytecode are
+preserved. Final source validation and preservation evidence are in the results.
+
 ## Lifecycle guide publication
 
 Completed 2026-11-01 under Bryan's separate publish/deploy request. Reviewed

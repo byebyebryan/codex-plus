@@ -10,7 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from codex_plus import context
 from codex_plus.model_server import default_state_root, existing_socket
@@ -103,6 +103,105 @@ class EnvironmentTests(unittest.TestCase):
             return subprocess.CompletedProcess(argv, 0, json.dumps({'status': 'stopped'}))
         with self.assertRaises(ValueError): context.existing_socket(run=status)
         self.assertEqual(calls, [(['rtk', 'proxy', 'codex', 'app-server', 'daemon', 'version'], str(selected.home))])
+
+    def primary_client(self, **changes):
+        thread_id = '01a00000-0000-7000-8000-000000000001'
+        os.environ['CODEX_THREAD_ID'] = thread_id
+        client = MagicMock()
+        client.__enter__.return_value = client
+        thread = {'id': thread_id, 'status': {'type': 'active'},
+                  'parentThreadId': None, 'model': 'gpt-6.1-sol',
+                  'modelProvider': 'openai', 'reasoningEffort': 'xhigh', **changes}
+        client.call.return_value = {'thread': thread}
+        factory = patch('codex_plus.native.Client', return_value=client)
+        factory.start(); self.addCleanup(factory.stop)
+        return client, thread
+
+    def test_primary_selection_requires_caller_and_never_starts_discovery_without_it(self):
+        with patch('codex_plus.native.Client') as client, patch.object(context, 'existing_socket') as discover:
+            for value in ('', 'x' * 129):
+                with self.subTest(value=value), patch.dict(os.environ, CODEX_THREAD_ID=value):
+                    self.assertEqual(context.primary_selection()['reason'], 'caller_thread_unavailable')
+            client.assert_not_called(); discover.assert_not_called()
+
+    def test_primary_selection_uses_only_verified_loaded_thread_reads_and_is_not_execution_proof(self):
+        client, thread = self.primary_client()
+        result = context.primary_selection(str(self.root / 'native.sock'))
+        self.assertEqual(result, {'status': 'known', 'source': 'loaded_thread_configuration',
+                                 'model': 'gpt-6.1-sol', 'model_provider': 'openai',
+                                 'reasoning_effort': 'xhigh',
+                                 'execution_verified': False})
+        client.bind.assert_called_once_with(thread['id'], timeout=5)
+        client.call.assert_called_once_with('thread/read', {'threadId': thread['id']}, timeout=5)
+        client.__exit__.assert_called_once()
+
+    def test_primary_selection_refuses_stale_child_partial_and_mismatched_metadata(self):
+        client, thread = self.primary_client()
+        cases = [
+            ({'status': {'type': 'notLoaded'}}, 'primary_not_ready'),
+            ({'status': {'type': 'systemError'}}, 'primary_not_ready'),
+            ({'status': None}, 'primary_not_ready'),
+            ({'parentThreadId': 'parent'}, 'caller_is_subagent'),
+            ({'id': 'another-thread'}, 'thread_identity_unavailable'),
+            ({'model': None}, 'selection_fields_unavailable'),
+            ({'model': []}, 'selection_fields_unavailable'),
+            ({'modelProvider': None}, 'selection_fields_unavailable'),
+            ({'reasoningEffort': None}, 'selection_fields_unavailable'),
+        ]
+        for changes, reason in cases:
+            with self.subTest(changes=changes):
+                client.call.return_value = {'thread': {**thread, **changes}}
+                result = context.primary_selection(str(self.root / 'native.sock'))
+                self.assertEqual(result['status'], 'unknown')
+                self.assertEqual(result['reason'], reason)
+                self.assertNotIn('model', result)
+        del thread['parentThreadId']
+        client.call.return_value = {'thread': thread}
+        self.assertEqual(context.primary_selection(str(self.root / 'native.sock'))['reason'],
+                         'primary_ancestry_unavailable')
+        for malformed in ({}, {'thread': None}, []):
+            client.call.return_value = malformed
+            self.assertEqual(context.primary_selection(str(self.root / 'native.sock'))['reason'],
+                             'thread_identity_unavailable')
+
+    def test_primary_selection_is_fresh_after_model_change_and_honors_the_selected_environment(self):
+        client, thread = self.primary_client()
+        endpoint = str(self.root / 'other.sock')
+        with patch.object(context, 'existing_socket', return_value=endpoint) as discover, \
+                patch('codex_plus.native.Client', return_value=client) as factory:
+            first = context.primary_selection()
+            client.call.return_value = {'thread': {**thread, 'model': 'gpt-6-luna', 'reasoningEffort': 'max'}}
+            second = context.primary_selection()
+            self.assertEqual(factory.call_count, 2)
+            factory.assert_called_with(endpoint, timeout=5)
+        self.assertEqual((first['model'], first['reasoning_effort']), ('gpt-6.1-sol', 'xhigh'))
+        self.assertEqual((second['model'], second['reasoning_effort']), ('gpt-6-luna', 'max'))
+        self.assertEqual(discover.call_count, 2)
+
+    def test_primary_selection_handles_missing_owner_failed_binding_and_deadline_without_fallback(self):
+        from codex_plus.native import RpcError
+        client, _ = self.primary_client()
+        with patch.object(context, 'existing_socket', side_effect=ValueError('stopped')) as discover:
+            self.assertEqual(context.primary_selection()['reason'], 'native_selection_unavailable')
+            discover.assert_called_once_with(None)
+        client.bind.side_effect = RpcError('not loaded')
+        self.assertEqual(context.primary_selection(str(self.root / 'native.sock'))['status'], 'unknown')
+        client.call.assert_not_called()
+        client.bind.side_effect = None
+        client.call.side_effect = TimeoutError('deadline')
+        self.assertEqual(context.primary_selection(str(self.root / 'native.sock'))['status'], 'unknown')
+
+    def test_primary_cli_is_opt_in_and_does_not_read_report_configuration(self):
+        with patch.object(context, 'primary_selection') as selection:
+            with redirect_stdout(io.StringIO()):
+                self.assertEqual(context.main([]), 0)
+            selection.assert_not_called()
+        with patch.object(context, 'describe') as paths:
+            output = io.StringIO()
+            with redirect_stdout(output):
+                self.assertEqual(context.main(['--primary']), 0)
+            self.assertEqual(json.loads(output.getvalue())['status'], 'unknown')
+            paths.assert_not_called()
 
     def test_same_thread_id_in_two_native_homes_has_independent_monitoring_state(self):
         from test_model import Backend, A, TURN_A

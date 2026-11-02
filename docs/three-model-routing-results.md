@@ -1,0 +1,145 @@
+# Primary-aware three-model routing spike
+
+Date: 2026-11-01. Status: selected-primary inspection qualified as a local
+candidate; three-model routing deferred behind a native execution gate. See
+the [execution contract](codex-plus-plan.md#selected-spike-primary-aware-three-model-worker-routing).
+
+## Decision and scope
+
+Keep Sol XHigh, Terra XHigh and Luna Max as the proposed selections, with the
+user choosing the primary. Preserve the Luna agents/workflows, explicit skill
+activation and current adaptive routing. No new Terra agent or changed worker
+policy is included in this candidate.
+
+The user-approved direction remains useful: a Sol primary could delegate to
+Terra or Luna; a Terra primary could delegate to Luna and use Sol for a focused
+reasoning or implementation escalation. The continuing primary would retain
+integration and acceptance. Direct primary work would remain available without
+a required cascade, failed cheap attempt, routing score or mandatory reviewer.
+
+The existing adaptive instructions assume Sol primary and describe a Sol worker
+as another execution context rather than a stronger tier. That distinction
+must be revisited before advertising Terra-primary escalation. The old
+`legacy/agents/terra-xhigh.toml` selects GPT-5.6 Terra and is not a substitute for
+GPT-6.1 Terra. Those files are unchanged.
+
+## Native findings
+
+The selected existing owner and schema generator both use native Codex 0.166.0.
+Its generated `Thread` schema exposes `model` and `reasoningEffort` as the current
+configured values when loaded and latest persisted values when unloaded. The
+schema explicitly excludes per-turn execution telemetry. Native
+`thread/read` returns those fields; the inspected TUI `read_thread` tool omits
+them. A model's self-description or a home config default is therefore not an
+adequate replacement for the native read.
+
+Two owned durable control threads each completed four short turns: Sol/XHigh,
+Luna/Max, an inherited Luna/Max turn, then Sol/XHigh again. All eight metadata
+observations matched the expected model and effort. The second thread also
+passed four reads through the candidate context helper. After archival, native
+metadata reported `notLoaded` and the helper returned `unknown` without resuming
+the thread. A read of the real caller's selection reported Sol/XHigh.
+
+These are metadata/protocol controls, not representative coding tasks or model
+quality benchmarks. Six of eight acknowledgment messages matched the expected
+bare token; two included a terminal period. The prompt itself ended with a
+period after the requested token. Preserve that formatting observation rather
+than reporting eight exact-output passes. No reroute notification was observed;
+absence of that notification is not independent backend identity proof. Native
+usage counters were collected, but no Terra cost/quality comparison was possible.
+
+## Terra execution gate
+
+The existing owner's complete hidden-inclusive model inventory omitted
+`gpt-6.1-terra`. Starting an owned durable thread with that exact model and
+`xhigh` returned the requested configuration successfully. Its first actual turn
+then failed with `modelNotFound`:
+
+> The 'gpt-6.1-terra' model is not supported when using Codex with a ChatGPT account.
+
+Configured selection and a successful thread start did not establish execution.
+The failed thread retained Terra/XHigh metadata and entered `systemError`.
+
+Read-only inspection found that the managed local catalog also omits this model,
+while the installed binary's bundled catalog includes it. Official
+[catalog documentation](https://learn.chatgpt.com/docs/model-catalogs)
+states that a local `model_catalog_json` takes precedence over remote discovery.
+This establishes a local catalog discrepancy, not the cause of the inference
+failure.
+
+A second owned fixture used a thread-scoped override pointing to a private
+catalog copy containing the exact native bundled Terra entry. It failed with
+the same inference error. The owner's normal catalog still omitted Terra after
+the retry. This does not establish that the long-lived owner's cached catalog
+was refreshed by the override. Account eligibility, owner caching and upstream
+availability remain unlocalized. Do not claim a universal ChatGPT limitation,
+that a global catalog edit will fix it, or that a daemon restart is required.
+No other provider or authentication route was substituted.
+
+Both failed fixtures and both successful control fixtures are archived and
+unloaded. Only those four newly owned actors received input or lifecycle
+operations. No child-worker or peer-message trial was started.
+
+## Supported local implementation
+
+`codex-plus-context --primary` exposes the qualified read through the existing
+CLI. Its ordinary path-only behavior remains offline. The optional mode:
+
+- requires the caller's native thread identifier;
+- uses the selected environment and existing socket override rules;
+- verifies listener ownership and positive loaded-thread inventory;
+- reads only that thread, rejects subagent/unloaded/error/partial metadata and
+  returns `unknown` instead of consulting defaults or another home;
+- reports configured model, provider and effort with
+  `execution_verified: false`; and
+- reads fresh metadata each time, without a cache, hook, new MCP tool or daemon.
+
+The worker bundle remains independent of monitoring. The candidate helper is
+not installed or made a mandatory worker dependency, and none of the current
+agent or skill payloads changes. See the [source usage notes](environments.md#local-candidate-inspect-the-selected-primary).
+
+## Continuation when model execution is available
+
+1. Recheck the actual selected owner and complete model inventory. Obtain one
+   successful exact Terra/XHigh inference through the intended native account,
+   with the effective catalog provenance recorded. Preserve active owners and
+   the existing configuration manager; do not infer permission to restart.
+2. Verify Terra-primary selection through the helper, a user model switch and
+   inheritance on the following turn. Keep configured-selection and actual
+   execution evidence separate.
+3. In owned fixtures, qualify Sol-primary delegation to Terra/Luna and
+   Terra-primary Luna delegation plus a focused Sol escalation. Check actual
+   child model/effort selections, ownership, corrections and primary acceptance.
+4. Compare a routine fix, planned change, ambiguous diagnosis and documentation
+   task from identical starting material with equal acceptance criteria. Keep
+   Luna/Max fixed, initially match primary reasoning effort and record complete
+   primary/worker usage, elapsed time, missed requirements and repair work.
+   Tune effort only after that comparison; retain counts rather than publishing
+   a universal savings percentage.
+5. Refine the existing adaptive task/goal-loop skills and package a current Terra
+   role only if those gates pass. Preserve the Luna workflows and explicitly
+   handle unknown primary context, unavailable agents and nonmatching models.
+   A Sol worker under Sol primary still needs an independent-execution benefit;
+   under Terra primary it can have a focused escalation purpose.
+
+## Validation and preservation
+
+All 382 existing/new tests pass under Python 3.14, including six new context
+tests (16 environment tests in total). They cover opt-in behavior, missing
+caller/owner, listener binding and read-only methods, stale/subagent/partial or
+mismatched metadata, fresh selection after a change, selected-endpoint use and
+deadline failure without fallback. The clean 133-file source candidate passes
+the repository inventory, agent/skill metadata and model/effort checks.
+`git diff --check` passes.
+
+The working checkout's inventory check still rejects exactly the two
+pre-existing untracked bytecode files. They are preserved, not deleted or added
+to the public inventory. All 375 protected file hashes/modes/links match the
+baseline, including those bytecode files. The existing owner identity matches;
+all four owned actor records report `notLoaded`. All current agent and skill
+payload files remain unchanged.
+
+Complete committed-candidate package acceptance is recorded after its build.
+Raw events, private actor identifiers, catalog copies and local evidence paths
+remain outside committed source. This pass does not publish, deploy, change
+production configuration or restart a daemon.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Show resolved Codex Plus environment paths without creating state."""
+"""Inspect environment paths or the caller's loaded primary selection read-only."""
 import sys
 from pathlib import Path
 

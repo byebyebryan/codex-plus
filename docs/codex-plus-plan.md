@@ -15,6 +15,58 @@ reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agen
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
 
+## Selected spike: primary-aware three-model worker routing
+
+Selected 2026-11-01 after Bryan's explicit goal-loop request. Keep Sol XHigh,
+Terra XHigh and Luna Max as the proposed selections. The user chooses the
+primary. With Sol primary, the adaptive workflow may use Terra and Luna for
+useful assignments; with Terra primary, it may use Luna and ask Sol to resolve a
+focused difficult question or own a demanding slice. The continuing primary
+retains integration and acceptance. Preserve the Luna agents/workflows, existing
+skill identities and explicit invocation. Primary execution remains a normal
+choice; do not require a cascade or a failed cheap attempt.
+
+Qualification outcome: native selected-primary inspection is qualified as a
+local context-CLI candidate. Exact Terra/XHigh execution fails in the current
+owner, including the private-catalog retry. Adaptive changes and comparative
+worker trials are deferred at that gate. The [results](three-model-routing-results.md)
+record the evidence, passing source checks and concrete continuation conditions.
+The contract below retains the original research scope.
+
+Qualify native behavior before changing the adaptive skills:
+
+1. Read the selected model and effort from verified loaded-thread metadata.
+   Distinguish configured selection from per-step execution telemetry, missing
+   values and persisted unloaded-thread metadata. Check an owned thread after a
+   model/effort change; do not infer identity from a config default or a model's
+   self-description.
+2. Inspect the existing owner's model catalog and attempt an exact
+   `gpt-6.1-terra`/`xhigh` request in an owned durable fixture. A successful
+   thread start is not proof that the backend executes that model. Record
+   unsupported selections or reroutes and do not substitute legacy GPT-5.6 Terra.
+3. If model access and context gates pass, exercise both routing directions in
+   owned isolated fixtures. Check actual child selection, evidence-based
+   escalation, acceptance, total available usage and corrections. Use identical
+   acceptance criteria for representative primary/worker comparisons. A small
+   sample establishes behavior, not a general capability ranking or saving.
+4. Implement only the lightweight adaptive changes supported by the evidence.
+   If a gate fails, retain the shipped behavior, record the blocker precisely
+   and leave a concrete continuation plan rather than advertising untested tiers.
+
+The qualified metadata may be exposed through an opt-in read-only mode of the
+existing context CLI. Keep its default path-only behavior unchanged. This is a
+local prerequisite candidate, not a new worker dependency, hook, MCP tool or
+permission to route to an unavailable model.
+
+Use private evidence, temporary workspaces and the existing owning daemon. No
+existing session may be resumed, steered, interrupted or cleaned up. Only fixture
+actors created by this spike may receive test input or lifecycle operations.
+Preserve production configuration, installed selections, existing bytecode and
+other worktree drift. Do not restart a daemon, install, push, publish or deploy.
+Run the repository gate and relevant existing checks; distinguish a clean source
+candidate from the known untracked-bytecode inventory failure. Keep raw native
+events, local paths, private context and runtime identifiers out of source.
+
 ## Completed refinement: lifecycle instructions and presentation
 
 Selected and completed 2026-11-01 after review of the local lifecycle candidate.

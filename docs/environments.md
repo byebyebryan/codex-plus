@@ -43,6 +43,35 @@ For OSS, use `~/.codex`, `codex-plus-oss` and `report.toml` instead. These are
 existing Snap overrides, not portable default names. Preserve them when using
 standalone monitoring/report commands, or pass the exact native MCP arguments.
 
+## Local candidate: inspect the selected primary
+
+The three-model routing spike adds an opt-in mode to the source context CLI:
+
+```sh
+rtk proxy scripts/codex-plus-context --primary
+```
+
+Run it in the primary's environment with its native `CODEX_THREAD_ID`. It reads
+the existing selected owner, verifies that the caller's thread is loaded and
+returns the configured model, provider and reasoning effort. `--socket` and
+`CODEX_PLUS_SOCKET` retain their existing precedence. This mode never starts an
+owner, resumes a thread or contacts a model endpoint. The ordinary path report
+remains offline and unchanged; `--primary` returns only the selection report
+and does not parse report configuration.
+
+Read `status`, not just the command's exit code. Missing caller identity, an
+unavailable owner, an unloaded/error thread, a subagent caller, missing ancestry
+or incomplete selection fields returns `status: unknown`. It does not guess
+from configuration defaults, use another home or walk to a parent session.
+Each invocation reads fresh metadata. A `known` result is a configured selection
+snapshot; `execution_verified: false` explicitly excludes proof of the backend
+model used for a particular inference.
+
+This is an unreleased source candidate. Current released installations do not
+gain the option automatically. The [spike results](three-model-routing-results.md)
+record native verification and the Terra access gate. Adaptive routing and Luna
+workflows remain unchanged; workers do not acquire a monitoring dependency.
+
 ## Selection and overrides
 
 The canonical absolute Codex home is the storage identity. The environment key is
