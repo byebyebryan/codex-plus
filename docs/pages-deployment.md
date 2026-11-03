@@ -185,3 +185,14 @@ After Carbon returned online, the same scoped rollout completed across all four
 native contexts. The common managed guide anchors now record preview.16; this
 receipt update changes no immutable release asset. Installation evidence is in the
 [delivery receipt](reliability-packaging-results.md#preview16-publication-and-managed-rollout).
+
+## Preview.17 four-workflow publication
+
+Release-source Pages run `41700682422` publishes source `047f6e1` with the old
+worker-name compatibility entries removed from current setup and presentation.
+The walkthrough, nine guides and plain agent lifecycle guide describe four
+canonical workflows and the breaking prompt update. The build verifies 302
+local links/assets/anchors and 15 release claims; public desktop/mobile checks
+cover 18 guide loads and 54 interactive states. The final receipt aligns common
+managed status with preview.17 on Snap OSS/work, Starship and Carbon without
+changing immutable assets. See the [cleanup receipt](reliability-packaging-results.md#preview17-four-workflow-cleanup-and-rollout).

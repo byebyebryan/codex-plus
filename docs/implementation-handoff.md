@@ -2,23 +2,44 @@
 
 Updated 2026-11-03. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.16 is published and
+the older report checkout and the existing worktrees. Preview.17 is published and
 selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
 remain distinct.
 
-## Current cleanup: remove worker-name compatibility entries
+## Preview.17 published: four canonical workflows
 
-Bryan approved the [four-workflow cleanup](codex-plus-plan.md#selected-cleanup-four-canonical-workflows).
-Remove both worker-name compatibility entries from source, archives, current
-guides and managed installed paths. Preserve native roles, canonical policy
-bytes, invocation rules, private state and concurrent work. Preview.16 remains
-the published/selected baseline until a new immutable release and scoped
-managed cleanup are verified. Historical worker names in receipts stay intact.
+Bryan approved the [four-workflow cleanup](codex-plus-plan.md#completed-cleanup-four-canonical-workflows).
+Preview.17 source `047f6e1` removes both worker-name compatibility entries from
+source, archives and current setup. Four canonical workflow bodies/metadata and
+native role files remain byte-identical. The 135-file source gate, four skill
+validators, relocated archive checks, 387-test CI and Pages/browser checks pass.
+The real chezmoi fixture validates deletion scope, dry-run preservation, canonical
+and unrelated-file retention, unknown-host exclusion and absent-path convergence.
+
+Public dotfiles `7b1beeb` advances pins/checksums/validators and declares retired
+paths. Narrow canonical integration commits are Snap `c56d940`, Starship
+`3bdb059`, Carbon `8508597`. Installed manifests, roles, four workflows, selectors
+and absence of both old directories verify, with empty scoped diffs in all four
+native homes. Native discovery exposes only the four distinct canonical names;
+Snap work and Carbon needed a supported skill-cache reread. No model turn was
+run for this cleanup. Snap work's project-CWD scan has four user entries; a
+home-directory scan also exposes the existing OSS copies as repo-scoped entries.
+The separate native homes and policies remain unchanged.
+
+Native owner identities, configuration, credentials, older releases and unrelated
+files are preserved. Four pre-existing Snap MCP connections and four Starship
+connections exited during the pass with unlocalized cause; no lifecycle action
+was issued. Other pre-existing identities remain. Post-discovery audits found no
+extra protected-file or native-cache changes beyond the 40 intended deployment
+changes across 2,004 protected files. No daemon restart, global MCP refresh or
+real-session input occurred. The full dotfiles gate retains the unrelated
+OpenCode `--pure` failure after Codex checks. Historical receipts and immutable
+preview.16 assets remain intact. See the [cleanup receipt](reliability-packaging-results.md#preview17-four-workflow-cleanup-and-rollout).
 
 ## Preview.16 published and deployed
 
 Bryan selected the adaptive rename goal loop on 2026-11-03. The
-[focused plan](codex-plus-plan.md#selected-pass-adaptive-workflow-names) makes
+[focused plan](codex-plus-plan.md#completed-pass-adaptive-workflow-names) makes
 `adaptive-task` and `adaptive-goal-loop` canonical while retaining the existing
 worker names as explicit-only compatibility entries. Preserve one policy body,
 Luna identities, role pins, invocation boundaries, concurrent edits and live

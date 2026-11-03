@@ -15,7 +15,7 @@ reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agen
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
 
-## Selected cleanup: four canonical workflows
+## Completed cleanup: four canonical workflows
 
 Bryan approved removing the worker-name compatibility entries on 2026-11-03.
 Keep only `adaptive-task`, `adaptive-goal-loop`, `luna-task` and `luna-goal-loop`
@@ -40,6 +40,12 @@ explicit invocation and optional escalation permissions remain unchanged.
 
 Old `$worker-*` prompts need updating. Existing immutable preview.16 artifacts
 and earlier receipts remain unchanged; no forwarding layer is retained.
+
+Preview.17 source `047f6e1` and public managed source `7b1beeb` are published.
+The scoped rollout verifies four canonical entries and absence of both retired
+directories in Snap OSS/work, Starship and Carbon. Native discovery reports four
+distinct canonical names with no retired names; current instructions and roles
+are unchanged. See the [delivery receipt](reliability-packaging-results.md#preview17-four-workflow-cleanup-and-rollout).
 
 ## Completed pass: adaptive workflow names
 

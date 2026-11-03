@@ -608,3 +608,58 @@ then fails at the pre-existing OpenCode `--pure` rejection. That failing source
 block is byte-identical to the published parent and the baseline command fails
 independently. Private captures, host snapshots and process/session identifiers
 remain outside Git; the two pre-existing product bytecode files are retained.
+
+## Preview.17 four-workflow cleanup and rollout
+
+Published 2026-11-03 as [v0.1.0-preview.17](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.17)
+from immutable source `047f6e18bcf7a696ffa173232e95e1768e560bf0`, using the personal
+GitHub account. Both old worker-name directories are removed from source and the
+worker archive. The four canonical Luna/adaptive instruction and metadata files,
+native role files, routing, invocation rules and optional escalation are unchanged.
+Old prompts need the corresponding adaptive name; no forwarding layer remains.
+
+The clean source gate verifies 135 files and four canonical skill validators.
+Release-tag CI `41700403671` and main CI `41700682415` pass the complete 387-test
+suite and build/verify on Python 3.11/3.14. Real relocated archives contain exactly
+four current workflow directories and no retired entries. All five fetched
+release files equal the validated local build and pass the unified verifier.
+Pages `41700682422`, nine guides, 302 local links/assets/anchors and 15 release
+claims pass; public browser checks cover 18 guide loads and 54 interactive states.
+Historical trial names and preview.16 immutable assets remain unchanged.
+
+Public dotfiles `7b1beeb` updates eight scoped pin/cleanup/validator files.
+`.chezmoiremove` declares only supported-host/home removal for the two old skill
+paths. Real isolated fixtures verify the host gates, targeted dry run and deletion,
+preserved canonical and unrelated files, and already-absent convergence. Already
+absent paths are filtered before targeted CLI calls, because chezmoi reports an
+absent removed target as unmanaged. Old installed entries were verified against
+their archive and backed up before deletion; a post-dry-run guard rejects new or
+changed unclassified target contents. No broad apply or source-history reset ran.
+
+| Context | Installed state | Native discovery |
+| --- | --- | --- |
+| Snap OSS | Preview.17; exact manifests, roles/four workflows, retired paths absent and empty scoped diff | Four canonical entries, no retired names, no forced refresh. |
+| Snap work | Same verified state in its separate home | Project-CWD scan sees four user entries and no retired names. Home-CWD scan additionally lists OSS copies as repo entries; existing roots and policies were preserved. Skill cache reread was needed. |
+| Starship | Same complete installed checks | Four canonical entries, no retired names, no forced refresh. |
+| Carbon | Same complete installed checks | Four canonical entries and no retired names after native skill-cache reread. |
+
+Canonical integration commits are Snap `c56d940`, Starship `3bdb059`, Carbon
+`8508597`. All unrelated dirty source and divergent history were preserved by
+staging only the reviewed hunks. Across 2,004 protected installed paths, 40
+intended existing paths changed or were removed, plus new immutable release
+roots. Canonical workflows/roles, private configuration, credentials and older
+releases retain their baseline bytes/modes. Post-discovery audit found zero extra
+protected-file or native-owned cache changes. Native owner identities remained
+unchanged; four Snap and four Starship pre-existing MCP connections exited with
+unlocalized cause. The other 45 pre-existing process identities were preserved.
+No daemon restart, global MCP refresh, native model turn or real-session input
+was issued. Fresh stdio lists preview.17 with 17 monitoring/four reporting tools
+and aligned doctor output in all four homes. Native discovery establishes names
+and availability, not model execution; existing conversations can retain loaded
+instructions. The earlier routing/provider/lifecycle evidence limits remain.
+
+Scoped Plus, retirement, report-artifact, exact-worker, preference and master-pin
+checks pass. The full dotfiles gate reaches the same OpenCode `--pure` rejection
+after Codex checks; its failing block is unchanged and the baseline command
+reproduces independently. Private backups/captures remain outside source. The
+two pre-existing untracked product bytecode files are preserved.

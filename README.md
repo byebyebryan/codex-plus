@@ -109,12 +109,12 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Snap, Starship and Carbon select **v0.1.0-preview.16** for workers, monitoring and
-reporting from source `b13cc66` through chezmoi. The scoped rollout on 2026-11-03
+Snap, Starship and Carbon select **v0.1.0-preview.17** for workers, monitoring and
+reporting from source `047f6e1` through chezmoi. The scoped rollout on 2026-11-03
 verified exact payloads, doctor output and fresh MCP discovery in all four contexts.
 Native owners, private configuration and old releases are preserved. Native
 skill discovery and cache limits are recorded separately in the
-[delivery receipt](docs/reliability-packaging-results.md#preview16-publication-and-managed-rollout).
+[delivery receipt](docs/reliability-packaging-results.md#preview17-four-workflow-cleanup-and-rollout).
 Existing conversations can retain older loaded versions until normal reconnect.
 The [implementation handoff](docs/implementation-handoff.md) records source,
 release and installed state.
