@@ -1,10 +1,21 @@
 # Implementation handoff
 
-Updated 2026-11-02. The owner-recovery work was isolated on Starship
+Updated 2026-11-03. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
 the older report checkout and the existing worktrees. Preview.15 is published and
 selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
 remain distinct.
+
+## Current pass: adaptive workflow names
+
+Bryan selected the adaptive rename goal loop on 2026-11-03. The
+[focused plan](codex-plus-plan.md#selected-pass-adaptive-workflow-names) makes
+`adaptive-task` and `adaptive-goal-loop` canonical while retaining the existing
+worker names as explicit-only compatibility entries. Preserve one policy body,
+Luna identities, role pins, invocation boundaries, concurrent edits and live
+owners. Preview.15 remains the published/selected baseline until the new immutable
+release and scoped managed rollout are independently verified. Private snapshots
+and validation captures stay outside committed source.
 
 ## Preview.15 published and deployed
 

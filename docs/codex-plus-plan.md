@@ -1,6 +1,6 @@
 # Codex Plus implementation plan
 
-Updated 2026-11-02. Codex CLI/TUI remains the daily interface and its existing
+Updated 2026-11-03. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are
 installed and enabled on Snap, Starship and Carbon. Current sources are reconciled.
@@ -14,6 +14,39 @@ The separately authorized lifecycle-guide publication completed 2026-11-01 from
 reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agent-first-lifecycle-publication-2026-11-01).
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
+
+## Selected pass: adaptive workflow names
+
+Bryan selected `adaptive-task` and `adaptive-goal-loop` as the canonical names
+on 2026-11-03. Preserve the existing `worker-task` and `worker-goal-loop`
+identities as small explicit-only compatibility entries that load their sibling
+canonical instructions. Keep one routing policy per workflow; retain the Luna
+skills, native role pins, primary ownership, optional escalation and invocation
+boundaries. Generic task/goal wording and skill discussion activate no workflow.
+
+1. Copy the reviewed adaptive policies to the canonical names, changing only
+   identity and activation references. Replace old bodies with bounded relative
+   links to the corresponding canonical skill. Missing targets fail honestly;
+   compatibility does not change routing, spending permission or task scope.
+2. Update explicit source/artifact inventories, metadata validation and current
+   guides/presentation. Preserve historical trial names and receipts. Test real
+   relocated archives, both compatibility links and explicit-only metadata;
+   compare normalized canonical instructions with the preserved pre-rename body.
+3. Validate the repository, all affected skills, Pages and unified artifacts.
+   Review the complete diff, commit validated slices, then publish a new immutable
+   unified release and current Pages through the personal GitHub account.
+4. Update canonical chezmoi pins, checksums, skill externals and validators
+   together. Preserve unrelated drift and local disable preferences; install the
+   canonical entries alongside compatibility entries on Snap OSS/work, Starship
+   and Carbon. Verify exact payloads, role/skill bytes, modes and scoped diffs.
+   Keep existing owners, loaded conversations and older releases intact; issue
+   no daemon restart, global MCP refresh or real-session input.
+
+Completion distinguishes source, published archives/site, managed source,
+installed entries and native discovery. Artifact/link validation does not prove
+that a model invoked either new name; keep any runtime qualification gap explicit.
+The current baseline is published/selected preview.15; use a new release identity
+for distribution rather than changing its immutable assets.
 
 ## Selected plan: primary, Luna and optional escalation
 
