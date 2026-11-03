@@ -11,16 +11,14 @@ coordinator owns bounded observation, timers, event admission and receipts.
 | Monitoring runtime | 17 `codex_plus` MCP tools; watch/peer/package/owner CLIs | Peer discovery and passive reads, bounded sources, messages, reminders, cancellation, receipts and explicit clean owner recovery. |
 | Reporting component | Four `html_report` MCP tools; report CLI; HTML report skill | Immutable static snapshots, project catalog, delivery checks and selected deletion. |
 | Report server | `codex-report-server` | Independent HTTP hosting; per-config tmux ownership or an explicitly managed server. |
-| Worker bundle | `luna-max`, `sol-xhigh`; four worker workflow skills | Explicitly selected execution workflows; primary retains decisions and acceptance. |
+| Worker bundle | `luna-max`, `sol-xhigh`, `astra-xhigh`; four worker workflow skills | Explicitly selected execution workflows; primary retains decisions and acceptance. |
 | Development source | Tests, validators, guides and research reports | Implementation and acceptance evidence; distinct from installed immutable artifacts. |
 
 Codex Plus `v0.1.0-preview.15` unifies workers, monitoring and reporting under one
 version, source commit and release. Optional archives retain each component's
-dependencies and configuration. The last completed common fleet receipt (2026-11-01) recorded that Snap, Starship
-and Carbon select preview.14
-artifacts from `dc19a82` following the scoped managed rollout on 2026-11-01.
-The preview.15 rollout currently selects Snap OSS/work and Starship; Carbon's
-apply is pending because the host went offline. See the
+dependencies and configuration. Snap, Starship and Carbon select preview.15
+artifacts from `0767e91` following the scoped managed rollout on 2026-11-02.
+Snap OSS and work retain separate native homes. See the
 [delivery receipt](reliability-packaging-results.md#preview15-worker-policy-and-guide-publication).
 Managed configuration, selected artifacts and already loaded processes
 are different layers: existing MCP processes adopt new code on normal reconnect.

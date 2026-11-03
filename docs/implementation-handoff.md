@@ -2,10 +2,11 @@
 
 Updated 2026-11-02. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.15 is published and selected on Snap OSS/work and Starship; Carbon
-remains pending at its last verified preview.14. Selected and loaded versions remain distinct.
+the older report checkout and the existing worktrees. Preview.15 is published and
+selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
+remain distinct.
 
-## Preview.15 published; Carbon apply pending
+## Preview.15 published and deployed
 
 Preview.15 is public from immutable source `0767e91`, with the polished worker
 chooser and all nine HTML guides at the existing public Pages site. Python
@@ -14,22 +15,20 @@ Pages metadata/links and desktop/mobile browser checks pass. The permission
 policy remains verbal/default-off; no persistent escalation grant was installed.
 
 Dotfiles pin/validator commit `6eaf5fc` is published independently of the divergent
-canonical checkouts. Scoped integration/apply verifies preview.15 on Snap OSS/work
-and Starship, including three private native roles, four skills and aligned
+canonical checkouts. Scoped integration/apply verifies preview.15 on Snap OSS/work,
+Starship and Carbon, including three private native roles, four skills and aligned
 monitoring/report payloads. Native owner identities and configuration are preserved;
 no daemon restart, global MCP refresh or live-session input occurred. Some
 pre-existing MCP connections exited with unlocalized cause; fresh stdio tools
 report version15, while existing loaded conversations remain independent.
 
-Carbon passed preflight at preview.14, then went offline before source integration
-or apply. Tailscale reports offline and both trusted SSH routes fail. Its prepared
-patch, published assets and initial preservation snapshot remain ready. Resume
-only when reachable: recheck its current owner/source/installed state, retain
-rollback backups, enroll the additional managed-preference validator, then run
-the same scoped integration/stage/selection/verification without restarting native
-owners. A changed incarnation or concurrent source edit needs a fresh preservation
-baseline, not restoration of stale process/config state. The user has been asked
-to bring Carbon online or explicitly leave it pending.
+Carbon initially went offline after preflight. Once it returned, the original
+snapshot was retained and a fresh preservation baseline was taken. Its installed
+state and canonical source head were unchanged. Scoped integration, retained
+backups, staged manifest verification, selection, doctor and fresh MCP discovery
+then passed. All 431 protected paths were audited; 15 intended existing files
+changed, and both pre-existing process identities were preserved. No native
+owner restart or global MCP refresh was needed.
 
 See the [delivery receipt](reliability-packaging-results.md#preview15-worker-policy-and-guide-publication)
 for source/release/managed/installed/runtime evidence. Unrelated chezmoi edits and
@@ -54,7 +53,7 @@ role. Terra is a normal primary and needs no automatic worker role. Escalation
 configuration uses the request/existing user guidance, keeping native pins and
 managed ownership. No recursive escalation, automatic primary switch or
 concealed alternative target is authorized. Unknown primary metadata holds
-automatic escalation; the source helper is still an unpublished candidate,
+automatic escalation; the source helper was initially an unpublished candidate,
 and worker-only installations retain direct/Luna use without monitoring.
 
 Bryan selected the implementation goal loop after reviewing the plan. The plan
@@ -72,7 +71,7 @@ control and policy review, missing controls and a native pin conflict. All four
 owned primary fixtures and three children are settled, archived and unloaded.
 Terra-primary routes and real provider/model failures retain their evidence gaps.
 
-Installed preview.14 and existing native owners are preserved. Fixture-generated
+The preparation preserved installed preview.14 and existing native owners. Fixture-generated
 trust entries were removed through the version-checked native config owner with
 no reload; the original config hash is restored. All 17 protected installed/config
 paths match baseline. The same two untracked bytecode files remain outside the

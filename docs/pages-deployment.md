@@ -168,4 +168,7 @@ Desktop/mobile browser checks cover all nine guides and 54 interactive states;
 the public plain agent guide matches release-source bytes. Publication and
 per-host installation remain separate; see the
 [delivery receipt](reliability-packaging-results.md#preview15-worker-policy-and-guide-publication)
-for current selected/loaded evidence and Carbon's pending apply.
+for current selected/loaded evidence. After Carbon returned online, the scoped
+rollout completed in all four native contexts; the published guides now record
+the common preview.15 selection. This documentation update leaves the immutable
+release artifacts unchanged.

@@ -490,7 +490,8 @@ Public dotfiles commit `6eaf5fcd133e2c4f895f463bb701ff08d177368e` updates only s
 Codex Plus pin/validator files from a current-origin isolated checkout. Archive
 URLs, checksums, source revision, the new Astra role, worker documentation scope,
 private payload inventory and selectors advance together. Canonical integration
-commits are `2dd19d0` on Snap and `11b8d2e` on Starship. Existing divergent history,
+commits are `2dd19d0` on Snap, `11b8d2e` on Starship and `3407354` on Carbon.
+Carbon received the same scoped patch after it returned online. Existing divergent history,
 private preferences and unrelated dirty source remain preserved. Concurrent
 checker edits outside the unchanged Codex pin block were retained; only the
 published patch hunks were staged.
@@ -500,19 +501,19 @@ published patch hunks were staged.
 | Snap OSS | Preview.15, source `0767e91` | Exact inventories, bytes, modes, three native role files, four skills, immutable selectors and empty scoped chezmoi diff. |
 | Snap work | Preview.15, same artifacts | Same role/skill payloads and aligned doctor, preserving its separate native home/config. |
 | Starship | Preview.15, same artifacts | Same complete installed checks and empty scoped diff. |
-| Carbon | Last verified preview.14; apply pending | Preflight verified the old worker tree and no role overrides/conflicts. Tailscale then reported offline; trusted SSH via Starship timed out and the known LAN route was unreachable. No source integration or live apply was issued. |
+| Carbon | Preview.15, same artifacts | After connectivity returned, a fresh baseline confirmed unchanged source/installed state. The same manifest, role/skill, selector, doctor, MCP and empty scoped-diff checks passed; both pre-existing process identities were preserved. |
 
 All three staged component manifests were verified before selectors/skills
-advanced on the reachable hosts. Existing worker/role/skill backups and older
-runtime/report releases are retained. Across Snap and Starship, 1,235 protected
-installed paths were checked; 35 intended existing paths changed, plus the new
+advanced on each host. Existing worker/role/skill backups and older
+runtime/report releases are retained. Across all three hosts, 1,666 protected
+installed paths were checked; 50 intended existing paths changed, plus the new
 Astra roles, qualification document and immutable release trees. Native owner
 identities are unchanged. Two existing Snap MCP processes and six Starship MCP
 processes exited during the pass; no lifecycle action was issued and their cause
 was not localized. Remaining pre-existing process identities were preserved.
 
 Fresh stdio initialization/tool listing reports preview.15 with 17 monitoring
-and four report tools in Snap OSS/work and Starship. This proves the selected
+and four report tools in Snap OSS/work, Starship and Carbon. This proves the selected
 entrypoints' protocol/version, not code loaded by every existing conversation.
 The installed Snap `codex-plus-context --primary` reads the active Sol/XHigh
 selection successfully. No model turn, native owner restart, global MCP refresh,
