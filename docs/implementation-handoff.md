@@ -3,11 +3,10 @@
 Updated 2026-11-03. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
 the older report checkout and the existing worktrees. Preview.16 is published and
-selected on Snap OSS/work and Starship; Carbon remains pending at its last
-verified preview.15. Selected and loaded versions
+selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
 remain distinct.
 
-## Preview.16 published; Carbon apply pending
+## Preview.16 published and deployed
 
 Bryan selected the adaptive rename goal loop on 2026-11-03. The
 [focused plan](codex-plus-plan.md#selected-pass-adaptive-workflow-names) makes
@@ -18,20 +17,25 @@ owners. The 139-file candidate passes 387 tests, six workflow/compatibility skil
 validators and Pages checks. Canonical policy bodies differ only in identity
 references; native roles and Luna skills are byte-identical to baseline.
 Immutable release `b13cc66` is published and Pages is current. Public dotfiles
-commit `928da79` was integrated narrowly on Snap (`013b9b8`) and Starship
-(`d95b412`); exact installed payloads and empty scoped diffs pass. All 51 existing
-native/helper process identities are preserved. Fresh MCP discovery reports
-version16 with 17 monitoring/four reporting tools in all three reachable native
+commit `928da79` was integrated narrowly on Snap (`013b9b8`), Starship
+(`d95b412`) and Carbon (`4b38145`); exact installed payloads and empty scoped diffs
+pass. All 53 existing native/helper process identities were preserved through
+their scoped deployment checks. Fresh MCP discovery reports
+version16 with 17 monitoring/four reporting tools in all four native
 homes. Native `skills/list` with `forceReload=false` discovers all six entries
 enabled without errors on Snap OSS and Starship. Snap work's native control
 socket is absent, so no native discovery claim or owner start is made there.
 
-Carbon passed a fresh snapshot/preflight at preview.15, then went offline before
-backup, source integration or apply. The user has been asked to restore access
-or explicitly defer it. When reachable, retain the old snapshot and refresh the
-preservation baseline before integrating/staging/selecting the same published
-patch. Do not restore stale config or process assumptions; preserve concurrent
-work and issue no restart or global MCP refresh. Private snapshots and captures
+Carbon initially went offline after preflight. Once it returned, its earlier
+snapshot was retained and a fresh baseline captured the changed source head and
+unchanged installed bytes. The same scoped integration, backup, stage, selection,
+doctor, protocol and final payload checks passed. Its cached native skill list
+initially showed four names; the documented `skills/list` disk refresh then
+exposed all six enabled entries with no errors. Both existing process identities,
+configuration, credentials and managed workflows were preserved. Native-owned
+built-in skill-cache changes were also observed during discovery and retained
+under native ownership; counts and evidence limits are in the receipt.
+No daemon restart, global MCP refresh or real-session input occurred. Snapshots and captures
 stay outside committed source. See the [current receipt](reliability-packaging-results.md#preview16-publication-and-managed-rollout).
 
 ## Preview.15 published and deployed

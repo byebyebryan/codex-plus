@@ -43,8 +43,8 @@ boundaries. Generic task/goal wording and skill discussion activate no workflow.
    no daemon restart, global MCP refresh or real-session input.
 
 Source/release `b13cc66` and Pages are published. Public managed source `928da79`
-and the scoped Snap OSS/work and Starship installations verify. Carbon passed
-preflight, then went offline before integration/apply; that host remains pending.
+and the scoped Snap OSS/work, Starship and Carbon installations verify. Carbon
+returned online and completed the same scoped deployment from a fresh baseline.
 See the [current delivery receipt](reliability-packaging-results.md#preview16-publication-and-managed-rollout).
 
 Completion distinguishes source, published archives/site, managed source,

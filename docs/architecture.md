@@ -16,11 +16,9 @@ coordinator owns bounded observation, timers, event admission and receipts.
 
 Codex Plus `v0.1.0-preview.16` unifies workers, monitoring and reporting under one
 version, source commit and release. Optional archives retain each component's
-dependencies and configuration. The last completed common fleet receipt records
-that Snap, Starship and Carbon select preview.15
-artifacts from `0767e91` following the scoped managed rollout on 2026-11-02.
-Preview.16 is now selected on Snap OSS/work and Starship; Carbon's apply is
-pending because the host went offline. Snap OSS and work retain separate native
+dependencies and configuration. Snap, Starship and Carbon select preview.16
+artifacts from `b13cc66` following the scoped managed rollout on 2026-11-03.
+Snap OSS and work retain separate native
 homes. See the [delivery receipt](reliability-packaging-results.md#preview16-publication-and-managed-rollout).
 Managed configuration, selected artifacts and already loaded processes
 are different layers: existing MCP processes adopt new code on normal reconnect.

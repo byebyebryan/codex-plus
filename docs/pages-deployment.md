@@ -181,5 +181,7 @@ the adaptive names and explain the explicit worker-name compatibility entries.
 The nine guides and walkthrough pass 302 local link/asset/anchor checks and 15
 release claims. Public desktop/mobile checks cover 18 guide loads and 54
 interactive states, including canonical `$adaptive-task` request generation.
-Installation evidence and Carbon's pending apply are in the
+After Carbon returned online, the same scoped rollout completed across all four
+native contexts. The common managed guide anchors now record preview.16; this
+receipt update changes no immutable release asset. Installation evidence is in the
 [delivery receipt](reliability-packaging-results.md#preview16-publication-and-managed-rollout).

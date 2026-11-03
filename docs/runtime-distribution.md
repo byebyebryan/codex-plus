@@ -83,28 +83,23 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Preview.16 is selected and verified on Snap OSS/work and Starship, including the
-canonical adaptive skills and compatibility entries. Carbon went offline after
-preflight; no source integration or apply was issued there. Its last verified
-selection is preview.15. See the [current receipt](reliability-packaging-results.md#preview16-publication-and-managed-rollout).
-
-The last completed common fleet receipt (2026-11-02) recorded:
-
-Snap, Starship and Carbon select workers, monitoring and reporting **preview.15**,
-source `0767e91`, through chezmoi following the scoped rollout on 2026-11-02.
-The worker bundle includes three native roles and four workflow skills, with
-optional instruction-based escalation in the two adaptive workflows.
+Snap, Starship and Carbon select workers, monitoring and reporting **preview.16**,
+source `b13cc66`, through chezmoi following the scoped rollout on 2026-11-03.
+The worker bundle includes three native roles, four current workflow skills and
+two explicit worker-name compatibility entries. Optional instruction-based
+escalation remains in the two adaptive workflows.
 Exact inventories, payload hashes and modes verify, and native configuration,
 credentials, invocation metadata and older releases are preserved. Fresh MCP
-protocol discovery reports preview.15 with 17 monitoring and four report tools
+protocol discovery reports preview.16 with 17 monitoring and four report tools
 in Snap OSS/work, Starship and Carbon. Already loaded process versions remain
 independent of selected files.
 
 No native daemon restart or global MCP refresh was issued. Native daemon
-identities remain unchanged. Snap and Starship MCP connections ended during the
-rollout and later verification; their cause was not localized.
-The native owners stayed running. Report hosting remains independent of stdio
-protocol discovery. See the [rollout receipt](reliability-packaging-results.md#preview15-worker-policy-and-guide-publication)
+identities were preserved through each scoped rollout. Native skill discovery
+sees all six entries on Snap OSS, Starship and Carbon; Carbon needed the native
+skill-cache reread. Snap work's native control socket was absent, so its native
+discovery remains unverified. Report hosting remains independent of stdio
+protocol discovery. See the [rollout receipt](reliability-packaging-results.md#preview16-publication-and-managed-rollout)
 for preservation details and the unrelated full-dotfiles gate limit.
 
 Workers retain their own installation. The 349 inspector
