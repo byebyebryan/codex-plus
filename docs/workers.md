@@ -1,6 +1,7 @@
 # Luna workers and task workflows
 
-Preview.15 includes three native custom agents and four worker workflows. Your
+Preview.16 includes three native custom agents and four current worker workflows,
+plus two compatibility entries. Your
 current primary keeps decisions, integration and acceptance. Choose an explicit
 Luna workflow, or let an adaptive workflow use direct work, useful Luna delegation
 and one optional escalation target without changing your primary model.
@@ -11,8 +12,14 @@ and one optional escalation target without changing your primary model.
 | --- | --- | --- |
 | One bounded task with Luna | `$luna-task` | Delegate one cohesive investigation or implementation to Luna; the primary reviews it. |
 | A substantial goal with Luna | `$luna-goal-loop` | Use Luna across useful bounded assignments until the goal and its checks are complete. |
-| One task with selective delegation | `$worker-task` | The primary chooses direct work, useful Luna delegation, or one configured escalation target. |
-| A substantial goal with selective delegation | `$worker-goal-loop` | The primary routes each assignment and owns integration and acceptance across the goal. |
+| One task with selective delegation | `$adaptive-task` | The primary chooses direct work, useful Luna delegation, or one configured escalation target. |
+| A substantial goal with selective delegation | `$adaptive-goal-loop` | The primary routes each assignment and owns integration and acceptance across the goal. |
+
+`$worker-task` and `$worker-goal-loop` remain explicit-only compatibility names.
+They load the corresponding adaptive instructions from the sibling skill; there
+is one routing policy per workflow. Existing requests remain usable after the
+upgrade, and new examples use the adaptive names. Neither name activates from
+generic task/goal wording or discussion.
 
 Task workflows do not create or manage a goal. Goal-loop workflows use available
 goal tools for an explicitly requested substantial outcome. A generic “go for a
@@ -51,7 +58,7 @@ defects go back for correction; an unresolved decision, missing verification or
 repeated failure without new evidence returns to the primary. The primary can
 resolve a difficult portion and then give Luna the next suitable assignment.
 
-Use `$worker-task` or `$worker-goal-loop` for the same task or goal when you want
+Use `$adaptive-task` or `$adaptive-goal-loop` for the same task or goal when you want
 the primary to choose whether delegation is useful for each assignment.
 
 ## Which agent does the work?
@@ -89,7 +96,7 @@ use primary/Luna by default, or configure one target for that primary:
 For example, with a Sol primary:
 
 ```text
-$worker-task Review the importer migration and fix any confirmed defects.
+$adaptive-task Review the importer migration and fix any confirmed defects.
 Allow Astra XHigh escalation for this task when a useful independent review
 or unresolved issue warrants it. Keep Luna available for bounded work.
 ```
@@ -176,8 +183,9 @@ skills do not automatically register a watch or reminder.
 ## Installation
 
 Use the [agent lifecycle guide](manage-agent.md#install-or-upgrade-through-the-configuration-owner)
-for the complete procedure. Install the three native roles and four workflow
-skills from a verified preview.15 worker release archive and preserves your configuration
+for the complete procedure. Install the three native roles, four current workflow
+skills and two worker-name compatibility entries from a verified preview.16
+worker release archive. Preserve your configuration
 owner, local changes and skill disable preferences. The human
 [setup overview](getting-started.md) explains component selection.
 

@@ -528,3 +528,23 @@ parent and its command reproduces the same failure independently; it is outside
 this release. The product checkout retains its two pre-existing untracked
 bytecode files, outside the clean 135-file source gate. Private host captures,
 backups and session/process identities are not committed.
+
+
+## Adaptive-name migration qualification
+
+The 2026-11-03 rename makes `$adaptive-task` and `$adaptive-goal-loop` canonical.
+Both `$worker-*` identities remain explicit-only compatibility entries with one
+relative link to their corresponding canonical instructions. Their invocation
+satisfies that workflow's explicit activation boundary without a second request.
+The copied policy bodies differ only by identity/activation references; native
+role files and both Luna workflows remain byte-identical to the goal baseline.
+No routing, escalation permission, primary selection or model pins changed.
+
+The clean 139-file candidate passes 387 tests, six affected skill validators,
+metadata/inventory checks and Pages verification (302 local links/assets/anchors,
+15 current-release claims). Relocated real worker archives retain the canonical
+instructions and both compatibility links; metadata regressions reject implicit
+activation for all four names. These checks establish package/discovery structure,
+not new native model decisions. Historical routing trials retain their original
+worker names and evidence limits. Publication and installed state are recorded
+separately after verification; preview.15 assets remain immutable.

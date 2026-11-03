@@ -51,7 +51,9 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.15** includes optional primary-aware escalation in the two
+**v0.1.0-preview.16** includes the canonical `$adaptive-task` and
+`$adaptive-goal-loop` names with explicit worker-name compatibility entries.
+It retains optional primary-aware escalation in the two
 adaptive worker workflows, the `astra-xhigh` role, read-only primary selection
 and graceful reporting-only metadata fallback. Escalation defaults off and uses
 your request or existing instructions; explicit Luna workflows remain Luna-only.
@@ -202,8 +204,14 @@ over decisions outside the execution contract.
 | --- | --- | --- |
 | `$luna-task` | One bounded task; no goal management | Luna only; primary handles difficult portions |
 | `$luna-goal-loop` | A substantial goal across cohesive assignments | Luna only; primary handles difficult portions |
-| `$worker-task` | One bounded task; no goal management | Primary or selective Luna; one opt-in escalation target |
-| `$worker-goal-loop` | A substantial goal, routed per assignment | Primary or selective Luna; one opt-in escalation target |
+| `$adaptive-task` | One bounded task; no goal management | Primary or selective Luna; one opt-in escalation target |
+| `$adaptive-goal-loop` | A substantial goal, routed per assignment | Primary or selective Luna; one opt-in escalation target |
+
+The canonical adaptive names are available in preview.16. `$worker-task` and
+`$worker-goal-loop` remain explicit-only compatibility names that load the same
+instructions. Upgrade both entries together; the four current workflows have
+two compatibility entries alongside them. The Luna names and model roles stay
+the same.
 
 The Luna workflows preserve the explicit worker choice without requiring a
 workflow switch when the primary needs to help. The adaptive workflows choose
@@ -218,7 +226,7 @@ Code Mode `ALL_TOOLS` search does not establish their absence. Select Luna with
 [availability guide](docs/workers.md#native-delegation-and-availability) separates
 missing controls, spawn failures and worker/model execution errors.
 
-Activate adaptive workflows with `$worker-task`, `$worker-goal-loop`, or an
+Activate adaptive workflows with `$adaptive-task`, `$adaptive-goal-loop`, or an
 explicit request to use the named skill. A generic "goal loop" uses the ordinary
 workflow. Discussing or editing a skill does not activate it. The adaptive skills
 disable implicit invocation in their metadata. Skills are enabled by default
@@ -241,8 +249,8 @@ With a dotfile manager, update its source and published pins through that owner.
 
 Bryan's chezmoi distribution uses `.chezmoiexternals/codex-plus.toml` with pinned
 Codex Plus URLs and checksums. It retains `~/.local/share/codex-worker-kit` as the
-managed archive location for compatibility; the installed agent and skill paths
-also stay the same. The repository rename does not activate a watcher or change
+managed archive location for compatibility; existing agent and skill paths
+are retained alongside the new adaptive entries. The rename does not activate a watcher or change
 worker routing.
 
 Select the primary separately in your client or configuration:

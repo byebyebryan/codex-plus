@@ -32,7 +32,7 @@ relay, custom hook or desktop-notification publisher.
 For delegated implementation or investigation, choose an explicit
 [Luna or adaptive worker workflow](workers.md). Use `$luna-task` for one bounded
 assignment or `$luna-goal-loop` for a substantial goal with Luna. Your primary
-keeps decisions and review. `$worker-task` and `$worker-goal-loop` let the primary
+keeps decisions and review. `$adaptive-task` and `$adaptive-goal-loop` let the primary
 choose whether delegation helps. A generic “goal loop” does not select a worker.
 
 | What you need | What to say |

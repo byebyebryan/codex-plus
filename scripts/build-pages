@@ -410,7 +410,8 @@ def validate_current_guides(root: Path = ROOT) -> int:
                                          f"expected {version} from README.md")
                     count += 1
     workers = (root / "docs/workers.md").read_text()
-    for workflow in ("$luna-task", "$luna-goal-loop", "$worker-task", "$worker-goal-loop", "skills/html-report"):
+    for workflow in ("$luna-task", "$luna-goal-loop", "$adaptive-task", "$adaptive-goal-loop",
+                     "$worker-task", "$worker-goal-loop", "skills/html-report"):
         if workflow not in workers:
             raise ValueError(f"named workflow missing from worker guide: {workflow}")
     return count

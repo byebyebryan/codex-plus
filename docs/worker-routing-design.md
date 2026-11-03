@@ -1,9 +1,17 @@
 # Worker routing design
 
-Updated 2026-11-02. Preview.15 implements the selected primary/Luna/optional
+Updated 2026-11-03. Preview.15 implements the selected primary/Luna/optional
 escalation policy below. Existing installations need an explicit upgrade. See the
 [qualification record](worker-escalation-results.md) for native evidence and limits;
 the [worker routing study](worker-routing-study.md) records the research history.
+
+Preview.16 names the adaptive workflows `$adaptive-task` and
+`$adaptive-goal-loop`. The explicit `$worker-task` and `$worker-goal-loop`
+identities remain compatibility entries that load the corresponding canonical
+instructions. The policy, Luna workflows and native role pins are unchanged.
+Historical trial names and installation receipts below retain their original
+identities; use the [current worker guide](https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md)
+for the six installed workflow/compatibility entries and migration procedure.
 
 ## Selected design: primary, Luna and one escalation target
 
@@ -199,7 +207,7 @@ new threshold for delegation or silently introducing another delegated model.
 
 ## Adaptive routing
 
-Use this as the core policy for `$worker-task` and `$worker-goal-loop`:
+Use this as the core policy for `$adaptive-task` and `$adaptive-goal-loop`:
 
 > Keep work in the primary when the benefit of delegation is uncertain.
 > Delegate to Luna when the objective, responsibility boundary, and acceptance
@@ -249,7 +257,7 @@ ordinary primary-versus-Luna routing menu.
 
 ## Explicit activation
 
-Activate the adaptive skills through `$worker-task`, `$worker-goal-loop`, or an
+Activate the adaptive skills through `$adaptive-task`, `$adaptive-goal-loop`, or an
 explicit request to use the named skill. Generic requests for a "task," "goal,"
 or "goal loop" should use the ordinary workflow. Discussing or editing a skill
 does not activate its execution workflow.

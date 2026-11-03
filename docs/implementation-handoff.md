@@ -13,7 +13,10 @@ Bryan selected the adaptive rename goal loop on 2026-11-03. The
 `adaptive-task` and `adaptive-goal-loop` canonical while retaining the existing
 worker names as explicit-only compatibility entries. Preserve one policy body,
 Luna identities, role pins, invocation boundaries, concurrent edits and live
-owners. Preview.15 remains the published/selected baseline until the new immutable
+owners. The 139-file candidate passes 387 tests, six workflow/compatibility skill
+validators and Pages checks. Canonical policy bodies differ only in identity
+references; native roles and Luna skills are byte-identical to baseline.
+Preview.15 remains the published/selected baseline until the new immutable
 release and scoped managed rollout are independently verified. Private snapshots
 and validation captures stay outside committed source.
 

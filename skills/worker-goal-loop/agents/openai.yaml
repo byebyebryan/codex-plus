@@ -1,7 +1,7 @@
 interface:
-  display_name: "Worker Goal Loop"
-  short_description: "Run a goal with Luna and optional escalation"
-  default_prompt: "Use $worker-goal-loop to complete this goal in the primary, selectively delegating clear, verifiable assignments to Luna when the savings justify the handoff, with automatic escalation off unless one compatible target is explicitly configured."
+  display_name: "Worker Goal Loop (compatibility)"
+  short_description: "Compatibility name for adaptive-goal-loop"
+  default_prompt: "Use $worker-goal-loop, the compatibility name for $adaptive-goal-loop, to complete this goal with the canonical adaptive workflow."
 
 policy:
   allow_implicit_invocation: false

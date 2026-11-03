@@ -31,6 +31,15 @@ class MetadataTests(unittest.TestCase):
             with self.subTest(path=skill_path):
                 self.validate(path.read_text(), path.parent.parent.name)
 
+    def test_canonical_and_compatibility_workflows_require_explicit_invocation(self) -> None:
+        for skill in ('adaptive-task', 'adaptive-goal-loop', 'worker-task', 'worker-goal-loop'):
+            valid = VALID.replace('worker-goal-loop', skill)
+            self.validate(valid, skill)
+            for invalid in (valid.replace('false', 'true'), valid.split('\npolicy:')[0]):
+                with self.subTest(skill=skill), contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit):
+                        self.validate(invalid, skill)
+
     def test_comments_and_quoted_strings(self) -> None:
         self.validate(
             VALID.replace("interface:", "# metadata\ninterface: # UI")

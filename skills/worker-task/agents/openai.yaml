@@ -1,7 +1,7 @@
 interface:
-  display_name: "Worker Task"
-  short_description: "Complete a task with Luna and optional escalation"
-  default_prompt: "Use $worker-task to complete this bounded task in the primary, delegating clear, verifiable work to Luna when the savings justify the handoff, with automatic escalation off unless one compatible target is explicitly configured."
+  display_name: "Worker Task (compatibility)"
+  short_description: "Compatibility name for adaptive-task"
+  default_prompt: "Use $worker-task, the compatibility name for $adaptive-task, to complete this task with the canonical adaptive workflow."
 
 policy:
   allow_implicit_invocation: false

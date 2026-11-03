@@ -37,7 +37,7 @@ release. Choose the archives you need from its single GitHub release; see
 
 ## Released and source features
 
-**v0.1.0-preview.15** supplies the released workflows shown in these guides. Updating
+**v0.1.0-preview.16** supplies the released workflows shown in these guides. Updating
 documentation or selecting an archive does not reload an existing MCP process.
 
 | Available in | What to expect |
@@ -47,6 +47,7 @@ documentation or selecting an archive does not reload an existing MCP process.
 | Added in preview.11 | Explicit owner diagnosis and clean same-thread rollover, with immutable archived history. Active or uncertain intent refuses recovery. See the [contract and acceptance](owner-recovery.md). |
 | Added in preview.12 | Explicit watch cancellation closes attention for a terminal source error while preserving history and unresolved delivery. See the [native qualification results](native-qualification-results.md). |
 | Added in preview.15 | Optional primary-aware escalation and the Astra XHigh role, defaulting off; read-only loaded-primary selection with graceful reporting-only fallback. Natural-language permission and native role pins remain separate. |
+| Added in preview.16 | Canonical `$adaptive-task` and `$adaptive-goal-loop` names. The explicit `$worker-*` names remain compatibility entries; routing and Luna workflows are unchanged. |
 | Added in preview.14 | Correct native collaboration discovery and direct role selection in all four worker workflows. |
 | Added in preview.13 | The existing read-only doctor accepts `--human` for readable diagnostics. JSON remains the default. Pages builds check published and managed guide declarations independently; preview.12 archives remain verifiable and selectable for rollback. |
 
@@ -72,13 +73,13 @@ conversations, tools, follow-up state and reports use separate contexts. See
 ## Set up workers
 
 Install the `luna-max`, `sol-xhigh` and `astra-xhigh` native role definitions and
-the four worker workflow skills using the [worker installation steps](workers.md#installation).
+the four current worker workflow skills and two compatibility entries using the [worker installation steps](workers.md#installation).
 Your client and account must support custom agents, skills and the selected
 models. You select the primary; workflows keep your current primary
 selection.
 
 Start with `$luna-task` for one bounded assignment. Use `$luna-goal-loop` for a
-substantial goal with Luna, or the adaptive `$worker-task` / `$worker-goal-loop`
+substantial goal with Luna, or the adaptive `$adaptive-task` / `$adaptive-goal-loop`
 workflows when the primary should choose useful delegation. Your primary owns
 decisions and review. Generic “goal loop” wording does not select a worker. Optional escalation is
 off unless your adaptive request or existing guidance allows one target; see
