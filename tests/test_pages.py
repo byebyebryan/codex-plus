@@ -32,7 +32,7 @@ class PagesTests(unittest.TestCase):
                 f'Snap, Starship and Carbon select workers, monitoring and reporting **{managed_short}**.\n'),
             'docs/presentation/index.html': f'Codex Plus {published_short}. Available in {published_short}\n',
             'docs/workers.md': ('$luna-task $luna-goal-loop $adaptive-task $adaptive-goal-loop '
-                                '$worker-task $worker-goal-loop skills/html-report\n'),
+                                'skills/html-report\n'),
             'codex_plus/__init__.py': f'VERSION = {source!r}\n',
         }
         for name, text in files.items():

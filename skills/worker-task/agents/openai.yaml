@@ -1,7 +1,0 @@
-interface:
-  display_name: "Worker Task (compatibility)"
-  short_description: "Compatibility name for adaptive-task"
-  default_prompt: "Use $worker-task, the compatibility name for $adaptive-task, to complete this task with the canonical adaptive workflow."
-
-policy:
-  allow_implicit_invocation: false

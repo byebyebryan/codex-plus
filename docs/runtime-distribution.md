@@ -18,7 +18,7 @@ operation, native owner replacement and personal UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.16](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.16)
+[v0.1.0-preview.17](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.17)
 adds optional primary-aware escalation, the Astra XHigh role and read-only
 primary-selection inspection with graceful reporting-only fallback. Escalation
 is instruction-based and defaults off. It preserves explicit Luna workflows,
@@ -34,9 +34,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.16.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.16.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.16.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.17.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.17.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.17.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains

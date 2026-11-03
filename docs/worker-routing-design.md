@@ -5,13 +5,12 @@ escalation policy below. Existing installations need an explicit upgrade. See th
 [qualification record](worker-escalation-results.md) for native evidence and limits;
 the [worker routing study](worker-routing-study.md) records the research history.
 
-Preview.16 names the adaptive workflows `$adaptive-task` and
-`$adaptive-goal-loop`. The explicit `$worker-task` and `$worker-goal-loop`
-identities remain compatibility entries that load the corresponding canonical
-instructions. The policy, Luna workflows and native role pins are unchanged.
+Preview.17 retains the canonical `$adaptive-task` and `$adaptive-goal-loop`
+names and removes the worker-name compatibility entries introduced in preview.16.
+The policy, Luna workflows and native role pins are unchanged.
 Historical trial names and installation receipts below retain their original
 identities; use the [current worker guide](https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md)
-for the six installed workflow/compatibility entries and migration procedure.
+for the four installed workflows and migration procedure.
 
 ## Selected design: primary, Luna and one escalation target
 

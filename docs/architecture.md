@@ -11,10 +11,10 @@ coordinator owns bounded observation, timers, event admission and receipts.
 | Monitoring runtime | 17 `codex_plus` MCP tools; watch/peer/package/owner CLIs | Peer discovery and passive reads, bounded sources, messages, reminders, cancellation, receipts and explicit clean owner recovery. |
 | Reporting component | Four `html_report` MCP tools; report CLI; HTML report skill | Immutable static snapshots, project catalog, delivery checks and selected deletion. |
 | Report server | `codex-report-server` | Independent HTTP hosting; per-config tmux ownership or an explicitly managed server. |
-| Worker bundle | `luna-max`, `sol-xhigh`, `astra-xhigh`; four current workflow skills and two worker-name compatibility entries | Explicitly selected execution workflows; primary retains decisions and acceptance. |
+| Worker bundle | `luna-max`, `sol-xhigh`, `astra-xhigh`; four Luna/adaptive workflow skills | Explicitly selected execution workflows; primary retains decisions and acceptance. |
 | Development source | Tests, validators, guides and research reports | Implementation and acceptance evidence; distinct from installed immutable artifacts. |
 
-Codex Plus `v0.1.0-preview.16` unifies workers, monitoring and reporting under one
+Codex Plus `v0.1.0-preview.17` unifies workers, monitoring and reporting under one
 version, source commit and release. Optional archives retain each component's
 dependencies and configuration. Snap, Starship and Carbon select preview.16
 artifacts from `b13cc66` following the scoped managed rollout on 2026-11-03.

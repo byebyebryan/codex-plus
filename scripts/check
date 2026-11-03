@@ -15,14 +15,12 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS = (
     "luna-task",
     "adaptive-task",
-    "worker-task",
     "luna-goal-loop",
     "adaptive-goal-loop",
-    "worker-goal-loop",
     "html-report",
 )
 LEGACY_SKILLS = ("terra-task", "terra-goal-loop")
-EXPLICIT_ADAPTIVE_SKILLS = {"adaptive-task", "adaptive-goal-loop", "worker-task", "worker-goal-loop"}
+EXPLICIT_ADAPTIVE_SKILLS = {"adaptive-task", "adaptive-goal-loop"}
 AGENTS = {
     "agents/luna-max.toml": ("gpt-6-luna", "max"),
     "agents/sol-xhigh.toml": ("gpt-6.1-sol", "xhigh"),

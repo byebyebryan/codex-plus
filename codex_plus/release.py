@@ -17,8 +17,7 @@ WORKER_FILES = ('LICENSE', 'docs/worker-routing-design.md', 'docs/worker-routing
                 'docs/worker-escalation-results.md',
                 'agents/luna-max.toml', 'agents/sol-xhigh.toml', 'agents/astra-xhigh.toml',
                 'legacy/agents/terra-xhigh.toml',
-                *(f'skills/{name}/{file}' for name in ('luna-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop',
-                                                                 'worker-task', 'worker-goal-loop')
+                *(f'skills/{name}/{file}' for name in ('luna-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop')
                   for file in ('SKILL.md', 'agents/openai.yaml')),
                 *(f'legacy/skills/{name}/{file}' for name in ('terra-task', 'terra-goal-loop')
                   for file in ('SKILL.md', 'agents/openai.yaml')))

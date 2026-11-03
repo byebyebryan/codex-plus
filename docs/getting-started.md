@@ -37,7 +37,7 @@ release. Choose the archives you need from its single GitHub release; see
 
 ## Released and source features
 
-**v0.1.0-preview.16** supplies the released workflows shown in these guides. Updating
+**v0.1.0-preview.17** supplies the released workflows shown in these guides. Updating
 documentation or selecting an archive does not reload an existing MCP process.
 
 | Available in | What to expect |
@@ -48,6 +48,7 @@ documentation or selecting an archive does not reload an existing MCP process.
 | Added in preview.12 | Explicit watch cancellation closes attention for a terminal source error while preserving history and unresolved delivery. See the [native qualification results](native-qualification-results.md). |
 | Added in preview.15 | Optional primary-aware escalation and the Astra XHigh role, defaulting off; read-only loaded-primary selection with graceful reporting-only fallback. Natural-language permission and native role pins remain separate. |
 | Added in preview.16 | Canonical `$adaptive-task` and `$adaptive-goal-loop` names. The explicit `$worker-*` names remain compatibility entries; routing and Luna workflows are unchanged. |
+| Changed in preview.17 | Removed the worker-name compatibility entries. Use the four canonical Luna/adaptive workflows and update old prompts. |
 | Added in preview.14 | Correct native collaboration discovery and direct role selection in all four worker workflows. |
 | Added in preview.13 | The existing read-only doctor accepts `--human` for readable diagnostics. JSON remains the default. Pages builds check published and managed guide declarations independently; preview.12 archives remain verifiable and selectable for rollback. |
 
@@ -73,7 +74,7 @@ conversations, tools, follow-up state and reports use separate contexts. See
 ## Set up workers
 
 Install the `luna-max`, `sol-xhigh` and `astra-xhigh` native role definitions and
-the four current worker workflow skills and two compatibility entries using the [worker installation steps](workers.md#installation).
+the four worker workflow skills using the [worker installation steps](workers.md#installation).
 Your client and account must support custom agents, skills and the selected
 models. You select the primary; workflows keep your current primary
 selection.

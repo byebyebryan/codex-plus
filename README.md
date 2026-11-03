@@ -51,8 +51,8 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.16** includes the canonical `$adaptive-task` and
-`$adaptive-goal-loop` names with explicit worker-name compatibility entries.
+**v0.1.0-preview.17** includes only the four canonical Luna/adaptive workflows;
+the old worker-name compatibility entries are removed.
 It retains optional primary-aware escalation in the two
 adaptive worker workflows, the `astra-xhigh` role, read-only primary selection
 and graceful reporting-only metadata fallback. Escalation defaults off and uses
@@ -207,11 +207,10 @@ over decisions outside the execution contract.
 | `$adaptive-task` | One bounded task; no goal management | Primary or selective Luna; one opt-in escalation target |
 | `$adaptive-goal-loop` | A substantial goal, routed per assignment | Primary or selective Luna; one opt-in escalation target |
 
-The canonical adaptive names are available in preview.16. `$worker-task` and
-`$worker-goal-loop` remain explicit-only compatibility names that load the same
-instructions. Upgrade both entries together; the four current workflows have
-two compatibility entries alongside them. The Luna names and model roles stay
-the same.
+Preview.17 removes `$worker-task` and `$worker-goal-loop`. Update old prompts to
+the corresponding adaptive name; no alias or forwarding layer remains. The
+four canonical workflow instructions, Luna names and native model roles are
+unchanged. Managed upgrades remove the retired installed directories explicitly.
 
 The Luna workflows preserve the explicit worker choice without requiring a
 workflow switch when the primary needs to help. The adaptive workflows choose
@@ -249,8 +248,8 @@ With a dotfile manager, update its source and published pins through that owner.
 
 Bryan's chezmoi distribution uses `.chezmoiexternals/codex-plus.toml` with pinned
 Codex Plus URLs and checksums. It retains `~/.local/share/codex-worker-kit` as the
-managed archive location for compatibility; existing agent and skill paths
-are retained alongside the new adaptive entries. The rename does not activate a watcher or change
+managed archive location for compatibility; the four canonical skill paths and
+native agent paths remain in place. This cleanup does not activate a watcher or change
 worker routing.
 
 Select the primary separately in your client or configuration:

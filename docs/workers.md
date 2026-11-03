@@ -1,7 +1,6 @@
 # Luna workers and task workflows
 
-Preview.16 includes three native custom agents and four current worker workflows,
-plus two compatibility entries. Your
+Preview.17 includes three native custom agents and four worker workflows. Your
 current primary keeps decisions, integration and acceptance. Choose an explicit
 Luna workflow, or let an adaptive workflow use direct work, useful Luna delegation
 and one optional escalation target without changing your primary model.
@@ -15,11 +14,10 @@ and one optional escalation target without changing your primary model.
 | One task with selective delegation | `$adaptive-task` | The primary chooses direct work, useful Luna delegation, or one configured escalation target. |
 | A substantial goal with selective delegation | `$adaptive-goal-loop` | The primary routes each assignment and owns integration and acceptance across the goal. |
 
-`$worker-task` and `$worker-goal-loop` remain explicit-only compatibility names.
-They load the corresponding adaptive instructions from the sibling skill; there
-is one routing policy per workflow. Existing requests remain usable after the
-upgrade, and new examples use the adaptive names. Neither name activates from
-generic task/goal wording or discussion.
+Preview.17 removes `$worker-task` and `$worker-goal-loop`; update old requests to
+the corresponding adaptive name. There are no aliases. The four canonical
+instructions and native role pins are unchanged. Generic task/goal wording and
+discussion activate no worker workflow.
 
 Task workflows do not create or manage a goal. Goal-loop workflows use available
 goal tools for an explicitly requested substantial outcome. A generic “go for a
@@ -183,10 +181,12 @@ skills do not automatically register a watch or reminder.
 ## Installation
 
 Use the [agent lifecycle guide](manage-agent.md#install-or-upgrade-through-the-configuration-owner)
-for the complete procedure. Install the three native roles, four current workflow
-skills and two worker-name compatibility entries from a verified preview.16
+for the complete procedure. Install the three native roles and four workflow
+skills from a verified preview.17
 worker release archive. Preserve your configuration
-owner, local changes and skill disable preferences. The human
+owner, local changes and skill disable preferences. Remove the two retired
+worker-name directories through that owner after retaining any local edits;
+verify they are absent from installed inventory and native discovery. The human
 [setup overview](getting-started.md) explains component selection.
 
 For an unmanaged conventional home, native agents live under `~/.codex/agents`

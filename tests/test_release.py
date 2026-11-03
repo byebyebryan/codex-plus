@@ -69,8 +69,7 @@ class ReleaseTests(unittest.TestCase):
                 self.assertEqual(data, (self.source / 'agents' / (role + '.toml')).read_bytes())
             # Packaging preserves native activation settings and exact skill bytes,
             # independently of any prose used to describe routing.
-            for skill in ('luna-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop',
-                          'worker-task', 'worker-goal-loop'):
+            for skill in ('luna-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop'):
                 for file in ('SKILL.md', 'agents/openai.yaml'):
                     name = 'skills/' + skill + '/' + file
                     self.assertEqual(archive.extractfile('codex-plus-workers/' + name).read(),
@@ -122,26 +121,21 @@ class ReleaseTests(unittest.TestCase):
                 links += 1
         self.assertGreater(links, 0)
 
-    def test_relocated_compatibility_entries_resolve_to_canonical_workflows(self):
+    def test_relocated_worker_archive_has_four_workflows_and_no_retired_entries(self):
         output = self.root / 'release'; result = release.build(self.source, output)
         relocated = self.root / 'relocated' / 'workers'
         with tarfile.open(output / result['components']['workers']['artifact'], 'r:gz') as archive:
             for member in archive:
-                relative = member.name.removeprefix('codex-plus-workers/')
-                destination = relocated / relative
+                destination = relocated / member.name.removeprefix('codex-plus-workers/')
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 destination.write_bytes(archive.extractfile(member).read())
-        for old, canonical in (('worker-task', 'adaptive-task'),
-                               ('worker-goal-loop', 'adaptive-goal-loop')):
-            entry = relocated / 'skills' / old / 'SKILL.md'
-            targets = re.findall(r'\]\(([^)\s]+)\)', entry.read_text())
-            self.assertEqual(len(targets), 1)
-            target = (entry.parent / unquote(urlsplit(targets[0]).path)).resolve()
-            self.assertTrue(target.is_relative_to(relocated))
-            self.assertEqual(target, relocated / 'skills' / canonical / 'SKILL.md')
-            self.assertRegex(target.read_text(), rf'(?m)^name: {canonical}$')
-            self.assertEqual(target.read_bytes(),
-                             (self.source / 'skills' / canonical / 'SKILL.md').read_bytes())
+        self.assertEqual({p.name for p in (relocated / 'skills').iterdir()},
+                         {'luna-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop'})
+        for retired in ('worker-task', 'worker-goal-loop'):
+            self.assertFalse((relocated / 'skills' / retired).exists())
+            self.assertFalse(any(name.startswith('skills/' + retired + '/')
+                                 for name in release.read_workers(
+                                     output / result['components']['workers']['artifact'])['files']))
 
     def test_mixed_revision_paths_modified_bytes_and_checksum_file_are_rejected(self):
         output = self.root / 'release'; metadata = release.build(self.source, output)

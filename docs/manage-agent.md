@@ -161,15 +161,16 @@ worker archive into a private retained directory. Its `workers.json` records
 exact member hashes/modes and source revision. For preview.15, install
 `agents/luna-max.toml`, `agents/sol-xhigh.toml`, `agents/astra-xhigh.toml` and both
 files (`SKILL.md`, `agents/openai.yaml`) from each of `luna-task`, `luna-goal-loop`,
-`adaptive-task`, `adaptive-goal-loop`, `worker-task` and `worker-goal-loop` in
-preview.16 and later. The worker names are compatibility entries whose sibling
-adaptive instructions must be installed with them. Preserve fixed model/effort pins and any
+`adaptive-task` and `adaptive-goal-loop` in preview.17 and later. Remove the
+retired `worker-task` and `worker-goal-loop` directories through their configuration
+owner, with backups and a scoped deletion preview; preserve unclassified local
+edits before removal. Verify both old paths are absent. Preserve fixed model/effort pins and any
 local restrictions. The Astra role's presence enables no automatic escalation.
 For older selected releases, use only the roles and skills they actually contain.
-Retain local disable preferences. If a worker-name skill is disabled or locally
-restricted, carry that choice to its adaptive replacement; a rename must not
-silently re-enable the workflow. Preserve unresolved restrictions and explain any
-required migration instead of bypassing them through the compatibility entry.
+Retain local disable preferences and restrictions on the canonical workflows.
+If upgrading directly from an older worker-name installation, carry its existing
+restrictions to the adaptive replacement; do not silently re-enable it.
+Keep cleanup declarations consistent with the chosen release when rolling back.
 Keep the verified archive/manifest as provenance. Do not install legacy Terra
 files by default and do not change the primary model.
 
