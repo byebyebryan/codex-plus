@@ -6,6 +6,15 @@ the older report checkout and the existing worktrees. Preview.16 is published an
 selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
 remain distinct.
 
+## Current cleanup: remove worker-name compatibility entries
+
+Bryan approved the [four-workflow cleanup](codex-plus-plan.md#selected-cleanup-four-canonical-workflows).
+Remove both worker-name compatibility entries from source, archives, current
+guides and managed installed paths. Preserve native roles, canonical policy
+bytes, invocation rules, private state and concurrent work. Preview.16 remains
+the published/selected baseline until a new immutable release and scoped
+managed cleanup are verified. Historical worker names in receipts stay intact.
+
 ## Preview.16 published and deployed
 
 Bryan selected the adaptive rename goal loop on 2026-11-03. The

@@ -15,7 +15,33 @@ reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agen
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
 
-## Selected pass: adaptive workflow names
+## Selected cleanup: four canonical workflows
+
+Bryan approved removing the worker-name compatibility entries on 2026-11-03.
+Keep only `adaptive-task`, `adaptive-goal-loop`, `luna-task` and `luna-goal-loop`
+as current workflow skills. The native worker roles, routing instructions,
+explicit invocation and optional escalation permissions remain unchanged.
+
+1. Remove both compatibility directories from source and release inventories.
+   Update metadata/artifact tests to verify the four canonical entries and the
+   absence of retired payloads. Update current guides and presentation with a
+   short breaking-change note; retain historical receipts and trial names.
+2. Run required source, skill, archive and Pages checks. Commit reviewed slices
+   and publish a new immutable unified release through the personal account.
+3. Update chezmoi pins/checksums/validators and declare removal of the two old
+   managed skill paths. Test scoped removal, absent-path convergence and retained
+   unrelated files in an isolated fixture before live application.
+4. Snapshot and back up managed entries on Snap OSS/work, Starship and Carbon.
+   Refuse to erase unclassified local modifications. Stage exact new payloads,
+   then apply only the four workflows, selectors and retired paths. Verify their
+   absence, preserved canonical bytes/roles/preferences and native discovery.
+   Use only the supported skill-cache reread when needed; no daemon restart,
+   global MCP refresh or real-session input belongs to this cleanup.
+
+Old `$worker-*` prompts need updating. Existing immutable preview.16 artifacts
+and earlier receipts remain unchanged; no forwarding layer is retained.
+
+## Completed pass: adaptive workflow names
 
 Bryan selected `adaptive-task` and `adaptive-goal-loop` as the canonical names
 on 2026-11-03. Preserve the existing `worker-task` and `worker-goal-loop`
