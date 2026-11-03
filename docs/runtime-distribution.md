@@ -19,13 +19,14 @@ operation, native owner replacement and personal UX acceptance remain separate.
 ## One Codex Plus release
 
 [v0.1.0-preview.17](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.17)
-adds optional primary-aware escalation, the Astra XHigh role and read-only
-primary-selection inspection with graceful reporting-only fallback. Escalation
-is instruction-based and defaults off. It preserves explicit Luna workflows,
-native collaboration discovery and
-preview.13 verification/rollback support, readable doctor output and independent
-published/managed guide checks. It retains explicit clean native-owner recovery and inspectable history. Workers, monitoring
-and reporting share one
+removes the worker-name compatibility entries, leaving the four canonical
+Luna/adaptive workflows. The adaptive names arrived in preview.16; optional
+primary-aware escalation, Astra XHigh and read-only primary selection arrived
+in preview.15. Escalation remains instruction-based and defaults off.
+
+Explicit Luna workflows, native collaboration discovery, verification/rollback,
+readable diagnostics, clean owner recovery and inspectable history remain
+available. Workers, monitoring and reporting share one
 version, source commit, GitHub tag and release. A reporting-only fix still advances
 the product version; release notes identify which capabilities changed. Components
 remain optional and keep their own configuration, data and running processes.
