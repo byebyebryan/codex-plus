@@ -107,7 +107,15 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Snap, Starship and Carbon select **v0.1.0-preview.14** for workers, monitoring and
+**Preview.15 rollout:** Snap OSS/work and Starship now select all three components
+at preview.15. Carbon went offline after preflight and remains last verified at
+preview.14; its apply is pending. The
+[delivery receipt](docs/reliability-packaging-results.md#preview15-worker-policy-and-guide-publication)
+records exact scope, preservation and loaded-process limits.
+
+The last completed common fleet receipt (2026-11-01) recorded:
+
+> Snap, Starship and Carbon select **v0.1.0-preview.14** for workers, monitoring and
 reporting from source `dc19a82` through chezmoi. The scoped rollout on 2026-11-01
 verified exact payloads, doctor output and fresh MCP discovery in all four contexts.
 Native owners, private configuration and old releases are preserved. Starship

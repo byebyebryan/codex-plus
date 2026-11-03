@@ -83,6 +83,14 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
+The preview.15 release is selected and verified on Snap OSS/work and Starship.
+Carbon was reachable for preflight but went offline before source integration;
+its last verified selection is preview.14. Its prepared apply remains pending.
+See the [preview.15 receipt](reliability-packaging-results.md#preview15-worker-policy-and-guide-publication)
+for per-host evidence and the distinction between selected and loaded code.
+
+The last completed common fleet receipt (2026-11-01) recorded:
+
 Snap, Starship and Carbon select workers, monitoring and reporting **preview.14**,
 source `dc19a82`, through chezmoi following the scoped rollout on 2026-11-01.
 The four worker skills contain the native collaboration discovery correction.

@@ -2,26 +2,40 @@
 
 Updated 2026-11-02. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.14 is published and
-selected on Snap OSS/work, Starship and Carbon; selected and loaded versions remain distinct.
+the older report checkout and the existing worktrees. Preview.15 is published and selected on Snap OSS/work and Starship; Carbon
+remains pending at its last verified preview.14. Selected and loaded versions remain distinct.
 
-## Selected publication and deployment pass
+## Preview.15 published; Carbon apply pending
 
-Bryan selected documentation/presentation polish, preview.15 publication and
-chezmoi deployment to Snap OSS/work, Starship and Carbon. Personal github.com
-account `byebyebryan` owns publication. Preserve native owners, active sessions,
-old releases and unrelated dotfile drift; no daemon restart or global MCP refresh.
-The new release carries the reviewed routing policy, optional-metadata fix and
-complete worker documentation. Permission remains verbal/default-off, and explicit
-Luna workflows remain Luna-only. The docs should demonstrate natural requests,
-optional escalation and revocation while retaining Terra/runtime limits.
+Preview.15 is public from immutable source `0767e91`, with the polished worker
+chooser and all nine HTML guides at the existing public Pages site. Python
+3.11/3.14 release CI, 385 tests, four worker skill validators, fetched artifacts,
+Pages metadata/links and desktop/mobile browser checks pass. The permission
+policy remains verbal/default-off; no persistent escalation grant was installed.
 
-Current installed/public selection remains preview.14 until the new artifacts and
-scoped applies verify. The canonical chezmoi checkout is divergent and dirty in
-unrelated areas; prepare and publish only the Codex Plus pin/validator patch from
-an isolated current-origin checkout, then integrate its hunks through each
-canonical source without staging unrelated edits. Verify source, assets, Pages,
-managed pins, installed bytes/modes/links and loaded-process limits separately.
+Dotfiles pin/validator commit `6eaf5fc` is published independently of the divergent
+canonical checkouts. Scoped integration/apply verifies preview.15 on Snap OSS/work
+and Starship, including three private native roles, four skills and aligned
+monitoring/report payloads. Native owner identities and configuration are preserved;
+no daemon restart, global MCP refresh or live-session input occurred. Some
+pre-existing MCP connections exited with unlocalized cause; fresh stdio tools
+report version15, while existing loaded conversations remain independent.
+
+Carbon passed preflight at preview.14, then went offline before source integration
+or apply. Tailscale reports offline and both trusted SSH routes fail. Its prepared
+patch, published assets and initial preservation snapshot remain ready. Resume
+only when reachable: recheck its current owner/source/installed state, retain
+rollback backups, enroll the additional managed-preference validator, then run
+the same scoped integration/stage/selection/verification without restarting native
+owners. A changed incarnation or concurrent source edit needs a fresh preservation
+baseline, not restoration of stale process/config state. The user has been asked
+to bring Carbon online or explicitly leave it pending.
+
+See the [delivery receipt](reliability-packaging-results.md#preview15-worker-policy-and-guide-publication)
+for source/release/managed/installed/runtime evidence. Unrelated chezmoi edits and
+history remain preserved. The full dotfiles gate retains the separately reproduced
+OpenCode `--pure` failure after passing Codex checks. Private deployment state is
+under the current preview.15 state directory; no raw captures are committed.
 
 ## Preview.15 preparation: primary, Luna and one escalation target
 

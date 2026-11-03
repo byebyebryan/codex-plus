@@ -466,3 +466,64 @@ HTTP 200. Do not describe the connection exits as proven unrelated or claim that
 every process stayed alive.
 The original Starship conversation was not messaged or interrupted for a trial.
 Private snapshots, process identifiers and raw probe captures remain outside Git.
+
+## Preview.15 worker policy and guide publication
+
+Published 2026-11-02 as [v0.1.0-preview.15](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.15)
+from immutable source `0767e91c582653ec0c4c89e7a85d8cab5c68ec62`, using the personal
+`byebyebryan` github.com account. Workers, monitoring and reporting share that
+version/revision. The fetched five release files verify against their complete
+manifests and checksums. Python 3.11 and 3.14 CI passed on the release tag and
+published main; the source suite has 385 tests and four worker skill validators.
+
+The [public guides](https://dev.byebyebryan.com/codex-plus/) include the three
+roles, four workflows, instruction-based opt-in/default-off policy and revocation
+examples. The new worker chooser creates natural requests and is labelled as an
+illustration, not agent execution. Desktop/mobile checks cover all nine guides,
+five four-step scenes and worker-choice/copy states: 18 guide loads and 54
+interactive states, with no horizontal page overflow. Pages run `41548928349`
+published the release-source edition; public browser checks and exact served
+`manage.md` bytes verify separately from source rendering. Later documentation
+receipts do not modify the release artifacts.
+
+Public dotfiles commit `6eaf5fcd133e2c4f895f463bb701ff08d177368e` updates only seven
+Codex Plus pin/validator files from a current-origin isolated checkout. Archive
+URLs, checksums, source revision, the new Astra role, worker documentation scope,
+private payload inventory and selectors advance together. Canonical integration
+commits are `2dd19d0` on Snap and `11b8d2e` on Starship. Existing divergent history,
+private preferences and unrelated dirty source remain preserved. Concurrent
+checker edits outside the unchanged Codex pin block were retained; only the
+published patch hunks were staged.
+
+| Context | Selected components | Verification |
+| --- | --- | --- |
+| Snap OSS | Preview.15, source `0767e91` | Exact inventories, bytes, modes, three native role files, four skills, immutable selectors and empty scoped chezmoi diff. |
+| Snap work | Preview.15, same artifacts | Same role/skill payloads and aligned doctor, preserving its separate native home/config. |
+| Starship | Preview.15, same artifacts | Same complete installed checks and empty scoped diff. |
+| Carbon | Last verified preview.14; apply pending | Preflight verified the old worker tree and no role overrides/conflicts. Tailscale then reported offline; trusted SSH via Starship timed out and the known LAN route was unreachable. No source integration or live apply was issued. |
+
+All three staged component manifests were verified before selectors/skills
+advanced on the reachable hosts. Existing worker/role/skill backups and older
+runtime/report releases are retained. Across Snap and Starship, 1,235 protected
+installed paths were checked; 35 intended existing paths changed, plus the new
+Astra roles, qualification document and immutable release trees. Native owner
+identities are unchanged. Two existing Snap MCP processes and six Starship MCP
+processes exited during the pass; no lifecycle action was issued and their cause
+was not localized. Remaining pre-existing process identities were preserved.
+
+Fresh stdio initialization/tool listing reports preview.15 with 17 monitoring
+and four report tools in Snap OSS/work and Starship. This proves the selected
+entrypoints' protocol/version, not code loaded by every existing conversation.
+The installed Snap `codex-plus-context --primary` reads the active Sol/XHigh
+selection successfully. No model turn, native owner restart, global MCP refresh,
+report publication or existing-session input was used for deployment verification.
+Native model/effort availability on other accounts and actual Terra-primary
+execution retain the [worker qualification limits](worker-escalation-results.md).
+
+Scoped Codex Plus, report artifact and managed-preference checks pass. The full
+dotfiles gate passes the Codex checks, then reaches the existing OpenCode
+`--pure` rejection. The failing OpenCode block is byte-identical to the published
+parent and its command reproduces the same failure independently; it is outside
+this release. The product checkout retains its two pre-existing untracked
+bytecode files, outside the clean 135-file source gate. Private host captures,
+backups and session/process identities are not committed.

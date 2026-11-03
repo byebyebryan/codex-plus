@@ -159,3 +159,13 @@ The walkthrough now labels the recap workflow as available in preview.10.
 The subsequent documentation receipt updates managed status to Snap, Starship
 and Carbon; it does not change the immutable release source or running code.
 See the [release and deployment receipt](refinement-results.md#preview10-publication-and-managed-rollout).
+
+## Preview.15 worker presentation publication
+
+The release-source Pages run `41548928349` published the three-role worker guide,
+default-off escalation chooser, copyable natural request and revocation example.
+Desktop/mobile browser checks cover all nine guides and 54 interactive states;
+the public plain agent guide matches release-source bytes. Publication and
+per-host installation remain separate; see the
+[delivery receipt](reliability-packaging-results.md#preview15-worker-policy-and-guide-publication)
+for current selected/loaded evidence and Carbon's pending apply.
