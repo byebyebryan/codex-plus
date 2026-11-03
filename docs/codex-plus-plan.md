@@ -42,11 +42,15 @@ boundaries. Generic task/goal wording and skill discussion activate no workflow.
    Keep existing owners, loaded conversations and older releases intact; issue
    no daemon restart, global MCP refresh or real-session input.
 
+Source/release `b13cc66` and Pages are published. Public managed source `928da79`
+and the scoped Snap OSS/work and Starship installations verify. Carbon passed
+preflight, then went offline before integration/apply; that host remains pending.
+See the [current delivery receipt](reliability-packaging-results.md#preview16-publication-and-managed-rollout).
+
 Completion distinguishes source, published archives/site, managed source,
 installed entries and native discovery. Artifact/link validation does not prove
 that a model invoked either new name; keep any runtime qualification gap explicit.
-The current baseline is published/selected preview.15; use a new release identity
-for distribution rather than changing its immutable assets.
+Preview.16 is the new immutable release; preview.15 assets remain unchanged.
 
 ## Selected plan: primary, Luna and optional escalation
 

@@ -172,3 +172,14 @@ for current selected/loaded evidence. After Carbon returned online, the scoped
 rollout completed in all four native contexts; the published guides now record
 the common preview.15 selection. This documentation update leaves the immutable
 release artifacts unchanged.
+
+## Preview.16 adaptive-name publication
+
+Pages run `41677706788` publishes release source `b13cc66`: current workflow
+tables, examples, generated/copyable requests and the agent lifecycle guide use
+the adaptive names and explain the explicit worker-name compatibility entries.
+The nine guides and walkthrough pass 302 local link/asset/anchor checks and 15
+release claims. Public desktop/mobile checks cover 18 guide loads and 54
+interactive states, including canonical `$adaptive-task` request generation.
+Installation evidence and Carbon's pending apply are in the
+[delivery receipt](reliability-packaging-results.md#preview16-publication-and-managed-rollout).

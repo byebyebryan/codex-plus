@@ -83,6 +83,13 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
+Preview.16 is selected and verified on Snap OSS/work and Starship, including the
+canonical adaptive skills and compatibility entries. Carbon went offline after
+preflight; no source integration or apply was issued there. Its last verified
+selection is preview.15. See the [current receipt](reliability-packaging-results.md#preview16-publication-and-managed-rollout).
+
+The last completed common fleet receipt (2026-11-02) recorded:
+
 Snap, Starship and Carbon select workers, monitoring and reporting **preview.15**,
 source `0767e91`, through chezmoi following the scoped rollout on 2026-11-02.
 The worker bundle includes three native roles and four workflow skills, with

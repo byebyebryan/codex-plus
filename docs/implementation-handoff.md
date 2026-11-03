@@ -2,11 +2,12 @@
 
 Updated 2026-11-03. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.15 is published and
-selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
+the older report checkout and the existing worktrees. Preview.16 is published and
+selected on Snap OSS/work and Starship; Carbon remains pending at its last
+verified preview.15. Selected and loaded versions
 remain distinct.
 
-## Current pass: adaptive workflow names
+## Preview.16 published; Carbon apply pending
 
 Bryan selected the adaptive rename goal loop on 2026-11-03. The
 [focused plan](codex-plus-plan.md#selected-pass-adaptive-workflow-names) makes
@@ -16,9 +17,22 @@ Luna identities, role pins, invocation boundaries, concurrent edits and live
 owners. The 139-file candidate passes 387 tests, six workflow/compatibility skill
 validators and Pages checks. Canonical policy bodies differ only in identity
 references; native roles and Luna skills are byte-identical to baseline.
-Preview.15 remains the published/selected baseline until the new immutable
-release and scoped managed rollout are independently verified. Private snapshots
-and validation captures stay outside committed source.
+Immutable release `b13cc66` is published and Pages is current. Public dotfiles
+commit `928da79` was integrated narrowly on Snap (`013b9b8`) and Starship
+(`d95b412`); exact installed payloads and empty scoped diffs pass. All 51 existing
+native/helper process identities are preserved. Fresh MCP discovery reports
+version16 with 17 monitoring/four reporting tools in all three reachable native
+homes. Native `skills/list` with `forceReload=false` discovers all six entries
+enabled without errors on Snap OSS and Starship. Snap work's native control
+socket is absent, so no native discovery claim or owner start is made there.
+
+Carbon passed a fresh snapshot/preflight at preview.15, then went offline before
+backup, source integration or apply. The user has been asked to restore access
+or explicitly defer it. When reachable, retain the old snapshot and refresh the
+preservation baseline before integrating/staging/selecting the same published
+patch. Do not restore stale config or process assumptions; preserve concurrent
+work and issue no restart or global MCP refresh. Private snapshots and captures
+stay outside committed source. See the [current receipt](reliability-packaging-results.md#preview16-publication-and-managed-rollout).
 
 ## Preview.15 published and deployed
 

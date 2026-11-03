@@ -548,3 +548,49 @@ activation for all four names. These checks establish package/discovery structur
 not new native model decisions. Historical routing trials retain their original
 worker names and evidence limits. Publication and installed state are recorded
 separately after verification; preview.15 assets remain immutable.
+
+## Preview.16 publication and managed rollout
+
+Published 2026-11-03 as [v0.1.0-preview.16](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.16)
+from source `b13cc66497569d3bb3f625d227095edab4a2b571`, through the personal
+`byebyebryan` GitHub account. All five uploaded/downloaded release files match
+the validated local build and full unified verifier. Release-tag CI run
+`41677463762`, main CI `41677706717` and Pages `41677706788` pass. Both Python
+3.11/3.14 CI lanes exercise the complete suite and build/verify the release.
+Public browser checks cover all nine guides and 54 interactive states, including
+canonical adaptive request generation; earlier preview assets are unchanged.
+
+Dotfiles commit `928da79` publishes seven pin/validator files from current-origin
+source. Eleven externals include all six workflow/compatibility entries; raw
+role pins, archives, selectors, hashes and validators advance together. Canonical
+integration commits are `013b9b8` on Snap and `d95b412` on Starship. Only reviewed
+patch hunks were staged; divergent history and unrelated edits remain preserved.
+
+| Context | Selected components | Evidence |
+| --- | --- | --- |
+| Snap OSS | Preview.16, source `b13cc66` | Exact manifests, roles, six skill entries, selectors and empty scoped diff; native read-only discovery sees all six enabled without errors. |
+| Snap work | Preview.16, same artifacts | Exact installed checks and fresh stdio MCP smoke pass. Its native control socket is absent; no daemon was started for discovery. |
+| Starship | Preview.16, same artifacts | Exact installed checks, empty scoped diff and native read-only discovery of all six enabled entries without errors. |
+| Carbon | Last verified preview.15; apply pending | Fresh snapshot/preflight found no role overrides, canonical-name conflicts or disabled workflow conflicts. It then went offline before backup/integration/apply; trusted SSH timed out and the LAN route was unreachable. |
+
+Snap and Starship retained worker/role/skill backups and older immutable releases.
+Across their 1,342 protected installed paths, 28 intended existing paths changed,
+plus new canonical skill files and immutable release roots. All 51 pre-existing
+native/helper process identities were preserved through selection and smoke.
+Native role files and Luna workflow bytes are unchanged. No daemon restart,
+global MCP refresh or real-session input was issued.
+
+Fresh stdio initialization/tool listing in Snap OSS/work and Starship reports
+preview.16 with 17 monitoring and four reporting tools; doctor alignment passes.
+Native `skills/list` used `forceReload=false` on existing owners only. Discovery
+does not prove model invocation, compatibility forwarding in a model turn, or
+that existing conversations reloaded their instructions. No model turn or worker
+spawn was run for this rename; unchanged routing retains the previous bounded
+qualification and Terra/provider/lifecycle limits.
+
+Scoped Codex Plus, report artifact, exact worker inventory, preference preservation
+and master external-pin gates pass. The full dotfiles gate passes Codex checks,
+then fails at the pre-existing OpenCode `--pure` rejection. That failing source
+block is byte-identical to the published parent and the baseline command fails
+independently. Private captures, host snapshots and process/session identifiers
+remain outside Git; the two pre-existing product bytecode files are retained.
