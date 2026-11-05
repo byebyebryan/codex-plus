@@ -1,6 +1,6 @@
 # Codex Plus implementation plan
 
-Updated 2026-11-03. Codex CLI/TUI remains the daily interface and its existing
+Updated 2026-11-05. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are
 installed and enabled on Snap, Starship and Carbon. Current sources are reconciled.
@@ -14,6 +14,36 @@ The separately authorized lifecycle-guide publication completed 2026-11-01 from
 reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agent-first-lifecycle-publication-2026-11-01).
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
+
+## Selected pass: explicit Sol and Astra tasks
+
+Bryan invoked `$adaptive-goal-loop` to design and implement `$sol-task` and
+`$astra-task`. Reuse the existing `sol-xhigh` and `astra-xhigh` roles. These
+explicit-only task frontends fill a convenience gap: a Terra primary can request
+Sol review directly, without enabling adaptive escalation or changing primary.
+
+1. Each task selects exactly its named role with a self-contained assignment
+   and native `fork_turns="none"`. Review/validation and investigation return
+   evidence without implementation edits; implementation requires assigned write
+   ownership. Retain inherited native permissions, primary acceptance, honest
+   model/failure reporting and no nested delegation or silent substitution.
+2. Explicit choice works independently of primary-model detection and automatic
+   routing eligibility. It grants only the requested task, not a persistent
+   escalation preference. Add no model-specific goal loops, new roles, settings,
+   services, fallback ladder or mandatory review stage. Preserve all four existing
+   skills and all native role bytes.
+3. Extend source/archive inventories, explicit-only metadata checks and relocated
+   archive tests together. Update the worker chooser, design, lifecycle guidance
+   and presentation, clearly separating the source candidate from preview.17's
+   four released workflows. Keep historical receipts accurate.
+4. Use Luna for a settled, bounded implementation slice; the primary owns design,
+   integration and review. Run skill validators, required source gates, the full
+   existing fixture suite and local package/Pages verification. Review realistic
+   available/missing-control and review/implementation cases without treating
+   wording tests as runtime proof. Keep captures outside source.
+5. Commit and push validated source under existing authorization. This pass
+   prepares the candidate; a new immutable release and scoped chezmoi rollout
+   remain separate. Installed preview.17 and active owners stay untouched.
 
 ## Completed cleanup: four canonical workflows
 
