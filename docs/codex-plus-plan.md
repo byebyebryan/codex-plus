@@ -37,6 +37,10 @@ The implementation is complete. The clean 142-file gate, 387 tests, seven worker
 skill validators and local Pages/browser checks pass; real archives preserve
 the distinct current/legacy pins. See the
 [follow-up qualification](worker-escalation-results.md#terra-task-extension-2026-11-05).
+Read-only managed-source inspection found the existing `.chezmoiremove` rule for
+`.codex/skills/terra-task`. Future release/deployment work must remove or condition
+that rule with new pins/validators before selecting the current task. This pass
+does not modify managed source or apply it.
 
 ## Selected pass: explicit Sol and Astra tasks
 

@@ -133,6 +133,8 @@ deliberately, and never install both into discoverable skill roots. Identify an
 existing copy from retained installation provenance before a reviewed replacement
 through its configuration owner; preserve local changes and restrictions. Do not
 delete a chosen current task as part of blanket legacy cleanup.
+Also reconcile any manager rule that still declares `terra-task` retired before
+installing the current variant; otherwise it may be removed during convergence.
 
 No Terra automatic offload/escalation route or new Terra goal loop is added.
 The current role is not exposed in the qualifying session, so live Terra execution

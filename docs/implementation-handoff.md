@@ -23,6 +23,9 @@ bytes, relocation and explicit-only metadata. The current-Terra role is not
 exposed here; no Terra execution, retry or restart is claimed. Preview.17
 remains published/installed. See the
 [follow-up qualification](worker-escalation-results.md#terra-task-extension-2026-11-05).
+Before a future managed rollout, reconcile the existing `.chezmoiremove` rule
+for `.codex/skills/terra-task` with the chosen variant and new published pins.
+It remains untouched in this source pass.
 
 ## Completed source pass: explicit Sol and Astra tasks
 

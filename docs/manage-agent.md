@@ -187,6 +187,10 @@ identify any installed variant from retained provenance, select one deliberately
 and preview a scoped migration through its owner. Preserve local edits and disable
 preferences. Never merge/install both variants or delete a current task as legacy
 cleanup; a role pin mismatch is a hold, not permission to substitute or retune.
+Inspect the manager's removal declarations before installing current Terra.
+Bryan's existing `.chezmoiremove` retires `.codex/skills/terra-task`; a future
+current-Terra rollout must remove or condition that specific rule together with
+the published pins and validators. Keep unrelated cleanup declarations intact.
 
 For a conventional unmanaged home, native agent files go under `~/.codex/agents`
 and user skills under `~/.agents/skills`. Confirm client-supported locations for

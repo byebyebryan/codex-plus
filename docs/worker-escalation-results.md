@@ -33,6 +33,10 @@ accepted Terra result was tested. Declaring/packaging the role does not establis
 model access. Do not replace it with legacy Terra, another worker, a separate
 process or a daemon restart. No installed files, managed pins, owner lifecycle
 or unrelated session input were changed. Captures and builds remain private.
+Read-only inspection also confirms an existing chezmoi removal declaration for
+`.codex/skills/terra-task`. A future current-Terra managed rollout must reconcile
+that specific rule alongside published pins and validators; source qualification
+does not establish installation readiness under the old cleanup declaration.
 
 ## Explicit named tasks: preview.18 source qualification (2026-11-05)
 
