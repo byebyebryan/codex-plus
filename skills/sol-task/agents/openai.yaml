@@ -1,0 +1,7 @@
+interface:
+  display_name: "Sol Task"
+  short_description: "Delegate a bounded task to Sol XHigh"
+  default_prompt: "Use $sol-task to assign Sol XHigh this bounded review, investigation, validation, or implementation task."
+
+policy:
+  allow_implicit_invocation: false

@@ -45,6 +45,12 @@ Sol review directly, without enabling adaptive escalation or changing primary.
    prepares the candidate; a new immutable release and scoped chezmoi rollout
    remain separate. Installed preview.17 and active owners stay untouched.
 
+Implementation and primary review are complete. The 139-file source gate, all
+387 tests, six worker skill validators, private unified artifacts and local
+Pages/browser checks pass. The independent contract rehearsal covers nine cases,
+with runtime evidence limits retained in the
+[qualification receipt](worker-escalation-results.md#explicit-named-tasks-preview18-source-qualification-2026-11-05).
+
 ## Completed cleanup: four canonical workflows
 
 Bryan approved removing the worker-name compatibility entries on 2026-11-03.

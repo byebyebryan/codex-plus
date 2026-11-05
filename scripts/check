@@ -14,13 +14,20 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS = (
     "luna-task",
+    "sol-task",
+    "astra-task",
     "adaptive-task",
     "luna-goal-loop",
     "adaptive-goal-loop",
     "html-report",
 )
 LEGACY_SKILLS = ("terra-task", "terra-goal-loop")
-EXPLICIT_ADAPTIVE_SKILLS = {"adaptive-task", "adaptive-goal-loop"}
+EXPLICIT_ONLY_SKILLS = {
+    "adaptive-task",
+    "adaptive-goal-loop",
+    "sol-task",
+    "astra-task",
+}
 AGENTS = {
     "agents/luna-max.toml": ("gpt-6-luna", "max"),
     "agents/sol-xhigh.toml": ("gpt-6.1-sol", "xhigh"),
@@ -338,9 +345,9 @@ def check_metadata(text: str, skill: str, name: str) -> None:
     prompt = interface["default_prompt"]
     if not re.search(rf"\${re.escape(skill)}(?![a-z0-9-])", prompt):
         fail(f"default prompt must name ${skill}: {name}")
-    if skill in EXPLICIT_ADAPTIVE_SKILLS:
+    if skill in EXPLICIT_ONLY_SKILLS:
         if data.get("policy", {}).get("allow_implicit_invocation") is not False:
-            fail(f"adaptive skill must disable implicit invocation: {name}")
+            fail(f"explicit-only skill must disable implicit invocation: {name}")
 
 
 def check_skills() -> None:

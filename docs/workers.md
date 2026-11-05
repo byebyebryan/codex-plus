@@ -19,6 +19,11 @@ the corresponding adaptive name. There are no aliases. The four canonical
 instructions and native role pins are unchanged. Generic task/goal wording and
 discussion activate no worker workflow.
 
+The current source candidate adds `$sol-task` and `$astra-task`, bringing the
+source inventory to six workflows with the same three roles. These two skills
+are **unreleased**; preview.17 archives and installed homes still contain the
+four workflows above. See the [explicit named-task examples](#choose-sol-or-astra-explicitly-source-candidate).
+
 Task workflows do not create or manage a goal. Goal-loop workflows use available
 goal tools for an explicitly requested substantial outcome. A generic “go for a
 goal loop” uses the ordinary primary workflow. Mentioning or discussing a skill
@@ -58,6 +63,55 @@ resolve a difficult portion and then give Luna the next suitable assignment.
 
 Use `$adaptive-task` or `$adaptive-goal-loop` for the same task or goal when you want
 the primary to choose whether delegation is useful for each assignment.
+
+### Choose Sol or Astra explicitly (source candidate)
+
+Adaptive workflows let the primary choose how to delegate. A named task lets
+you choose the worker for one assignment, including an independent review while
+Terra remains the primary:
+
+```text
+$sol-task Review the current changes and run appropriate validation.
+Return findings with file references and evidence; leave source fixes to the primary.
+```
+
+For an Astra second opinion, after installing a release containing this skill:
+
+```text
+$astra-task Check the migration design for data-loss and recovery gaps.
+Return findings and uncertainties; do not implement changes.
+```
+
+| Source-candidate skill | Exact worker | Scope |
+| --- | --- | --- |
+| `$sol-task` | `sol-xhigh`: `gpt-6.1-sol`, `xhigh` | One explicitly assigned review, investigation or implementation. |
+| `$astra-task` | `astra-xhigh`: `gpt-6-astra`, `xhigh` | One explicitly assigned review, investigation or implementation. |
+
+The request determines the mode. Review/validation and investigation return
+findings and evidence without source fixes; implementation requires assigned
+write ownership. Ordinary test/build outputs may still be produced under the
+inherited native permissions. A review instruction is not a separate enforced
+read-only sandbox. The primary checks the result and decides how to act on it.
+
+Named tasks do not create goals, change your primary, require primary-model
+detection, or enable a persistent escalation preference. An explicit choice is
+independent of adaptive routing eligibility and still honors applicable user
+restrictions and native permissions. Missing controls/roles, incompatible pins,
+spawn rejection and worker/model errors are reported without silently selecting
+a different worker. Installing a role alone does not establish model access.
+
+For a larger goal, use the existing adaptive loop and assign a named review:
+
+```text
+$adaptive-goal-loop Complete this migration. Use Sol XHigh specifically for
+independent review before final acceptance. Keep implementation in the primary
+or suitable Luna assignments.
+```
+
+That instruction authorizes the requested review only; it does not enable Sol
+for unrelated automatic escalation. No model-specific goal-loop skills or
+mandatory review stage are added. Generic goal wording or discussion of either
+new skill does not invoke it. Existing Luna-only workflows stay Luna-only.
 
 ## Which agent does the work?
 
@@ -205,6 +259,11 @@ The `astra-xhigh` role is available for permitted escalation; installing it does
 not opt in to automatic use or update an already loaded conversation. Your client and account must
 support the selected models, custom agents and skills; installation does not
 prove runtime model availability.
+
+Preview.17 does not contain `sol-task` or `astra-task`. Do not copy their files
+from moving main into a managed preview.17 installation. A future release must
+include both skill files per new workflow, update its manifest and managed pins,
+and verify native discovery separately from actual model execution.
 
 Workers do not require the monitoring or reporting runtime. Those components
 have their own [monitoring setup](runtime-distribution.md) and

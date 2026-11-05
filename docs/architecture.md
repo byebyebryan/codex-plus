@@ -48,6 +48,10 @@ skill or asking for a generic goal loop does not invoke a worker workflow. The
 HTML report skill is an additional skill, separate from the four worker workflows.
 The [worker guide](workers.md) covers Luna, task versus goal-loop workflows,
 adaptive routing and the distinction between workers and independent peers.
+The source candidate adds two explicit named task frontends using the same
+Sol/Astra roles; preview.17 still contains four worker workflows. Named review
+is an assignment choice, with primary acceptance and inherited permissions,
+rather than a new service, primary switch or automatic escalation policy.
 
 ## Observation and follow-up
 

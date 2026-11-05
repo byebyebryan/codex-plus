@@ -1,10 +1,31 @@
 # Implementation handoff
 
-Updated 2026-11-03. The owner-recovery work was isolated on Starship
+Updated 2026-11-05. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
 the older report checkout and the existing worktrees. Preview.17 is published and
 selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
 remain distinct.
+
+## Current pass: explicit named tasks
+
+Bryan invoked `$adaptive-goal-loop` for the
+[named-task plan](codex-plus-plan.md#selected-pass-explicit-sol-and-astra-tasks).
+The unreleased preview.18 source candidate adds `$sol-task` and `$astra-task`
+using the existing fixed roles. A named request selects one review, investigation
+or implementation while preserving the primary; it needs no automatic escalation
+grant or primary detection. Review returns evidence without implementation edits.
+The four existing workflows and native role bytes remain invariant.
+
+Luna owns the new skill files and packaging/metadata/test slice; the primary owns
+design, integration, documentation and acceptance. This pass prepares validated
+source and a private package candidate. Preview.17 remains the published and
+installed release; no release, managed pin change, live apply or owner restart is
+part of this source pass. The 139-file clean candidate passes all 387 tests, six
+worker skill validators, unified private build/verification and local Pages/browser
+checks. Independent Luna contract rehearsal found no substantive mismatch; it is
+not new Sol/Astra execution proof. See the
+[qualification receipt](worker-escalation-results.md#explicit-named-tasks-preview18-source-qualification-2026-11-05).
+Keep runtime captures and fixture evidence outside source.
 
 ## Preview.17 published: four canonical workflows
 

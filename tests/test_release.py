@@ -69,7 +69,7 @@ class ReleaseTests(unittest.TestCase):
                 self.assertEqual(data, (self.source / 'agents' / (role + '.toml')).read_bytes())
             # Packaging preserves native activation settings and exact skill bytes,
             # independently of any prose used to describe routing.
-            for skill in ('luna-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop'):
+            for skill in ('luna-task', 'sol-task', 'astra-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop'):
                 for file in ('SKILL.md', 'agents/openai.yaml'):
                     name = 'skills/' + skill + '/' + file
                     self.assertEqual(archive.extractfile('codex-plus-workers/' + name).read(),
@@ -121,7 +121,7 @@ class ReleaseTests(unittest.TestCase):
                 links += 1
         self.assertGreater(links, 0)
 
-    def test_relocated_worker_archive_has_four_workflows_and_no_retired_entries(self):
+    def test_relocated_worker_archive_has_six_workflows_and_no_retired_entries(self):
         output = self.root / 'release'; result = release.build(self.source, output)
         relocated = self.root / 'relocated' / 'workers'
         with tarfile.open(output / result['components']['workers']['artifact'], 'r:gz') as archive:
@@ -130,7 +130,13 @@ class ReleaseTests(unittest.TestCase):
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 destination.write_bytes(archive.extractfile(member).read())
         self.assertEqual({p.name for p in (relocated / 'skills').iterdir()},
-                         {'luna-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop'})
+                         {'luna-task', 'sol-task', 'astra-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop'})
+        for skill in ('sol-task', 'astra-task'):
+            for file in ('SKILL.md', 'agents/openai.yaml'):
+                name = 'skills/' + skill + '/' + file
+                with self.subTest(skill=skill, file=file):
+                    self.assertEqual((relocated / name).read_bytes(),
+                                     (self.source / name).read_bytes())
         for retired in ('worker-task', 'worker-goal-loop'):
             self.assertFalse((relocated / 'skills' / retired).exists())
             self.assertFalse(any(name.startswith('skills/' + retired + '/')

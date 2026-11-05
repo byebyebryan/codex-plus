@@ -1,6 +1,6 @@
 # Worker routing design
 
-Updated 2026-11-03. Preview.15 implements the selected primary/Luna/optional
+Updated 2026-11-05. Preview.15 implements the selected primary/Luna/optional
 escalation policy below. Existing installations need an explicit upgrade. See the
 [qualification record](worker-escalation-results.md) for native evidence and limits;
 the [worker routing study](worker-routing-study.md) records the research history.
@@ -10,7 +10,36 @@ names and removes the worker-name compatibility entries introduced in preview.16
 The policy, Luna workflows and native role pins are unchanged.
 Historical trial names and installation receipts below retain their original
 identities; use the [current worker guide](https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md)
-for the four installed workflows and migration procedure.
+for the four released workflows, two unreleased named tasks and migration procedure.
+
+## Explicit named tasks: source candidate
+
+`$sol-task` and `$astra-task` select the existing `sol-xhigh` and `astra-xhigh`
+roles for one bounded assignment. They are explicit-only task frontends, not
+new routing tiers or automatic escalation policy. The request selects review,
+investigation or implementation; review/validation returns evidence without
+implementation edits, while implementation requires write ownership. The primary
+retains decisions, integration and acceptance. Task invocation creates no goal.
+
+An explicit named assignment needs neither reliable initiating-primary metadata
+nor an automatic escalation grant. It works with any primary subject to native
+permissions, exposed role pins and applicable restrictions. It authorizes only
+that assignment and bounded corrections, not future automatic selection. Preserve
+the provider/MCP environment and exact role selection, with no silent alternative,
+nested delegation or restart/process workaround. Report missing controls/roles,
+pin conflicts, rejected spawning, execution errors and observed reroutes distinctly.
+
+Keep both skills self-contained, use direct native collaboration calls and
+`fork_turns="none"`, and check completed-turn state and available selection
+metadata before claiming the target ran. Review mode constrains the assignment;
+it does not change inherited permissions or enforce a read-only sandbox.
+
+No model-specific goal loops, review configuration switch, new role, service or
+mandatory review step is needed. Existing adaptive loops can receive an explicit
+named-review instruction without granting implementation escalation. Preserve
+all four existing skill bodies and native role files byte-for-byte. Preview.17
+remains the released/installed baseline; source, private archive validation and
+native execution must be reported separately before later managed publication.
 
 ## Selected design: primary, Luna and one escalation target
 

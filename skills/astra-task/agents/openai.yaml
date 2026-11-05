@@ -1,0 +1,7 @@
+interface:
+  display_name: "Astra Task"
+  short_description: "Delegate a bounded task to Astra XHigh"
+  default_prompt: "Use $astra-task to assign Astra XHigh this bounded review, investigation, validation, or implementation task."
+
+policy:
+  allow_implicit_invocation: false

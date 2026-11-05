@@ -158,10 +158,10 @@ an immutable directory with different content.
 
 For **workers**, verify the unified release first, then extract its verified
 worker archive into a private retained directory. Its `workers.json` records
-exact member hashes/modes and source revision. For preview.15, install
-`agents/luna-max.toml`, `agents/sol-xhigh.toml`, `agents/astra-xhigh.toml` and both
-files (`SKILL.md`, `agents/openai.yaml`) from each of `luna-task`, `luna-goal-loop`,
-`adaptive-task` and `adaptive-goal-loop` in preview.17 and later. Remove the
+exact member hashes/modes and source revision. Preview.15 and later provide
+`agents/luna-max.toml`, `agents/sol-xhigh.toml` and `agents/astra-xhigh.toml`.
+Preview.17 provides both files (`SKILL.md`, `agents/openai.yaml`) from each of
+`luna-task`, `luna-goal-loop`, `adaptive-task` and `adaptive-goal-loop`. Remove the
 retired `worker-task` and `worker-goal-loop` directories through their configuration
 owner, with backups and a scoped deletion preview; preserve unclassified local
 edits before removal. Verify both old paths are absent. Preserve fixed model/effort pins and any
@@ -173,6 +173,14 @@ restrictions to the adaptive replacement; do not silently re-enable it.
 Keep cleanup declarations consistent with the chosen release when rolling back.
 Keep the verified archive/manifest as provenance. Do not install legacy Terra
 files by default and do not change the primary model.
+
+The source candidate adds explicit `sol-task` and `astra-task` skills; preview.17
+does not contain them. Install only workflows present in the chosen verified
+release manifest. Do not graft moving-main skills into a pinned managed release.
+When a release adds them, install both files per skill through the same owner,
+preserve invocation restrictions, and verify discovery and model execution as
+separate acceptance steps. The [named-task guide](workers.md#choose-sol-or-astra-explicitly-source-candidate)
+explains their assignment-scoped permission and primary ownership.
 
 For a conventional unmanaged home, native agent files go under `~/.codex/agents`
 and user skills under `~/.agents/skills`. Confirm client-supported locations for

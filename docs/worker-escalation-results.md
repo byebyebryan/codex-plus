@@ -5,6 +5,54 @@ the policy and review fixes documented here. The historical candidate/build
 receipts below retain their original scope. Publication and host selection are
 recorded separately in the [release delivery receipt](https://github.com/byebyebryan/codex-plus/blob/main/docs/reliability-packaging-results.md).
 
+## Explicit named tasks: preview.18 source qualification (2026-11-05)
+
+The unreleased source adds `$sol-task` and `$astra-task` as explicit-only
+frontends to the existing fixed roles. A task can request review/validation,
+investigation or implementation while the initiating primary retains decisions
+and acceptance. Explicit choice needs neither loaded-primary detection nor an
+adaptive escalation preference, and grants no persistent automatic permission.
+Review/investigation produces evidence without implementation edits. Native
+permissions still apply; this is not an enforced read-only sandbox.
+
+The primary settled the contract and integrated documentation; one `luna-max`
+assignment implemented skills, metadata and archive integration, followed by
+primary corrections and review. A separate read-only Luna assignment rehearsed
+nine cases: direct controls despite an empty registry, implementation ownership,
+unknown primary/no monitoring, missing controls, absent role, conflicting pin,
+discussion without invocation, distinct spawn/execution/reroute outcomes and
+validation build outputs. Its plans matched the contract; no additional
+substantive defect was found. A final primary clarification permits bounded
+investigation to gather missing facts rather than requiring a solved handoff.
+
+The 139-file clean source passes `scripts/check`, all 387 repository tests,
+six worker skill validators and whitespace checks. Metadata regressions reject
+implicit or missing invocation policy for both named tasks. Real archive tests
+check exact skills and native pins, relocation and continued absence of retired
+worker-name entries. The private unified preview.18 build and verifier pass;
+its initial qualification snapshot is private, not a published source revision.
+Existing four workflow bodies/metadata and three native role files remain
+byte-identical; the two pre-existing untracked bytecode files are preserved.
+
+The local Pages build verifies the walkthrough and nine guides, 307 local
+links/assets/anchors and 15 current-release claims. Desktop/mobile browser
+checks cover 18 guide loads and 54 interactive states without horizontal page
+overflow; the new candidate panel was inspected at both sizes. Current guides
+label both new tasks as unreleased and keep preview.17 installation instructions.
+
+Runtime evidence is narrower: an empty Code Mode registry coexisted with a
+successful direct native agent-list call and two completed Luna-role assignments.
+The child selection helper reported `caller_is_subagent`, and exposed list
+results carried no independently verifiable worker model/effort metadata.
+No Sol/Astra task invocation, Terra-primary inference, provider failure or
+genuinely absent-control environment was executed in this pass. Rehearsal,
+role pins and static/package validation do not prove those runtime paths.
+
+Preview.17 remains the published package and selected managed installation;
+the two new skills are absent from the checked local native home. No new release,
+managed pin/apply, daemon restart, global MCP refresh or real-session input is
+part of this source pass. Raw captures and qualification artifacts stay private.
+
 ## Implemented policy
 
 The [selected design](worker-routing-design.md#selected-design-primary-luna-and-one-escalation-target)

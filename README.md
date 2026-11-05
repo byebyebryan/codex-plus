@@ -207,6 +207,18 @@ over decisions outside the execution contract.
 | `$adaptive-task` | One bounded task; no goal management | Primary or selective Luna; one opt-in escalation target |
 | `$adaptive-goal-loop` | A substantial goal, routed per assignment | Primary or selective Luna; one opt-in escalation target |
 
+The unreleased preview.18 source candidate adds **`$sol-task`** and **`$astra-task`**
+for a bounded review, investigation or implementation with that exact worker.
+They preserve your primary and need no automatic escalation setting. For example:
+
+```text
+$sol-task Review the current changes and run appropriate validation.
+Return findings and evidence; leave source fixes to the primary.
+```
+
+These two skills are **unreleased** and are absent from preview.17 installations.
+See the [named-task contract and examples](docs/workers.md#choose-sol-or-astra-explicitly-source-candidate).
+
 Preview.17 removes `$worker-task` and `$worker-goal-loop`. Update old prompts to
 the corresponding adaptive name; no alias or forwarding layer remains. The
 four canonical workflow instructions, Luna names and native model roles are

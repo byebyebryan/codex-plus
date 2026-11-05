@@ -49,6 +49,7 @@ documentation or selecting an archive does not reload an existing MCP process.
 | Added in preview.15 | Optional primary-aware escalation and the Astra XHigh role, defaulting off; read-only loaded-primary selection with graceful reporting-only fallback. Natural-language permission and native role pins remain separate. |
 | Added in preview.16 | Introduced canonical `$adaptive-task` and `$adaptive-goal-loop` names with worker-name compatibility entries, which preview.17 removed. Routing and Luna workflows stayed unchanged. |
 | Changed in preview.17 | Removed the worker-name compatibility entries. Use the four canonical Luna/adaptive workflows and update old prompts. |
+| Unreleased source candidate | Explicit `$sol-task` and `$astra-task` for one named review, investigation or implementation, preserving the primary. Absent from preview.17; see the [contract](workers.md#choose-sol-or-astra-explicitly-source-candidate). |
 | Added in preview.14 | Correct native collaboration discovery and direct role selection in all four worker workflows. |
 | Added in preview.13 | The existing read-only doctor accepts `--human` for readable diagnostics. JSON remains the default. Pages builds check published and managed guide declarations independently; preview.12 archives remain verifiable and selectable for rollback. |
 
