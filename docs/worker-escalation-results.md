@@ -5,6 +5,35 @@ the policy and review fixes documented here. The historical candidate/build
 receipts below retain their original scope. Publication and host selection are
 recorded separately in the [release delivery receipt](https://github.com/byebyebryan/codex-plus/blob/main/docs/reliability-packaging-results.md).
 
+## Terra task extension (2026-11-05)
+
+The follow-up adds current `$terra-task` using `terra-6-1-xhigh`, fixed to
+`gpt-6.1-terra` / `xhigh`. Its task/acceptance and explicit invocation contract
+matches the Sol/Astra tasks below. It changes neither primary selection nor
+adaptive routes and introduces no goal-loop variant. Legacy `terra-xhigh` stays
+on GPT-5.6, with all legacy skill files unchanged. Both task variants share an
+invocation name: current guidance requires a deliberate selection and reviewed
+owner-managed migration, not simultaneous discovery or recursive merging.
+
+The 142-file clean source passes `scripts/check`, 387 tests, seven worker skill
+validators and whitespace checks. Real release fixtures check both generations'
+distinct role names/model pins, exact archived skill bytes and relocated seven-
+workflow inventory. The existing metadata regression now covers current Terra's
+explicit-only policy too. All previously existing default/legacy payloads and
+the two private untracked bytecode files retain their original bytes and modes.
+
+The local Pages build verifies 310 local links/assets/anchors and 15 release
+claims. Browser checks pass 18 desktop/mobile guide loads and 54 interactive
+states with no page overflow; the updated candidate panel was inspected.
+Guides distinguish current GPT-6.1 from legacy GPT-5.6 and retain preview.17 as
+the published/installed release. The source candidate remains preview.18.
+
+No current-Terra role is exposed in this session, so no spawn, inference or
+accepted Terra result was tested. Declaring/packaging the role does not establish
+model access. Do not replace it with legacy Terra, another worker, a separate
+process or a daemon restart. No installed files, managed pins, owner lifecycle
+or unrelated session input were changed. Captures and builds remain private.
+
 ## Explicit named tasks: preview.18 source qualification (2026-11-05)
 
 The unreleased source adds `$sol-task` and `$astra-task` as explicit-only

@@ -36,7 +36,8 @@ keeps decisions and review. `$adaptive-task` and `$adaptive-goal-loop` let the p
 choose whether delegation helps. A generic “goal loop” does not select a worker.
 
 For an explicitly chosen Sol or Astra reviewer, the source candidate adds
-[`$sol-task` and `$astra-task`](workers.md#choose-sol-or-astra-explicitly-source-candidate).
+[`$sol-task` and `$astra-task`](workers.md#choose-sol-or-astra-explicitly-source-candidate),
+plus [current `$terra-task`](workers.md#choose-current-terra-explicitly-source-candidate).
 They preserve your primary and keep review separate from implementation. They
 are unreleased and absent from preview.17 installations.
 

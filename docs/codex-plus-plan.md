@@ -15,6 +15,29 @@ reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agen
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
 
+## Follow-up: current Terra task
+
+Bryan requested `$terra-task` alongside the unreleased Sol/Astra tasks. Use the
+same bounded explicit-only contract with `gpt-6.1-terra` / `xhigh`, independent
+of primary detection and automatic escalation. Add `terra-6-1-xhigh` as a distinct
+native role so legacy `terra-xhigh` remains pinned to GPT-5.6 unchanged. Do not add
+Terra as an adaptive offload/escalation route or add a Terra goal-loop variant.
+
+The new and legacy task files share the `$terra-task` name; install only the
+explicitly chosen variant. Preserve legacy files and require a reviewed migration
+through the configuration owner rather than overwriting them or enabling both.
+Add the role and skill to source/archive/metadata validation; test both generations'
+separate pins in a real archive. Update current guides and presentation, validate
+the candidate and commit/push under the existing source-pass authorization.
+Keep preview.18 unreleased, preview.17 installed, and native owners undisturbed.
+The current session exposes no current-Terra role; static/package checks cannot
+establish successful Terra execution and no retry or daemon restart is warranted.
+
+The implementation is complete. The clean 142-file gate, 387 tests, seven worker
+skill validators and local Pages/browser checks pass; real archives preserve
+the distinct current/legacy pins. See the
+[follow-up qualification](worker-escalation-results.md#terra-task-extension-2026-11-05).
+
 ## Selected pass: explicit Sol and Astra tasks
 
 Bryan invoked `$adaptive-goal-loop` to design and implement `$sol-task` and

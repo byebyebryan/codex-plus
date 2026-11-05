@@ -32,7 +32,7 @@ class MetadataTests(unittest.TestCase):
                 self.validate(path.read_text(), path.parent.parent.name)
 
     def test_explicit_only_workflows_require_explicit_invocation(self) -> None:
-        for skill in ('adaptive-task', 'adaptive-goal-loop', 'sol-task', 'astra-task'):
+        for skill in ('adaptive-task', 'adaptive-goal-loop', 'sol-task', 'astra-task', 'terra-task'):
             valid = VALID.replace('adaptive-goal-loop', skill)
             self.validate(valid, skill)
             for invalid in (valid.replace('false', 'true'), valid.split('\npolicy:')[0]):

@@ -10,12 +10,15 @@ names and removes the worker-name compatibility entries introduced in preview.16
 The policy, Luna workflows and native role pins are unchanged.
 Historical trial names and installation receipts below retain their original
 identities; use the [current worker guide](https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md)
-for the four released workflows, two unreleased named tasks and migration procedure.
+for the four released workflows, three unreleased named tasks and migration procedure.
 
 ## Explicit named tasks: source candidate
 
 `$sol-task` and `$astra-task` select the existing `sol-xhigh` and `astra-xhigh`
-roles for one bounded assignment. They are explicit-only task frontends, not
+roles for one bounded assignment. `$terra-task` extends the same contract using
+the new `terra-6-1-xhigh` role, pinned to `gpt-6.1-terra` / `xhigh`. Legacy
+`terra-xhigh` and its GPT-5.6 task remain unchanged under `legacy/`; choose only
+one task variant because both use `$terra-task`. They are explicit-only task frontends, not
 new routing tiers or automatic escalation policy. The request selects review,
 investigation or implementation; review/validation returns evidence without
 implementation edits, while implementation requires write ownership. The primary
@@ -34,12 +37,17 @@ Keep both skills self-contained, use direct native collaboration calls and
 metadata before claiming the target ran. Review mode constrains the assignment;
 it does not change inherited permissions or enforce a read-only sandbox.
 
-No model-specific goal loops, review configuration switch, new role, service or
-mandatory review step is needed. Existing adaptive loops can receive an explicit
+No model-specific goal loops, review configuration switch, service or mandatory
+review step is needed. Terra's versioned role prevents legacy role confusion;
+it adds no automatic Terra routing option. Existing adaptive loops can receive an explicit
 named-review instruction without granting implementation escalation. Preserve
 all four existing skill bodies and native role files byte-for-byte. Preview.17
 remains the released/installed baseline; source, private archive validation and
 native execution must be reported separately before later managed publication.
+The new current-Terra role is not exposed in this session; do not infer execution
+from its source pin or silently use legacy Terra, another worker or a process/
+restart workaround. Migration must select a variant through the configuration
+owner, preserving local edits and restrictions instead of merging skill roots.
 
 ## Selected design: primary, Luna and one escalation target
 

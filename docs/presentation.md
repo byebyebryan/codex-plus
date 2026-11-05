@@ -39,7 +39,7 @@ The page leads with use cases, everyday benefits, setup links and an interactive
 first-watch checklist. A dedicated Luna section compares the four worker
 workflows and links to the [worker guide](workers.md) for examples and setup.
 The source presentation separately labels the unreleased `$sol-task` and
-`$astra-task` candidate, with a Terra-primary/Sol-review example. It does not
+`$astra-task` candidate and current `$terra-task`, with a Terra-primary/Sol-review example. It does not
 include them among preview.17's four released workflows or imply an installation.
 It includes a model-call illustration, lifecycle FAQ and
 a downloadable quickstart checklist. Host-specific deployment status, comparison

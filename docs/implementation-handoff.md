@@ -6,7 +6,25 @@ the older report checkout and the existing worktrees. Preview.17 is published an
 selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
 remain distinct.
 
-## Current pass: explicit named tasks
+## Current follow-up: GPT-6.1 Terra task
+
+Bryan requested `$terra-task` alongside the named Sol/Astra tasks. The unreleased
+preview.18 source now has seven worker workflows and four default roles.
+`terra-6-1-xhigh` pins `gpt-6.1-terra` / `xhigh`; legacy `terra-xhigh` and its
+GPT-5.6 workflow files remain byte-identical. Both task variants use the same
+invocation name, so select one deliberately and migrate through its configuration
+owner rather than merging discoverable copies or blanket-removing current paths.
+
+The task uses the existing explicit review/investigation/implementation contract,
+with no automatic Terra routing or new goal loop. The 142-file clean gate,
+387 tests, seven worker skill validators and local Pages/browser checks pass.
+Real archive fixtures verify both generations' separate pins, exact new skill
+bytes, relocation and explicit-only metadata. The current-Terra role is not
+exposed here; no Terra execution, retry or restart is claimed. Preview.17
+remains published/installed. See the
+[follow-up qualification](worker-escalation-results.md#terra-task-extension-2026-11-05).
+
+## Completed source pass: explicit Sol and Astra tasks
 
 Bryan invoked `$adaptive-goal-loop` for the
 [named-task plan](codex-plus-plan.md#selected-pass-explicit-sol-and-astra-tasks).

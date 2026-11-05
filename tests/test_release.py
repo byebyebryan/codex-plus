@@ -58,7 +58,8 @@ class ReleaseTests(unittest.TestCase):
         path = output / result['components']['workers']['artifact']
         expected = {'luna-max': ('gpt-6-luna', 'max'),
                     'sol-xhigh': ('gpt-6.1-sol', 'xhigh'),
-                    'astra-xhigh': ('gpt-6-astra', 'xhigh')}
+                    'astra-xhigh': ('gpt-6-astra', 'xhigh'),
+                    'terra-6-1-xhigh': ('gpt-6.1-terra', 'xhigh')}
         with tarfile.open(path, 'r:gz') as archive:
             for role, (model, effort) in expected.items():
                 member = 'codex-plus-workers/agents/' + role + '.toml'
@@ -69,11 +70,18 @@ class ReleaseTests(unittest.TestCase):
                 self.assertEqual(data, (self.source / 'agents' / (role + '.toml')).read_bytes())
             # Packaging preserves native activation settings and exact skill bytes,
             # independently of any prose used to describe routing.
-            for skill in ('luna-task', 'sol-task', 'astra-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop'):
+            for skill in ('luna-task', 'sol-task', 'astra-task', 'terra-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop'):
                 for file in ('SKILL.md', 'agents/openai.yaml'):
                     name = 'skills/' + skill + '/' + file
                     self.assertEqual(archive.extractfile('codex-plus-workers/' + name).read(),
                                      (self.source / name).read_bytes())
+            legacy_name = 'legacy/agents/terra-xhigh.toml'
+            legacy_data = archive.extractfile('codex-plus-workers/' + legacy_name).read()
+            legacy = tomllib.loads(legacy_data.decode())
+            self.assertEqual(legacy['name'], 'terra-xhigh')
+            self.assertEqual((legacy['model'], legacy['model_reasoning_effort']),
+                             ('gpt-5.6-terra', 'xhigh'))
+            self.assertEqual(legacy_data, (self.source / legacy_name).read_bytes())
         self.assertIn('agents/astra-xhigh.toml', release.read_workers(path)['files'])
 
     def test_reporting_only_primary_selection_is_structured_without_monitoring_or_owner(self):
@@ -121,7 +129,7 @@ class ReleaseTests(unittest.TestCase):
                 links += 1
         self.assertGreater(links, 0)
 
-    def test_relocated_worker_archive_has_six_workflows_and_no_retired_entries(self):
+    def test_relocated_worker_archive_has_seven_workflows_and_no_retired_entries(self):
         output = self.root / 'release'; result = release.build(self.source, output)
         relocated = self.root / 'relocated' / 'workers'
         with tarfile.open(output / result['components']['workers']['artifact'], 'r:gz') as archive:
@@ -130,8 +138,8 @@ class ReleaseTests(unittest.TestCase):
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 destination.write_bytes(archive.extractfile(member).read())
         self.assertEqual({p.name for p in (relocated / 'skills').iterdir()},
-                         {'luna-task', 'sol-task', 'astra-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop'})
-        for skill in ('sol-task', 'astra-task'):
+                         {'luna-task', 'sol-task', 'astra-task', 'terra-task', 'luna-goal-loop', 'adaptive-task', 'adaptive-goal-loop'})
+        for skill in ('sol-task', 'astra-task', 'terra-task'):
             for file in ('SKILL.md', 'agents/openai.yaml'):
                 name = 'skills/' + skill + '/' + file
                 with self.subTest(skill=skill, file=file):

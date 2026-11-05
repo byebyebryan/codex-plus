@@ -1,0 +1,7 @@
+interface:
+  display_name: "Terra Task (GPT-6.1)"
+  short_description: "Delegate a bounded task to Terra XHigh"
+  default_prompt: "Use $terra-task to assign GPT-6.1 Terra XHigh this bounded review, investigation, validation, or implementation task."
+
+policy:
+  allow_implicit_invocation: false

@@ -174,13 +174,19 @@ Keep cleanup declarations consistent with the chosen release when rolling back.
 Keep the verified archive/manifest as provenance. Do not install legacy Terra
 files by default and do not change the primary model.
 
-The source candidate adds explicit `sol-task` and `astra-task` skills; preview.17
-does not contain them. Install only workflows present in the chosen verified
+The source candidate adds explicit `sol-task`, `astra-task` and current
+`terra-task` skills; preview.17 does not contain them. Install only workflows present in the chosen verified
 release manifest. Do not graft moving-main skills into a pinned managed release.
 When a release adds them, install both files per skill through the same owner,
 preserve invocation restrictions, and verify discovery and model execution as
 separate acceptance steps. The [named-task guide](workers.md#choose-sol-or-astra-explicitly-source-candidate)
 explains their assignment-scoped permission and primary ownership.
+Current Terra also requires `terra-6-1-xhigh` (`gpt-6.1-terra` / `xhigh`), separate
+from legacy `terra-xhigh` (`gpt-5.6-terra`). Both task variants use `terra-task`:
+identify any installed variant from retained provenance, select one deliberately
+and preview a scoped migration through its owner. Preserve local edits and disable
+preferences. Never merge/install both variants or delete a current task as legacy
+cleanup; a role pin mismatch is a hold, not permission to substitute or retune.
 
 For a conventional unmanaged home, native agent files go under `~/.codex/agents`
 and user skills under `~/.agents/skills`. Confirm client-supported locations for

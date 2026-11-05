@@ -207,7 +207,8 @@ over decisions outside the execution contract.
 | `$adaptive-task` | One bounded task; no goal management | Primary or selective Luna; one opt-in escalation target |
 | `$adaptive-goal-loop` | A substantial goal, routed per assignment | Primary or selective Luna; one opt-in escalation target |
 
-The unreleased preview.18 source candidate adds **`$sol-task`** and **`$astra-task`**
+The unreleased preview.18 source candidate adds **`$sol-task`**, **`$astra-task`**
+and **`$terra-task`** (GPT-6.1 Terra/XHigh)
 for a bounded review, investigation or implementation with that exact worker.
 They preserve your primary and need no automatic escalation setting. For example:
 
@@ -216,8 +217,10 @@ $sol-task Review the current changes and run appropriate validation.
 Return findings and evidence; leave source fixes to the primary.
 ```
 
-These two skills are **unreleased** and are absent from preview.17 installations.
+These three skills are **unreleased** and are absent from preview.17 installations.
 See the [named-task contract and examples](docs/workers.md#choose-sol-or-astra-explicitly-source-candidate).
+The current Terra task uses a distinct `terra-6-1-xhigh` role; the legacy task of
+the same name remains GPT-5.6-only. Install only the deliberately selected variant.
 
 Preview.17 removes `$worker-task` and `$worker-goal-loop`. Update old prompts to
 the corresponding adaptive name; no alias or forwarding layer remains. The
@@ -279,21 +282,19 @@ execution contract and minimal inherited context. See the official
 
 ### Existing Terra installations
 
-GPT-5.6 Terra compatibility files live under `legacy/` and are deprecated. They
-retain the `terra-xhigh`, `$terra-task`, and `$terra-goal-loop` identities and do
-not alias Sol. Install them separately only to preserve an explicit Terra workflow:
+GPT-5.6 Terra compatibility files under `legacy/` retain the deprecated
+`terra-xhigh`, `$terra-task` and `$terra-goal-loop` identities. They do not alias
+the current GPT-6.1 role `terra-6-1-xhigh`. Preview.17 contains only the legacy
+Terra variant; the current variant is an unreleased source addition.
 
-```sh
-cp codex-plus/legacy/agents/terra-xhigh.toml ~/.codex/agents/
-cp -R codex-plus/legacy/skills/. ~/.agents/skills/
-```
-
-Copying the current default bundle does not remove previously installed Terra
-files. When migrating, retire the old agent and both Terra skill directories
-through the configuration manager or installation method that owns them. Check
-both supported personal skill roots if an earlier installation used a different
-one. For archive consumers, publish the kit before changing external URLs and
-checksums; do not point a deployment at an unpublished checkout.
+Both task variants use the `$terra-task` invocation. Select one deliberately;
+do not install both into discoverable skill roots or recursively merge their
+directories. Identify an existing variant from its retained manifest and exact
+role pin before any migration. Preserve local edits and restrictions, and use
+the owning configuration manager for reviewed replacement or removal. Never
+blanket-delete `terra-task`: it may be the chosen current workflow. Check both
+supported personal skill roots if earlier installations used different ones.
+Publish a new release before updating managed URLs/checksums or installed files.
 
 ## Validation and tuning
 

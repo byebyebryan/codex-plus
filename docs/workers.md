@@ -19,10 +19,12 @@ the corresponding adaptive name. There are no aliases. The four canonical
 instructions and native role pins are unchanged. Generic task/goal wording and
 discussion activate no worker workflow.
 
-The current source candidate adds `$sol-task` and `$astra-task`, bringing the
-source inventory to six workflows with the same three roles. These two skills
+The current source candidate adds `$sol-task`, `$astra-task` and current
+`$terra-task`, bringing the source inventory to seven workflows and four roles.
+These three skills
 are **unreleased**; preview.17 archives and installed homes still contain the
-four workflows above. See the [explicit named-task examples](#choose-sol-or-astra-explicitly-source-candidate).
+four workflows above. See the [Sol/Astra examples](#choose-sol-or-astra-explicitly-source-candidate)
+and [current Terra task](#choose-current-terra-explicitly-source-candidate).
 
 Task workflows do not create or manage a goal. Goal-loop workflows use available
 goal tools for an explicitly requested substantial outcome. A generic “go for a
@@ -113,6 +115,30 @@ for unrelated automatic escalation. No model-specific goal-loop skills or
 mandatory review stage are added. Generic goal wording or discussion of either
 new skill does not invoke it. Existing Luna-only workflows stay Luna-only.
 
+### Choose current Terra explicitly (source candidate)
+
+`$terra-task` uses the same bounded review, validation, investigation or
+implementation contract as the named tasks above. It selects exactly
+`terra-6-1-xhigh`: `gpt-6.1-terra` with `xhigh` reasoning. It preserves your
+primary and needs no automatic escalation preference or primary detection.
+
+```text
+$terra-task Investigate the media import failure and return the cause and
+validation evidence. Do not change source files.
+```
+
+The source adds a distinct role because legacy `terra-xhigh` still pins
+GPT-5.6 Terra. Both skill variants use the `$terra-task` name: select one
+deliberately, and never install both into discoverable skill roots. Identify an
+existing copy from retained installation provenance before a reviewed replacement
+through its configuration owner; preserve local changes and restrictions. Do not
+delete a chosen current task as part of blanket legacy cleanup.
+
+No Terra automatic offload/escalation route or new Terra goal loop is added.
+The current role is not exposed in the qualifying session, so live Terra execution
+remains unproved. Missing controls/roles or model errors are reported without
+substituting legacy Terra, another model, a new process or a daemon restart.
+
 ## Which agent does the work?
 
 | Agent | Package selection | Role |
@@ -121,6 +147,7 @@ new skill does not invoke it. Existing Luna-only workflows stay Luna-only.
 | `luna-max` | `gpt-6-luna`, reasoning effort `max` | Bounded investigation, implementation and validation with a practical acceptance check. |
 | `sol-xhigh` | `gpt-6.1-sol`, reasoning effort `xhigh` | Optional configured escalation from Terra, or explicitly assigned independent execution. |
 | `astra-xhigh` | `gpt-6-astra`, reasoning effort `xhigh` | Optional configured escalation from Sol or Terra, or explicitly assigned work. |
+| `terra-6-1-xhigh` (unreleased) | `gpt-6.1-terra`, reasoning effort `xhigh` | Explicit bounded task only; distinct from legacy GPT-5.6 Terra. |
 
 The Luna workflows use Luna as their only delegated model. If Luna is unavailable,
 the primary explains that limitation rather than silently substituting a paid
@@ -260,8 +287,8 @@ not opt in to automatic use or update an already loaded conversation. Your clien
 support the selected models, custom agents and skills; installation does not
 prove runtime model availability.
 
-Preview.17 does not contain `sol-task` or `astra-task`. Do not copy their files
-from moving main into a managed preview.17 installation. A future release must
+Preview.17 contains no current `sol-task`, `astra-task` or GPT-6.1 `terra-task`.
+Do not copy their files from moving main into a managed preview.17 installation. A future release must
 include both skill files per new workflow, update its manifest and managed pins,
 and verify native discovery separately from actual model execution.
 
