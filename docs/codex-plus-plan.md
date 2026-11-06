@@ -15,6 +15,28 @@ reviewed source `52ab312`; see the [deployment receipt](pages-deployment.md#agen
 This documentation deployment needs no runtime release or fleet apply. The
 preparation/refinement contracts below retain their original scope.
 
+## Selected publication: preview.18 named tasks
+
+Bryan requested review, commit, publication and deployment on 2026-11-05.
+Review the named-task contracts and source/package invariants; publish one
+immutable preview.18 release through the personal github.com account. Then
+update chezmoi URLs, revision, checksums and validators together, add the three
+task externals and current Terra role, and remove the conflicting Terra task
+retirement rule. Test actual scoped apply with current Terra retained before
+touching selected hosts. Keep legacy GPT-5.6 files unchanged and unselected.
+
+Capture fresh backups and preimages on Snap OSS/work, Starship and Carbon.
+Stage and verify all three payloads before applying selectors and the four
+roles/seven skills. Preserve config, credentials, disable preferences, unrelated
+source/target drift, old releases and active native owners. No daemon restart,
+global MCP refresh or input to real sessions is authorized. Native skill-cache
+reread may qualify discovery; no model-access claim follows from installation.
+
+After publication reconcile current guides/site and record source, public bytes,
+managed source, installed manifests/modes, scoped diffs and runtime limitations.
+Keep captures private. This request supersedes the source-only boundary of the
+completed candidate passes below.
+
 ## Follow-up: current Terra task
 
 Bryan requested `$terra-task` alongside the unreleased Sol/Astra tasks. Use the

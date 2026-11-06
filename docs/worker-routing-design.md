@@ -10,9 +10,9 @@ names and removes the worker-name compatibility entries introduced in preview.16
 The policy, Luna workflows and native role pins are unchanged.
 Historical trial names and installation receipts below retain their original
 identities; use the [current worker guide](https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md)
-for the four released workflows, three unreleased named tasks and migration procedure.
+for release availability, the seven workflows and migration procedure.
 
-## Explicit named tasks: source candidate
+## Explicit named tasks: preview.18
 
 `$sol-task` and `$astra-task` select the existing `sol-xhigh` and `astra-xhigh`
 roles for one bounded assignment. `$terra-task` extends the same contract using
@@ -41,9 +41,10 @@ No model-specific goal loops, review configuration switch, service or mandatory
 review step is needed. Terra's versioned role prevents legacy role confusion;
 it adds no automatic Terra routing option. Existing adaptive loops can receive an explicit
 named-review instruction without granting implementation escalation. Preserve
-all four existing skill bodies and native role files byte-for-byte. Preview.17
-remains the released/installed baseline; source, private archive validation and
-native execution must be reported separately before later managed publication.
+all four existing skill bodies and native role files byte-for-byte. Preview.18
+packages seven workflows and four current roles. Source, published archives,
+managed installation and native execution must be verified separately. Use the
+selected release's manifest rather than assuming an existing installation updated.
 The new current-Terra role is not exposed in this session; do not infer execution
 from its source pin or silently use legacy Terra, another worker or a process/
 restart workaround. Migration must select a variant through the configuration

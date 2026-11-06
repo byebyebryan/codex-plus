@@ -6,7 +6,18 @@ the older report checkout and the existing worktrees. Preview.17 is published an
 selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
 remain distinct.
 
-## Current follow-up: GPT-6.1 Terra task
+## Selected publication: preview.18
+
+Bryan requested review, commit, publication and managed deployment on 2026-11-05.
+The [publication plan](codex-plus-plan.md#selected-publication-preview18-named-tasks)
+supersedes the source-only boundary below. Review confirms existing workflow and
+legacy bytes are preserved, named tasks keep exact pins and primary acceptance,
+and the Terra cleanup rule needs a tested migration. Fresh preservation baselines
+and manifest preflights pass on Snap OSS/work, Starship and Carbon. Continue with
+immutable release publication, synchronized managed pins/validators, scoped apply
+and separate installed/discovery checks. Keep active owners and private state intact.
+
+## Completed source follow-up: GPT-6.1 Terra task
 
 Bryan requested `$terra-task` alongside the named Sol/Astra tasks. The unreleased
 preview.18 source now has seven worker workflows and four default roles.
