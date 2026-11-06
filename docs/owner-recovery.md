@@ -1,5 +1,83 @@
 # Native owner recovery
 
+## Daemon restart candidate: preview.19
+
+Preview.18 remains the published and installed release. This section describes
+the unreleased restart fix; the preview.11 contract and evidence below remain a
+historical record. A daemon restart does not invalidate the conversation or its
+saved user request. The process-incarnation guard still fences old writers.
+
+An upgraded coordinator detects a changed native owner, closes its old journal
+and releases its owner lock before requesting a handoff. The handoff requires
+the same host, user, PID namespace, requested/resolved endpoint and exact
+positively loaded independent conversation. It proves the old exact process
+ended, including an unreaped zombie, verifies readable state/history, excludes
+live or unclassified helpers, and requires an empty native input queue. It never
+starts a native daemon or loads a cold conversation. If the client has not yet
+reattached the conversation, recovery waits rather than choosing another thread.
+
+The existing versioned selector and immutable archives are retained. Handoff
+creates fresh registration identities and fresh references. Old references,
+event IDs, commands and delivery receipts remain historical; they are never
+retargeted or replayed to discover an outcome. Confirmed native withdrawal is a
+settled receipt without pretending that the input was acknowledged. Unknown or
+contradictory withdrawal still stays unresolved.
+
+Only eligible active observations continue. Original expiry, reminder due time,
+event/notice allowance, projection baseline and source permissions remain in
+effect. New registrations also record same-boot monotonic lease/due anchors, so
+wall-clock rollback cannot restore elapsed supervision time. Legacy rows without
+that evidence are quarantined rather than guessing their remaining lifetime.
+No cancelled, expired, exhausted, replacing or unresolved-renewal lineage
+is revived. Uncertain old events, including acknowledged callbacks without a
+final outcome, prevent automatic continuation of that registration. Observations
+record a gap and wait a full source interval before their first new poll.
+
+Passive peer watches default to continuation after validating the same independent
+peer in the successor daemon. Commands and scheduled MCP inspections default to
+manual recovery. The registering model may select `restart=resume` only for a
+source safe to repeat within the original request. A read-only sandbox does not
+prove that a command or remote endpoint is replay safe. Native command permissions
+and MCP availability are checked again before any new execution; changed access
+holds the source. The native primary, tool approvals and selected MCP remain native.
+
+Unresolved intent that cannot continue is preserved in the archive. An expired
+lost command still has an unknown outcome and may have surviving external
+effects. Quarantine restores unrelated fresh control without declaring that
+command stopped or complete. Ordinary recap/history output discloses retained
+uncertainty; stale list tools return bounded previous-owner records without
+opening the normal writable Store, polling, recovery or source execution.
+
+For explicit recovery, `owner_status` and `owner_recover` take the same `mode`:
+
+| Mode | Effect |
+| --- | --- |
+| `clean` (default) | Preserve the earlier strict clean-state contract. |
+| `quarantine` | Archive unsettled intent, retain unknown effects and start fresh control without replay. |
+| `resume` | Also prepare eligible continuations under original bounds. The explicit MCP/CLI interface requests their coordinator; inspect watch receipts for actual execution. |
+
+All modes require an unchanged same-mode preview and `confirm=true`; none bypass
+a live writer, unknown old owner, changed logical scope, corrupt history or
+nonempty queue. The core selection receipt records `sources_started=false` and
+`native_input_submitted=false` for the archive/selection transaction. A separate
+`continuation_coordinator` receipt reports a subsequent explicit resume request;
+registration/coordinator availability is not proof of source execution.
+Automatic coordinator handoff starts its own next generation after selection.
+
+From the candidate checkout, use `scripts/codex-plus-owner --thread THREAD_UUID
+status --mode quarantine` (or `resume`), then `recover --mode` with that same
+preview. The managed installed helper remains preview.18 until a separate
+release and chezmoi rollout. Existing loaded preview.18 helpers do not acquire
+automatic handoff from a source update. No global MCP reload or daemon restart
+is an adoption shortcut; the exposed native reload RPC has no server/thread
+selector. The actual preview.18 artifact can read the new selector and explicit
+quarantine receipt in fixtures. Its default list output lacks the new uncertainty
+warning, and it does not gain automatic handoff or the new options. Normal code
+adoption remains necessary; this compatibility fixture is not a live deployment.
+
+The source qualification receipt is recorded in the implementation handoff.
+Private incident journals and native fixture captures stay outside source.
+
 The 2026-10-29 investigation found a correct ownership refusal with no supported
 way to resume fresh Codex Plus operations after a daemon incarnation changes.
 The selected implementation scope is **explicit clean rollover**, diagnosis and

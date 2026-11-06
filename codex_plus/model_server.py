@@ -69,6 +69,8 @@ class Server:
                 if name in ('owner_status', 'owner_recover'):
                     with self.recovery_factory(Path(self.root), requested, context) as api:
                         text = api.call(name, arguments)
+                        if name == 'owner_recover' and arguments.get('mode') == 'resume':
+                            text = json.dumps(api.start_continuations(json.loads(text)), sort_keys=True)
                 else:
                     with self.api_factory(Path(self.root), requested, context, allowed=allowed,
                                           max_duration=self.max_duration, max_events=self.max_events) as api:
@@ -80,6 +82,14 @@ class Server:
                     result['structuredContent'] = {'owner_state': error.code, 'role': error.role,
                         'caller_thread': error.caller, 'recipient_thread': error.recipient,
                         'intent_registered': False}
+                    if error.role == 'caller' and name in ('watch_list', 'wake_list', 'message_status', 'watch_inspect'):
+                        try:
+                            with self.recovery_factory(Path(self.root), requested, context) as recovery:
+                                cached = recovery.cached_inspection(name, arguments)
+                            result.update(content=[{'type': 'text', 'text': cached}], isError=False)
+                            result['structuredContent'].update(cached_previous_owner=True, fresh_control_available=False)
+                        except (OSError, ValueError, KeyError, RuntimeError, TimeoutError, sqlite3.Error):
+                            pass  # Preserve the original actionable refusal.
         else:
             return {'jsonrpc': '2.0', 'id': request['id'], 'error': {'code': -32601, 'message': 'unknown method'}}
         return {'jsonrpc': '2.0', 'id': request['id'], 'result': result}

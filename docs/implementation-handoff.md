@@ -6,6 +6,19 @@ the older report checkout and the existing worktrees. Preview.18 is published an
 selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
 remain distinct.
 
+## Unreleased preview.19: daemon restart recovery
+
+Bryan selected `$adaptive-goal-loop` for the Starship restart fix on 2026-11-05.
+The [restart contract](owner-recovery.md#daemon-restart-candidate-preview19) and
+[selected plan](codex-plus-plan.md#selected-pass-daemon-restart-recovery-2026-11-05)
+preserve the native owner and archive/history model. Luna supplied the bounded
+zombie/withdrawal classifier fixes and focused regressions; the primary owns
+handoff, continuation, stale inspection, packaging and acceptance. No escalation
+target is enabled. Production Starship monitoring and its daemon remain untouched.
+
+This is a source candidate, separate from published/managed preview.18. Complete
+validation, isolated native evidence and limits are recorded here before closure.
+
 ## Preview.18 published and deployed
 
 Bryan requested review, commit, publication and managed deployment on 2026-11-05.

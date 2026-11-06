@@ -49,9 +49,11 @@ def validate_spec(kind: str, spec: dict) -> dict:
     supported = {'duration', 'event_limit', 'followup', 'notify_end', 'command', 'cwd',
                  'snapshot_fields', 'quiet_initial', 'after', 'prompt',
                  'peer', 'interval', 'signals', 'turn_limit', 'label',
-                 'sender', 'sender_label', 'message_kind', 'execution', 'mcp', 'command_interval'}
+                 'sender', 'sender_label', 'message_kind', 'execution', 'mcp', 'command_interval', 'restart'}
     if set(spec) - supported:
         raise ValueError('unsupported registration fields: ' + ', '.join(sorted(set(spec) - supported)))
+    if 'restart' in spec and (kind != 'watch' or spec['restart'] not in ('manual', 'resume')):
+        raise ValueError('restart must be manual or resume on a watch')
     if kind != 'watch' and any(spec.get(key) is not None for key in ('execution', 'mcp', 'command_interval')):
         raise ValueError('source execution permissions require a command watch')
     duration = spec.get('duration', 120)
@@ -164,9 +166,15 @@ def validate_spec(kind: str, spec: dict) -> dict:
 
 
 class Store:
-    def __init__(self, root: Path, clock=time.time):
+    def __init__(self, root: Path, clock=time.time, monotonic=time.monotonic):
         self.root = private_directory(root)
         self.clock = clock
+        self.monotonic = monotonic
+        try:
+            value = Path('/proc/sys/kernel/random/boot_id').read_text().strip()
+            self.boot_id = value if str(uuid.UUID(value)) == value and uuid.UUID(value).int else None
+        except (OSError, ValueError):
+            self.boot_id = None
         path = self.root / 'journal.sqlite3'
         if path.is_symlink():
             raise ValueError('journal must not be a symlink')
@@ -216,6 +224,12 @@ class Store:
     def _migrate_journal(self):
         """Keep legacy IDs/receipts; allow multiple failed attempts per parent."""
         with self.transaction():
+            job_columns = {row['name'] for row in self.db.execute('PRAGMA table_info(jobs)')}
+            for column, kind in (('lease_boot', 'TEXT'), ('lease_deadline', 'REAL'), ('wake_deadline', 'REAL')):
+                if column not in job_columns:
+                    # Legacy rows deliberately retain NULL: their monotonic
+                    # remaining lease cannot be reconstructed after a restart.
+                    self.db.execute(f'ALTER TABLE jobs ADD COLUMN {column} {kind}')
             columns = {row['name'] for row in self.db.execute('PRAGMA table_info(renewals)')}
             if 'deadline' not in columns:
                 self.db.execute('''CREATE TABLE renewals_next (
@@ -356,11 +370,15 @@ class Store:
             else:
                 root_id = job_id
             now = self.clock()
+            monotonic_now = self.monotonic()
             self.db.execute('''INSERT INTO jobs
-                (id,kind,intent,created,expires,due,spec,parent_id,root_id,source_state)
-                VALUES (?,?,?,?,?,?,?,?,?,?)''', (job_id, kind, 'active', now,
+                (id,kind,intent,created,expires,due,spec,parent_id,root_id,source_state,
+                 lease_boot,lease_deadline,wake_deadline)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)''', (job_id, kind, 'active', now,
                 now + spec['duration'], now + spec['after'] if kind == 'wake' else None,
-                json.dumps(spec), parent_id, root_id, 'pending' if kind == 'watch' else 'none'))
+                json.dumps(spec), parent_id, root_id, 'pending' if kind == 'watch' else 'none',
+                self.boot_id, monotonic_now + spec['duration'] if self.boot_id else None,
+                monotonic_now + spec['after'] if self.boot_id and kind == 'wake' else None))
         return job_id
 
     def source(self, job_id: str, state: str, detail: str = '', generation: str | None = None):

@@ -1,5 +1,41 @@
 # Codex Plus implementation plan
 
+## Selected pass: daemon restart recovery (2026-11-05)
+
+Keep the native daemon, loaded conversation, permissions and existing immutable
+owner history. Correct zombie-process proof and confirmed-withdrawal receipt
+classification first. Add a separate verified restart handoff: require the same
+logical realm and exact positively loaded independent thread, proof that the
+old native owner ended, no live journal writer, an empty native input queue,
+and complete readable state. Archive unresolved intent honestly rather than
+resetting it or declaring its effects complete. Explicit recovery may choose
+quarantine; the ordinary clean-recovery default remains strict.
+
+An upgraded coordinator releases its old writer boundary before handing off.
+Only eligible unexpired registrations continue, with fresh identities, original
+expiry/due times and remaining event allowance. New jobs retain same-boot
+monotonic anchors so wall-clock rollback cannot restore elapsed lease time;
+legacy rows without that proof are quarantined. Passive peer observations may
+continue by default after positively validating the same peer in the successor;
+commands and scheduled MCP inspections require an original `restart=resume`
+choice. Unknown admissions, pending renewal and exhausted/cancelled/expired
+lineages do not continue. Old event and peer references remain historical;
+no input or command is replayed to discover its outcome. Recheck native source
+permissions/tool availability before execution and disclose the observation gap.
+
+Expose bounded cached diagnosis when normal inspection encounters stale state.
+Serialize coordinator startup with selection using a short writer-transition
+lock outside movable state; a delayed historical launcher must exit before
+opening its old journal. Revalidate staged reference high-water counters as well
+as registration content before selection so a crash retry cannot reuse old refs.
+Use the existing selection/archive format and include quarantine/continuation
+receipts in ordinary history summaries. Qualify old-helper compatibility without
+a global MCP reload. Test crash boundaries, stale previews, identity changes,
+unknown delivery and genuine writer conflicts, then restart only a disposable
+test daemon. Production Starship monitoring, daemon and Chrome remain untouched.
+Finish with source/package checks and evidence; publication and managed rollout
+are subsequent actions, not incidental effects of this fix.
+
 Updated 2026-11-05. Codex CLI/TUI remains the daily interface and its existing
 native daemon retains ownership. Monitoring, wakeups, same-daemon coordination
 and reporting are implemented; the qualified monitoring/report artifacts are

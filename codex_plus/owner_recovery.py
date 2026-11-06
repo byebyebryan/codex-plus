@@ -41,6 +41,13 @@ OWNER_KEYS = ('host', 'uid', 'pid_namespace', 'requested_socket', 'resolved_sock
               'pid', 'start_ticks', 'executable', 'thread_id')
 REF_PREFIX = {'peer': 'p', 'watch': 'w', 'message': 'm', 'wake': 't'}
 REF_KIND = {value: key for key, value in REF_PREFIX.items()}
+QUARANTINABLE = frozenset({
+    'active_or_replacing_registration', 'unresolved_source_owner', 'pending_renewal',
+    'unresolved_admission', 'unresolved_withdrawal', 'unacknowledged_queued_input',
+    'outgoing_active_or_replacing_registration', 'outgoing_unresolved_admission',
+    'outgoing_unacknowledged_queued_input', 'outgoing_unresolved_withdrawal',
+    'outgoing_recipient_busy', 'outgoing_recipient_state_unknown', 'outgoing_receipt_unknown',
+})
 
 
 class OwnerRecoveryError(ValueError):
@@ -231,6 +238,31 @@ def _fsync_dir(path):
 
 def _lock_path(state_root, thread):
     return Path(state_root) / '.owner-locks' / (thread_id(thread) + '.lock')
+
+
+@contextmanager
+def writer_transition(state_root, thread, timeout=LOCK_TIMEOUT):
+    """Serialize coordinator startup with selection; never hold across its loop."""
+    path = Path(state_root) / '.owner-locks' / (thread_id(thread) + '.writer.lock')
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    _safe_private_dir(path.parent)
+    fd = os.open(path, os.O_CREAT | os.O_RDWR | getattr(os, 'O_NOFOLLOW', 0), 0o600)
+    try:
+        info = os.fstat(fd)
+        if info.st_uid != os.getuid() or not stat.S_ISREG(info.st_mode) or info.st_mode & 0o077:
+            raise ValueError('writer transition lock must be owned and private')
+        deadline = time.monotonic() + timeout
+        while True:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                if time.monotonic() >= deadline:
+                    raise TimeoutError('coordinator startup or owner selection is busy')
+                time.sleep(min(0.025, max(0.001, deadline - time.monotonic())))
+        yield
+    finally:
+        os.close(fd)
 
 
 @contextmanager
@@ -860,9 +892,19 @@ def history_summary(state_root, thread):
         return 'Archived owner history is incomplete or unavailable; outcomes remain unknown (' + str(error)[:200] + ').'
     unknown = summary['acknowledged_unknown_outcomes']
     completeness = 'complete' if summary['complete'] else 'incomplete; missing receipts remain unknown'
-    return (f"Archived history: {summary['archives']} owner incarnation(s), {summary['jobs']} registrations, "
+    text = (f"Archived history: {summary['archives']} owner incarnation(s), {summary['jobs']} registrations, "
             f"{summary['events']} events; scan {completeness}. "
             f"Acknowledged events with missing native completion: {unknown}; these outcomes remain unknown.")
+    if summary.get('archived_unsettled'):
+        text += (' Archived active/uncertain intent remains quarantined or has a separately recorded continuation; '
+                 'it is not proof of a running source or completion. Use owner_status history before repeating work.')
+    if marker and marker['last_recovery']:
+        receipt = marker['last_recovery']['receipt']
+        if receipt.get('mode') in ('quarantine', 'resume'):
+            text += (' Last owner handoff: ' + receipt['mode'] + '; eligible continuations: ' +
+                     str(receipt.get('continued_registrations', 0)) +
+                     '. Observation gap; old inputs were not replayed and surviving external effects remain unknown.')
+    return text
 
 
 def message_receipt_record(state_root, sender_thread, row, *, endpoint_cache=None, _sender_verified=False):
@@ -969,7 +1011,7 @@ def historical_message_receipt(state_root, sender_thread, row):
 
 def _history_summary(thread_root, state, marker, archives):
     summary = {'archives': len(archives), 'jobs': 0, 'events': 0, 'renewals': 0,
-               'acknowledged_unknown_outcomes': 0, 'complete': True}
+               'acknowledged_unknown_outcomes': 0, 'complete': True, 'archived_unsettled': 0}
     try:
         if (Path(state) / 'journal.sqlite3').is_file():
             with _state_snapshot(state) as connection:
@@ -984,6 +1026,8 @@ def _history_summary(thread_root, state, marker, archives):
                 counts = _journal_counts(connection)
                 for key, value in counts.items():
                     summary[key] += value
+                if _has_unsettled_work(connection)[0]:
+                    summary['archived_unsettled'] += 1
         except (OSError, ValueError, sqlite3.Error):
             summary['complete'] = False
     return summary
@@ -1040,23 +1084,57 @@ def _queue_snapshot(client, thread):
     raise ValueError('native queue scan exceeded its page bound')
 
 
+def _process_observation(proc, pid):
+    """Read the process uid, state and start ticks from one procfs observation."""
+    info = proc.stat()
+    raw = (proc / 'stat').read_text()
+    head, separator, _rest = raw.partition(' ')
+    parts = raw.rsplit(')', 1)
+    if len(parts) != 2:
+        return None
+    tail = parts[1].split()
+    if (not separator or head != str(pid) or len(tail) <= 19 or
+            len(tail[0]) != 1 or not tail[19].isdecimal()):
+        return None
+    return info.st_uid, tail[0], tail[19]
+
+
 def _process_proof(binding):
     """True if the saved exact process is gone, false if alive, None if uncertain."""
     pid = binding['pid']
     proc = Path('/proc') / str(pid)
     try:
-        info = proc.stat()
+        observation = _process_observation(proc, pid)
     except FileNotFoundError:
         return True
     except OSError:
         return None
-    if info.st_uid != binding['uid']:
+    if observation is None:
+        return None
+    uid, state, start_ticks = observation
+    if uid != binding['uid']:
+        return None
+    if start_ticks != binding['start_ticks']:
+        return True
+    if state == 'Z':
+        # A zombie has exited, but procfs no longer exposes its executable. Read
+        # the same pid/start identity and zombie state again before treating it
+        # as proof that the saved process ended; a changed or inaccessible
+        # second observation remains uncertain.
+        try:
+            repeated = _process_observation(proc, pid)
+        except FileNotFoundError:
+            return True
+        except OSError:
+            return None
+        if repeated == (uid, 'Z', start_ticks):
+            return True
         return None
     try:
-        tail = (proc / 'stat').read_text().rsplit(')', 1)[1].split()
-        current = {'pid': pid, 'start_ticks': tail[19], 'executable': os.readlink(proc / 'exe')}
-    except (OSError, IndexError):
+        executable = os.readlink(proc / 'exe')
+    except OSError:
         return None
+    current = {'pid': pid, 'start_ticks': start_ticks, 'executable': executable}
     return current != {key: binding[key] for key in ('pid', 'start_ticks', 'executable')}
 
 
@@ -1173,6 +1251,17 @@ def _open_state_processes(state_dir):
             'unreadable_processes': unreadable, 'reasons': sorted(set(reasons))}
 
 
+def _confirmed_withdrawal(event):
+    """Whether native queue input has an exact durable withdrawal receipt."""
+    return (event.get('delivery') == 'native_queued' and
+            event.get('start_state') == 'withdrawn' and
+            event.get('withdraw_state') == 'withdrawn' and
+            type(event.get('acknowledged')) is int and event.get('acknowledged') == 0 and
+            isinstance(event.get('native_id'), str) and bool(event.get('native_id')) and
+            event.get('turn_id') is None and event.get('turn_outcome') is None and
+            event.get('turn_error') is None)
+
+
 def _has_unsettled_work(connection):
     tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
     if tables - {'jobs', 'events', 'renewals', 'model_refs', 'model_responses', 'model_ref_counters', 'turn_receipts', 'sqlite_sequence'}:
@@ -1210,7 +1299,11 @@ def _has_unsettled_work(connection):
             break
     if any(event.get('withdraw_state') == 'unknown' for event in events):
         problems.append('unresolved_withdrawal')
-    if any(event['delivery'] == 'native_queued' and not event['acknowledged'] for event in events):
+    if any((event.get('withdraw_state') == 'withdrawn' or event.get('start_state') == 'withdrawn') and
+           not _confirmed_withdrawal(event) for event in events):
+        problems.append('unresolved_withdrawal')
+    if any(event['delivery'] == 'native_queued' and not event['acknowledged'] and
+           not _confirmed_withdrawal(event) for event in events):
         problems.append('unacknowledged_queued_input')
     # An acknowledged event may correctly retain turn_outcome=NULL. That outcome
     # is displayed as unknown but does not alone make clean rollover unsafe.
@@ -1479,12 +1572,18 @@ class Recovery:
                         problems.append('outgoing_event_state_unknown')
                     if event['delivery'] in ('pending', 'dispatching', 'uncertain'):
                         problems.append('outgoing_unresolved_admission')
-                    if event['delivery'] == 'native_queued' and event['acknowledged'] != 1:
+                    if event['delivery'] == 'native_queued' and event['acknowledged'] != 1 and not _confirmed_withdrawal(event):
                         problems.append('outgoing_unacknowledged_queued_input')
                     if event['withdraw_state'] not in ('none', 'unknown', 'consumed', 'not_pending', 'withdrawn'):
                         problems.append('outgoing_withdrawal_state_unknown')
                     if event['withdraw_state'] == 'unknown':
                         problems.append('outgoing_unresolved_withdrawal')
+                    if ((event.get('withdraw_state') == 'withdrawn' or event.get('start_state') == 'withdrawn') and
+                            not _confirmed_withdrawal(event)):
+                        problems.append('outgoing_unresolved_withdrawal')
+                    if event.get('start_state') not in ('pending', 'starting', 'started', 'unknown',
+                                                         'not_in_queue', 'withdrawn'):
+                        problems.append('outgoing_event_state_unknown')
                     if type(event['acknowledged']) is not int or event['acknowledged'] not in (0, 1):
                         problems.append('outgoing_acknowledgement_state_unknown')
                     if event['turn_outcome'] not in (None, 'completed', 'failed', 'interrupted'):
@@ -1505,7 +1604,7 @@ class Recovery:
             evidence.append({'state': 'unknown', 'reason': 'recipient_thread_lock_busy'})
         return sorted(set(problems)), evidence, sorted(targets)
 
-    def _capture(self, thread, current_binding, role):
+    def _capture(self, thread, current_binding, role, mode='clean'):
         thread_root = self.root / thread
         if not thread_root.exists() and not thread_root.is_symlink():
             return {'thread_root': thread_root, 'state': None, 'epoch': None, 'old_binding': None,
@@ -1663,13 +1762,28 @@ class Recovery:
         outgoing_proof = _sha(_canonical(outgoing_evidence))
         if boot_id is None:
             problems.append('current_boot_identity_unavailable')
+        restart_plan = None
+        quarantine_safe = not (set(problems) - QUARANTINABLE)
+        if mode == 'resume' and quarantine_safe:
+            from . import restart
+            try:
+                with _state_snapshot(state) as connection:
+                    restart_plan = restart.plan(connection, old_binding, current_binding,
+                        self.client, now=time.time(), preview=_sha(_canonical({
+                            'old': old_binding, 'current': current_binding,
+                            'source': source_tree['sha256']})))
+            except (OSError, ValueError, KeyError, TypeError, RuntimeError, TimeoutError, sqlite3.Error) as error:
+                problems.append('restart_plan_unavailable')
+                state_error = str(error)
+                quarantine_safe = False
         preview_body = {'thread': thread, 'role': role, 'old_binding': old_binding,
                         'current_binding': current_binding, 'state_epoch': epoch,
                         'tree': source_tree['sha256'] if source_tree else None,
                         'queue': queue, 'outgoing_proof': outgoing_proof,
-                        'problems': sorted(set(problems)), 'boot_id': boot_id}
+                        'problems': sorted(set(problems)), 'boot_id': boot_id, 'mode': mode,
+                        'restart_plan': _sha(_canonical(restart_plan)) if restart_plan is not None else None}
         token = 'owner-preview:' + _sha(_canonical(preview_body))
-        safe = not problems
+        safe = not problems if mode == 'clean' else quarantine_safe
         return {'thread_root': thread_root, 'state': state, 'epoch': epoch, 'old_binding': old_binding,
                 'marker': marker, 'problems': sorted(set(problems)), 'summary': summary, 'queue': queue,
                 'source_tree': source_tree, 'token': token, 'safe': safe, 'role': role,
@@ -1680,9 +1794,13 @@ class Recovery:
                 'outgoing_rows': outgoing_rows, 'outgoing_threads': outgoing_threads,
                 'outgoing_evidence': outgoing_evidence, 'outgoing_proof': outgoing_proof,
                 'late_archived_callback': late_callback, 'late_callback_error': late_callback_error,
-                'preview_body': preview_body}
+                'preview_body': preview_body, 'mode': mode, 'restart_plan': restart_plan,
+                'quarantine_safe': quarantine_safe}
 
-    def status(self, *, peer=None, incarnation=None, reference=None, category='summary', limit=20, offset=0):
+    def status(self, *, peer=None, incarnation=None, reference=None, category='summary', limit=20, offset=0,
+               mode='clean'):
+        if mode not in ('clean', 'quarantine', 'resume'):
+            raise ValueError('owner mode must be clean, quarantine or resume')
         if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= MAX_HISTORY_PAGE:
             raise ValueError('owner history page size must be from 1 through 50')
         if isinstance(offset, bool) or not isinstance(offset, int) or not 0 <= offset <= 100000:
@@ -1691,7 +1809,7 @@ class Recovery:
         with thread_locks(self.root, [self.binding['thread_id']], timeout=LOCK_TIMEOUT, create=False):
             thread, current, role = self._state_target(peer)
         with thread_locks(self.root, [self.binding['thread_id'], thread], timeout=LOCK_TIMEOUT, create=False):
-            captured = self._capture(thread, current, role)
+            captured = self._capture(thread, current, role, mode)
         if incarnation is not None or reference is not None or category != 'summary':
             return self._history_text(captured, incarnation, reference, category, limit, offset)
         return self._status_text(captured)
@@ -1704,6 +1822,193 @@ class Recovery:
         if name == 'owner_recover':
             return self.recover(**args)
         raise ValueError('unknown owner recovery operation')
+
+    def cached_inspection(self, name, args):
+        """Bounded stale-owner read, without Store initialization or intent writes."""
+        if name not in ('watch_list', 'wake_list', 'message_status', 'watch_inspect'):
+            raise ValueError('unsupported stale-owner inspection')
+        self._check_active_turn()
+        limit = args.get('limit', 20)
+        if type(limit) is not int or not 1 <= limit <= MAX_HISTORY_PAGE:
+            raise ValueError('cached inspection limit must be from 1 through 50')
+        if args.get('cursor'):
+            raise ValueError('stale owner cursors are unavailable; use owner_status history')
+        message = args.get('message') if name == 'message_status' else None
+        if message is not None and (args.get('cursor') is not None or limit != 20):
+            raise ValueError('choose a message reference or outgoing-message pagination')
+        scope = args.get('scope', 'current')
+        if name in ('watch_list', 'wake_list') and scope not in ('current', 'history'):
+            raise ValueError('stale owner scope must be current or history')
+        with thread_locks(self.root, [self.binding['thread_id']], create=False):
+            captured = self._capture(self.binding['thread_id'], self.binding, 'caller')
+            if captured.get('state') is None:
+                return self._status_text(captured)
+
+            def refs(connection, kind, *, column, value):
+                if not _has_table(connection, 'model_refs'):
+                    return []
+                return [dict(row) for row in connection.execute(
+                    f'SELECT * FROM model_refs WHERE kind=? AND {column}=?', (kind, value))]
+
+            def selected_reference(kind, selector):
+                if not isinstance(selector, str) or not selector:
+                    raise ValueError('an exact cached reference or unambiguous label is required')
+                prefix = REF_PREFIX[kind]
+                is_reference = re.fullmatch(re.escape(prefix) + r'\d{1,9}', selector) is not None
+                def find(column):
+                    found = []
+                    with _state_snapshot(captured['state']) as connection:
+                        found.extend({'row': row, 'entry': None} for row in refs(
+                            connection, kind, column=column, value=selector))
+                    for entry in reversed(captured.get('history', [])):
+                        epoch, archive, manifest = entry
+                        with _snapshot_reader(archive / manifest['snapshot']['file']) as connection:
+                            found.extend({'row': {**row, '_archive_epoch': epoch,
+                                '_archive_manifest': manifest, '_caller_binding': manifest['binding']},
+                                'entry': entry} for row in refs(
+                                    connection, kind, column=column, value=selector))
+                    return found
+
+                exact_matches = find('ref') if is_reference else []
+                if is_reference and exact_matches:
+                    matches = exact_matches
+                elif captured.get('history_error'):
+                    raise ValueError('archived history is incomplete; exact reference availability and uniqueness remain unknown')
+                else:
+                    matches = find('label')
+                if not matches:
+                    raise ValueError('exact cached reference is unavailable; no substitute record was returned')
+                if len(matches) != 1:
+                    raise ValueError('cached reference or label is ambiguous across owner history; no record was returned')
+                return matches[0]
+
+            def watch_detail(connection, row, *, historical=False, entry=None):
+                job = connection.execute('SELECT * FROM jobs WHERE id=?', (row['identity'],)).fetchone()
+                if job is None or job['kind'] != 'watch':
+                    raise ValueError('selected reference does not identify an available watch registration')
+                job = dict(job)
+                try:
+                    spec = json.loads(job['spec'])
+                except (TypeError, ValueError) as error:
+                    raise ValueError('selected watch source details are malformed; history remains unknown') from error
+                event_total = connection.execute('SELECT COUNT(*) FROM events WHERE job_id=?', (job['id'],)).fetchone()[0]
+                event_rows = [dict(event) for event in connection.execute('''SELECT id,sequence,kind,delivery,
+                    withdraw_state,acknowledged,start_state,turn_id,turn_outcome,turn_error,detail,withdraw_detail
+                    FROM events WHERE job_id=? ORDER BY CASE WHEN delivery IN ('pending','dispatching','uncertain')
+                    OR withdraw_state='unknown' OR (delivery='native_queued' AND acknowledged=0
+                    AND withdraw_state!='withdrawn') THEN 0 ELSE 1 END,sequence DESC LIMIT 3''', (job['id'],))]
+                renewals = []
+                if _has_table(connection, 'renewals'):
+                    renewals = [dict(attempt) for attempt in connection.execute(
+                        'SELECT parent_id,new_id,state,detail,created,deadline FROM renewals WHERE parent_id=? ORDER BY rowid DESC LIMIT 3',
+                        (job['id'],))]
+                source = {'type': 'passive_peer' if spec.get('peer') else
+                          'scheduled_mcp' if spec.get('mcp') else 'command'}
+                if spec.get('peer'):
+                    source['peer_thread'] = spec['peer'].get('thread_id')
+                if spec.get('mcp'):
+                    source.update(server=spec['mcp'].get('server'), tool=spec['mcp'].get('tool'),
+                                  arguments=spec['mcp'].get('arguments'))
+                if spec.get('execution'):
+                    source['native_access'] = spec['execution'].get('request')
+                summary = {key: job[key] for key in ('id', 'intent', 'created', 'expires',
+                    'source_state', 'source_detail', 'control_reason', 'event_count', 'notice_count')}
+                if historical:
+                    summary['incarnation'] = entry[0]
+                    summary['historical'] = True
+                payload = {'reference': row['ref'], 'label': row.get('label', ''),
+                           'job': summary, 'source': source, 'events': event_rows,
+                           'event_receipts_total': event_total, 'renewals': renewals}
+                header = ('Historical immutable watch reference.' if historical else
+                          'Cached watch reference from the selected journal; source receipts may be stale.')
+                if event_total > len(event_rows):
+                    header += f' Showing {len(event_rows)} of {event_total} event receipts, unresolved first.'
+                return header + '\n' + clean_text(json.dumps(payload, sort_keys=True, ensure_ascii=False), 8000)
+
+            if name == 'watch_inspect':
+                selector = args.get('watch')
+                if selector is None:
+                    return '\n'.join((self._status_text(captured),
+                        'No exact watch reference was selected. Stale inspection cannot infer the current incoming watch; no watch record was returned.'))
+                try:
+                    selected = selected_reference('watch', selector)
+                    if selected['entry'] is not None:
+                        return '\n'.join((self._status_text(captured),
+                            self._history_reference(selected['entry'], selected['row'])))
+                    with _state_snapshot(captured['state']) as connection:
+                        detail = watch_detail(connection, selected['row'])
+                    return '\n'.join((self._status_text(captured), detail,
+                        'Cached previous-owner data only; no source poll, intent write or live source-state claim occurred.'))
+                except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
+                    return '\n'.join((self._status_text(captured),
+                        'Exact cached watch inspection unavailable: ' + clean_text(str(error), 400),
+                        'No unselected watch record was returned.'))
+
+            if name == 'message_status' and message is not None:
+                try:
+                    selected = selected_reference('message', message)
+                    receipt = historical_message_receipt(self.root, self.binding['thread_id'], selected['row'])
+                    origin = 'verified immutable archive' if selected['entry'] is not None else 'selected journal'
+                    return '\n'.join((self._status_text(captured),
+                        f'Exact cached outgoing message {selected["row"]["ref"]} from the {origin}; recipient activity is not refreshed.',
+                        receipt))
+                except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
+                    return '\n'.join((self._status_text(captured),
+                        'Exact outgoing message receipt unavailable: ' + clean_text(str(error), 400),
+                        'Delivery and handling remain unknown; do not resend. No other message was returned.'))
+
+            if name == 'message_status':
+                message_rows = []
+                total = 0
+                with _state_snapshot(captured['state']) as connection:
+                    total = connection.execute("SELECT COUNT(*) FROM model_refs WHERE kind='message'").fetchone()[0] if _has_table(connection, 'model_refs') else 0
+                    if _has_table(connection, 'model_refs'):
+                        message_rows.extend(dict(row) for row in connection.execute(
+                            "SELECT * FROM model_refs WHERE kind='message' ORDER BY rowid DESC LIMIT ?", (limit + 1,)))
+                for epoch, archive, manifest in reversed(captured.get('history', [])):
+                    with _snapshot_reader(archive / manifest['snapshot']['file']) as connection:
+                        if not _has_table(connection, 'model_refs'):
+                            continue
+                        total += connection.execute("SELECT COUNT(*) FROM model_refs WHERE kind='message'").fetchone()[0]
+                        if len(message_rows) <= limit:
+                            message_rows.extend({**dict(row), '_archive_epoch': epoch,
+                                '_archive_manifest': manifest, '_caller_binding': manifest['binding']}
+                                for row in connection.execute(
+                                    "SELECT * FROM model_refs WHERE kind='message' ORDER BY rowid DESC LIMIT ?",
+                                    (limit + 1 - len(message_rows),)))
+                lines = [self._status_text(captured),
+                    'Cached outgoing references from the selected journal and verified archives; no fresh recipient activity or external effect is established.']
+                shown = message_rows[:limit]
+                for row in shown:
+                    lines.append('To ' + clean_text(row.get('label') or 'recorded peer', 160) + ':')
+                    try:
+                        lines.append(historical_message_receipt(self.root, self.binding['thread_id'], row))
+                    except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
+                        lines.append(row['ref'] + ': receipt unavailable; delivery/handling unknown; do not resend (' +
+                                     clean_text(str(error), 240) + ').')
+                lines.append(f'Showing {len(shown)} of {total} cached outgoing references; this is not a fresh recipient check.')
+                if len(message_rows) > limit:
+                    lines.append('Older records are omitted; use owner_status with an exact archive incarnation for bounded history.')
+                if captured.get('history_error'):
+                    lines.append('Archived outgoing coverage is incomplete; missing receipts remain unknown: ' +
+                                 clean_text(captured['history_error'], 300))
+                return '\n'.join(lines)
+
+            kind = 'wake' if name == 'wake_list' else 'watch'
+            table_title = 'one-shot reminder' if kind == 'wake' else 'watch'
+            with _state_snapshot(captured['state']) as connection:
+                total = connection.execute('SELECT COUNT(*) FROM jobs WHERE kind=?', (kind,)).fetchone()[0]
+                rows = [dict(row) for row in connection.execute('''SELECT id,kind,intent,created,expires,due,
+                    source_state,source_detail,control_reason,event_count,notice_count FROM jobs WHERE kind=?
+                    ORDER BY created DESC,id LIMIT ?''', (kind, limit))]
+            lines = [self._status_text(captured),
+                f'Cached {table_title} records from the selected journal only; requested scope={scope}.',
+                'This stale view is unfiltered and omits archived journals; it does not claim current source state or complete history.',
+                f'Showing {len(rows)} of {total} selected-journal records.']
+            lines.extend(clean_text(json.dumps(row, sort_keys=True, ensure_ascii=False), 1400) for row in rows)
+            if captured.get('history_error'):
+                lines.append('Archived coverage is incomplete: ' + clean_text(captured['history_error'], 300))
+            return '\n'.join(lines)
 
     def _status_text(self, data):
         role, thread, current = data['role'], data['current_binding']['thread_id'], data['current_binding']
@@ -1768,9 +2073,21 @@ class Recovery:
                 lines.append('previous_recovery_receipt=' + json.dumps(data['marker']['last_recovery']['receipt'], sort_keys=True))
             lines.append('The selected state is bound to the current exact native owner.')
             return '\n'.join(lines)
-        lines.append('state=' + ('clean_rollover_available' if data['safe'] else 'rollover_refused'))
+        mode = data.get('mode', 'clean')
+        lines.append('recovery_mode=' + mode)
+        available = {'clean': 'clean_rollover_available', 'quarantine': 'quarantine_rollover_available',
+                     'resume': 'restart_handoff_available'}
+        lines.append('state=' + (available[mode] if data['safe'] else 'rollover_refused'))
         if data['problems']:
-            lines.append('blockers=' + ', '.join(data['problems']))
+            field = 'retained_uncertainty=' if data['safe'] and mode != 'clean' else 'blockers='
+            lines.append(field + ', '.join(data['problems']))
+        if data.get('quarantine_safe') and data['problems']:
+            lines.append('Unsettled work can be archived with mode=quarantine or resume; request a preview in that mode. Outcomes stay unknown and old input is never replayed.')
+        if data.get('restart_plan'):
+            plan = data['restart_plan']
+            lines.append('eligible_continuations=' + str(len(plan['continuations'])) +
+                         '; remaining active registrations quarantined=' +
+                         str(sum(row['state'] == 'quarantined' for row in plan['registrations'])))
         if data.get('summary', {}).get('acknowledged_unknown_outcomes'):
             lines.append('Acknowledged queued receipts with missing native completion remain unknown and are preserved; that alone does not block rollover.')
         if data['token']:
@@ -1778,18 +2095,20 @@ class Recovery:
         if role == 'recipient':
             lines.append('This caller may inspect recipient state but cannot rotate it; run owner_status in the recipient conversation.')
         elif data['safe']:
-            lines.append('Next: call owner_recover with this exact expected_preview and confirm=true. Recovery sends no native input and starts no source.')
+            lines.append('Next: call owner_recover with this exact expected_preview, mode=' + mode + ' and confirm=true. Recovery sends no native input and starts no source.')
         else:
-            lines.append('Settle or clarify the listed blockers, then request a fresh owner_status preview. No reset or intent migration is available.')
+            lines.append('Settle or clarify the listed blockers, then request a fresh owner_status preview. A live/unclassified writer or changed logical scope cannot be bypassed.')
         return '\n'.join(lines)
 
-    def recover(self, *, expected_preview, confirm=False):
+    def recover(self, *, expected_preview, confirm=False, mode='clean'):
+        if mode not in ('clean', 'quarantine', 'resume'):
+            raise ValueError('owner mode must be clean, quarantine or resume')
         if not isinstance(expected_preview, str) or not re.fullmatch(r'owner-preview:[0-9a-f]{64}', expected_preview):
             raise ValueError('expected_preview must be an owner_status preview token')
         if confirm is not True:
             raise ValueError('explicit confirm=true is required for owner rollover')
         thread = self.binding['thread_id']
-        with thread_locks(self.root, [thread], timeout=LOCK_TIMEOUT, create=True):
+        with thread_locks(self.root, [thread], timeout=LOCK_TIMEOUT, create=True), writer_transition(self.root, thread):
             thread_root = self.root / thread
             _safe_private_dir(thread_root)
             current = _valid_binding(self.client.bind(thread))
@@ -1801,15 +2120,17 @@ class Recovery:
             if self._late_archived_callback(state, marker):
                 raise ValueError('active caller turn belongs to an archived event; it cannot authorize owner recovery')
             if marker and marker['last_recovery'] and marker['last_recovery']['preview_token'] == expected_preview:
+                if marker['last_recovery']['receipt'].get('mode', 'clean') != mode:
+                    raise ValueError('completed recovery has a different mode; no intent was replayed')
                 if marker['binding'] != current:
                     raise ValueError('completed recovery token is stale for the current owner incarnation')
                 selected_state(thread_root, expected_binding=current)
                 return json.dumps(marker['last_recovery']['receipt'], sort_keys=True)
-            captured = self._capture(thread, current, 'caller')
+            captured = self._capture(thread, current, 'caller', mode)
             if captured['token'] != expected_preview:
                 raise ValueError('owner_status preview is stale or conflicts with current state; request a fresh preview')
             if not captured['safe']:
-                raise ValueError('clean rollover is refused: ' + ', '.join(captured['problems']))
+                raise ValueError(mode + ' rollover is refused: ' + ', '.join(captured['problems']))
             self._check_active_turn()
             if self.client.bind(thread) != current:
                 raise ValueError('native owner changed during recovery preparation')
@@ -1817,7 +2138,7 @@ class Recovery:
                 if captured['outgoing_rows']:
                     outgoing_problems, outgoing_evidence, _threads = self._outgoing_work(
                         thread, captured['old_binding'], captured['outgoing_rows'], locks_held=True)
-                    if outgoing_problems:
+                    if outgoing_problems and (mode == 'clean' or set(outgoing_problems) - QUARANTINABLE):
                         raise ValueError('outgoing recipient state changed or became unsettled: ' + ', '.join(outgoing_problems))
                     if _sha(_canonical(outgoing_evidence)) != captured['outgoing_proof']:
                         raise ValueError('recipient receipts changed after owner_status; request a fresh preview')
@@ -1833,13 +2154,46 @@ class Recovery:
                     _verify_tree_unchanged(captured['state'], captured['source_tree'],
                         ignore_managed=(captured['marker'] is None),
                         ignore_paths=(atomic_temp,) if atomic_temp is not None else ())
+                    if captured.get('restart_plan') is not None:
+                        from .restart import plan
+                        with _state_snapshot(captured['state']) as connection:
+                            checked = plan(connection, captured['old_binding'], current, self.client,
+                                now=time.time(), preview=_sha(_canonical({
+                                    'old': captured['old_binding'], 'current': current,
+                                    'source': captured['source_tree']['sha256']})))
+                        if checked != captured['restart_plan']:
+                            raise ValueError('restart eligibility changed after preview; request a fresh preview')
                     if captured['outgoing_rows']:
                         final_problems, final_evidence, _threads = self._outgoing_work(
                             thread, captured['old_binding'], captured['outgoing_rows'], locks_held=True)
-                        if final_problems or _sha(_canonical(final_evidence)) != captured['outgoing_proof']:
+                        if ((final_problems and (mode == 'clean' or set(final_problems) - QUARANTINABLE))
+                                or _sha(_canonical(final_evidence)) != captured['outgoing_proof']):
                             raise ValueError('outgoing recipient receipts changed or became uncertain before selection')
                 receipt = self._prepare_rollover(captured, expected_preview, commit_check)
                 return json.dumps(receipt, sort_keys=True)
+
+    def handoff(self):
+        """Coordinator-only automatic path after it has relinquished its writer."""
+        captured = self._capture(self.binding['thread_id'], self.binding, 'caller', 'resume')
+        if captured['problems'] == ['already_current']:
+            return captured['marker']['last_recovery']['receipt'] if captured['marker'] else {}
+        if not captured['safe']:
+            raise ValueError('daemon handoff refused: ' + ', '.join(captured['problems']))
+        return json.loads(self.recover(expected_preview=captured['token'], confirm=True, mode='resume'))
+
+    def start_continuations(self, receipt):
+        """Explicit resume interface: request a coordinator after selection commits."""
+        if receipt.get('mode') != 'resume' or not receipt.get('continued_registrations'):
+            return receipt
+        from .cli import accepted_coordinator
+        with thread_locks(self.root, [self.binding['thread_id']]):
+            state = selected_state(self.root / self.binding['thread_id'], expected_binding=self.binding)[0]
+            self._check_active_turn()
+            if self.client.bind(self.binding['thread_id']) != self.binding:
+                raise ValueError('native owner changed before continuation coordinator request')
+            result = accepted_coordinator(state, {'state': 'coordinator_requested'})
+        return {**receipt, 'continuation_coordinator': result,
+                'source_receipt': 'inspect watch_list; coordinator request is not a running source receipt'}
 
     def _prepare_rollover(self, captured, preview, commit_check):
         thread_root, source_state = captured['thread_root'], captured['state']
@@ -1939,6 +2293,9 @@ class Recovery:
                     'binding': current, 'boot_id': captured['boot_id'], 'created': int(time.time()),
                     'previous_epoch': old_epoch, 'archive_epoch': archive_epoch})
                 _install_ref_tables(state_stage, highwater)
+                if captured.get('restart_plan'):
+                    from .restart import seed
+                    seed(state_stage, captured['restart_plan'])
                 _verify_state_epoch(state_stage, epoch, current, expected_boot_id=captured['boot_id'])
                 os.replace(state_stage, new_state)
                 _fsync_dir(incarnations_dir)
@@ -1950,6 +2307,14 @@ class Recovery:
             'legacy_boot_identity': 'missing' if old_epoch == 'legacy' else 'recorded',
             'history_retained_read_only': True, 'intent_migrated': False,
             'native_input_submitted': False, 'sources_started': False}
+        if captured.get('mode', 'clean') != 'clean':
+            plan = captured.get('restart_plan') or {'registrations': [], 'continuations': []}
+            receipt.update(mode=captured['mode'], quarantined_blockers=captured['problems'],
+                continued_registrations=len(plan['continuations']),
+                continuations=plan['registrations'], observation_gap=True,
+                intent_migrated=bool(plan['continuations']),
+                uncertain_effects='unknown; archived work may have surviving external effects')
+        captured['ref_highwater'] = highwater
         return self._commit_selection(captured, preview, epoch, archive_epoch, archive_digest,
                                       archive_path, new_state, commit_check, receipt=receipt)
 
@@ -2007,6 +2372,8 @@ class Recovery:
         def verify_prepared_state(atomic_temp=None):
             commit_check(atomic_temp)
             _verify_state_epoch(new_state, epoch, current, expected_boot_id=captured['boot_id'])
+            from .restart import verify
+            verify(new_state, captured.get('restart_plan') or {'continuations': []}, captured['ref_highwater'])
         _atomic_json(thread_root / 'binding.json', selection, before_replace=verify_prepared_state)
         _verify_selection(thread_root, selection)
         return receipt

@@ -13,7 +13,7 @@ import subprocess
 import sys
 import time
 import uuid
-from contextlib import nullcontext
+from contextlib import nullcontext, ExitStack
 
 from .engine import Engine
 from .context import existing_socket
@@ -130,30 +130,71 @@ def accepted_coordinator(root: Path, result: dict) -> dict:
 
 
 def serve(root: Path):
-    with (root / 'owner.lock').open('a') as owner:
-        try:
-            fcntl.flock(owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            raise ValueError('a coordinator already owns this state directory')
-        store = Store(root)
-        engine = Engine(store, binding(root))
-        identity = process_identity(os.getpid())
-        if identity is None:
-            raise RuntimeError('cannot establish coordinator process identity')
-        record = {**identity, 'generation': engine.generation, 'state': str(root)}
-        atomic_json(root / 'coordinator.json', record)
-        stopping = False
+    """Keep one coordinator process; relinquish old writer state before handoff."""
+    from .owner_recovery import Recovery, selected_state
+    stopping = False
+    def request_stop(signum, frame):
+        nonlocal stopping
+        stopping = True
+    previous = {sig: signal.signal(sig, request_stop) for sig in (signal.SIGTERM, signal.SIGINT)}
+    try:
+        while not stopping:
+            changed = _serve_once(root, stop_requested=lambda: stopping)
+            if not changed or stopping:
+                return
+            container = root.parent.parent if root.parent.name == 'incarnations' else root
+            try:
+                # Arbitrary standalone state has no stable MCP thread container.
+                if container.name != changed['thread_id']:
+                    return
+                with Recovery(container.parent, changed['requested_socket'],
+                              {'thread_id': changed['thread_id']}, require_active=False) as recovery:
+                    receipt = recovery.handoff()
+                if stopping or not receipt.get('continued_registrations'):
+                    return
+                root = selected_state(container, expected_binding=changed)[0]
+            except (OSError, ValueError, RuntimeError, TimeoutError, sqlite3.Error) as error:
+                # Intent remains on its old fenced binding. Retrying never
+                # starts old commands or replays uncertain submissions.
+                print('daemon handoff deferred: ' + str(error), file=sys.stderr, flush=True)
+                if not stopping:
+                    time.sleep(2)
+    finally:
+        for sig, handler in previous.items():
+            signal.signal(sig, handler)
 
-        def request_stop(signum, frame):
-            nonlocal stopping
-            stopping = True
 
-        signal.signal(signal.SIGTERM, request_stop)
-        signal.signal(signal.SIGINT, request_stop)
+def _serve_once(root: Path, *, stop_requested=lambda: False):
+    from .owner_recovery import writer_transition, selected_state
+    container = root.parent.parent if root.parent.name == 'incarnations' else root
+    try:
+        thread = str(uuid.UUID(container.name))
+    except ValueError:
+        thread = None  # Standalone CLI state is not a managed conversation.
+    transition = writer_transition(container.parent, thread) if thread else nullcontext()
+    with ExitStack() as lifetime:
+        with transition:
+            if thread and selected_state(container)[0] != root:
+                return  # A delayed old launcher cannot reopen historical state.
+            owner = lifetime.enter_context((root / 'owner.lock').open('a'))
+            try:
+                fcntl.flock(owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                raise ValueError('a coordinator already owns this state directory')
+            store = Store(root)
+            lifetime.callback(store.close)
+            engine = Engine(store, binding(root))
+            identity = process_identity(os.getpid())
+            if identity is None:
+                raise RuntimeError('cannot establish coordinator process identity')
+            record = {**identity, 'generation': engine.generation, 'state': str(root)}
+            atomic_json(root / 'coordinator.json', record)
         try:
             idle_since = None
-            while not stopping:
+            while not stop_requested():
                 engine.tick()
+                if engine.successor is not None:
+                    return engine.successor
                 active = any(job['intent'] in ('active', 'replacing') for job in store.jobs())
                 awaiting = any(event['delivery'] == 'pending' or
                     event['delivery'] == 'native_queued' and event['expires'] > store.clock() and event['turn_outcome'] is None and
@@ -252,6 +293,7 @@ def parser():
         command.add_argument('--mcp-tool')
         command.add_argument('--mcp-arguments', default='{}')
         command.add_argument('--command-interval', type=float)
+        command.add_argument('--restart', choices=('manual', 'resume'), help='Resume only a replay-safe source after a verified daemon restart; original lease and limits remain')
         command.add_argument('command', nargs=argparse.REMAINDER)
     wake = commands.add_parser('wake_schedule')
     wake.add_argument('--after', type=float, required=True)
@@ -344,6 +386,8 @@ def _main(args, root, before_write):
                 'quiet_initial': args.quiet_initial, 'notify_end': args.notify_end}
             if args.label:
                 spec['label'] = args.label
+            if args.restart is not None:
+                spec['restart'] = args.restart
             if args.peer:
                 if command or args.cwd:
                     raise ValueError('choose --peer or a command/cwd source')

@@ -52,6 +52,8 @@ The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
 **v0.1.0-preview.18** includes seven worker workflows and four current roles.
+
+The unreleased preview.19 source candidate adds [daemon restart recovery](docs/owner-recovery.md#daemon-restart-candidate-preview19), preserving historical uncertainty and continuing only eligible observations within their original bounds. Published and managed installations remain preview.18.
 It adds explicit `$sol-task`, `$astra-task` and GPT-6.1 `$terra-task` for bounded
 review, validation, investigation or implementation without changing your primary.
 The old worker-name compatibility entries remain removed.

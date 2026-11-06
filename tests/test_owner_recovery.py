@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import sqlite3
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 import uuid
@@ -110,7 +111,8 @@ class OwnerRecoveryTests(unittest.TestCase):
 
     def recipient_message(self, thread, recipient, sender, *, event_id=None,
                           delivery='native_queued', acknowledged=1, withdrawal='none',
-                          turn_id=None, turn_outcome=None, intent='completed'):
+                          turn_id=None, turn_outcome=None, intent='completed',
+                          start_state='pending'):
         state = self.legacy_state(thread, recipient, with_refs=False)
         store = Store(state)
         try:
@@ -123,8 +125,8 @@ class OwnerRecoveryTests(unittest.TestCase):
             if delivery == 'native_queued':
                 store.admitted(actual, 'fixture-native-queue-id')
             store.db.execute('''UPDATE events SET delivery=?,acknowledged=?,withdraw_state=?,
-                turn_id=?,turn_outcome=? WHERE id=?''',
-                (delivery, acknowledged, withdrawal, turn_id, turn_outcome, actual))
+                start_state=?,turn_id=?,turn_outcome=? WHERE id=?''',
+                (delivery, acknowledged, withdrawal, start_state, turn_id, turn_outcome, actual))
             store.db.execute('UPDATE jobs SET intent=? WHERE id=?', (intent, job))
         finally:
             store.close()
@@ -354,6 +356,71 @@ class OwnerRecoveryTests(unittest.TestCase):
                     status = api.status()
                 self.assertIn('unresolved_source_owner', status)
 
+    def test_confirmed_withdrawal_settles_incoming_queue_input_and_preserves_history(self):
+        old = binding(A, pid=2147483038)
+        state = self.legacy_state(A, old)
+        store = Store(state)
+        try:
+            job = store.create('message', {'prompt': 'withdrawn fixture', 'sender': binding(B),
+                'message_kind': 'request', 'duration': 20})
+            event = store.emit(job, 'withdrawn fixture', 'message')
+            store.admitted(event, 'fixture-native-queue-id')
+            store.db.execute("UPDATE jobs SET intent='completed' WHERE id=?", (job,))
+            store.withdrawal(event, 'withdrawn', 'exact owned pending native input withdrawn')
+        finally:
+            store.close()
+
+        with self.make_recovery() as api:
+            _token, receipt = self.recover_clean(api)
+        self.assertEqual(receipt['state'], 'recovered')
+        _epoch, archive, manifest = owners.archive_entries(self.root, A)[0]
+        with owners._snapshot_reader(archive / manifest['snapshot']['file']) as snapshot:
+            archived = dict(snapshot.execute('SELECT * FROM events WHERE id=?', (event,)).fetchone())
+        self.assertEqual(archived['delivery'], 'native_queued')
+        self.assertEqual(archived['native_id'], 'fixture-native-queue-id')
+        self.assertEqual(archived['start_state'], 'withdrawn')
+        self.assertEqual(archived['withdraw_state'], 'withdrawn')
+        self.assertEqual(archived['acknowledged'], 0)
+        self.assertIsNone(archived['turn_id'])
+        self.assertIsNone(archived['turn_outcome'])
+
+    def test_unconfirmed_or_contradictory_withdrawal_does_not_settle_incoming_queue(self):
+        cases = (
+            ('pending-admission', 'pending', 0, 'withdrawn', 'withdrawn', None,
+             'unresolved_admission'),
+            ('unknown-withdrawal', 'native_queued', 0, 'unknown', 'pending', None,
+             'unresolved_withdrawal'),
+            ('consumed-unacknowledged', 'native_queued', 0, 'consumed', 'started', TURN_OLD,
+             'unacknowledged_queued_input'),
+            ('withdrawn-pending-start', 'native_queued', 0, 'withdrawn', 'pending', None,
+             'unacknowledged_queued_input'),
+            ('withdrawn-already-acknowledged', 'native_queued', 1, 'withdrawn', 'withdrawn', None,
+             'unresolved_withdrawal'),
+            ('withdrawn-with-turn', 'native_queued', 0, 'withdrawn', 'withdrawn', TURN_OLD,
+             'unresolved_withdrawal'),
+        )
+        for index, (name, delivery, acknowledged, withdrawal, start_state, turn_id, blocker) in enumerate(cases):
+            with self.subTest(case=name):
+                self.root = Path(self.tmp.name) / ('withdrawal-case-' + str(index))
+                self.root.mkdir(mode=0o700)
+                state = self.legacy_state(A, binding(A, pid=2147483040 + index))
+                store = Store(state)
+                try:
+                    job = store.create('message', {'prompt': 'fixture', 'sender': binding(B),
+                        'message_kind': 'request', 'duration': 20})
+                    event = store.emit(job, 'fixture', 'message')
+                    store.db.execute("UPDATE jobs SET intent='completed' WHERE id=?", (job,))
+                    store.db.execute('''UPDATE events SET delivery=?,native_id=?,acknowledged=?,
+                        withdraw_state=?,start_state=?,turn_id=?,turn_outcome=NULL,turn_error=NULL WHERE id=?''',
+                        (delivery, 'fixture-native-queue-id', acknowledged, withdrawal,
+                         start_state, turn_id, event))
+                finally:
+                    store.close()
+                with self.make_recovery() as api:
+                    status = api.status()
+                self.assertIn(blocker, status)
+                self.assertIn('state=rollover_refused', status)
+
     def test_event_start_and_turn_outcomes_are_classified_but_null_remains_allowed(self):
         cases = (
             ('settled_unknown_turn_outcome', 'started', None, True),
@@ -392,19 +459,24 @@ class OwnerRecoveryTests(unittest.TestCase):
 
     def test_outgoing_receipts_require_exact_settled_recipient_evidence(self):
         cases = (
-            ('pending', 0, 'none', 'outgoing_unresolved_admission'),
-            ('dispatching', 0, 'none', 'outgoing_unresolved_admission'),
-            ('uncertain', 0, 'none', 'outgoing_unresolved_admission'),
-            ('native_queued', 0, 'none', 'outgoing_unacknowledged_queued_input'),
-            ('native_queued', 1, 'unknown', 'outgoing_unresolved_withdrawal'),
+            ('pending', 0, 'none', 'pending', None, 'outgoing_unresolved_admission'),
+            ('dispatching', 0, 'none', 'pending', None, 'outgoing_unresolved_admission'),
+            ('uncertain', 0, 'none', 'pending', None, 'outgoing_unresolved_admission'),
+            ('native_queued', 0, 'none', 'pending', None, 'outgoing_unacknowledged_queued_input'),
+            ('native_queued', 1, 'unknown', 'pending', None, 'outgoing_unresolved_withdrawal'),
+            ('native_queued', 0, 'consumed', 'started', TURN_OLD,
+             'outgoing_unacknowledged_queued_input'),
+            ('native_queued', 0, 'withdrawn', 'pending', None, 'outgoing_unresolved_withdrawal'),
+            ('native_queued', 1, 'withdrawn', 'withdrawn', None, 'outgoing_unresolved_withdrawal'),
         )
         old = binding(A, pid=2147483031)
-        for index, (delivery, acknowledged, withdrawal, blocker) in enumerate(cases):
+        for index, (delivery, acknowledged, withdrawal, start_state, turn_id, blocker) in enumerate(cases):
             with self.subTest(delivery=delivery, acknowledged=acknowledged, withdrawal=withdrawal):
                 self.root = Path(self.tmp.name) / ('outgoing-case-' + str(index))
                 self.root.mkdir(mode=0o700)
                 event = self.recipient_message(B, binding(B), old, delivery=delivery,
-                    acknowledged=acknowledged, withdrawal=withdrawal)
+                    acknowledged=acknowledged, withdrawal=withdrawal,
+                    start_state=start_state, turn_id=turn_id)
                 self.legacy_state(A, old, refs=(
                     ('message', 'm1', event, json.dumps(binding(B)), 'fixture recipient'),))
                 with self.make_recovery() as api:
@@ -420,6 +492,25 @@ class OwnerRecoveryTests(unittest.TestCase):
             status = api.status()
         self.assertIn('outgoing_receipt_unknown', status)
         self.assertIn('state=rollover_refused', status)
+
+    def test_confirmed_withdrawal_settles_outgoing_queue_input_without_mutation(self):
+        old = binding(A, pid=2147483039)
+        recipient = binding(B)
+        event = self.recipient_message(B, recipient, old, acknowledged=0,
+            withdrawal='withdrawn', start_state='withdrawn')
+        self.legacy_state(A, old, refs=(
+            ('message', 'm1', event, json.dumps(recipient), 'fixture recipient'),))
+        with self.make_recovery() as api:
+            _token, receipt = self.recover_clean(api)
+        self.assertEqual(receipt['state'], 'recovered')
+        with owners._state_snapshot(self.root / B) as recipient_db:
+            archived_source = dict(recipient_db.execute('SELECT * FROM events WHERE id=?', (event,)).fetchone())
+        self.assertEqual(archived_source['delivery'], 'native_queued')
+        self.assertEqual(archived_source['start_state'], 'withdrawn')
+        self.assertEqual(archived_source['withdraw_state'], 'withdrawn')
+        self.assertEqual(archived_source['acknowledged'], 0)
+        self.assertIsNone(archived_source['turn_id'])
+        self.assertIsNone(archived_source['turn_outcome'])
 
     def test_outgoing_active_or_replacing_intent_refuses_even_after_acknowledgement(self):
         old = binding(A, pid=2147483032)
@@ -662,6 +753,72 @@ class OwnerRecoveryTests(unittest.TestCase):
                 old_binding['start_ticks'] = '200'
                 old_binding['executable'] = '/fixture/new'
                 self.assertFalse(owners._process_proof(old_binding))
+
+    @unittest.skipUnless(hasattr(os, 'fork'), 'requires fork to hold an owned zombie child')
+    def test_same_uid_start_ticks_zombie_proves_saved_process_ended(self):
+        executable = os.readlink('/proc/self/exe')
+        child = os.fork()
+        if child == 0:
+            os._exit(0)
+        try:
+            deadline = time.monotonic() + 3
+            while True:
+                try:
+                    raw = (Path('/proc') / str(child) / 'stat').read_text()
+                    fields = raw.rsplit(')', 1)[1].split()
+                except FileNotFoundError:
+                    fields = []
+                if fields and fields[0] == 'Z':
+                    break
+                if time.monotonic() >= deadline:
+                    self.fail('forked child did not remain as an observable zombie')
+                time.sleep(0.01)
+            saved = binding(A, pid=child, start=fields[19], executable=executable)
+            self.assertTrue(owners._process_proof(saved))
+        finally:
+            os.waitpid(child, 0)
+
+    def test_zombie_process_proof_refuses_changed_or_unreadable_observations(self):
+        old_binding = binding(A, pid=4242, start='200', executable='/fixture/old')
+        cases = ('state-changed', 'pid-reused', 'second-read-denied', 'malformed-stat')
+        for name in cases:
+            with self.subTest(case=name), tempfile.TemporaryDirectory() as proc_dir:
+                root = Path(proc_dir)
+                metadata = root / 'metadata'
+                metadata.write_text('fixture')
+                metadata.chmod(0o600)
+                sequence = []
+
+                def stat_line(state, start):
+                    return '4242 (fixture process) ' + ' '.join([state] + ['0'] * 18 + [start])
+
+                if name == 'state-changed':
+                    sequence[:] = [stat_line('Z', '200'), stat_line('S', '200')]
+                elif name == 'pid-reused':
+                    sequence[:] = [stat_line('Z', '200'), stat_line('Z', '201')]
+                elif name == 'second-read-denied':
+                    sequence[:] = [stat_line('Z', '200'), PermissionError('fixture denied')]
+                else:
+                    sequence[:] = ['malformed stat without a closing delimiter']
+                fake_path_type = type(Path('/'))
+
+                class ProcPath(fake_path_type):
+                    def stat(self, *args, **kwargs):
+                        if str(self) == '/proc/4242':
+                            return metadata.stat()
+                        return super().stat(*args, **kwargs)
+
+                    def read_text(self, *args, **kwargs):
+                        if str(self) == '/proc/4242/stat':
+                            value = sequence.pop(0)
+                            if isinstance(value, BaseException):
+                                raise value
+                            return value
+                        return super().read_text(*args, **kwargs)
+
+                with patch.object(owners, 'Path', ProcPath), \
+                     patch.object(owners.os, 'readlink', side_effect=AssertionError('zombie proof read exe')):
+                    self.assertIsNone(owners._process_proof(old_binding))
 
     def test_current_sender_receipt_resolves_archived_recipient_and_fences_forgery(self):
         sender = binding(A)

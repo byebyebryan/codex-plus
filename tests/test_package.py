@@ -155,10 +155,10 @@ class PackageTests(unittest.TestCase):
             self.assertNotIn('owner_recover', package.mcp_config(prefix)['tools'])
 
     def test_released_recovery_previews_remain_selectable_after_upgrade_and_rollback(self):
-        for number in (11, 12, 13):
+        for number in range(11, 19):
             with self.subTest(number=number):
                 version = '0.1.0-preview.' + str(number)
-                files = dict(self.files)
+                files = {name: self.files[name] for name in package.PREVIEW_EIGHTEEN_FILES}
                 files['codex_plus/__init__.py'] = ('VERSION = ' + repr(version) + '\n').encode()
                 metadata = package.manifest(files, '4' * 40)
                 metadata['version'] = version

@@ -24,9 +24,11 @@ def main():
     status.add_argument('--category', choices=['summary', 'jobs', 'events', 'references', 'handling'], default='summary')
     status.add_argument('--limit', type=int, default=20)
     status.add_argument('--offset', type=int, default=0)
+    status.add_argument('--mode', choices=('clean', 'quarantine', 'resume'), default='clean')
     recover = operations.add_parser('recover')
     recover.add_argument('--expected-preview', required=True)
     recover.add_argument('--confirm', action='store_true')
+    recover.add_argument('--mode', choices=('clean', 'quarantine', 'resume'), default='clean')
     args = parser.parse_args()
     if not args.thread:
         parser.error('select an exact --thread or CODEX_THREAD_ID')
@@ -37,9 +39,10 @@ def main():
         with Recovery(root, requested, {'thread_id': args.thread}, require_active=False) as api:
             if args.operation == 'status':
                 print(api.status(incarnation=args.incarnation, reference=args.reference,
-                    category=args.category, limit=args.limit, offset=args.offset))
+                    category=args.category, limit=args.limit, offset=args.offset, mode=args.mode))
             else:
-                print(api.recover(expected_preview=args.expected_preview, confirm=args.confirm))
+                receipt = json.loads(api.recover(expected_preview=args.expected_preview, confirm=args.confirm, mode=args.mode))
+                print(json.dumps(api.start_continuations(receipt), sort_keys=True))
         return 0
     except (OSError, ValueError, KeyError, RuntimeError, TimeoutError) as error:
         print(json.dumps({'error': str(error)}), file=sys.stderr)

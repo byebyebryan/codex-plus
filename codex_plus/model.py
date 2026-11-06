@@ -79,17 +79,25 @@ separate stale observations, expired leases and handling from task outcomes.
 Inspection alone does not renew, recover, resend or cancel work, and does not
 establish a complete inventory across other conversations, homes or hosts.
 Use wake_list/wake_cancel to inspect or stop a selected reminder. Use watch_recover
-only for explicit recovery of a lost source's remaining lease; disclose the gap,
-retain pending uncertainty and never silently restart a source or native owner.
+only for explicit same-owner recovery of a lost source's remaining lease; disclose
+the gap and retain pending uncertainty. Across a verified daemon replacement,
+peer watches and un-emitted reminders can continue within their original bounds.
+Commands/MCP checks require their original restart=resume policy: choose it only
+for replay-safe observation under the existing request. Other sources remain
+quarantined; a restart never replays uncertain events or extends a lease.
 Hide helper paths, UUIDs, resource recipes and raw JSON from routine chat. Explain
 unavailable sources, gaps, expiry and uncertain delivery when they matter. Do not
 repeat an uncertain send. Detailed tools/options remain available for inspection.
 If the native owner changes, use owner_status for diagnosis before ordinary tools.
-Only an explicit user request authorizes owner_recover of this conversation's
-clean state, using its current preview and confirm=true. Never recover a recipient
-as a side effect of sending. Active or uncertain work refuses rollover; there is
-no force/reset option. Recovery archives history and starts fresh control without
-replaying intent. Historical references remain read-only. Use owner_status with
+An upgraded coordinator can hand off only after proving the old owner ended and
+releasing its old writer boundary. For manual recovery use an explicit user request,
+owner_status and owner_recover with the same mode, preview and confirm=true.
+clean refuses unsettled work; quarantine preserves it as history without replay;
+resume also continues eligible original observations. No mode bypasses a live or
+unknown writer, changed scope or nonempty native queue. Never recover a recipient
+as a side effect of sending. There is no force/reset option. Historical references
+remain read-only; inspect fresh watches before controlling a continuation.
+Use owner_status with
 an incarnation/reference to inspect prior work and retain unknown outcomes.
 """
 
@@ -125,15 +133,18 @@ def tool_definitions(max_duration=86400, max_events=1000):
         'mcp_server': _string('Configured MCP server for scheduled native model inspections.', 256),
         'mcp_tool': _string('Configured inspection tool; native tool permissions still apply.', 256),
         'mcp_arguments': {'type': 'object', 'description': 'Exact inspection tool arguments; authentication stays in the configured connection.'},
+        'restart': {'type': 'string', 'enum': ['manual', 'resume'], 'description': 'Across a verified daemon restart: peer observations resume by default; commands and MCP inspections default to manual. Select resume only when repeating this source is safe within the existing request. Never replays old events or extends the lease.'},
         'snapshot_fields': {'type': 'array', 'items': _string(), 'minItems': 1, 'maxItems': 32}}
     definitions = [
         ('owner_status', 'Diagnose this conversation\'s owner binding without starting work, even when normal tools refuse. Optionally inspect a known recipient or bounded immutable archived history. Missing or incomplete evidence refuses recovery.',
          {'peer': peer, 'incarnation': _string('An archived incarnation from owner_status.'),
           'reference': _string('A historical reference to inspect; never retargeted.'),
           'category': {'type': 'string', 'enum': ['summary', 'jobs', 'events', 'references', 'handling']},
+          'mode': {'type': 'string', 'enum': ['clean', 'quarantine', 'resume'], 'description': 'Preview the same mode passed to owner_recover; no state changes or source starts.'},
           'limit': _number(50, 1, True), 'offset': _number(100000, 0, True)}, []),
-        ('owner_recover', 'Explicitly roll this conversation\'s clean state over to its verified new owner incarnation. Requires the unchanged owner_status preview and explicit confirmation. Archives old state, preserves history, and sends no input or source work. Active or uncertain state refuses; no force option.',
-         {'expected_preview': _string('Exact owner_status preview token.', 128), 'confirm': {'type': 'boolean'}}, ['expected_preview', 'confirm']),
+        ('owner_recover', 'Explicitly recover this conversation after its verified old owner ended. Requires an unchanged same-mode owner_status preview and confirmation. clean refuses unsettled work; quarantine archives it without replay; resume requests a coordinator for eligible original observations. Never directly sends native input; no force option or recipient repair.',
+         {'expected_preview': _string('Exact owner_status preview token.', 128), 'confirm': {'type': 'boolean'},
+          'mode': {'type': 'string', 'enum': ['clean', 'quarantine', 'resume'], 'description': 'clean refuses unsettled work; quarantine archives it without replay; resume also continues eligible observations within their original bounds. All modes require a verified ended owner and fenced journal.'}}, ['expected_preview', 'confirm']),
         ('peer_list', 'Discover loaded independent peers with bounded recent agent context. Children are excluded from ordinary selection; inspect them only on request. Completeness and uncertainty are explicit.',
          {'limit': _number(100, 1, True), 'include_children': {'type': 'boolean'}}, []),
         ('peer_inspect', 'Read one verified peer passively. Returns bounded agent/plan text, phase and goal status; no user prompts/tool outputs and no peer resume.',
@@ -420,11 +431,13 @@ class ModelAPI:
     def _watch_start(self, followup, peer=None, label=None, command=None, cwd=None, duration=None,
                      event_limit=None, interval=None, signals=None, turn_limit=3, quiet_initial=True,
                      notify_end=True, snapshot_fields=None, source_access='session', network_access='inherit',
-                     mcp_server=None, mcp_tool=None, mcp_arguments=None, command_interval=None):
+                     mcp_server=None, mcp_tool=None, mcp_arguments=None, command_interval=None, restart=None):
         self._mutable()
         duration = min(120, self.max_duration) if duration is None else duration
         event_limit = min(2, self.max_events) if event_limit is None else event_limit
         args = ['watch_start', '--duration', str(duration), '--limit', str(event_limit), '--followup', followup]
+        if restart is not None:
+            args += ['--restart', restart]
         if mcp_server is None and (mcp_tool is not None or mcp_arguments is not None):
             raise ValueError('MCP inspection needs a configured server and tool')
         if peer is not None:
@@ -553,6 +566,8 @@ class ModelAPI:
         if spec['duration'] > self.max_duration or spec['event_limit'] > self.max_events:
             raise ValueError('renewal exceeds the configured operation bounds')
         args = ['renew', '--id', job['id'], '--duration', str(spec['duration']), '--limit', str(spec['event_limit']), '--followup', spec['followup']]
+        if spec.get('restart') is not None:
+            args += ['--restart', spec['restart']]
         if spec.get('label'): args += ['--label', spec['label']]
         if spec.get('quiet_initial'): args += ['--quiet-initial']
         if spec.get('notify_end'): args += ['--notify-end']

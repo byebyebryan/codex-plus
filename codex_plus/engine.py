@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 from dataclasses import dataclass, field
 import json
+import math
 import socket
 import time
 import uuid
@@ -49,6 +50,7 @@ class Engine:
         self.next_connect = 0.0
         self.next_delivery = 0.0
         self.stopping = False
+        self.successor = None
         self.store.reconcile()
 
     def _connect(self):
@@ -58,7 +60,11 @@ class Engine:
             self.next_connect = self.monotonic() + 2
             client = Client(self.binding['requested_socket'], experimental=True)
             try:
-                if client.bind(self.binding['thread_id']) != self.binding:
+                current = client.bind(self.binding['thread_id'])
+                if current != self.binding:
+                    # The coordinator must close its journal and release its
+                    # writer lock before the recovery layer can prove/fence it.
+                    self.successor = current
                     raise RpcError('frozen native owner or thread changed')
                 # Positive loaded membership was checked first. This subscribes
                 # to the existing runtime; it is never a cold-thread fallback.
@@ -90,6 +96,13 @@ class Engine:
         return thread, delivery_decision(self.binding['thread_id'], thread, goal)
 
     def _start_source(self, job):
+        restarting = job['control_reason'].startswith('daemon_restart_observation_gap')
+        if restarting and job['generation'] is None and job['spec'].get('command_interval'):
+            # The last poll time may have been lost. Waiting a full interval
+            # prevents a restart from increasing the original command cadence.
+            self.command_due[job['id']] = self.monotonic() + job['spec']['command_interval']
+            self.store.source(job['id'], 'running', 'observation gap; next replay-safe check after original cadence', self.generation)
+            return
         if job['spec'].get('mcp'):
             try:
                 configured_mcp(self.client, self.binding, job['spec']['mcp'])
@@ -101,7 +114,7 @@ class Engine:
                 pending = [event for event in self.store.events(job['id']) if event['kind'] == 'source'
                     and event['delivery'] in ('pending', 'native_queued') and event['turn_outcome'] is None
                     and event['withdraw_state'] != 'withdrawn' and event['expires'] > self.store.clock()]
-                delay = job['spec']['interval'] if job['spec'].get('quiet_initial', True) else 0
+                delay = job['spec']['interval'] if restarting or job['spec'].get('quiet_initial', True) else 0
                 self.inspections[job['id']] = {'due': self.monotonic() + delay,
                     'event': pending[-1]['id'] if pending else None}
                 self.store.db.execute('UPDATE jobs SET recover_requested=0 WHERE id=?', (job['id'],))
@@ -114,10 +127,10 @@ class Engine:
                 self.store.source(job['id'], 'error', 'peer must be distinct and in the same frozen daemon')
                 self.store.notice(job['id'], 'invalid_peer_binding')
                 return
-            gap = job['source_state'] == 'lost'
+            gap = restarting or job['source_state'] == 'lost'
             if not self.store.source(job['id'], 'starting', generation=self.generation):
                 return
-            self.peer_polls[job['id']] = {'due': self.monotonic(), 'gap': gap}
+            self.peer_polls[job['id']] = {'due': self.monotonic() + (job['spec']['interval'] if restarting else 0), 'gap': gap}
             self.store.db.execute('UPDATE jobs SET recover_requested=0 WHERE id=?', (job['id'],))
             return
         if not self.store.source(job['id'], 'starting', generation=self.generation):
@@ -465,9 +478,15 @@ class Engine:
             return
         remaining = min(job['spec']['duration'], max(0, job['expires'] - self.store.clock()))
         self.deadlines[job['id']] = self.monotonic() + remaining
+        anchored = (self.store.boot_id is not None and job.get('lease_boot') == self.store.boot_id and
+                    type(job.get('lease_deadline')) in (float, int) and math.isfinite(job['lease_deadline']))
+        if anchored:
+            self.deadlines[job['id']] = min(self.deadlines[job['id']], job['lease_deadline'])
         if job['kind'] == 'wake':
             delay = min(job['spec']['after'], max(0, job['due'] - self.store.clock()))
             self.wake_due[job['id']] = self.monotonic() + delay
+            if anchored and type(job.get('wake_deadline')) in (float, int) and math.isfinite(job['wake_deadline']):
+                self.wake_due[job['id']] = min(self.wake_due[job['id']], job['wake_deadline'])
 
     def _expire_renewals(self):
         expired = []
