@@ -78,6 +78,24 @@ adoption remains necessary; this compatibility fixture is not a live deployment.
 The source qualification receipt is recorded in the implementation handoff.
 Private incident journals and native fixture captures stay outside source.
 
+### Preview.19 qualification
+
+Candidate `7a54f41` passes 420 tests and the 145-file repository gate. Its
+relocated artifact reports preview.19 and 17 monitoring tools; runtime/report
+manifests and modes verify, and actual preview.18 archives remain accepted for
+rollback. Ten skill validators pass with worker roles and invocation unchanged.
+
+The disposable native 0.167 restart recipe proves automatic coordinator handoff,
+fresh peer observation, an opted-in command executing again under its unchanged
+native grant, original deadlines, quarantined expired/lost command history and
+paused-goal delivery control. It starts no model turn. An additional admission
+probe did begin one turn because the native idle queue consumed its input
+immediately; withdrawal and handling stayed unknown and were never replayed.
+This is not proof of a completed model follow-up after restart or general native
+0.167 compatibility. Production owners, Starship bindings and installed preview.18
+remain unchanged. See the [handoff receipt](implementation-handoff.md#unreleased-preview19-daemon-restart-recovery)
+for the acceptance boundary and adoption limits.
+
 The 2026-10-29 investigation found a correct ownership refusal with no supported
 way to resume fresh Codex Plus operations after a daemon incarnation changes.
 The selected implementation scope is **explicit clean rollover**, diagnosis and

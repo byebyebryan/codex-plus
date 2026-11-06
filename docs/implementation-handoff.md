@@ -16,8 +16,44 @@ zombie/withdrawal classifier fixes and focused regressions; the primary owns
 handoff, continuation, stale inspection, packaging and acceptance. No escalation
 target is enabled. Production Starship monitoring and its daemon remain untouched.
 
-This is a source candidate, separate from published/managed preview.18. Complete
-validation, isolated native evidence and limits are recorded here before closure.
+Source candidate `7a54f41` is separate from published/managed preview.18. Its
+clean 145-file worktree passes all **420 tests**, ten skill validators, unified
+private release build/verification and relocated runtime/report installation.
+The Pages build verifies 310 links/assets/anchors and 15 current-release claims.
+The canonical checkout retains only the two pre-existing untracked bytecode
+files; its strict inventory failure is not hidden by deleting those files.
+
+The actual relocated preview.19 runtime passes a real **0.167.0** disposable
+daemon restart: the same coordinator hands off a passive peer watch, an opted-in
+read-only periodic command and a future reminder. Original expiry, source grant
+and event allowance survive; a lost expired command stays quarantined. A paused
+native goal continues to hold delivery, with no admitted input or started model
+turn in that acceptance recipe. Fixtures cover rollback-proof monotonic bounds,
+legacy missing anchors, staged-counter corruption, delayed launchers, stopping
+during handoff, crash retry, exact cached selectors and old callback fencing.
+
+An exploratory idle-input admission probe exposed native 0.167 immediate
+consumption: one native turn began before attempted withdrawal, which remained
+`not_pending`/unknown. Its withdrawal assumption failed; no handling, successful
+model inference or completion is claimed. It is separate from the zero-turn
+automatic restart recipe, not evidence of a completed end-to-end model follow-up.
+All seven disposable daemon replacements and their coordinators are cleaned up.
+Raw captures and the corrected admission accounting stay outside source.
+
+The actual fetched preview.18 runtime/report archives remain verifiable. A
+preview.18 helper reads the new selector and explicit quarantine receipt in a
+fixture, but its default list lacks the new warning and it gains no new runtime
+behavior. Source, private artifacts, selected installation and loaded helpers
+remain separate. No new public release, push, managed pin, apply or live incident
+repair occurred. Starship's owner and all 24 pre-existing binding files/mtimes
+match the original inspection; Snap's native owner also remains unchanged.
+
+Remaining acceptance is managed adoption and real daily use. Unloaded peers and
+legacy registrations without a trustworthy lease anchor remain quarantined;
+unknown commands/messages are not replayed. Authenticated endpoint/MCP restart,
+long outages, natural model follow-up after restart and the original Chrome
+debugging failure are not established by these bounded fixtures. Publication and
+chezmoi rollout remain a separately selected pass.
 
 ## Preview.18 published and deployed
 
