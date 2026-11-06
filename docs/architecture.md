@@ -11,15 +11,15 @@ coordinator owns bounded observation, timers, event admission and receipts.
 | Monitoring runtime | 17 `codex_plus` MCP tools; watch/peer/package/owner CLIs | Peer discovery and passive reads, bounded sources, messages, reminders, cancellation, receipts and explicit clean owner recovery. |
 | Reporting component | Four `html_report` MCP tools; report CLI; HTML report skill | Immutable static snapshots, project catalog, delivery checks and selected deletion. |
 | Report server | `codex-report-server` | Independent HTTP hosting; per-config tmux ownership or an explicitly managed server. |
-| Worker bundle | `luna-max`, `sol-xhigh`, `astra-xhigh`; four Luna/adaptive workflow skills | Explicitly selected execution workflows; primary retains decisions and acceptance. |
+| Worker bundle | `luna-max`, `sol-xhigh`, `astra-xhigh`, `terra-6-1-xhigh`; seven workflow skills | Explicit named tasks and adaptive/Luna workflows; primary retains decisions and acceptance. |
 | Development source | Tests, validators, guides and research reports | Implementation and acceptance evidence; distinct from installed immutable artifacts. |
 
-Codex Plus `v0.1.0-preview.17` unifies workers, monitoring and reporting under one
+Codex Plus `v0.1.0-preview.18` unifies workers, monitoring and reporting under one
 version, source commit and release. Optional archives retain each component's
-dependencies and configuration. Snap, Starship and Carbon select preview.17
-artifacts from `047f6e1` following the scoped managed rollout on 2026-11-03.
+dependencies and configuration. Snap, Starship and Carbon select preview.18
+artifacts from `6950045` following the scoped managed rollout on 2026-11-05.
 Snap OSS and work retain separate native
-homes. See the [delivery receipt](reliability-packaging-results.md#preview17-four-workflow-cleanup-and-rollout).
+homes. See the [delivery receipt](reliability-packaging-results.md#preview18-named-task-publication-and-rollout).
 Managed configuration, selected artifacts and already loaded processes
 are different layers: existing MCP processes adopt new code on normal reconnect.
 Journals, report data and hosting remain runtime-owned.
@@ -45,12 +45,12 @@ to Kitty/chezmoi; the old delivery/349 inspector work is retired.
 
 Worker identities and explicit invocation behavior are unchanged. Discussing a
 skill or asking for a generic goal loop does not invoke a worker workflow. The
-HTML report skill is an additional skill, separate from the four worker workflows.
+HTML report skill is an additional skill, separate from the seven worker workflows.
 The [worker guide](workers.md) covers Luna, task versus goal-loop workflows,
 adaptive routing and the distinction between workers and independent peers.
-The source candidate adds three explicit named task frontends, reusing Sol/Astra
-roles and adding a distinct current-Terra role; preview.17 still contains four
-worker workflows. Named review
+Preview.18 adds three explicit named task frontends, reusing Sol/Astra roles and
+adding a distinct current-Terra role. Older preview.17 installations retain four
+worker workflows until upgraded. Named review
 is an assignment choice, with primary acceptance and inherited permissions,
 rather than a new service, primary switch or automatic escalation policy.
 

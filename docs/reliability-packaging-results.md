@@ -19,6 +19,69 @@ completed on 2026-11-01. Native CLI installation works in an isolated home;
 cache pruning and the lack of a qualified private installation scope on the
 existing owner keep production plugin migration deferred.
 
+## Preview.18 named-task publication and rollout
+
+Completed 2026-11-05 under the [publication plan](codex-plus-plan.md#selected-publication-preview18-named-tasks).
+The review covers exact native role selection, explicit invocation, primary
+acceptance, review without source fixes, missing-control/spawn/execution/reroute
+reporting and current-versus-legacy Terra. Existing four workflows, three role
+files and legacy payloads remain byte-identical to the pre-feature baseline.
+No default adaptive escalation route, goal-loop variant or router service is added.
+
+[Preview.18](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.18)
+is published from immutable source `6950045a135149f59c4ae96231d1599615b269bd`.
+The 142-file gate, 387 tests, all ten current/legacy skill validators, real
+relocated archives and Python 3.11/3.14 release CI pass. All five GitHub asset
+digests match both the qualified build and downloaded public bytes; tag, manifest,
+versions, inventories, hashes and modes verify. Older release assets remain intact.
+
+Managed source `a84f9b0894a751a7fd1a6e6ec82d5402d4142366` synchronizes URLs,
+revision, checksums and validators, adds three task externals and
+`terra-6-1-xhigh`, and removes the current task's conflicting retirement rule.
+The actual chezmoi fixture covers scoped retired-alias deletion, preview
+preservation, current Terra/canonical retention, an unrelated sentinel, host/home
+scope and repeated absent-path convergence. Private role modes, split-home
+projection, exact worker-only inventory, preference preservation and reporting
+artifact installation/protocol checks pass. The full dotfiles gate passes at the
+new current base; its earlier unrelated OpenCode failure is historical.
+
+| Target | Managed integration | Verified installation |
+| --- | --- | --- |
+| Snap OSS and work | Fast-forward to `a84f9b0` | Three aligned preview.18 manifests, four roles, seven skills, empty scoped diff. |
+| Starship | Fast-forward to `a84f9b0` | Same payload, modes and scoped convergence. |
+| Carbon | Scoped commit `78cfb0c` on retained lineage | Same payload and convergence; preserves prior history, now ahead one/behind five relative to fetched main. |
+
+Preflight verified each retained preview.17 worker tree and classified native
+overrides before mutation. Backups precede staged manifest verification and scoped
+selection. The before/after audit covers 2,126 existing protected paths across
+the hosts; 15 intended existing paths changed. New immutable release trees and
+new role/skill files verify separately. Config/auth, old releases, unrelated
+source/target files and native built-in caches remain preserved. No full-manager
+apply, daemon restart, global MCP refresh or real-session input occurred.
+
+All native daemon identities remain. Snap preserves nine initial native/helper
+identities, Starship 27 of 29 and Carbon both. Two pre-existing Starship MCP
+connections exited with unlocalized cause; no lifecycle command was issued.
+Fresh entrypoint protocol checks report preview.18 with 17 monitoring/four report
+tools in all four homes. Native `skills/list` discovers all seven enabled names
+with zero errors and no retired worker aliases using `forceReload=false`.
+
+These are installation, protocol and discovery receipts, not acceptance of the
+three new named-model invocations. The source rehearsal and earlier underlying
+worker probes retain their narrower scope. Current-Terra inference, real provider
+failure behavior and newly loaded role declarations still need appropriate native
+execution evidence. Existing conversations can retain older code until normal
+reconnect; report hosting remains independent. Raw captures and backups stay private.
+
+The public-guide refresh presents seven workflows and released named tasks while
+keeping publication and managed-selection claims aligned at preview.18. Its
+local build validates 310 links/assets/anchors and 15 release claims; browser
+checks pass 18 desktop/mobile guide loads and 54 interactive states without
+page overflow. A real broken-fragment regression caught GitHub's prefixing of
+authored anchor IDs during heading cleanup. Normalizing those IDs in the Pages
+link renderer preserves earlier guide URLs; all 36 Pages tests pass. This is a
+documentation build correction and does not replace immutable release assets.
+
 ## Documentation consistency
 
 The setup and architecture guides incorrectly called preview.11 current after

@@ -170,6 +170,14 @@ class PagesTests(unittest.TestCase):
         self.assertIn('id="same-home"', result)
         self.assertIn('id="same-home-1"', result)
 
+    def test_authored_github_anchor_survives_heading_rename(self):
+        rendered = ('<a id="user-content-former-heading"></a><h3>Renamed heading</h3>'
+                    '<a href="#former-heading">Saved link</a>')
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'index.html').write_text(pages.headings(pages.links(rendered, './')))
+            self.assertEqual(pages.validate(root), 1)
+
     def test_setup_links_stay_on_public_site(self):
         self.assertEqual(pages.rewrite_link('getting-started.md#choose-what-to-install', './'),
                          './start/#choose-what-to-install')

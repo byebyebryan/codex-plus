@@ -51,8 +51,10 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.17** includes only the four canonical Luna/adaptive workflows;
-the old worker-name compatibility entries are removed.
+**v0.1.0-preview.18** includes seven worker workflows and four current roles.
+It adds explicit `$sol-task`, `$astra-task` and GPT-6.1 `$terra-task` for bounded
+review, validation, investigation or implementation without changing your primary.
+The old worker-name compatibility entries remain removed.
 It retains optional primary-aware escalation in the two
 adaptive worker workflows, the `astra-xhigh` role, read-only primary selection
 and graceful reporting-only metadata fallback. Escalation defaults off and uses
@@ -85,7 +87,7 @@ declared compatibility baseline remains unchanged.
 | Returning to work | “What am I still waiting on?” combines this conversation's stored watches, reminder outcomes and outgoing receipts, with stale or missing evidence explained. |
 | Peer coordination | Contextual independent-session discovery, attributed information/requests and handling receipts within one daemon. |
 | Browser reports | Immutable static HTML, project catalog, four report MCP tools, a report skill and independent HTTP hosting. |
-| Workers | Three native roles and four worker workflows; selective Luna and one optional escalation target, with explicit invocation. |
+| Workers | Four native roles and seven worker workflows; explicit named tasks, selective Luna and one optional escalation target. |
 
 Command polling can stay quiet without a model turn per read. Configured MCP
 checks use scheduled native model turns under normal authentication/approval;
@@ -109,12 +111,12 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Snap, Starship and Carbon select **v0.1.0-preview.17** for workers, monitoring and
-reporting from source `047f6e1` through chezmoi. The scoped rollout on 2026-11-03
+Snap, Starship and Carbon select **v0.1.0-preview.18** for workers, monitoring and
+reporting from source `6950045` through chezmoi. The scoped rollout on 2026-11-05
 verified exact payloads, doctor output and fresh MCP discovery in all four contexts.
 Native owners, private configuration and old releases are preserved. Native
 skill discovery and cache limits are recorded separately in the
-[delivery receipt](docs/reliability-packaging-results.md#preview17-four-workflow-cleanup-and-rollout).
+[delivery receipt](docs/reliability-packaging-results.md#preview18-named-task-publication-and-rollout).
 Existing conversations can retain older loaded versions until normal reconnect.
 The [implementation handoff](docs/implementation-handoff.md) records source,
 release and installed state.
@@ -206,18 +208,19 @@ over decisions outside the execution contract.
 | `$luna-goal-loop` | A substantial goal across cohesive assignments | Luna only; primary handles difficult portions |
 | `$adaptive-task` | One bounded task; no goal management | Primary or selective Luna; one opt-in escalation target |
 | `$adaptive-goal-loop` | A substantial goal, routed per assignment | Primary or selective Luna; one opt-in escalation target |
+| `$sol-task` | One bounded task; no goal management | Exact Sol XHigh worker; primary accepts the result |
+| `$astra-task` | One bounded task; no goal management | Exact Astra XHigh worker; primary accepts the result |
+| `$terra-task` | One bounded task; no goal management | Exact GPT-6.1 Terra XHigh worker; primary accepts the result |
 
-The unreleased preview.18 source candidate adds **`$sol-task`**, **`$astra-task`**
-and **`$terra-task`** (GPT-6.1 Terra/XHigh)
-for a bounded review, investigation or implementation with that exact worker.
-They preserve your primary and need no automatic escalation setting. For example:
+The named tasks preserve your primary and need no automatic escalation setting.
+Review and investigation return evidence without source fixes. For example:
 
 ```text
 $sol-task Review the current changes and run appropriate validation.
 Return findings and evidence; leave source fixes to the primary.
 ```
 
-These three skills are **unreleased** and are absent from preview.17 installations.
+These three skills require preview.18; older installations need an explicit upgrade.
 See the [named-task contract and examples](docs/workers.md#choose-sol-or-astra-explicitly-source-candidate).
 The current Terra task uses a distinct `terra-6-1-xhigh` role; the legacy task of
 the same name remains GPT-5.6-only. Install only the deliberately selected variant.
@@ -255,16 +258,16 @@ new evidence call for primary diagnosis rather than repeated worker cycling.
 
 Use the [agent lifecycle guide](docs/manage-agent.md) as the primary setup and
 maintenance procedure. Choose components in the [setup overview](docs/getting-started.md). The
-[worker installation steps](docs/workers.md#installation) install three agents and
-four worker workflows; the HTML report skill is a separate optional addition.
+[worker installation steps](docs/workers.md#installation) install four agents and
+seven worker workflows; the HTML report skill is a separate optional addition.
 The [runtime guide](docs/runtime-distribution.md) and
 [report guide](docs/html-report-usage.md) cover their independent artifacts.
 With a dotfile manager, update its source and published pins through that owner.
 
 Bryan's chezmoi distribution uses `.chezmoiexternals/codex-plus.toml` with pinned
 Codex Plus URLs and checksums. It retains `~/.local/share/codex-worker-kit` as the
-managed archive location for compatibility; the four canonical skill paths and
-native agent paths remain in place. This cleanup does not activate a watcher or change
+managed archive location for compatibility; native skill and agent paths remain
+ordinary managed files. This upgrade does not activate a watcher or change
 worker routing.
 
 Select the primary separately in your client or configuration:
@@ -285,7 +288,7 @@ execution contract and minimal inherited context. See the official
 GPT-5.6 Terra compatibility files under `legacy/` retain the deprecated
 `terra-xhigh`, `$terra-task` and `$terra-goal-loop` identities. They do not alias
 the current GPT-6.1 role `terra-6-1-xhigh`. Preview.17 contains only the legacy
-Terra variant; the current variant is an unreleased source addition.
+Terra variant; preview.18 includes the current variant by default.
 
 Both task variants use the `$terra-task` invocation. Select one deliberately;
 do not install both into discoverable skill roots or recursively merge their

@@ -37,6 +37,14 @@ managed source, installed manifests/modes, scoped diffs and runtime limitations.
 Keep captures private. This request supersedes the source-only boundary of the
 completed candidate passes below.
 
+Completed: immutable release `6950045` and managed pin/validator commit `a84f9b0`
+are published. Scoped deployment verifies Snap OSS/work, Starship and Carbon;
+Carbon uses narrow integration `78cfb0c` to preserve its prior lineage. Seven
+enabled workflows discover without forced reread in all four homes. Exact
+payload/mode/scoped-diff checks and the full dotfiles gate pass. See the
+[delivery receipt](reliability-packaging-results.md#preview18-named-task-publication-and-rollout)
+for source, artifact, preservation and runtime evidence boundaries.
+
 ## Follow-up: current Terra task
 
 Bryan requested `$terra-task` alongside the unreleased Sol/Astra tasks. Use the

@@ -188,6 +188,8 @@ class Links(HTMLParser):
         for key, value in attrs:
             if key == "href" and value:
                 value = rewrite_link(value, self.prefix)
+            if tag == "a" and key == "id" and value:
+                value = value.removeprefix("user-content-")
             rendered.append(key if value is None else f'{key}="{html.escape(value, quote=True)}"')
         self.parts.append("<" + tag + (" " if rendered else "") + " ".join(rendered) + suffix)
 

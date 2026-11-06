@@ -36,11 +36,12 @@ cached and conversation-scoped. Its dialogue does not claim that a native run
 or fresh source check occurred.
 
 The page leads with use cases, everyday benefits, setup links and an interactive
-first-watch checklist. A dedicated Luna section compares the four worker
+first-watch checklist. A dedicated worker section compares the seven worker
 workflows and links to the [worker guide](workers.md) for examples and setup.
-The source presentation separately labels the unreleased `$sol-task` and
-`$astra-task` candidate and current `$terra-task`, with a Terra-primary/Sol-review example. It does not
-include them among preview.17's four released workflows or imply an installation.
+The presentation includes released `$sol-task`, `$astra-task` and current
+`$terra-task`, with a Terra-primary/Sol-review example. They require preview.18;
+older selected installations need an explicit upgrade. Role availability and
+accepted model execution remain separate from static UI examples.
 It includes a model-call illustration, lifecycle FAQ and
 a downloadable quickstart checklist. Host-specific deployment status, comparison
 research and validation records stay in the technical guides. Prompt copy

@@ -2,20 +2,35 @@
 
 Updated 2026-11-05. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.17 is published and
+the older report checkout and the existing worktrees. Preview.18 is published and
 selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
 remain distinct.
 
-## Selected publication: preview.18
+## Preview.18 published and deployed
 
 Bryan requested review, commit, publication and managed deployment on 2026-11-05.
 The [publication plan](codex-plus-plan.md#selected-publication-preview18-named-tasks)
-supersedes the source-only boundary below. Review confirms existing workflow and
-legacy bytes are preserved, named tasks keep exact pins and primary acceptance,
-and the Terra cleanup rule needs a tested migration. Fresh preservation baselines
-and manifest preflights pass on Snap OSS/work, Starship and Carbon. Continue with
-immutable release publication, synchronized managed pins/validators, scoped apply
-and separate installed/discovery checks. Keep active owners and private state intact.
+supersedes the source-only boundary below. Release source `6950045` is published
+and verified against all five fetched asset digests. Managed source `a84f9b0`
+adds the three named task externals/current Terra role and removes the conflicting
+retirement rule, with a real apply fixture proving current Terra survives cleanup.
+The source gate, 387 tests, ten skill validators, Python 3.11/3.14 CI and full
+dotfiles gate pass. Existing worker/legacy payloads remain byte-identical.
+
+Snap OSS/work, Starship and Carbon verify all three manifests, four role files,
+seven skills, private modes and empty scoped diffs. Snap/Starship fast-forwarded
+to `a84f9b0`; Carbon preserves its earlier source lineage with scoped integration
+`78cfb0c` (ahead one/behind five relative to the fetched main). All four native
+homes discover seven enabled skills, no retired aliases and no errors without
+forced reread. Fresh MCP entrypoints report preview.18 with 17/four tools.
+
+The audit covers 2,126 existing protected paths: 15 intended existing paths
+changed; older releases, config/auth, unrelated files and native caches remain
+intact. All native daemon identities remain. Two pre-existing Starship MCP
+connections exited with unlocalized cause; 38 of 40 initial native/helper
+identities remain. No restart, global MCP refresh or real-session input occurred.
+New named-skill model execution remains unqualified, especially current Terra.
+See the [delivery receipt](reliability-packaging-results.md#preview18-named-task-publication-and-rollout).
 
 ## Completed source follow-up: GPT-6.1 Terra task
 

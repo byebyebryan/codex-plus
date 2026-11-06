@@ -158,10 +158,11 @@ an immutable directory with different content.
 
 For **workers**, verify the unified release first, then extract its verified
 worker archive into a private retained directory. Its `workers.json` records
-exact member hashes/modes and source revision. Preview.15 and later provide
-`agents/luna-max.toml`, `agents/sol-xhigh.toml` and `agents/astra-xhigh.toml`.
-Preview.17 provides both files (`SKILL.md`, `agents/openai.yaml`) from each of
-`luna-task`, `luna-goal-loop`, `adaptive-task` and `adaptive-goal-loop`. Remove the
+exact member hashes/modes and source revision. Preview.18 provides
+`agents/luna-max.toml`, `agents/sol-xhigh.toml`, `agents/astra-xhigh.toml` and
+`agents/terra-6-1-xhigh.toml`, plus both files (`SKILL.md`, `agents/openai.yaml`)
+from each of `luna-task`, `luna-goal-loop`, `adaptive-task`, `adaptive-goal-loop`,
+`sol-task`, `astra-task` and `terra-task`. Remove the
 retired `worker-task` and `worker-goal-loop` directories through their configuration
 owner, with backups and a scoped deletion preview; preserve unclassified local
 edits before removal. Verify both old paths are absent. Preserve fixed model/effort pins and any
@@ -174,10 +175,10 @@ Keep cleanup declarations consistent with the chosen release when rolling back.
 Keep the verified archive/manifest as provenance. Do not install legacy Terra
 files by default and do not change the primary model.
 
-The source candidate adds explicit `sol-task`, `astra-task` and current
+Preview.18 adds explicit `sol-task`, `astra-task` and current
 `terra-task` skills; preview.17 does not contain them. Install only workflows present in the chosen verified
 release manifest. Do not graft moving-main skills into a pinned managed release.
-When a release adds them, install both files per skill through the same owner,
+Install both files per skill through the same owner,
 preserve invocation restrictions, and verify discovery and model execution as
 separate acceptance steps. The [named-task guide](workers.md#choose-sol-or-astra-explicitly-source-candidate)
 explains their assignment-scoped permission and primary ownership.
@@ -188,8 +189,8 @@ and preview a scoped migration through its owner. Preserve local edits and disab
 preferences. Never merge/install both variants or delete a current task as legacy
 cleanup; a role pin mismatch is a hold, not permission to substitute or retune.
 Inspect the manager's removal declarations before installing current Terra.
-Bryan's existing `.chezmoiremove` retires `.codex/skills/terra-task`; a future
-current-Terra rollout must remove or condition that specific rule together with
+Older Bryan-managed pins retire `.codex/skills/terra-task`; a preview.18
+current-Terra upgrade removes or conditions that specific rule together with
 the published pins and validators. Keep unrelated cleanup declarations intact.
 
 For a conventional unmanaged home, native agent files go under `~/.codex/agents`
@@ -264,7 +265,7 @@ bind address, change a firewall or start hosting as an installation check. The
 [report reference](https://dev.byebyebryan.com/codex-plus/reports/#configuration-and-hosting) covers owned
 tmux hosting and external servers. If requested, install the two
 `skills/html-report` files from the verified reporting release using the same
-provenance checks as worker skills. It is separate from the four worker skills.
+provenance checks as worker skills. It is separate from the seven worker skills.
 
 ## Verify and finish
 

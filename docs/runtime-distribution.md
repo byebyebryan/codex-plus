@@ -18,9 +18,10 @@ operation, native owner replacement and personal UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.17](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.17)
-removes the worker-name compatibility entries, leaving the four canonical
-Luna/adaptive workflows. The adaptive names arrived in preview.16; optional
+[v0.1.0-preview.18](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.18)
+adds explicit Sol, Astra and current-Terra tasks, for seven workflows and four
+current roles. Preview.17 removed the worker-name compatibility entries.
+The adaptive names arrived in preview.16; optional
 primary-aware escalation, Astra XHigh and read-only primary selection arrived
 in preview.15. Escalation remains instruction-based and defaults off.
 
@@ -35,9 +36,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.17.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.17.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.17.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.18.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.18.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.18.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains
@@ -84,23 +85,24 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Snap, Starship and Carbon select workers, monitoring and reporting **preview.17**,
-source `047f6e1`, through chezmoi following the scoped rollout on 2026-11-03.
-The worker bundle includes three native roles and four current workflow skills;
+Snap, Starship and Carbon select workers, monitoring and reporting **preview.18**,
+source `6950045`, through chezmoi following the scoped rollout on 2026-11-05.
+The worker bundle includes four native roles and seven current workflow skills;
 both worker-name compatibility entries are removed. Optional instruction-based
 escalation remains in the two adaptive workflows.
 Exact inventories, payload hashes and modes verify, and native configuration,
 credentials, invocation metadata and older releases are preserved. Fresh MCP
-protocol discovery reports preview.17 with 17 monitoring and four report tools
+protocol discovery reports preview.18 with 17 monitoring and four report tools
 in Snap OSS/work, Starship and Carbon. Already loaded process versions remain
 independent of selected files.
 
 No native daemon restart or global MCP refresh was issued. Native daemon
 identities were preserved through each scoped rollout. Native skill discovery
-sees the four canonical names and no retired worker names in all four contexts.
-Snap work and Carbon needed the native skill-cache reread. Report hosting remains
-independent of stdio protocol discovery. See the [rollout receipt](reliability-packaging-results.md#preview17-four-workflow-cleanup-and-rollout)
-for preservation details and the unrelated full-dotfiles gate limit.
+sees all seven names and no retired worker aliases in all four contexts without
+a forced cache reread. Two pre-existing Starship MCP connections exited with
+unlocalized cause; native owner identities remain preserved. Report hosting remains
+independent of stdio protocol discovery. See the [rollout receipt](reliability-packaging-results.md#preview18-named-task-publication-and-rollout)
+for preservation details and runtime execution limits. The full dotfiles gate passes.
 
 Workers retain their own installation. The 349 inspector
 is retired, and native notifications remain selected. The earlier [managed activation report](managed-activation-results.md)
