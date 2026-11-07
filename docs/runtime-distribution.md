@@ -48,12 +48,13 @@ the existing default and optional legacy identities; packaging does not enable
 legacy skills or change explicit workflow invocation.
 
 The README's released-version declaration anchors published-release guide claims;
-its separate managed-deployment declaration anchors installation claims. Pages
-checks each group for internal consistency. Source may advance before publication,
-and publication may precede rollout or remain ahead after a rollback. Those gaps
-are valid. The guide check does not query GitHub or hosts: published assets and
-dated deployment receipts still require their own verification. Neither a source
-version nor a guide declaration establishes the code loaded by a running process.
+its managed-source declaration anchors the configured release. Pages checks each
+group for internal consistency. Dated per-host receipts establish installation,
+including offline or rolled-back hosts that retain an older release. Source may
+advance before publication, and publication may precede rollout. These gaps are
+valid. The guide check does not query GitHub or hosts: assets and installation
+receipts require their own verification. Neither a source version nor a guide
+declaration establishes the code loaded by a running process.
 
 Preview.10's recap/history and loaded-MCP metadata refinements are retained. See
 [feature availability](getting-started.md#released-and-source-features) and
