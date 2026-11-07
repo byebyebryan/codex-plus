@@ -1,5 +1,73 @@
 # Everyday reliability and native packaging results
 
+## Preview.20 health and restart publication and rollout
+
+Completed the reachable-host rollout on 2026-11-07 under the
+[publication plan](codex-plus-plan.md#selected-publication-preview20-health-and-restart-refinement).
+The [source qualification](native-qualification-results.md#health-and-restart-follow-up-preview20-source-pass)
+records the failed preview.19 MCP-started fixture, conservative log-holder refusal
+and successful native 0.167 follow-up after correcting log placement. Publication
+adds no new native compatibility or daily-use reliability claim.
+
+[Preview.20](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.20)
+is published from immutable `f787ad6f67d247bc8f132318b4350df08ee4b060`. All five
+downloaded assets match both the qualified local bytes and GitHub digests. The
+145-file source gate, 428 tests, ten skill validators, relocated private packages,
+actual preview.19 runtime/report rollback and Python 3.11/3.14 CI pass. No worker
+role, invocation policy or model-routing behavior changed.
+
+The publication guide build verifies 314 local links/assets/anchors and 15 current
+published/managed release claims; all 37 focused Pages tests pass. Current guides,
+the raw agent lifecycle guide and walkthrough release markers are reconciled to
+preview.20 while preserving historical source/rollout receipts.
+
+| Archive | SHA-256 |
+| --- | --- |
+| Workers | `5ac4ee54f3f1bf4e1f3b2f5ccfb040bf2ddb6872958abe5a157da8e69156b83c` |
+| Monitoring | `33d990e57ca3fe027b6875edc7fc938736e34ea64d4ac564293f52ed5a986a8d` |
+| Reporting | `aacbe2f5887e18499a9c387cba86ac2b1b50ccb184766e5469e776a35aa7db90` |
+
+Managed source `e73785e59cc14dcabd04339160bf5a4267a2167d` advances six
+URL/revision/checksum/validator files from the current Agent Plus `c00942a` base.
+The full dotfiles gate and actual isolated report-archive apply pass. Canonical
+Snap integration preserves its earlier lineage and eleven unrelated dirty files;
+Starship fast-forwards the reviewed pins. Existing role/skill overrides were
+checked before staging; exact copies match the verified archives afterward.
+
+| Target | Canonical source | Verified installation |
+| --- | --- | --- |
+| Snap OSS/work | `84f8a7a332e2bd31d52113cf20972914df1f795c` | All three preview.20 manifests, four roles/seven skills, modes and empty scoped diffs. |
+| Starship | `e73785e59cc14dcabd04339160bf5a4267a2167d` | Same exact preview.20 checks in its native home. |
+| Carbon | Unreachable; not changed | Last verified preview.18 on 2026-11-05. Fresh preflight is required when it returns. |
+
+Fresh native-home stdio entrypoints report preview.20 and 17 monitoring/four
+reporting tools in all three reachable contexts. Native skill discovery uses
+`forceReload=false`, finds seven enabled workflows, no retired aliases and no
+errors; installation/discovery is not execution or model-access proof.
+
+The preservation audit covers 1,786 existing paths. Only six intended existing
+files change: two selectors and the worker provenance manifest on each host.
+All old releases, native config/auth, report configuration, native skill caches
+and unrelated protected files remain unchanged. All 28 saved binding files and
+mtimes match their preimages, and both hosts retain exact native owner identities.
+Snap preserves all 14 initial tracked native/helper processes; Starship preserves
+21 of 23. Two pre-existing Starship MCP exits have unlocalized cause. No daemon
+restart, global refresh, real input or monitor recovery was issued.
+
+Selected and loaded code remain separate. Snap's sampled OSS MCP still reports
+preview.18; three sampled Starship monitoring connections report preview.19.
+Active helpers/coordinators retain captured code until normal native loading.
+The new log placement is not retroactively applied to those old coordinators.
+Report hosting remains independent of the stdio upgrade. Private captures,
+backups and process/session identities stay outside committed source.
+
+This rollout does not establish authenticated endpoint/MCP recovery, long outages,
+recovery of every existing watch or completed real-source soak. Carbon was retried
+through the trusted Starship route and remains deferred. No offline-host apply,
+native session restart or automatic replay is a substitute for its acceptance.
+
+## Historical packaging and reliability passes
+
 Completed 2026-10-31 under the [selected plan](codex-plus-plan.md#completed-pass-everyday-reliability-and-native-packaging).
 The [review correction](#review-correction-release-claim-boundaries) completed
 2026-11-01 and supersedes the initial source-equality guide check.

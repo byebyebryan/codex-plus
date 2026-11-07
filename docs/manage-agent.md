@@ -269,7 +269,8 @@ provenance checks as worker skills. It is separate from the seven worker skills.
 
 ## Verify and finish
 
-Preview.19 adds daemon restart recovery. Existing loaded helpers retain their
+Preview.20 corrects normal MCP-started coordinator handoff and adds actionable
+doctor diagnostics. Preview.19 introduced restart recovery. Existing loaded helpers retain their
 captured code until normal reconnect. Do not replay old registrations as an
 upgrade check: legacy jobs without trustworthy lease anchors and uncertain
 commands/messages remain quarantined. Newly registered replay-safe command/MCP

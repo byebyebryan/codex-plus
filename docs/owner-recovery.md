@@ -1,6 +1,6 @@
 # Native owner recovery
 
-## Unreleased preview.20: MCP-started coordinator handoff
+## Preview.20: MCP-started coordinator handoff
 
 The health/follow-up pass found a launch-path defect in published preview.19.
 Its earlier zero-turn restart fixture started the coordinator with a log outside
@@ -11,7 +11,7 @@ open log descriptor still correctly triggered the conservative open-state guard.
 Automatic handoff therefore remained deferred. The failed fixture and a separate
 no-model descriptor reproduction were retained; no real monitor was repaired.
 
-The preview.20 candidate places new supervisor logs in a private
+Preview.20 places new supervisor logs in a private
 `.coordinator-logs` namespace outside the entire stable thread container and its
 epochs. Old logs and loaded helpers remain unchanged. Journal descriptors,
 writer locks, process-incarnation proof and original continuation eligibility
@@ -28,8 +28,9 @@ created. See the [qualification receipt](native-qualification-results.md#health-
 
 This closes one bounded post-restart model-follow-up gap. It does not qualify
 every pre-existing watch, general native 0.167 compatibility, authenticated
-endpoint/MCP recovery, long outages or daily-use reliability. Published and
-managed preview.19 remain unchanged until a separately selected release/apply.
+endpoint/MCP recovery, long outages or daily-use reliability. Preview.20 is
+published; the [handoff](implementation-handoff.md) separates managed installation
+from code adoption by existing helpers.
 
 <a id="daemon-restart-candidate-preview19"></a>
 

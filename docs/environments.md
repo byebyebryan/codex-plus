@@ -61,9 +61,9 @@ them. See the [upstream change](https://github.com/openai/codex/pull/58239) and
 [0.167 eligibility code](https://github.com/openai/codex/blob/rust-v0.167.0/codex-rs/tui/src/daemon_startup.rs#L88-L114).
 Agent Plus remains separate from Codex Plus; no launcher is a runtime dependency.
 
-The unreleased preview.20 doctor adds fixed diagnostic reasons/actions for
+The preview.20 doctor adds fixed diagnostic reasons/actions for
 unavailable endpoints, unconfirmed loaded callers and MCP metadata/version gaps.
-Published preview.19 retains its older diagnostics. Neither doctor starts work
+Older loaded helpers retain their earlier diagnostics. Neither doctor starts work
 or changes the native qualification baseline. See [read-only diagnosis](runtime-distribution.md#read-only-diagnosis).
 
 ## Inspect the selected primary

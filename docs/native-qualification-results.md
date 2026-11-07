@@ -7,8 +7,10 @@ keeps the native owner, existing 17 monitoring/four reporting tools, worker role
 and explicit invocation. Luna supplied doctor diagnostics and their focused
 behavior tests, followed by coordinator launch/descriptor regressions. The
 primary diagnosed and corrected log placement, ran isolated native acceptance,
-reviewed integration and reconciled the guides. Publication and live deployment
-are separate; preview.19 remains published and managed.
+reviewed integration and reconciled the guides. At that source-only boundary,
+preview.19 remained published and managed. The later preview.20
+[publication/rollout receipt](implementation-handoff.md) supersedes that delivery
+boundary; the qualification limits below remain unchanged.
 
 ### Reproduced launch-path defect
 

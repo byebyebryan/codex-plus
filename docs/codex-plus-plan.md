@@ -1,5 +1,40 @@
 # Codex Plus implementation plan
 
+## Selected publication: preview.20 health and restart refinement
+
+Bryan requested publication and deployment after reviewing source `f787ad6`.
+Publish that immutable preview.20 through the personal github.com account,
+verify all fetched release assets against the qualified bytes and GitHub
+digests, and update chezmoi URLs/revision/checksums/validators together.
+Prepare the managed pin commit from current published dotfiles main; integrate
+only that change into canonical host sources, preserving concurrent Agent Plus
+work and existing divergent lineage. Run the full dotfiles gate and isolated
+report-archive apply before live selection.
+
+Capture fresh host preimages and backups, verify existing role/skill overrides,
+stage all three exact payloads, then apply only selectors and the existing
+native roles/skills with unrelated hooks excluded. Preserve credentials, native
+configuration, old releases, report data/hosting, saved bindings and active
+owners. No daemon restart, global MCP refresh or input to real conversations is
+part of this rollout. Existing loaded code adopts through normal native loading;
+selected preview.20 files do not prove every live helper uses the restart fix.
+
+Verify source pins, installed manifests/modes, scoped diffs and fresh stdio
+protocols separately from loaded metadata and process-preservation observations.
+Reconcile current guides and Pages after the release/host evidence is available.
+If Carbon remains unreachable, record the deferred installation and retain its
+last verified preview.18 receipt; do not claim fleet convergence or reuse an old
+preflight after it returns. Keep all captures outside committed source.
+
+Completed: release `f787ad6` and managed pin/validator commit `e73785e` are
+published. Scoped Snap integration `84f8a7a` and Starship `e73785e` verify all
+three component manifests, four roles/seven workflows, private modes, empty
+scoped diffs and fresh preview.20 MCP entrypoints. The full dotfiles gate and
+actual report-archive apply pass. Native owners and 28 bindings remain unchanged;
+two pre-existing Starship MCP exits remain unlocalized. Existing loaded versions
+adopt normally, and Carbon remains unreachable/last verified on preview.18.
+See the [delivery receipt](reliability-packaging-results.md#preview20-health-and-restart-publication-and-rollout).
+
 ## Selected pass: health diagnostics and restart follow-up
 
 Bryan invoked `$luna-goal-loop` after the 2026-11-07 overview. Keep the existing

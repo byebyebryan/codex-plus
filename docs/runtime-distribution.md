@@ -4,8 +4,9 @@ For installation and maintenance, give your agent the
 [canonical lifecycle guide](manage-agent.md). This page remains the component
 reference for artifacts, configuration and behavior.
 
-Preview.19 adds verified daemon restart handoff and preserves prior diagnostics,
-verification and rollback support. It extends clean rollover and archived inspection through the
+Preview.20 corrects normal MCP-started coordinator handoff and clarifies read-only
+health diagnostics. It retains verified restart recovery, verification and
+rollback support. It extends clean rollover and archived inspection through the
 [owner recovery contract](owner-recovery.md). Publishing or selecting an archive
 does not reload an already running process. Managed rollout is recorded separately
 below.
@@ -19,9 +20,10 @@ UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.19](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.19)
-adds verified daemon restart recovery and honest quarantine/continuation within
-original limits. Preview.18 added explicit Sol, Astra and current-Terra tasks,
+[v0.1.0-preview.20](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.20)
+fixes supervisor log placement for the normal MCP launch path and improves
+doctor reasons/actions. Preview.19 introduced verified daemon restart recovery
+and honest quarantine/continuation within original limits. Preview.18 added explicit Sol, Astra and current-Terra tasks,
 for seven workflows and four current roles. Preview.17 removed the worker-name compatibility entries.
 The adaptive names arrived in preview.16; optional
 primary-aware escalation, Astra XHigh and read-only primary selection arrived
@@ -38,9 +40,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.19.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.19.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.19.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.20.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.20.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.20.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains
@@ -88,14 +90,14 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Managed source selects workers, monitoring and reporting **preview.19**,
-source `0259d96`, through published chezmoi pins `ff73822`.
+Managed source selects workers, monitoring and reporting **preview.20**,
+source `f787ad6`, through published chezmoi pins `e73785e`.
 
 | Context | Verified installation, 2026-11-07 | Runtime evidence |
 | --- | --- | --- |
-| Snap OSS | Preview.19; all three manifests and copied roles/skills verify; scoped diff empty. | Fresh stdio: 17 monitoring/four report tools. Existing native owner unchanged; loaded code is separate. |
+| Snap OSS | Preview.20; all three manifests and copied roles/skills verify; scoped diff empty. | Fresh stdio: 17 monitoring/four report tools. Native owner unchanged; one sampled existing conversation still reports preview.18. |
 | Snap work | Same verified release in its separate home. | Fresh stdio verified; existing native owner unchanged. |
-| Starship | Same verified release and empty scoped diff at rollout. | The socket was unavailable during installation. A later launcher repair restored the shared 0.167 owner; two sampled conversations report preview.19 monitoring/reporting. Old-watch recovery is separate. |
+| Starship | Same verified release and empty scoped diff. | Shared 0.167 owner remains reachable and unchanged. Fresh stdio reports preview.20; three sampled existing monitoring connections still report preview.19. Old-watch recovery is separate. |
 | Carbon | Offline; deployment deferred. Last verified preview.18 on 2026-11-05. | No current runtime or installation claim. Refresh preflight before applying. |
 
 The worker bundle includes four native roles and seven current workflow skills;
@@ -103,16 +105,16 @@ both worker-name compatibility entries are removed. Optional instruction-based
 escalation remains in the two adaptive workflows.
 Exact inventories, payload hashes and modes verify, and native configuration,
 credentials, invocation metadata and older releases are preserved. Fresh MCP
-protocol discovery reports preview.19 on the three reachable contexts above.
+protocol discovery reports preview.20 on the three reachable contexts above.
 Already loaded process versions remain
 independent of selected files.
 
 No native daemon restart or global MCP refresh was issued. Native daemon
-identities on Snap were preserved. The 28 existing conversation binding files
-and all unrelated protected files remain unchanged. Ten pre-existing Starship
+identities on both reachable hosts were preserved. The 28 existing conversation binding files
+and all unrelated protected files remain unchanged. Two pre-existing Starship
 MCP processes ended during the elapsed pass with unlocalized cause; no lifecycle
 action was issued. Report hosting remains independent of stdio protocol
-discovery. See the [rollout receipt](reliability-packaging-results.md#preview19-restart-recovery-publication-and-rollout)
+discovery. See the [rollout receipt](reliability-packaging-results.md#preview20-health-and-restart-publication-and-rollout)
 for preservation details and runtime execution limits. The full dotfiles gate passes.
 
 Workers retain their own installation. The 349 inspector
@@ -155,7 +157,7 @@ remains false because the doctor does not scan or verify running process code.
 The reporting-only archive retains file and native CLI diagnosis; the monitoring
 component supplies the optional client for native MCP metadata inspection.
 
-The unreleased preview.20 source adds fixed `loaded_mcp.diagnostic.reason` and
+Preview.20 adds fixed `loaded_mcp.diagnostic.reason` and
 `action` fields, with per-server diagnostics for reported version differences,
 missing metadata and disconnected servers. Existing schema/fields and human/JSON
 exit behavior are retained. Missing endpoints, unconfirmed loaded callers and
@@ -163,9 +165,9 @@ inconclusive RPC/ownership probes remain distinct; exception text is not exposed
 Check native home, launch arguments and endpoint before interpreting a missing
 conversation. Its absence alone does not establish embedded mode; see
 [native launch diagnosis](environments.md#native-launch-and-missing-conversations).
-Published preview.19 keeps its original diagnostic behavior until upgraded.
+Older loaded helpers keep their original diagnostics until normal code adoption.
 
-Future preview.20 coordinators place private append-only logs under
+Preview.20 coordinators place private append-only logs under
 `.coordinator-logs` beside the stable conversation directories, outside frozen
 journal/epoch trees. RTK's supervisor can retain log descriptors without falsely
 appearing to hold the old journal open during handoff. Actual journal descriptors,

@@ -2,16 +2,60 @@
 
 Updated 2026-11-07. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.19 is published
+the older report checkout and the existing worktrees. Preview.20 is published
 and selected on Snap OSS/work and Starship. Carbon is offline, last verified on
 preview.18. Selected and loaded versions remain distinct.
 
+## Preview.20 publication and managed rollout
+
+Bryan requested publication and deployment after reviewing `f787ad6`. Immutable
+release source `f787ad6f67d247bc8f132318b4350df08ee4b060` is published through the
+personal github.com account. All five fetched assets match the qualified build
+and GitHub SHA-256 digests. Python 3.11/3.14 CI passes the 428-test suite and
+release build/verification. Runtime payload bodies match the native-qualified
+candidate; worker definitions and explicit invocation remain unchanged.
+Current guides and the walkthrough identify preview.20 and keep deferred-host
+and loaded-code limits visible. The publication build passes 314 link/asset/anchor
+checks, 15 release-claim checks and 37 focused Pages tests.
+
+Published dotfiles `e73785e` updates only six pin/validator files together after
+the release. Its full gate and actual isolated report-archive apply pass. Snap
+canonical integration `84f8a7a` preserves divergent history and all eleven
+unrelated dirty source files; Starship fast-forwards from the Agent Plus `c00942a`
+base to `e73785e`. No Agent Plus preferences or launch behavior are changed by
+this rollout.
+
+Snap OSS/work and Starship verify all three manifests, exact payload inventories,
+hashes/modes, four copied roles, seven workflow skills and empty scoped diffs.
+Fresh stdio reports preview.20 with 17 monitoring/four reporting tools in all
+three contexts. Read-only native discovery finds seven enabled workflows and
+no retired aliases/errors without forced reread. This is not a new model trial.
+
+Across 1,786 protected existing paths, six intended files change: the two
+selectors and worker provenance manifest per host. Native config/auth, report
+configuration, old releases, native skill caches and all 28 saved binding
+files/mtimes remain unchanged. Native owner identities remain exact. Snap keeps
+all 14 initial tracked native/helper identities; Starship keeps 21 of 23, with
+two pre-existing MCP exits of unlocalized cause. No lifecycle action, owner
+restart, global MCP refresh, real input or real-monitor recovery is issued.
+
+Existing loaded versions remain separate: Snap's sampled OSS connection reports
+preview.18, and three Starship monitoring samples report preview.19. Those helpers
+and already running coordinators retain their captured code until normal native
+adoption; installing preview.20 alone does not apply its logging fix to them.
+Carbon remains unreachable after retry through Starship; deployment is deferred,
+last verified on preview.18. Capture fresh preimages after it returns.
+See the [delivery receipt](reliability-packaging-results.md#preview20-health-and-restart-publication-and-rollout).
+
 ## Selected refinement: health and completed restart follow-up
+
+This is the historical source-only pass. The publication above supersedes its
+delivery boundary while retaining its acceptance limits.
 
 Bryan invoked `$luna-goal-loop` for the
 [health/restart refinement](codex-plus-plan.md#selected-pass-health-diagnostics-and-restart-follow-up).
-The source candidate is preview.20; published and installed selections remain
-preview.19. Luna owns doctor diagnostics and focused tests; the primary owns
+The source candidate was preview.20; published and installed selections were
+preview.19. Luna owned doctor diagnostics and focused tests; the primary owned
 native acceptance, coordinator log placement, integration and documentation.
 Worker identities and explicit invocation remain unchanged.
 
