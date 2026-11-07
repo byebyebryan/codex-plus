@@ -33,10 +33,12 @@ no retired aliases/errors without forced reread. This is not a new model trial.
 
 Across 1,786 protected existing paths, six intended files change: the two
 selectors and worker provenance manifest per host. Native config/auth, report
-configuration, old releases, native skill caches and all 28 saved binding
-files/mtimes remain unchanged. Native owner identities remain exact. Snap keeps
-all 14 initial tracked native/helper identities; Starship keeps 21 of 23, with
-two pre-existing MCP exits of unlocalized cause. No lifecycle action, owner
+configuration, old releases and all 28 saved binding files/mtimes remain unchanged.
+The later 23:49 UTC audit retains two changed existing Snap work native-system
+skill cache files, with no new cache paths or unclassified protected changes.
+Native owner identities remain exact. Snap keeps all 14 initial tracked
+native/helper identities; Starship keeps 19 of 23 at that audit, with four
+pre-existing MCP exits of unlocalized cause. No lifecycle action, owner
 restart, global MCP refresh, real input or real-monitor recovery is issued.
 
 Existing loaded versions remain separate: Snap's sampled OSS connection reports

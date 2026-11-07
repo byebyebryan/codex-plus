@@ -110,9 +110,12 @@ Already loaded process versions remain
 independent of selected files.
 
 No native daemon restart or global MCP refresh was issued. Native daemon
-identities on both reachable hosts were preserved. The 28 existing conversation binding files
-and all unrelated protected files remain unchanged. Two pre-existing Starship
-MCP processes ended during the elapsed pass with unlocalized cause; no lifecycle
+identities on both reachable hosts were preserved. All 28 existing conversation
+binding files and mtimes remain unchanged; no unclassified protected-file changes
+were found. The final 23:49 UTC audit
+also retains two changed existing native-system cache files on Snap work, with
+no new cache paths. Four pre-existing Starship MCP processes had ended by that
+audit with unlocalized cause; no lifecycle
 action was issued. Report hosting remains independent of stdio protocol
 discovery. See the [rollout receipt](reliability-packaging-results.md#preview20-health-and-restart-publication-and-rollout)
 for preservation details and runtime execution limits. The full dotfiles gate passes.

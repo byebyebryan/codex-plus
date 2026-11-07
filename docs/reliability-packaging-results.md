@@ -47,11 +47,13 @@ errors; installation/discovery is not execution or model-access proof.
 
 The preservation audit covers 1,786 existing paths. Only six intended existing
 files change: two selectors and the worker provenance manifest on each host.
-All old releases, native config/auth, report configuration, native skill caches
-and unrelated protected files remain unchanged. All 28 saved binding files and
+Old releases, native config/auth and report configuration remain unchanged.
+The later 23:49 UTC audit retains two changed existing
+Snap work native-system skill cache files, with no new cache paths and no
+unclassified protected changes. All 28 saved binding files and
 mtimes match their preimages, and both hosts retain exact native owner identities.
 Snap preserves all 14 initial tracked native/helper processes; Starship preserves
-21 of 23. Two pre-existing Starship MCP exits have unlocalized cause. No daemon
+19 of 23 at that audit. Four pre-existing Starship MCP exits have unlocalized cause. No daemon
 restart, global refresh, real input or monitor recovery was issued.
 
 Selected and loaded code remain separate. Snap's sampled OSS MCP still reports

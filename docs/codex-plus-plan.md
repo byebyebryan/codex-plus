@@ -31,7 +31,8 @@ published. Scoped Snap integration `84f8a7a` and Starship `e73785e` verify all
 three component manifests, four roles/seven workflows, private modes, empty
 scoped diffs and fresh preview.20 MCP entrypoints. The full dotfiles gate and
 actual report-archive apply pass. Native owners and 28 bindings remain unchanged;
-two pre-existing Starship MCP exits remain unlocalized. Existing loaded versions
+four pre-existing Starship MCP exits remain unlocalized; two native-owned Snap
+work cache updates are retained separately. Existing loaded versions
 adopt normally, and Carbon remains unreachable/last verified on preview.18.
 See the [delivery receipt](reliability-packaging-results.md#preview20-health-and-restart-publication-and-rollout).
 
