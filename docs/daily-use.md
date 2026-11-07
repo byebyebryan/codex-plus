@@ -29,6 +29,14 @@ relay, custom hook or desktop-notification publisher.
 
 ## Start with a real task
 
+With preview.19 code loaded, eligible peer watches and un-emitted reminders can
+continue after a verified daemon restart within their original bounds. Commands
+and scheduled MCP checks require an original `restart=resume` choice for a source
+safe to repeat. Older registrations without trustworthy lease evidence and
+uncertain deliveries remain quarantined. Ask “What am I still waiting on?” for
+cached state and gaps; the model can use explicit owner recovery when needed.
+An installation does not reload an existing connection or replay old work.
+
 For delegated implementation or investigation, choose an explicit
 [Luna or adaptive worker workflow](workers.md). Use `$luna-task` for one bounded
 assignment or `$luna-goal-loop` for a substantial goal with Luna. Your primary

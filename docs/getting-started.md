@@ -37,7 +37,7 @@ release. Choose the archives you need from its single GitHub release; see
 
 ## Released and source features
 
-**v0.1.0-preview.18** supplies the released workflows shown in these guides. Updating
+**v0.1.0-preview.19** supplies the released workflows shown in these guides. Updating
 documentation or selecting an archive does not reload an existing MCP process.
 
 | Available in | What to expect |
@@ -50,6 +50,7 @@ documentation or selecting an archive does not reload an existing MCP process.
 | Added in preview.16 | Introduced canonical `$adaptive-task` and `$adaptive-goal-loop` names with worker-name compatibility entries, which preview.17 removed. Routing and Luna workflows stayed unchanged. |
 | Changed in preview.17 | Removed the worker-name compatibility entries. Use the four canonical Luna/adaptive workflows and update old prompts. |
 | Added in preview.18 | Explicit `$sol-task`, `$astra-task` and GPT-6.1 `$terra-task` for one named review, investigation or implementation, preserving the primary. Older installations need an upgrade; see the [contract](workers.md#choose-sol-or-astra-explicitly-source-candidate) and [Terra variant selection](workers.md#choose-current-terra-explicitly-source-candidate). |
+| Added in preview.19 | Verified daemon restart handoff, bounded stale inspection, quarantine and opt-in replay-safe source continuation under original limits. Uncertain messages/commands are never replayed; see [recovery and adoption limits](owner-recovery.md#daemon-restart-candidate-preview19). |
 | Added in preview.14 | Correct native collaboration discovery and direct role selection in all four worker workflows. |
 | Added in preview.13 | The existing read-only doctor accepts `--human` for readable diagnostics. JSON remains the default. Pages builds check published and managed guide declarations independently; preview.12 archives remain verifiable and selectable for rollback. |
 

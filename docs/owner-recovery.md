@@ -1,9 +1,12 @@
 # Native owner recovery
 
-## Daemon restart candidate: preview.19
+<a id="daemon-restart-candidate-preview19"></a>
 
-Preview.18 remains the published and installed release. This section describes
-the unreleased restart fix; the preview.11 contract and evidence below remain a
+## Daemon restart recovery: preview.19
+
+Preview.19 publishes the restart fix. Per-host installation and loaded helper
+versions are recorded separately in the [handoff](implementation-handoff.md).
+The preview.11 contract and evidence below remain a
 historical record. A daemon restart does not invalidate the conversation or its
 saved user request. The process-incarnation guard still fences old writers.
 
@@ -64,10 +67,10 @@ nonempty queue. The core selection receipt records `sources_started=false` and
 registration/coordinator availability is not proof of source execution.
 Automatic coordinator handoff starts its own next generation after selection.
 
-From the candidate checkout, use `scripts/codex-plus-owner --thread THREAD_UUID
+From the source checkout, use `scripts/codex-plus-owner --thread THREAD_UUID
 status --mode quarantine` (or `resume`), then `recover --mode` with that same
-preview. The managed installed helper remains preview.18 until a separate
-release and chezmoi rollout. Existing loaded preview.18 helpers do not acquire
+preview. Managed installation follows the published release through chezmoi.
+Existing loaded preview.18 helpers do not acquire
 automatic handoff from a source update. No global MCP reload or daemon restart
 is an adoption shortcut; the exposed native reload RPC has no server/thread
 selector. The actual preview.18 artifact can read the new selector and explicit
@@ -92,8 +95,8 @@ paused-goal delivery control. It starts no model turn. An additional admission
 probe did begin one turn because the native idle queue consumed its input
 immediately; withdrawal and handling stayed unknown and were never replayed.
 This is not proof of a completed model follow-up after restart or general native
-0.167 compatibility. Production owners, Starship bindings and installed preview.18
-remain unchanged. See the [handoff receipt](implementation-handoff.md#unreleased-preview19-daemon-restart-recovery)
+0.167 compatibility. The source pass preserved production owners, Starship
+bindings and installed preview.18. See the [handoff receipt](implementation-handoff.md#unreleased-preview19-daemon-restart-recovery)
 for the acceptance boundary and adoption limits.
 
 The 2026-10-29 investigation found a correct ownership refusal with no supported

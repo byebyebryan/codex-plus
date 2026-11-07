@@ -4,8 +4,8 @@ For installation and maintenance, give your agent the
 [canonical lifecycle guide](manage-agent.md). This page remains the component
 reference for artifacts, configuration and behavior.
 
-Preview.13 adds readable doctor output and retains preview.12 verification and
-rollback support. It preserves explicit clean rollover and archived inspection through the
+Preview.19 adds verified daemon restart handoff and preserves prior diagnostics,
+verification and rollback support. It extends clean rollover and archived inspection through the
 [owner recovery contract](owner-recovery.md). Publishing or selecting an archive
 does not reload an already running process. Managed rollout is recorded separately
 below.
@@ -13,14 +13,16 @@ below.
 The runtime is a Linux/Unix preview qualified against Codex 0.162.1. It uses
 Python 3.11 or newer and RTK for the existing native status/coordinator command
 paths. It requires an already running owning daemon and loaded independent
-sessions; it never starts a daemon or cold-resumes a target. Long production
-operation, native owner replacement and personal UX acceptance remain separate.
+sessions; it never starts a daemon or cold-resumes a target. Bounded owner
+replacement is qualified on native 0.167.0; long production operation and personal
+UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.18](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.18)
-adds explicit Sol, Astra and current-Terra tasks, for seven workflows and four
-current roles. Preview.17 removed the worker-name compatibility entries.
+[v0.1.0-preview.19](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.19)
+adds verified daemon restart recovery and honest quarantine/continuation within
+original limits. Preview.18 added explicit Sol, Astra and current-Terra tasks,
+for seven workflows and four current roles. Preview.17 removed the worker-name compatibility entries.
 The adaptive names arrived in preview.16; optional
 primary-aware escalation, Astra XHigh and read-only primary selection arrived
 in preview.15. Escalation remains instruction-based and defaults off.
@@ -36,9 +38,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.18.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.18.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.18.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.19.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.19.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.19.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains

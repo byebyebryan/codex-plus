@@ -101,6 +101,25 @@ class PagesTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'inconsistent managed release claim in docs/runtime-distribution.md.*expected 0.1.0-preview.12'):
                 pages.validate_current_guides(root)
 
+    def test_managed_source_selection_can_report_a_partial_fleet_rollout(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.release_fixture(directory, source='0.1.0-preview.19',
+                                        published='0.1.0-preview.19', managed='0.1.0-preview.19')
+            substitutions = {
+                'README.md': ('Snap, Starship and Carbon select', 'Managed configuration selects'),
+                'docs/architecture.md': ('Snap, Starship and Carbon select', 'Managed source selects'),
+                'docs/runtime-distribution.md': ('Snap, Starship and Carbon select workers', 'Managed source selects workers'),
+            }
+            for name, (old, new) in substitutions.items():
+                path = root / name
+                path.write_text(path.read_text().replace(old, new) +
+                    '\nVerified host receipts: Snap/Starship preview.19; Carbon offline, last verified preview.18.\n')
+            self.assertEqual(pages.validate_current_guides(root), 13)
+            path = root / 'docs/runtime-distribution.md'
+            path.write_text(path.read_text().replace('**preview.19**', '**preview.18**'))
+            with self.assertRaisesRegex(ValueError, 'inconsistent managed release claim'):
+                pages.validate_current_guides(root)
+
     def test_missing_duplicate_and_malformed_anchors_are_rejected(self):
         anchors = {
             'published': '**v0.1.0-preview.12** includes released features.',

@@ -124,10 +124,10 @@ CURRENT_RELEASE_CLAIMS = {
         "docs/presentation/index.html": (r"Codex Plus (preview\.\d+)\.", r"Available in (preview\.\d+)"),
     },
     "managed": {
-        "README.md": (r"Snap, Starship and Carbon select \*\*v([^*]+)\*\*",),
-        "docs/architecture.md": (r"and Carbon select (preview\.\d+)\s+artifacts",),
+        "README.md": (r"(?:Snap, Starship and Carbon select|Managed configuration selects) \*\*v([^*]+)\*\*",),
+        "docs/architecture.md": (r"(?:and Carbon select|Managed source selects) (preview\.\d+)\s+artifacts",),
         "docs/runtime-distribution.md": (
-            r"Snap, Starship and Carbon select workers, monitoring and reporting \*\*([^*]+)\*\*",
+            r"(?:Snap, Starship and Carbon|Managed source) select(?:s)? workers, monitoring and reporting \*\*([^*]+)\*\*",
         ),
     },
 }

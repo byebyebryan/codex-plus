@@ -1,10 +1,27 @@
 # Implementation handoff
 
-Updated 2026-11-05. The owner-recovery work was isolated on Starship
+Updated 2026-11-07. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.18 is published and
-selected on Snap OSS/work, Starship and Carbon. Selected and loaded versions
-remain distinct.
+the older report checkout and the existing worktrees. Preview.19 is published;
+managed rollout is in progress from the verified preview.18 baseline. Selected
+and loaded versions remain distinct.
+
+## Preview.19 publication and managed rollout
+
+Bryan requested review, commit, publication and deployment on 2026-11-07. Release
+source `0259d96` is published, with all five fetched assets verified against the
+reviewed bytes and GitHub digests. The 145-file gate, 420 tests and ten skill
+validators pass. Both Python 3.11/3.14 CI jobs pass. Initial CI exposed mismatched
+real/fake monotonic clocks in older engine fixtures; `0259d96` aligns their clock
+domains without changing runtime bytes. Those bytes match the native-qualified
+candidate below. Worker identities and invocation remain unchanged.
+
+Managed pins and validators are being advanced together through chezmoi. Snap
+OSS/work and Starship have fresh verified preimages/backups. Carbon is offline
+on its trusted Starship route and Tailscale; its deployment is held. No daemon
+restart, global MCP refresh, session input or real-journal recovery is authorized
+as an incidental install action. The earlier source-only receipt below is
+historical; this publication request supersedes its delivery boundary.
 
 ## Unreleased preview.19: daemon restart recovery
 
