@@ -48,7 +48,7 @@ class PeerWatchTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.now = 100.
-        self.store = Store(Path(self.tmp.name) / 'state', clock=lambda: self.now)
+        self.store = Store(Path(self.tmp.name) / 'state', clock=lambda: self.now, monotonic=lambda: self.now)
         self.binding = {**OWNER, 'thread_id': A}
         self.backend = Backend(self.binding)
         self.patch = patch('codex_plus.peers.listener_identity', return_value=dict(OWNER))
@@ -249,7 +249,7 @@ class PeerWatchTests(unittest.TestCase):
         job = self.watch()
         baseline = self.store.job(job)['baseline']
         self.engine.close(); self.store.close()
-        self.store = Store(Path(self.tmp.name) / 'state', clock=lambda: self.now)
+        self.store = Store(Path(self.tmp.name) / 'state', clock=lambda: self.now, monotonic=lambda: self.now)
         self.assertEqual(self.store.job(job)['baseline'], baseline)
         self.assertEqual(self.store.job(job)['spec']['peer'], self.spec['peer'])
 

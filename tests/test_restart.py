@@ -389,7 +389,8 @@ class RestartTests(unittest.TestCase):
 
     def test_restarted_command_waits_cadence_and_rechecks_native_permissions(self):
         with tempfile.TemporaryDirectory() as tmp:
-            store = Store(Path(tmp), clock=lambda: 100)
+            clock = [0.0]
+            store = Store(Path(tmp), clock=lambda: 100, monotonic=lambda: clock[0])
             frozen = binding(A)
             backend = EngineBackend(frozen)
             grant = {'native': {'sandbox': {'type': 'readOnly', 'networkAccess': False},
@@ -399,7 +400,6 @@ class RestartTests(unittest.TestCase):
             job = store.create('watch', {'duration': 100, 'command': ['true'], 'cwd': '/',
                 'command_interval': 5, 'restart': 'resume', 'execution': grant})
             store.control(job, 'daemon_restart_observation_gap')
-            clock = [0.0]
             engine = Engine(store, frozen, backend, monotonic=lambda: clock[0])
             try:
                 engine.tick(receive=False)

@@ -31,7 +31,7 @@ class InspectionTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.now = 100.0
-        self.store = Store(Path(self.tmp.name)/'state', clock=lambda: self.now)
+        self.store = Store(Path(self.tmp.name)/'state', clock=lambda: self.now, monotonic=lambda: self.now)
         self.binding = {'thread_id': 'owned', 'requested_socket': '/fixture'}
         self.backend = InspectionBackend(self.binding)
         self.engine = Engine(self.store, self.binding, self.backend, monotonic=lambda: self.now)

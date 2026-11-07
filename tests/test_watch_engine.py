@@ -91,7 +91,7 @@ class EngineTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
         self.now = 100.0
-        self.store = Store(self.root / 'state', clock=lambda: self.now)
+        self.store = Store(self.root / 'state', clock=lambda: self.now, monotonic=lambda: self.now)
         self.binding = {'thread_id': 'fixture-thread', 'requested_socket': '/fixture/socket'}
         self.backend = Backend(self.binding)
         self.engine = Engine(self.store, self.binding, self.backend, monotonic=lambda: self.now)
