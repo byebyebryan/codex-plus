@@ -1,9 +1,14 @@
 from contextlib import redirect_stdout
 import io
 import json
+import os
 from pathlib import Path
+import signal
+import stat
+import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
@@ -207,6 +212,139 @@ class CliTests(unittest.TestCase):
         self.assertEqual(self.store.event(result['event_id'])['delivery'], 'pending')
         self.assertEqual(len(self.store.events(result['id'])), 1)
         self.assertTrue(result['admission_is_not_handling'])
+
+    def test_rtk_supervisor_log_is_outside_legacy_and_incarnation_journal_boundaries(self):
+        from codex_plus import cli
+        from codex_plus.owner_recovery import _open_state_processes
+
+        probe = self.root / 'coordinator_probe.py'
+        probe.write_text('''\
+import os
+from pathlib import Path
+import sys
+import time
+
+journal, ready, release, closed, finish = map(Path, sys.argv[1:])
+fd = os.open(journal, os.O_CREAT | os.O_RDWR, 0o600)
+for descriptor in (1, 2):
+    try:
+        os.close(descriptor)
+    except OSError:
+        pass
+temporary = ready.with_name(ready.name + '.tmp')
+temporary.write_text(str(os.getpid()))
+temporary.replace(ready)
+while not release.exists():
+    time.sleep(0.02)
+os.close(fd)
+temporary = closed.with_name(closed.name + '.tmp')
+temporary.write_text('closed')
+temporary.replace(closed)
+while not finish.exists():
+    time.sleep(0.02)
+''')
+        real_popen = subprocess.Popen
+
+        layouts = (
+            ('legacy', self.root / 'legacy-state', None),
+            ('incarnation', self.root / 'native-state' / A / 'incarnations' / 'epoch-1',
+             self.root / 'native-state' / A),
+        )
+        for label, state, stable_container in layouts:
+            with self.subTest(layout=label):
+                state.mkdir(mode=0o700, parents=True)
+                journal = state / 'journal.sqlite3'
+                journal.touch(mode=0o600)
+                ready = self.root / (label + '.ready')
+                release = self.root / (label + '.release')
+                closed = self.root / (label + '.closed')
+                finish = self.root / (label + '.finish')
+                supervisor = None
+                probe_pid = None
+                probe_identity = None
+
+                def launch(arguments, **kwargs):
+                    nonlocal supervisor
+                    self.assertEqual(arguments[:2], ['rtk', 'proxy'])
+                    replacement = ['rtk', 'proxy', sys.executable, '-B', str(probe),
+                                   str(journal), str(ready), str(release), str(closed), str(finish)]
+                    supervisor = real_popen(replacement, **kwargs)
+                    return supervisor
+
+                def fake_coordinator_info(root):
+                    if Path(root) != state or not ready.is_file():
+                        return None
+                    try:
+                        return {'pid': int(ready.read_text())}
+                    except (OSError, ValueError):
+                        return None
+
+                def wait_for(path):
+                    deadline = time.monotonic() + 5
+                    while time.monotonic() < deadline:
+                        if path.is_file():
+                            return
+                        time.sleep(0.02)
+                    self.fail(f'probe marker was not created: {path.name}')
+
+                try:
+                    with patch('codex_plus.cli.coordinator_info', side_effect=fake_coordinator_info), \
+                            patch('codex_plus.cli.subprocess.Popen', side_effect=launch):
+                        cli.ensure_coordinator(state)
+
+                    probe_pid = int(ready.read_text())
+                    probe_identity = cli.process_identity(probe_pid)
+                    self.assertIsNotNone(probe_identity)
+                    self.assertEqual(_open_state_processes(state)['holder'], str(probe_pid),
+                                     'an actual journal FD must remain a positive holder')
+
+                    log_path = cli.coordinator_log_path(state)
+                    boundary = stable_container or state
+                    self.assertFalse(log_path.is_relative_to(boundary.resolve()))
+                    self.assertEqual(stat.S_IMODE(log_path.parent.stat().st_mode), 0o700)
+                    self.assertEqual(stat.S_IMODE(log_path.stat().st_mode), 0o600)
+
+                    # The probe releases its journal as a coordinator would on
+                    # handoff, but stays alive with stdio closed so only RTK's
+                    # retained supervisor descriptors can hold the state tree.
+                    release.touch()
+                    wait_for(closed)
+                    self.assertIsNone(supervisor.poll(), 'RTK must still supervise the gated probe')
+                    self.assertIsNone(_open_state_processes(state)['holder'])
+                    if stable_container:
+                        self.assertIsNone(_open_state_processes(stable_container)['holder'])
+                finally:
+                    release.touch(exist_ok=True)
+                    finish.touch(exist_ok=True)
+                    if supervisor is not None:
+                        try:
+                            return_code = supervisor.wait(timeout=5)
+                        except subprocess.TimeoutExpired:
+                            if (probe_pid and probe_identity
+                                    and cli.process_identity(probe_pid) == probe_identity):
+                                os.kill(probe_pid, signal.SIGTERM)
+                            if supervisor.poll() is None:
+                                supervisor.terminate()
+                            return_code = supervisor.wait(timeout=5)
+                        self.assertEqual(return_code, 0)
+                    if probe_pid and probe_identity:
+                        self.assertNotEqual(cli.process_identity(probe_pid), probe_identity,
+                                            'the exact bounded probe process must be gone')
+
+    def test_coordinator_log_directory_symlink_is_refused_before_launch(self):
+        from codex_plus import cli
+
+        state = self.root / 'linked-log-state'
+        state.mkdir(mode=0o700)
+        outside = self.root / 'outside-log-target'
+        outside.mkdir(mode=0o700)
+        namespace = self.root / '.coordinator-logs'
+        namespace.symlink_to(outside, target_is_directory=True)
+        with patch('codex_plus.cli.subprocess.Popen') as launch:
+            with self.assertRaises(ValueError):
+                cli.ensure_coordinator(state)
+        launch.assert_not_called()
+        self.assertEqual(list(outside.iterdir()), [])
 
 
 if __name__ == '__main__':

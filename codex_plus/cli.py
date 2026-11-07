@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -99,13 +100,25 @@ def validate_binding(root: Path) -> dict:
     return frozen
 
 
+def coordinator_log_path(root: Path) -> Path:
+    """Keep supervisor log descriptors outside the frozen journal boundary."""
+    container = root.parent.parent if root.parent.name == 'incarnations' else root
+    name = hashlib.sha256(str(root.resolve()).encode()).hexdigest() + '.log'
+    return container.parent / '.coordinator-logs' / name
+
+
 def ensure_coordinator(root: Path):
     with (root / 'launch.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         if coordinator_info(root):
             return
         wrapper = Path(__file__).resolve().parents[1] / 'scripts/codex-plus-watch'
-        fd = os.open(root / 'coordinator.log', os.O_CREAT | os.O_APPEND | os.O_WRONLY, 0o600)
+        # RTK retains its child's stdout/stderr while supervising it. A log
+        # inside root would falsely keep that journal open after the actual
+        # coordinator relinquishes its writer during a native owner handoff.
+        log_path = coordinator_log_path(root)
+        private_directory(log_path.parent)
+        fd = os.open(log_path, os.O_CREAT | os.O_APPEND | os.O_WRONLY | os.O_NOFOLLOW, 0o600)
         with os.fdopen(fd, 'ab') as log:
             child = subprocess.Popen(['rtk', 'proxy', sys.executable, '-B', str(wrapper),
                 '--state', str(root), 'serve'], stdin=subprocess.DEVNULL,

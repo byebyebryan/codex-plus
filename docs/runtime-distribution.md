@@ -95,7 +95,7 @@ source `0259d96`, through published chezmoi pins `ff73822`.
 | --- | --- | --- |
 | Snap OSS | Preview.19; all three manifests and copied roles/skills verify; scoped diff empty. | Fresh stdio: 17 monitoring/four report tools. Existing native owner unchanged; loaded code is separate. |
 | Snap work | Same verified release in its separate home. | Fresh stdio verified; existing native owner unchanged. |
-| Starship | Same verified release and empty scoped diff. | Fresh stdio verified. Default native control socket was unavailable before and after installation; no daemon was started. |
+| Starship | Same verified release and empty scoped diff at rollout. | The socket was unavailable during installation. A later launcher repair restored the shared 0.167 owner; two sampled conversations report preview.19 monitoring/reporting. Old-watch recovery is separate. |
 | Carbon | Offline; deployment deferred. Last verified preview.18 on 2026-11-05. | No current runtime or installation claim. Refresh preflight before applying. |
 
 The worker bundle includes four native roles and seven current workflow skills;
@@ -154,6 +154,23 @@ conversation. `--no-native` skips this inspection; `loaded_processes_checked`
 remains false because the doctor does not scan or verify running process code.
 The reporting-only archive retains file and native CLI diagnosis; the monitoring
 component supplies the optional client for native MCP metadata inspection.
+
+The unreleased preview.20 source adds fixed `loaded_mcp.diagnostic.reason` and
+`action` fields, with per-server diagnostics for reported version differences,
+missing metadata and disconnected servers. Existing schema/fields and human/JSON
+exit behavior are retained. Missing endpoints, unconfirmed loaded callers and
+inconclusive RPC/ownership probes remain distinct; exception text is not exposed.
+Check native home, launch arguments and endpoint before interpreting a missing
+conversation. Its absence alone does not establish embedded mode; see
+[native launch diagnosis](environments.md#native-launch-and-missing-conversations).
+Published preview.19 keeps its original diagnostic behavior until upgraded.
+
+Future preview.20 coordinators place private append-only logs under
+`.coordinator-logs` beside the stable conversation directories, outside frozen
+journal/epoch trees. RTK's supervisor can retain log descriptors without falsely
+appearing to hold the old journal open during handoff. Actual journal descriptors,
+writer locks and process-identity checks remain unchanged. Existing logs are
+retained; loaded preview.19 coordinators do not acquire this change by selection.
 
 ## Artifact and immutable installation
 

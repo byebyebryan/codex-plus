@@ -70,42 +70,138 @@ def command_version(argv, *, run):
         return {'state': 'unavailable', 'detail': type(error).__name__}
 
 
+def _diagnostic(reason, action):
+    """Return fixed-vocabulary guidance without including native exception data."""
+    return {'reason': reason, 'action': action}
+
+
+def _unavailable(error, reason, action, note='No conversation was resumed, server refreshed, or owner started.'):
+    return {'state': 'unavailable', 'detail': type(error).__name__,
+            'diagnostic': _diagnostic(reason, action), 'note': note}
+
+
+def _requested_endpoint_missing(requested):
+    """Confirm the requested path itself is absent before attributing FileNotFoundError."""
+    try:
+        Path(requested).resolve(strict=True)
+    except FileNotFoundError:
+        return True
+    except (OSError, TypeError, ValueError):
+        return False
+    return False
+
+
 def loaded_mcp(requested, thread, components, *, client_factory=None):
     if not thread:
-        return {'state': 'not_checked', 'detail': 'No loaded conversation selected; use CODEX_THREAD_ID or --thread.'}
+        return {'state': 'not_checked', 'detail': 'No loaded conversation selected; use CODEX_THREAD_ID or --thread.',
+                'diagnostic': _diagnostic('conversation_identity_not_supplied',
+                    'Set CODEX_THREAD_ID or pass --thread to inspect one already loaded conversation.')}
     try:
         if not isinstance(thread, str): raise ValueError('expected a native thread identity')
         uuid.UUID(thread)
-        if client_factory is None:
+    except (TypeError, ValueError):
+        return {'state': 'unavailable', 'detail': 'ValueError',
+                'diagnostic': _diagnostic('invalid_conversation_identity',
+                    'Pass a native conversation UUID that is already loaded in the intended daemon.'),
+                'note': 'No native endpoint was queried and no conversation was resumed.'}
+
+    try:
+        from .native import Client, RpcError
+    except ImportError:
+        return {'state': 'not_available', 'detail': 'The monitoring component supplies native MCP introspection.',
+                'diagnostic': _diagnostic('native_introspection_unavailable',
+                    'Use a monitoring installation that includes native MCP introspection.')}
+    if client_factory is None:
+        client_factory = Client
+
+    # Keep construction separate from RPC inspection so positive endpoint
+    # failures can be distinguished from an inconclusive native introspection.
+    try:
+        native_client = client_factory(requested, experimental=True, timeout=5)
+    except FileNotFoundError as error:
+        if _requested_endpoint_missing(requested):
+            return _unavailable(error, 'native_endpoint_missing',
+                'Check the configured native socket path and native launch options; a path or launch/endpoint mismatch is possible. Doctor does not start an owner.')
+        return _unavailable(error, 'native_endpoint_unverified',
+            'Inspect the configured native endpoint and listener ownership; a separate native proof file may be unavailable.')
+    except (ConnectionRefusedError, TimeoutError) as error:
+        return _unavailable(error, 'native_endpoint_unresponsive',
+            'Check whether the configured endpoint belongs to the intended responsive daemon; inspect native launch options. Doctor does not start or restart an owner.')
+    except (OSError, RuntimeError, ValueError) as error:
+        return _unavailable(error, 'native_endpoint_unverified',
+            'Inspect the configured native endpoint and launch options; this probe could not establish a usable owned RPC connection.')
+
+    servers = {}
+    phase = 'loaded_inventory'
+    try:
+        with native_client as client:
             try:
-                from .native import Client
-            except ImportError:
-                return {'state': 'not_available', 'detail': 'The monitoring component supplies native MCP introspection.'}
-            client_factory = Client
-        servers = {}
-        with client_factory(requested, experimental=True, timeout=5) as client:
-            client.bind(thread, timeout=5)  # Positive loaded inventory only; never resume.
+                client.bind(thread, timeout=5)  # Positive loaded inventory only; never resume.
+            except RpcError as error:
+                # Client.bind uses this exact refusal only after its bounded,
+                # successful inventory scan found no positive match. Other RPC
+                # errors can contain private server text and remain unclassified.
+                if error.args == ('target not positively present in loaded inventory',):
+                    return _unavailable(error, 'requested_conversation_not_positively_loaded',
+                        'Check the selected conversation and native CLI/TUI launch and endpoint options; a launch/endpoint mismatch is possible. Inventory absence does not identify embedded mode; doctor does not resume the conversation.',
+                        note='This endpoint did not positively list the requested conversation. It may be unloaded or associated with a different native endpoint; no conversation was resumed.')
+                return _unavailable(error, 'loaded_inventory_rpc_failed',
+                    'Inspect native endpoint and loaded-inventory RPC availability; the conversation was not confirmed loaded.')
+            except (OSError, ValueError, RuntimeError, TimeoutError, TypeError) as error:
+                return _unavailable(error, 'loaded_inventory_introspection_failed',
+                    'Inspect native endpoint and loaded-inventory RPC availability; the conversation was not confirmed loaded.')
+
+            phase = 'mcp_status'
             for name, component in (('codex_plus', 'monitoring'), ('html_report', 'reporting')):
                 page = client.call('mcpServerStatus/list', {'threadId': thread, 'serverName': name,
                     'detail': 'toolsAndAuthOnly'}, timeout=5)
-                rows = page.get('data', [])
-                if len(rows) != 1 or rows[0].get('name') != name or page.get('nextCursor'):
-                    servers[name] = {'state': 'not_reported', 'version_alignment': 'unknown'}
+                rows = page.get('data', []) if isinstance(page, dict) else None
+                if (not isinstance(rows, list) or len(rows) != 1 or not isinstance(rows[0], dict)
+                        or rows[0].get('name') != name or page.get('nextCursor')):
+                    servers[name] = {'state': 'not_reported', 'version_alignment': 'unknown',
+                        'diagnostic': _diagnostic('server_metadata_unavailable',
+                            'Inspect native MCP status metadata for this conversation; selected files do not establish loaded payload bytes.')}
                     continue
+
                 row = rows[0]
                 info = row.get('serverInfo')
                 version = info.get('version') if isinstance(info, dict) else None
                 if not isinstance(version, str) or not 1 <= len(version) <= 128: version = None
-                selected_version = components[component].get('version')
-                servers[name] = {'state': row.get('runtimeStatus') or 'unknown',
-                    'reported_version': version, 'selected_version': selected_version,
-                    'version_alignment': ('same_reported_version' if version == selected_version else 'different_reported_version')
-                        if row.get('runtimeStatus') == 'connected' and version and selected_version else 'unknown'}
+                selected_version = _selected_version(components, component)
+                raw_status = row.get('runtimeStatus')
+                status = raw_status if isinstance(raw_status, str) and 1 <= len(raw_status) <= 128 else 'unknown'
+                alignment = ('same_reported_version' if version == selected_version else 'different_reported_version')
+                alignment = alignment if status == 'connected' and version and selected_version else 'unknown'
+                entry = {'state': status, 'reported_version': version,
+                    'selected_version': selected_version, 'version_alignment': alignment}
+                if status != 'connected':
+                    reason = 'server_connection_state_unavailable' if status == 'unknown' else 'server_not_connected'
+                    entry['diagnostic'] = _diagnostic(reason,
+                        'Inspect this conversation’s native MCP configuration and launch options; doctor does not reconnect or refresh the server.')
+                elif version is None:
+                    entry['diagnostic'] = _diagnostic('reported_server_version_unavailable',
+                        'Inspect the native MCP status metadata; selected files do not establish the loaded version.')
+                elif selected_version is None:
+                    entry['diagnostic'] = _diagnostic('selected_server_version_unavailable',
+                        'Inspect selected manifest metadata and native reported metadata separately.')
+                elif alignment == 'different_reported_version':
+                    entry['diagnostic'] = _diagnostic('reported_version_differs_from_selected',
+                        'Inspect native MCP launch options for this conversation; a reported version does not verify loaded payload bytes.')
+                servers[name] = entry
         return {'state': 'reported', 'scope': 'one positively loaded conversation', 'servers': servers,
-                'note': 'Native MCP metadata reports versions; it does not verify loaded payload bytes or other conversations.'}
-    except (OSError, ValueError, RuntimeError, TimeoutError) as error:
-        return {'state': 'unavailable', 'detail': type(error).__name__,
-                'note': 'No conversation was resumed, server refreshed or owner started.'}
+                'note': 'Native metadata supplies reported versions; selected versions come from local manifests. Neither verifies loaded payload bytes or other conversations.'}
+    except (OSError, ValueError, RuntimeError, TimeoutError, TypeError, AttributeError, KeyError) as error:
+        if phase == 'mcp_status':
+            return _unavailable(error, 'mcp_status_rpc_failed',
+                'Inspect native MCP status RPC availability for this conversation; doctor did not refresh or reconnect a server.')
+        return _unavailable(error, 'native_introspection_failed',
+            'Inspect native endpoint and listener ownership; no conversation was resumed.')
+
+
+def _selected_version(components, component):
+    row = components.get(component, {}) if isinstance(components, dict) else {}
+    value = row.get('version') if isinstance(row, dict) else None
+    return value if isinstance(value, str) else None
 
 
 def diagnose(*, runtime_prefix=None, report_prefix=None, worker_prefix=None,
@@ -171,9 +267,22 @@ def diagnose(*, runtime_prefix=None, report_prefix=None, worker_prefix=None,
     return result
 
 
-def human_text(value):
-    # Paths and reported metadata must stay on one inert terminal line.
-    return re.sub(r'[\x00-\x1f\x7f-\x9f]', lambda match: '\\x%02x' % ord(match[0]), str(value))
+def human_text(value, maximum=512):
+    # Paths, reported metadata and diagnostics stay bounded on one inert line.
+    text = str(value)
+    if len(text) > maximum:
+        text = text[:maximum - 1] + '…'
+    return re.sub(r'[\x00-\x1f\x7f-\x9f]', lambda match: '\\x%02x' % ord(match[0]), text)
+
+
+def _append_diagnostic(lines, diagnostic, prefix):
+    if not isinstance(diagnostic, dict):
+        return
+    reason, action = diagnostic.get('reason'), diagnostic.get('action')
+    if reason:
+        lines.append(prefix + 'Reason: ' + human_text(reason))
+    if action:
+        lines.append(prefix + 'Action: ' + human_text(action))
 
 
 def format_human(result):
@@ -216,10 +325,12 @@ def format_human(result):
         lines.append(f'  {name}: {state}')
     loaded = result['loaded_mcp']
     lines.append('Loaded MCP metadata: ' + human_text(loaded['state']).replace('_', ' '))
+    _append_diagnostic(lines, loaded.get('diagnostic'), '  ')
     for name, row in loaded.get('servers', {}).items():
         lines.append(f"  {name}: {human_text(row['state'])}; reported {human_text(row.get('reported_version') or 'unknown')}; "
                      f"selected {human_text(row.get('selected_version') or 'unknown')}; "
                      f"{human_text(row['version_alignment']).replace('_', ' ')}")
+        _append_diagnostic(lines, row.get('diagnostic'), '    ')
     if loaded.get('detail'): lines.append('  ' + human_text(loaded['detail']))
     if loaded.get('note'): lines.append('  ' + human_text(loaded['note']))
     lines.extend([human_text(result['integrity_note']), human_text(result['activation_note'])])

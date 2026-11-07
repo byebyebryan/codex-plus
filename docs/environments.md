@@ -43,6 +43,29 @@ For OSS, use `~/.codex`, `codex-plus-oss` and `report.toml` instead. These are
 existing Snap overrides, not portable default names. Preserve them when using
 standalone monitoring/report commands, or pass the exact native MCP arguments.
 
+## Native launch and missing conversations
+
+A running daemon and an enabled MCP configuration do not establish that the
+current CLI/TUI conversation belongs to that daemon. Inspect the selected
+`CODEX_HOME`, native launch arguments and endpoint when peer discovery or loaded
+MCP inspection cannot positively find a conversation. An absent inventory match
+may mean an unloaded conversation or another endpoint; it does not prove
+embedded mode. Diagnosis must not cold-resume a conversation or start an owner.
+
+Codex 0.167 changed `codex agents` to use normal daemon eligibility checks,
+including embedded fallback. Its configuration-exclusion rules reject per-window
+`-c tui.animations=...` overrides for shared-daemon use. Starship's Agent Plus
+repair inherits native animation preferences and launches plain `codex agents`.
+Existing windows retain their backend; a repaired launcher alone does not move
+them. See the [upstream change](https://github.com/openai/codex/pull/58239) and
+[0.167 eligibility code](https://github.com/openai/codex/blob/rust-v0.167.0/codex-rs/tui/src/daemon_startup.rs#L88-L114).
+Agent Plus remains separate from Codex Plus; no launcher is a runtime dependency.
+
+The unreleased preview.20 doctor adds fixed diagnostic reasons/actions for
+unavailable endpoints, unconfirmed loaded callers and MCP metadata/version gaps.
+Published preview.19 retains its older diagnostics. Neither doctor starts work
+or changes the native qualification baseline. See [read-only diagnosis](runtime-distribution.md#read-only-diagnosis).
+
 ## Inspect the selected primary
 
 Preview.15 includes an opt-in mode in the context CLI:
@@ -135,10 +158,11 @@ matches the selected store and endpoint; foreign legacy sessions are left alone.
 Do not change an active config's storage or endpoint before stopping its owned
 server. Distinct configurations require distinct listening endpoints.
 
-The unified Codex Plus preview.10 release supplies optional monitoring/reporting
+The 2026-10-22 preview.10 rollout supplied optional monitoring/reporting
 archives with the shared resolver, context CLI and read-only doctor. Snap,
-Starship and Carbon select preview.10 for all three components after the scoped
-live apply on 2026-10-22. Existing native, MCP and report processes were preserved; already
+Starship and Carbon selected preview.10 for all three components during that scoped
+apply. The [runtime guide](runtime-distribution.md#current-managed-state) records
+current selection and host-specific installation evidence. Existing native, MCP and report processes were preserved; already
 loaded processes adopt the selected release on normal reconnect. Previous monitoring previews 1–3
 and reporting previews 7–8 remain verifiable/selectable. All new components share
 one release version; each host retains its own deployment receipts. The notification

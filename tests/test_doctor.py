@@ -47,6 +47,8 @@ class DoctorTests(unittest.TestCase):
         result = doctor.loaded_mcp('/fixture/socket', A, components, client_factory=Native)
         self.assertEqual(result['state'], 'reported')
         self.assertEqual(result['servers']['codex_plus']['version_alignment'], 'different_reported_version')
+        self.assertEqual(result['servers']['codex_plus']['diagnostic']['reason'], 'reported_version_differs_from_selected')
+        self.assertTrue(result['servers']['codex_plus']['diagnostic']['action'])
         self.assertEqual(result['servers']['html_report']['version_alignment'], 'same_reported_version')
         self.assertNotIn('must-never-appear', json.dumps(result))
         self.assertEqual([method for method, _ in calls], ['connect', 'bind', 'mcpServerStatus/list', 'mcpServerStatus/list'])
@@ -63,13 +65,75 @@ class DoctorTests(unittest.TestCase):
         result = doctor.loaded_mcp('/fixture/socket', A, components, client_factory=Native)
         self.assertIsNone(result['servers']['codex_plus']['reported_version'])
         self.assertEqual(result['servers']['codex_plus']['version_alignment'], 'unknown')
+        self.assertEqual(result['servers']['codex_plus']['diagnostic']['reason'], 'reported_server_version_unavailable')
         class Unloaded(Native):
-            def bind(self, *args, **kwargs): raise RpcError('not loaded')
+            def bind(self, *args, **kwargs): raise RpcError('target not positively present in loaded inventory')
             def call(self, *args, **kwargs): raise AssertionError('unloaded thread queried')
-        self.assertEqual(doctor.loaded_mcp('/fixture/socket', A, components, client_factory=Unloaded)['state'], 'unavailable')
+        unloaded = doctor.loaded_mcp('/fixture/socket', A, components, client_factory=Unloaded)
+        self.assertEqual(unloaded['state'], 'unavailable')
+        self.assertEqual(unloaded['diagnostic']['reason'], 'requested_conversation_not_positively_loaded')
+        self.assertIn('launch and endpoint options', unloaded['diagnostic']['action'])
+        self.assertNotIn(A, json.dumps(unloaded))
         def forbidden(*args, **kwargs): raise AssertionError('connected without valid caller')
         self.assertEqual(doctor.loaded_mcp('/fixture/socket', None, components, client_factory=forbidden)['state'], 'not_checked')
         self.assertEqual(doctor.loaded_mcp('/fixture/socket', 'invalid', components, client_factory=forbidden)['state'], 'unavailable')
+
+    def test_endpoint_missing_unresponsive_and_rpc_failures_have_safe_distinct_diagnoses(self):
+        components = {name: {'version': 'preview'} for name in ('monitoring', 'reporting')}
+        def missing(*args, **kwargs): raise FileNotFoundError('/private/native/socket')
+        result = doctor.loaded_mcp('/private/native/socket', A, components, client_factory=missing)
+        self.assertEqual(result['diagnostic']['reason'], 'native_endpoint_missing')
+        self.assertEqual(result['detail'], 'FileNotFoundError')
+        self.assertNotIn('/private/native/socket', json.dumps(result))
+
+        existing_endpoint = self.root / 'native.sock'
+        existing_endpoint.touch()
+        def missing_proof(*args, **kwargs): raise FileNotFoundError('/proc/net/unix')
+        result = doctor.loaded_mcp(str(existing_endpoint), A, components, client_factory=missing_proof)
+        self.assertEqual(result['diagnostic']['reason'], 'native_endpoint_unverified')
+        self.assertNotIn('/proc/net/unix', json.dumps(result))
+
+        def refused(*args, **kwargs): raise ConnectionRefusedError('private endpoint detail')
+        result = doctor.loaded_mcp('/private/native/socket', A, components, client_factory=refused)
+        self.assertEqual(result['diagnostic']['reason'], 'native_endpoint_unresponsive')
+        self.assertNotIn('private endpoint detail', json.dumps(result))
+
+        class BrokenInventory:
+            def __init__(self, *args, **kwargs): pass
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def bind(self, *args, **kwargs): raise RpcError('PRIVATE\n' + A + ' secret response')
+        result = doctor.loaded_mcp('/fixture/socket', A, components, client_factory=BrokenInventory)
+        self.assertEqual(result['diagnostic']['reason'], 'loaded_inventory_rpc_failed')
+        self.assertNotIn('PRIVATE', json.dumps(result))
+        self.assertNotIn(A, json.dumps(result))
+
+        class BrokenStatus(BrokenInventory):
+            def bind(self, *args, **kwargs): pass
+            def call(self, *args, **kwargs): raise RpcError('PRIVATE status response')
+        result = doctor.loaded_mcp('/fixture/socket', A, components, client_factory=BrokenStatus)
+        self.assertEqual(result['diagnostic']['reason'], 'mcp_status_rpc_failed')
+        self.assertNotIn('PRIVATE', json.dumps(result))
+
+    def test_disconnected_and_missing_server_rows_report_reason_and_action(self):
+        class Native:
+            def __init__(self, *args, **kwargs): pass
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def bind(self, *args, **kwargs): pass
+            def call(self, method, params, **kwargs):
+                if params['serverName'] == 'codex_plus':
+                    return {'data': [{'name': 'codex_plus', 'runtimeStatus': 'disconnected',
+                                      'serverInfo': {'version': 'preview'}}]}
+                return {'data': []}
+        components = {name: {'version': 'preview'} for name in ('monitoring', 'reporting')}
+        result = doctor.loaded_mcp('/fixture/socket', A, components, client_factory=Native)
+        self.assertEqual(result['servers']['codex_plus']['state'], 'disconnected')
+        self.assertEqual(result['servers']['codex_plus']['version_alignment'], 'unknown')
+        self.assertEqual(result['servers']['codex_plus']['diagnostic']['reason'], 'server_not_connected')
+        self.assertTrue(result['servers']['codex_plus']['diagnostic']['action'])
+        self.assertEqual(result['servers']['html_report']['state'], 'not_reported')
+        self.assertEqual(result['servers']['html_report']['diagnostic']['reason'], 'server_metadata_unavailable')
 
     def test_disconnected_cached_version_and_malformed_owner_status_are_not_loaded_proof(self):
         class Native:
@@ -220,6 +284,66 @@ class DoctorTests(unittest.TestCase):
         summary = doctor.format_human(result)
         self.assertIn(r'workers: one\x0a\x1b[31m; manifest verified', summary)
         self.assertNotIn('\x1b', summary)
+
+    def test_loaded_status_probe_uses_only_read_only_inventory_and_mcp_metadata_calls(self):
+        home = self.root / 'home/.codex'; home.mkdir(parents=True)
+        config_path = home / 'config.toml'
+        original = '[mcp_servers.codex_plus]\nenabled=true\n'
+        config_path.write_text(original)
+        calls = []
+        commands = []
+        class Native:
+            def __init__(self, requested, **kwargs):
+                calls.append(('connect', requested, kwargs))
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def bind(self, identity, **kwargs):
+                calls.append(('thread/loaded/list', identity))
+            def call(self, method, params, **kwargs):
+                if method != 'mcpServerStatus/list':
+                    raise AssertionError('non-diagnostic RPC submitted')
+                calls.append((method, params, kwargs))
+                return {'data': [{'name': params['serverName'], 'runtimeStatus': 'connected',
+                                  'serverInfo': {'version': 'preview'}}]}
+        def run(argv, **kwargs):
+            commands.append(argv)
+            output = 'codex-cli 0.163.0' if argv[-1] == '--version' else json.dumps({
+                'status': 'running', 'appServerVersion': '0.163.0', 'socketPath': '/fixture/native.sock'})
+            return subprocess.CompletedProcess(argv, 0, output)
+        state_root = self.root / 'state-that-must-not-be-created'
+        result = doctor.diagnose(thread=A, state_root=state_root, run=run,
+                                 client_factory=Native)
+        self.assertEqual(result['loaded_mcp']['state'], 'reported')
+        self.assertEqual([row[0] for row in calls], [
+            'connect', 'thread/loaded/list', 'mcpServerStatus/list', 'mcpServerStatus/list'])
+        self.assertTrue(all(row[1]['threadId'] == A for row in calls if row[0] == 'mcpServerStatus/list'))
+        self.assertEqual(commands, [
+            ['rtk', 'proxy', 'codex', '--version'],
+            ['rtk', 'proxy', 'codex', 'app-server', 'daemon', 'version']])
+        self.assertEqual(config_path.read_text(), original)
+        self.assertFalse(state_root.exists())
+        self.assertNotIn('resume', json.dumps(calls).lower())
+        self.assertNotIn('reload', json.dumps(calls).lower())
+
+    def test_loaded_diagnostic_human_text_is_bounded_and_terminal_safe(self):
+        class Native:
+            def __init__(self, *args, **kwargs): pass
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def bind(self, *args, **kwargs): pass
+            def call(self, method, params, **kwargs):
+                return {'data': [{'name': params['serverName'], 'runtimeStatus': 'connected',
+                                  'serverInfo': {'version': 'old\nINJECTED\x1b[31m'}}]}
+        components = {name: {'version': 'selected'} for name in ('monitoring', 'reporting')}
+        loaded = doctor.loaded_mcp('/fixture/socket', A, components, client_factory=Native)
+        result = doctor.diagnose(check_native=False)
+        result['loaded_mcp'] = loaded
+        summary = doctor.format_human(result)
+        self.assertIn(r'reported old\x0aINJECTED\x1b[31m', summary)
+        self.assertNotIn('\x1b', summary)
+        self.assertNotIn('\nINJECTED', summary)
+        self.assertEqual(len(doctor.human_text('x' * 2000)), 512)
+        self.assertNotIn(A, summary)
 
 
 if __name__ == '__main__': unittest.main()

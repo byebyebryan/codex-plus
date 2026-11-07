@@ -1,5 +1,36 @@
 # Native owner recovery
 
+## Unreleased preview.20: MCP-started coordinator handoff
+
+The health/follow-up pass found a launch-path defect in published preview.19.
+Its earlier zero-turn restart fixture started the coordinator with a log outside
+the journal. A watch registered through the actual MCP instead used
+`ensure_coordinator`, whose RTK supervisor retained `coordinator.log` inside the
+journal. After the Python coordinator released its writer, the supervisor's
+open log descriptor still correctly triggered the conservative open-state guard.
+Automatic handoff therefore remained deferred. The failed fixture and a separate
+no-model descriptor reproduction were retained; no real monitor was repaired.
+
+The preview.20 candidate places new supervisor logs in a private
+`.coordinator-logs` namespace outside the entire stable thread container and its
+epochs. Old logs and loaded helpers remain unchanged. Journal descriptors,
+writer locks, process-incarnation proof and original continuation eligibility
+remain strict. This changes launch log placement, not the recovery gate.
+
+A relocated private candidate completed the normal MCP path on native 0.167:
+the model registered one replay-safe read-only command watch, its baseline stayed
+quiet, the controller replaced only the fixture daemon and reattached only that
+owned conversation, and the coordinator resumed with the original lease. A
+fresh synthetic source change produced one admitted event, model acknowledgement
+and a completed callback. Both setup and callback turns completed with native
+Luna/max selection. The queue ended empty and no replacement registration was
+created. See the [qualification receipt](native-qualification-results.md#health-and-restart-follow-up-preview20-source-pass).
+
+This closes one bounded post-restart model-follow-up gap. It does not qualify
+every pre-existing watch, general native 0.167 compatibility, authenticated
+endpoint/MCP recovery, long outages or daily-use reliability. Published and
+managed preview.19 remain unchanged until a separately selected release/apply.
+
 <a id="daemon-restart-candidate-preview19"></a>
 
 ## Daemon restart recovery: preview.19

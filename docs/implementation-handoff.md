@@ -6,6 +6,56 @@ the older report checkout and the existing worktrees. Preview.19 is published
 and selected on Snap OSS/work and Starship. Carbon is offline, last verified on
 preview.18. Selected and loaded versions remain distinct.
 
+## Selected refinement: health and completed restart follow-up
+
+Bryan invoked `$luna-goal-loop` for the
+[health/restart refinement](codex-plus-plan.md#selected-pass-health-diagnostics-and-restart-follow-up).
+The source candidate is preview.20; published and installed selections remain
+preview.19. Luna owns doctor diagnostics and focused tests; the primary owns
+native acceptance, coordinator log placement, integration and documentation.
+Worker identities and explicit invocation remain unchanged.
+
+Completed source qualification: the clean 145-file copy passes **428 tests**,
+ten skill validators, unified private preview.20 build/verification and preview.19
+runtime/report rollback verification. The Pages build checks 314 local
+links/assets/anchors and 15 current-release claims. The working checkout retains
+the two original bytecode paths; new task-generated caches were archived privately
+and removed. The strict gate in this checkout still reports those two unexpected
+files; the passing clean-source gate is reported separately.
+
+The actual MCP-started preview.19 fixture exposed a log-descriptor blocker missed
+by the earlier manually launched recipe. Preview.20 moves future coordinator
+logs outside the frozen journal boundary, preserving the process/writer guards.
+Real RTK descriptor tests cover held-journal refusal and post-release clearance
+for both legacy and incarnation layouts; restoring the old log location makes
+both cases fail. The source doctor now gives fixed diagnostic reasons/actions
+without exposing native exception text or inferring embedded mode from absence.
+
+The relocated candidate completes the native 0.167 restart-to-follow-up path:
+one quiet MCP-registered read-only command watch, automatic handoff with original
+bounds, one fresh admitted/acknowledged event and a completed callback. Both
+persisted native turn contexts record Luna/max. The successful recipe uses two
+started/completed turns; the retained failed preview.19 attempt completed one
+setup turn. All 26 runtime payload members used for native acceptance match the
+reviewed source bytes. Exact fixture cleanup, temporary credential removal and
+unchanged production owner/config/auth/selectors/four saved binding files verify.
+See the [qualification receipt](native-qualification-results.md#health-and-restart-follow-up-preview20-source-pass).
+
+No public release, push, managed pin, live install, production restart or real
+monitor recovery occurs in this pass. Preview.19 helpers retain their captured
+launch behavior until ordinary code adoption after a separately selected upgrade.
+Authenticated endpoint/MCP restart, long outages and daily-use reliability remain
+open; the declared native baseline remains 0.162.1.
+
+After the rollout snapshot below, a separate Agent Plus launcher repair removed
+per-window animation overrides. Native 0.167 routes `codex agents` through normal
+daemon eligibility; those overrides selected embedded mode. Starship now has a
+reachable shared owner and two sampled conversations report preview.19 for both
+monitoring/reporting, with 17/four tools. This is connection evidence, not an
+inventory of recovered old watches. Snap has preview.19 selected; a separately
+sampled daemon conversation still reports preview.18. Carbon remains unreachable
+and last verified on preview.18. See [launch diagnosis](environments.md#native-launch-and-missing-conversations).
+
 ## Preview.19 publication and managed rollout
 
 Bryan requested review, commit, publication and deployment on 2026-11-07. Release
@@ -28,8 +78,8 @@ selectors and worker provenance manifest per host. Native config/auth, report
 config, native caches, older releases and all 28 saved binding files/mtimes remain
 unchanged. Snap preserves all 12 initial native/helper identities. Ten of 14
 initial Starship MCP processes exited during the elapsed work with unlocalized
-cause. Its default native control socket was already absent before installation
-and remains unavailable; no owner start/restart is attempted. Snap's sampled
+cause. At that rollout, its default native control socket was already absent
+before installation and remained unavailable; no owner start/restart was attempted. Snap's sampled
 loaded monitoring connection still reports preview.18, while selected/fresh
 entrypoints report preview.19. No global MCP refresh, real input or incident
 recovery occurred.
@@ -43,7 +93,13 @@ The earlier source-only receipt below is historical; this publication request
 supersedes its delivery boundary. Existing native connections adopt on normal
 reconnect; installation does not complete the outstanding real-source soak.
 
-## Unreleased preview.19: daemon restart recovery
+<a id="unreleased-preview19-daemon-restart-recovery"></a>
+
+## Historical source qualification: preview.19 restart recovery
+
+This section records the original source-only pass. The publication receipt
+above supersedes its release/installation boundary; the refinement above records
+the later Starship launcher repair.
 
 Bryan selected `$adaptive-goal-loop` for the Starship restart fix on 2026-11-05.
 The [restart contract](owner-recovery.md#daemon-restart-candidate-preview19) and

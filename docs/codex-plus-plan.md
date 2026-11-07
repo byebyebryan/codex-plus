@@ -1,5 +1,53 @@
 # Codex Plus implementation plan
 
+## Selected pass: health diagnostics and restart follow-up
+
+Bryan invoked `$luna-goal-loop` after the 2026-11-07 overview. Keep the existing
+native ownership, tools, worker identities and invocation rules. Luna owns the
+doctor diagnostics and focused behavior tests; the primary owns native
+acceptance, documentation, integration and review. Improve read-only diagnosis
+of missing/unreachable endpoints, callers absent from the selected daemon,
+unavailable introspection and reported loaded/selected version differences.
+Do not infer embedded mode from absent inventory alone, expose private errors,
+start owners, resume conversations or refresh MCP connections during diagnosis.
+
+The first MCP-registered fixture exposed an additional launch-path defect:
+RTK's supervisor retained `coordinator.log` inside the frozen journal, correctly
+blocking handoff as a live open-state process. Move future supervisor logs to a
+private sibling namespace outside journal/epoch trees. Retain the existing
+writer/process guards and old logs; prove the new launch path with real FD
+evidence before repeating native acceptance. Prepare this as unreleased
+preview.20, including explicit verification/rollback support for preview.19.
+
+Use one isolated native 0.167 fixture with its own home, workspace, endpoint,
+MCP configuration and journal. Register a bounded replay-safe read-only command
+watch, establish its quiet baseline, replace only that disposable daemon and
+explicitly reattach only the owned fixture conversation. Verify automatic
+coordinator handoff under original bounds, then change the synthetic source and
+observe native admission, model acknowledgement and completed follow-up as
+separate receipts. Cap the recipe at six started native model turns, use Luna
+Max, preserve failure evidence and clean up only exact owned processes. Never
+replay uncertain input, extend a lease to manufacture success or use production
+monitoring as the acceptance fixture.
+
+Reconcile current guides with Starship's restored shared-daemon launcher while
+retaining dated rollout evidence and the offline Carbon limit. Preserve the
+published preview.19 artifacts; prepare a separately identified source candidate
+and qualify rollback compatibility. Run focused tests, the full suite, source
+inventory, skill validators, whitespace, private packaging and Pages checks.
+Publication, managed pins, installation and production restarts are outside
+this pass. Daily-use reliability and authenticated/provider recovery retain
+their separate acceptance boundaries.
+
+Completed source candidate: 428 tests, ten skill validators, clean inventory,
+whitespace, private release/rollback and Pages checks pass. The normal MCP
+launch path now completes the isolated native 0.167 restart-to-model-follow-up
+recipe with original bounds and two completed Luna turns. A real descriptor
+regression fails with the old log placement. See the
+[qualification receipt](native-qualification-results.md#health-and-restart-follow-up-preview20-source-pass)
+and [handoff](implementation-handoff.md) for failed-attempt accounting, cleanup,
+source/deployment separation and remaining acceptance limits.
+
 ## Selected pass: daemon restart recovery (2026-11-05)
 
 Keep the native daemon, loaded conversation, permissions and existing immutable

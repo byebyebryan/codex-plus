@@ -174,6 +174,27 @@ class PackageTests(unittest.TestCase):
                 package.activate(prefix, '4' * 40)
                 self.assertEqual((prefix / 'current').resolve(), old)
 
+    def test_released_restart_preview_remains_verifiable_and_selectable_after_upgrade(self):
+        files = {name: self.files[name] for name in package.PREVIEW_NINETEEN_FILES}
+        files['codex_plus/__init__.py'] = b"VERSION = '0.1.0-preview.19'\n"
+        metadata = package.manifest(files, '5' * 40)
+        metadata['version'] = '0.1.0-preview.19'
+        prefix = self.root / 'restart-preview'
+        old = package.install(self.archive(metadata=metadata, files=files), prefix)
+        package.activate(prefix, '5' * 40)
+        captured = (prefix / 'current/scripts/codex-plus-watch').resolve()
+        new = package.install(self.archive(), prefix)
+        package.activate(prefix, '1' * 40)
+        self.assertEqual((prefix / 'current').resolve(), new)
+        self.assertEqual(captured.parent.parent, old)
+        self.assertEqual(package.verify_install(old)['version'], '0.1.0-preview.19')
+        self.assertTrue((old / 'codex_plus/restart.py').is_file())
+        package.activate(prefix, '5' * 40)
+        self.assertEqual((prefix / 'current').resolve(), old)
+        incomplete = dict(files); del incomplete['codex_plus/restart.py']
+        with self.assertRaises(ValueError):
+            package.read_archive(self.archive(metadata=metadata, files=incomplete))
+
     def test_coordinator_from_previous_verified_release_is_recognized_by_new_runtime(self):
         old_files = {name: self.files[name] for name in package.PREVIOUS_RUNTIME_FILES}
         old_meta = package.manifest(old_files, '3'*40); old_meta['version'] = '0.1.0-preview.1'

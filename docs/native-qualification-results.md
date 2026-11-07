@@ -1,5 +1,87 @@
 # Native qualification and operational clarity
 
+## Health and restart follow-up: preview.20 source pass
+
+Bryan invoked `$luna-goal-loop` after the 2026-11-07 overview. This source pass
+keeps the native owner, existing 17 monitoring/four reporting tools, worker roles
+and explicit invocation. Luna supplied doctor diagnostics and their focused
+behavior tests, followed by coordinator launch/descriptor regressions. The
+primary diagnosed and corrected log placement, ran isolated native acceptance,
+reviewed integration and reconciled the guides. Publication and live deployment
+are separate; preview.19 remains published and managed.
+
+### Reproduced launch-path defect
+
+The first fixture used the checksum-verified published preview.19 runtime in an
+isolated installation. A real Luna/max turn registered one read-only periodic
+command watch through its MCP; the quiet baseline succeeded. After the controller
+replaced only its disposable native 0.167 daemon and reattached that fixture
+conversation, automatic handoff remained deferred with `state_open_by_live_process`.
+No fresh observation or completed follow-up was established by that attempt.
+
+Unlike the earlier manually launched zero-turn fixture, the normal
+`ensure_coordinator` path sent stdout/stderr to a log inside the frozen journal.
+A separate no-model reproduction identified RTK's supervisor as the process
+retaining that descriptor. The refusal was correct under the conservative guard;
+the launch path unnecessarily kept the journal directory open.
+
+Preview.20 moves new supervisor logs outside the stable conversation container
+and its epochs, under private `.coordinator-logs`. Log names distinguish each
+state path. The existing open-journal, held-writer and exact-process checks are
+unchanged; old logs and running old helpers are preserved. This is not permission
+to bypass a live holder or repair a real conversation.
+
+### Completed bounded native path
+
+The repeated recipe used the relocated private preview.20 candidate. Its native
+client/server was 0.167.0, with a separate home, workspace, explicit Unix endpoint,
+MCP configuration and state root. Both persisted native turn contexts record
+`gpt-6-luna` / `max`; this is native selection and execution evidence, not provider
+backend attestation or measured billing.
+
+| Step | Observed evidence |
+| --- | --- |
+| Setup | One completed model turn registered one replay-safe read-only command watch through MCP; repeated quiet reads emitted no event. |
+| Restart | Only the disposable daemon was replaced. The controller explicitly reattached only its own fixture conversation; Plus did not cold-load it. |
+| Handoff | The coordinator selected a successor registration automatically. Original wall/monotonic expiry and event allowance remained; handoff submitted no native input. |
+| Useful change | Changing the synthetic file produced one fresh admitted event. The old journal had no events to replay. |
+| Follow-up | The second native turn inspected the watch, acknowledged the event and completed with the expected result marker. The stored callback outcome is `completed`. |
+| Stop and cleanup | The one-event allowance ended observation without a replacement. The native queue was empty. Exact owned processes were stopped and the temporary credential copy removed. |
+
+The successful recipe used **two started/completed native turns**. The failed
+first recipe completed one setup turn; it did not establish a callback. Both
+recipes together started four owned daemon instances and restarted no production
+owner. The original failed captures remain private alongside the successful
+receipts. Final checks found no surviving fixture process, no protected native
+config/auth/selector changes, and unchanged production owner identity and four
+saved binding files. Runtime captures, synthetic conversation identities and
+credential material are excluded from source.
+
+### Diagnosis and limits
+
+The source doctor separates unconfirmed loaded callers, missing/unresponsive or
+unverified endpoints, RPC/introspection failures and per-server connection/version
+metadata gaps using fixed reasons/actions. It retains JSON schema 1 and exit
+behavior, excludes arbitrary native error text and starts no owner or work.
+A live read-only sample reports connected preview.18 MCPs against selected
+preview.19 manifests with the explicit version-difference reason. A different
+requested caller absent from the contacted daemon receives a loaded-inventory
+diagnostic; its absence is not classified as embedded mode.
+
+Starship's separate launcher repair restored the shared 0.167 endpoint; sampled
+monitoring/reporting MCPs report preview.19. That is independent connection
+evidence. This source pass does not recover or enumerate its old monitors.
+The [handoff](implementation-handoff.md) records final source/package checks.
+Actual preview.19 runtime/report archives remain verifiable for rollback.
+
+This closes one bounded post-restart completed-follow-up gap. It does not qualify
+authenticated endpoint/MCP recovery, long outages, every old watch, generic native
+0.167 compatibility, model access for every named worker or daily-use reliability.
+The declared native qualification baseline stays 0.162.1. No published artifact,
+managed pin, active daemon or production journal was changed.
+
+## Historical qualification: 2026-10-31
+
 Completed 2026-10-31 on Snap OSS, within the
 [selected pass](codex-plus-plan.md#planned-pass-native-qualification-and-operational-clarity).
 Retain the native integration and existing tools. One reproduced inventory issue

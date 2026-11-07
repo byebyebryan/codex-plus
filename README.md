@@ -53,6 +53,10 @@ or publish a browser handoff around your existing Codex conversation.
 
 **v0.1.0-preview.19** includes seven worker workflows and four current roles.
 
+The unreleased preview.20 source candidate refines read-only doctor diagnostics
+and coordinator logging across restart handoff. Published artifacts and managed
+selections remain preview.19; see the [current handoff](docs/implementation-handoff.md).
+
 Preview.19 adds [daemon restart recovery](docs/owner-recovery.md#daemon-restart-candidate-preview19), preserving historical uncertainty and continuing only eligible observations within their original bounds. Commands and MCP checks need their original replay-safe restart policy; legacy intent without a trustworthy lease anchor stays quarantined.
 It retains explicit `$sol-task`, `$astra-task` and GPT-6.1 `$terra-task` for bounded
 review, validation, investigation or implementation without changing your primary.
@@ -118,9 +122,12 @@ reporting from source `0259d96` through chezmoi. The 2026-11-07 rollout verifies
 Snap OSS/work and Starship; Carbon is offline and last verified on preview.18.
 Exact payloads, doctor output and fresh stdio protocols verify on the reachable
 hosts. Native configuration, credentials and old releases are preserved. Loaded
-code, Starship's unavailable native control endpoint and observed MCP exits are
+code and the control-endpoint/MCP-exit observations at rollout time are
 recorded separately in the
 [delivery receipt](docs/reliability-packaging-results.md#preview19-restart-recovery-publication-and-rollout).
+After a separate Agent Plus launcher repair, Starship's shared native 0.167
+daemon is reachable and sampled conversations report preview.19 for both MCP
+servers. This connection check does not establish recovery of every old watch.
 Existing conversations can retain older loaded versions until normal reconnect.
 The [implementation handoff](docs/implementation-handoff.md) records source,
 release and installed state.
