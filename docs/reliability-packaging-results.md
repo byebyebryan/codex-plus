@@ -726,3 +726,57 @@ checks pass. The full dotfiles gate reaches the same OpenCode `--pure` rejection
 after Codex checks; its failing block is unchanged and the baseline command
 reproduces independently. Private backups/captures remain outside source. The
 two pre-existing untracked product bytecode files are preserved.
+
+
+## Preview.19 restart recovery publication and rollout
+
+Completed the reachable-host portion on 2026-11-07 under explicit review,
+commit, publication and deployment authorization. Carbon is deferred offline.
+Immutable release **v0.1.0-preview.19** uses source `0259d96`. Both Python
+3.11/3.14 CI jobs pass 420 tests, all ten skill validators pass, and all five
+fetched assets match the reviewed bytes and GitHub digests. The runtime payload
+matches the earlier relocated-package native restart qualification. The first
+CI attempt exposed mismatched real/fake monotonic clocks in engine fixtures;
+the release commit fixes those fixtures without changing runtime code.
+
+| Component | SHA-256 |
+| --- | --- |
+| Workers | `4f0dfca08f78a08b9ee305b20bef06570fdcc12dafa0426177644d763d2b1b03` |
+| Monitoring | `b970a79b2db772f79b0a701b0bfddeb27817fb91df366f9c2af58c2e28044e36` |
+| Reporting | `ff1b689885408e1a9b6355625eaa941168e033df33441252c7b0e9d98b15402c` |
+
+Published dotfiles `ff73822` advances six scoped pin/validator files together.
+The full dotfiles gate and real isolated reporting apply pass. Canonical source
+integration is Snap `3afe1ee` and Starship `ff73822`; Snap retains three unrelated
+uncommitted files and its existing history instead of absorbing other upstream
+work into this rollout. No unrelated desktop or Observer changes were applied.
+Fresh backups, status/diff, script-excluded dry runs and pre-apply guards precede
+two-stage installation: verify all three payloads before selecting them.
+Installed manifests are compared with the actual fetched artifact manifests,
+not only self-reported hashes. Unclassified existing release contents refuse.
+
+| Context | Installed and selected | Qualification |
+| --- | --- | --- |
+| Snap OSS | Preview.19; exact three manifests, four roles/seven worker skills, private modes and empty scoped diff. | Aligned doctor and fresh stdio 17 monitoring/four report tools. Existing native owner unchanged; sampled loaded monitoring connection still reports preview.18. |
+| Snap work | Same release in its separate home. | Aligned doctor and fresh stdio; existing native owner unchanged. |
+| Starship | Same complete installed checks and empty scoped diff. | Aligned doctor and fresh stdio. Default native control socket was already absent before installation and remains unavailable; no current native attachment/model-use claim. |
+| Carbon | No apply; offline through the trusted Starship route and Tailscale, including retry. Last verified preview.18 on 2026-11-05. | Refresh preflight, overrides and backups when it returns. Published pins and artifacts are ready. |
+
+Across 1,684 protected existing paths, six intended paths changed: the two
+selectors and worker provenance manifest on each reachable host. Configuration,
+credentials, native instruction/skill bytes, native caches, older releases and
+all 28 existing binding files/mtimes remain unchanged. Snap preserves all 12
+initial native/helper process identities. Ten of 14 initial Starship MCP
+processes ended during the elapsed pass with unlocalized cause; this receipt
+makes no claim that all MCP connections survived. No stop, daemon restart,
+global MCP refresh, forced skill-cache reload, real input or owner recovery was
+issued. Runtime-owned journals/report data and hosting were outside live apply.
+
+The Pages follow-up has 421 tests, including a guide-validation regression for
+mixed host receipts. Managed source selection is now distinct from per-host
+installation evidence; an offline host is not advertised as upgraded. The
+[recovery contract](owner-recovery.md#daemon-restart-candidate-preview19) retains
+quarantine, lease and source-replay limits. Real endpoint/MCP restart soak,
+natural model follow-up and personal UX acceptance remain separate from the
+bounded native recipe and installed protocol checks. Raw captures and backups
+stay outside committed source. The two pre-existing product bytecode files remain.

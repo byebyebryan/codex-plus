@@ -269,6 +269,15 @@ provenance checks as worker skills. It is separate from the seven worker skills.
 
 ## Verify and finish
 
+Preview.19 adds daemon restart recovery. Existing loaded helpers retain their
+captured code until normal reconnect. Do not replay old registrations as an
+upgrade check: legacy jobs without trustworthy lease anchors and uncertain
+commands/messages remain quarantined. Newly registered replay-safe command/MCP
+sources can choose `restart=resume`; peer watches and un-emitted reminders can
+continue within their original bounds. Diagnose retained gaps with `owner_status`
+before any explicitly authorized recovery. See the
+[recovery contract](owner-recovery.md#daemon-restart-candidate-preview19).
+
 Re-run manifest verification, parse affected configuration and compare only the
 requested files/selections with the before record. Use the installed doctor with
 the correct prefixes/overrides. Its worker-prefix check verifies the retained

@@ -87,23 +87,31 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Snap, Starship and Carbon select workers, monitoring and reporting **preview.18**,
-source `6950045`, through chezmoi following the scoped rollout on 2026-11-05.
+Managed source selects workers, monitoring and reporting **preview.19**,
+source `0259d96`, through published chezmoi pins `ff73822`.
+
+| Context | Verified installation, 2026-11-07 | Runtime evidence |
+| --- | --- | --- |
+| Snap OSS | Preview.19; all three manifests and copied roles/skills verify; scoped diff empty. | Fresh stdio: 17 monitoring/four report tools. Existing native owner unchanged; loaded code is separate. |
+| Snap work | Same verified release in its separate home. | Fresh stdio verified; existing native owner unchanged. |
+| Starship | Same verified release and empty scoped diff. | Fresh stdio verified. Default native control socket was unavailable before and after installation; no daemon was started. |
+| Carbon | Offline; deployment deferred. Last verified preview.18 on 2026-11-05. | No current runtime or installation claim. Refresh preflight before applying. |
+
 The worker bundle includes four native roles and seven current workflow skills;
 both worker-name compatibility entries are removed. Optional instruction-based
 escalation remains in the two adaptive workflows.
 Exact inventories, payload hashes and modes verify, and native configuration,
 credentials, invocation metadata and older releases are preserved. Fresh MCP
-protocol discovery reports preview.18 with 17 monitoring and four report tools
-in Snap OSS/work, Starship and Carbon. Already loaded process versions remain
+protocol discovery reports preview.19 on the three reachable contexts above.
+Already loaded process versions remain
 independent of selected files.
 
 No native daemon restart or global MCP refresh was issued. Native daemon
-identities were preserved through each scoped rollout. Native skill discovery
-sees all seven names and no retired worker aliases in all four contexts without
-a forced cache reread. Two pre-existing Starship MCP connections exited with
-unlocalized cause; native owner identities remain preserved. Report hosting remains
-independent of stdio protocol discovery. See the [rollout receipt](reliability-packaging-results.md#preview18-named-task-publication-and-rollout)
+identities on Snap were preserved. The 28 existing conversation binding files
+and all unrelated protected files remain unchanged. Ten pre-existing Starship
+MCP processes ended during the elapsed pass with unlocalized cause; no lifecycle
+action was issued. Report hosting remains independent of stdio protocol
+discovery. See the [rollout receipt](reliability-packaging-results.md#preview19-restart-recovery-publication-and-rollout)
 for preservation details and runtime execution limits. The full dotfiles gate passes.
 
 Workers retain their own installation. The 349 inspector

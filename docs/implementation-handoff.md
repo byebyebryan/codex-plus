@@ -2,9 +2,9 @@
 
 Updated 2026-11-07. The owner-recovery work was isolated on Starship
 in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.19 is published;
-managed rollout is in progress from the verified preview.18 baseline. Selected
-and loaded versions remain distinct.
+the older report checkout and the existing worktrees. Preview.19 is published
+and selected on Snap OSS/work and Starship. Carbon is offline, last verified on
+preview.18. Selected and loaded versions remain distinct.
 
 ## Preview.19 publication and managed rollout
 
@@ -16,12 +16,32 @@ real/fake monotonic clocks in older engine fixtures; `0259d96` aligns their cloc
 domains without changing runtime bytes. Those bytes match the native-qualified
 candidate below. Worker identities and invocation remain unchanged.
 
-Managed pins and validators are being advanced together through chezmoi. Snap
-OSS/work and Starship have fresh verified preimages/backups. Carbon is offline
-on its trusted Starship route and Tailscale; its deployment is held. No daemon
-restart, global MCP refresh, session input or real-journal recovery is authorized
-as an incidental install action. The earlier source-only receipt below is
-historical; this publication request supersedes its delivery boundary.
+Published managed pins `ff73822` advance URLs, revision, checksums and validators
+together. The full dotfiles gate and actual isolated report-archive apply pass.
+Scoped canonical integration is Snap `3afe1ee` and Starship `ff73822`; unrelated
+Snap edits/history remain intact. Staged manifests, exact payloads/modes, copied
+four roles/seven skills and empty scoped diffs verify on both hosts. Fresh stdio
+reports preview.19 with 17 monitoring/four reporting tools in all three homes.
+
+Across 1,684 protected paths, six intended existing files changed: the two
+selectors and worker provenance manifest per host. Native config/auth, report
+config, native caches, older releases and all 28 saved binding files/mtimes remain
+unchanged. Snap preserves all 12 initial native/helper identities. Ten of 14
+initial Starship MCP processes exited during the elapsed work with unlocalized
+cause. Its default native control socket was already absent before installation
+and remains unavailable; no owner start/restart is attempted. Snap's sampled
+loaded monitoring connection still reports preview.18, while selected/fresh
+entrypoints report preview.19. No global MCP refresh, real input or incident
+recovery occurred.
+
+Carbon remains offline on its trusted Starship route and Tailscale after retry;
+there is no current installation claim or apply. Capture fresh preimages and
+validate its overrides before continuing from the published pins. The site now
+distinguishes managed source selection from verified per-host installation, so
+this deferred host is visible. See the [delivery receipt](reliability-packaging-results.md#preview19-restart-recovery-publication-and-rollout).
+The earlier source-only receipt below is historical; this publication request
+supersedes its delivery boundary. Existing native connections adopt on normal
+reconnect; installation does not complete the outstanding real-source soak.
 
 ## Unreleased preview.19: daemon restart recovery
 
