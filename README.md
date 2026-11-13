@@ -51,11 +51,13 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.20** includes seven worker workflows and four current roles.
+**v0.1.0-preview.21** includes seven worker workflows and four current roles.
 
-Preview.20 fixes restart handoff for MCP-started coordinators and gives the
-read-only doctor clearer endpoint, loaded-conversation and version diagnostics.
-See the [qualification receipt](docs/native-qualification-results.md#health-and-restart-follow-up-preview20-source-pass)
+Preview.21 keeps coordinator status accurate after repeated handoffs, tracks slow
+callbacks after early acknowledgement, clarifies invalid options and preserves
+partial peer inspection when native ephemeral history/goals are unsupported.
+It retains preview.20's MCP launch and read-only doctor fixes.
+See the [qualification receipt](docs/native-qualification-results.md#soak-driven-reliability-preview21-source-candidate)
 and [current handoff](docs/implementation-handoff.md) for delivery and adoption.
 
 It retains [daemon restart recovery](docs/owner-recovery.md#daemon-restart-candidate-preview19), preserving historical uncertainty and continuing only eligible observations within their original bounds. Commands and MCP checks need their original replay-safe restart policy; legacy intent without a trustworthy lease anchor stays quarantined.
@@ -118,18 +120,16 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Managed configuration selects **v0.1.0-preview.20** for workers, monitoring and
-reporting from source `f787ad6` through chezmoi. The 2026-11-07 rollout verifies
-Snap OSS/work and Starship; Carbon is offline and last verified on preview.18.
-Exact payloads, doctor output and fresh stdio protocols verify on the reachable
-hosts. Native configuration, credentials and old releases are preserved. Loaded
-code and the control-endpoint/MCP-exit observations at rollout time are
-recorded separately in the
-[delivery receipt](docs/reliability-packaging-results.md#preview20-health-and-restart-publication-and-rollout).
-After a separate Agent Plus launcher repair, Starship's shared native 0.167
-daemon is reachable and sampled conversations report preview.19 for both MCP
-servers. This connection check does not establish recovery of every old watch.
-Existing conversations can retain older loaded versions until normal reconnect.
+Managed configuration selects **v0.1.0-preview.21** for workers, monitoring and
+reporting from source `0d01779` through chezmoi `0d53a91`. The 2026-11-12 rollout
+verifies Snap OSS/work, Starship and Carbon: exact payloads, copied roles/skills,
+doctor output and fresh 17/four-tool stdio protocols all match. Native configuration,
+credentials, bindings and old releases are preserved.
+[Delivery evidence](docs/reliability-packaging-results.md#preview21-soak-refinement-publication-and-rollout)
+separates installed files from loaded code: sampled Snap/Starship connections
+still report preview.20. Carbon's native owner is unavailable, so no loaded-version
+claim is made there. Existing helpers/coordinators retain captured code until
+normal adoption; no daemon restart or global MCP refresh was issued.
 The [implementation handoff](docs/implementation-handoff.md) records source,
 release and installed state.
 

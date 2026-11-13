@@ -37,12 +37,12 @@ release. Choose the archives you need from its single GitHub release; see
 
 ## Released and source features
 
-**v0.1.0-preview.20** supplies the released workflows shown in these guides. Updating
+**v0.1.0-preview.21** supplies the released workflows shown in these guides. Updating
 documentation or selecting an archive does not reload an existing MCP process.
 
 | Available in | What to expect |
 | --- | --- |
-| Source candidate preview.21; not yet published or managed | Truthful coordinator status after handoff, callback completion tracking after early acknowledgement, clearer argument errors and partial ephemeral-peer inspection. Read the [selected pass](codex-plus-plan.md#selected-pass-soak-driven-reliability-refinement) for acceptance and limits. |
+| Fixed in preview.21 | Truthful coordinator status after handoff, callback completion tracking after early acknowledgement, clearer argument errors and partial ephemeral-peer inspection. Read the [qualification](native-qualification-results.md#soak-driven-reliability-preview21-source-candidate) for acceptance and limits. |
 | Preview.9 and later | Worker workflows, watches, one-shot later checks, same-daemon peer coordination, reports and selected-file diagnosis. |
 | Added in preview.10 | Bounded reminder history, outgoing-message rediscovery with kind and quoted purpose, pending/failed follow-up visibility, and reported MCP-version diagnosis for one loaded conversation. |
 | Added in preview.11 | Explicit owner diagnosis and clean same-thread rollover, with immutable archived history. Active or uncertain intent refuses recovery. See the [contract and acceptance](owner-recovery.md). |

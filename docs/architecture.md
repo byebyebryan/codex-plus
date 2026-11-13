@@ -14,13 +14,13 @@ coordinator owns bounded observation, timers, event admission and receipts.
 | Worker bundle | `luna-max`, `sol-xhigh`, `astra-xhigh`, `terra-6-1-xhigh`; seven workflow skills | Explicit named tasks and adaptive/Luna workflows; primary retains decisions and acceptance. |
 | Development source | Tests, validators, guides and research reports | Implementation and acceptance evidence; distinct from installed immutable artifacts. |
 
-Codex Plus `v0.1.0-preview.20` unifies workers, monitoring and reporting under one
+Codex Plus `v0.1.0-preview.21` unifies workers, monitoring and reporting under one
 version, source commit and release. Optional archives retain each component's
-dependencies and configuration. Managed source selects preview.20
-artifacts from `f787ad6`. The 2026-11-07 rollout verifies Snap OSS/work and
-Starship; Carbon is offline, last verified on preview.18. Snap OSS and work
+dependencies and configuration. Managed source selects preview.21
+artifacts from `0d01779`. The 2026-11-12 rollout verifies Snap OSS/work,
+Starship and Carbon. Snap OSS and work
 retain separate native homes. See the
-[delivery receipt](reliability-packaging-results.md#preview20-health-and-restart-publication-and-rollout).
+[delivery receipt](reliability-packaging-results.md#preview21-soak-refinement-publication-and-rollout).
 Managed configuration, selected artifacts and already loaded processes
 are different layers: existing MCP processes adopt new code on normal reconnect.
 Journals, report data and hosting remain runtime-owned.

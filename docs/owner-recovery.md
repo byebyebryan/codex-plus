@@ -1,8 +1,11 @@
 # Native owner recovery
 
-## Source candidate: preview.21 soak refinement
+<a id="source-candidate-preview21-soak-refinement"></a>
 
-Preview.21 is a local candidate; preview.20 remains published and managed.
+## Preview.21: soak refinement
+
+Preview.21 is published and managed; installation and loaded-helper adoption
+are recorded separately in the [delivery receipt](reliability-packaging-results.md#preview21-soak-refinement-publication-and-rollout).
 After a successful handoff releases its writer, the coordinator re-enters the
 same captured release using the selected epoch path. Its launch arguments and
 private process record agree again, so strict status checks can recognize the
@@ -11,7 +14,7 @@ original observation bounds and the RTK log boundary remain unchanged.
 
 Receipt observation is separate from source observation. An acknowledged native
 callback can still be running after the source is cancelled or expires. The
-candidate observes that exact positively running turn and uses bounded passive
+runtime observes that exact positively running turn and uses bounded passive
 history after reconnect to reconcile terminal receipts. Missing or conflicting
 evidence stays unknown; no input, source or external action is replayed, and
 immutable archives are not rewritten. Cached inspection does not restart work.

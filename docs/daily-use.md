@@ -131,12 +131,12 @@ reported with cached receipt freshness. An offline coordinator makes a previous
 running receipt unknown. Ask for watch history to page through settled entries;
 history and handling receipts remain retained.
 
-The **preview.21 source candidate** improves receipt tracking for a callback
+**Preview.21** improves receipt tracking for a callback
 that acknowledges early and continues working. Source expiry or cancellation
 does not end observation of its positively running native turn. Bounded passive
 native history can fill a missed final receipt after reconnect; missing evidence
-stays unknown. This candidate is not yet the published/managed preview.20.
-For an ephemeral peer, the same candidate can show name/project/phase while
+stays unknown. Existing helpers need normal code adoption to use the fix.
+For an ephemeral peer, it can show name/project/phase while
 explaining that native history or goals are unsupported. It does not infer an
 empty reply or absent goal from that limit, and it cannot watch unavailable
 signals. Ephemeral status does not change the native independent/subagent rules.

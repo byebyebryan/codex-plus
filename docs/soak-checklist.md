@@ -13,7 +13,8 @@ ownership-recovery friction and one incomplete completion receipt whose native
 turn was actually completed. Separate local reproductions exposed coordinator
 status after handoff and early-acknowledgement receipt tracking gaps. The
 [preview.21 source pass](codex-plus-plan.md#selected-pass-soak-driven-reliability-refinement)
-addresses those mechanisms; it is not yet the installed release. Successful
+addresses those mechanisms and is published/managed. Installation does not
+complete the field soak or reload an existing helper. Successful
 field message handling, configured MCP-source monitoring, authentication recovery
 and longer outages retain their own evidence limits. A reminder whose due and
 expiry window fell between boots is not proof of failure on a running host.

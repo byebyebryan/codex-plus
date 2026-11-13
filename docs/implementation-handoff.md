@@ -1,13 +1,43 @@
 # Implementation handoff
 
-Updated 2026-11-12. The active source pass is the soak-driven preview.21
-reliability candidate below. Preview.20 remains published and managed. The
-November 12 passive Snap OSS/work and Starship samples report preview.20 on all
-enabled inspected monitoring/reporting connections; this is sampled connection
-evidence, not proof of every old watch's recovery. Carbon is not rechecked in
-this pass. Preserve the older report checkout, Starship owner-recovery worktree,
-concurrent work and the two existing untracked bytecode files. The dated rollout
-sections retain their original host/loaded-version evidence.
+Updated 2026-11-12. Preview.21 is published from `0d01779` and selected on
+Snap OSS/work, Starship and Carbon through chezmoi `0d53a91`. All three component
+manifests, copied roles/skills, modes and fresh protocols verify in each context.
+Sampled existing Snap/Starship monitoring/reporting connections still report
+preview.20; Carbon's native owner is unavailable. Installation and loaded code
+remain separate. Preserve the older report checkout, Starship owner-recovery
+worktree, concurrent work and the two existing untracked bytecode files. Dated
+source/rollout sections retain their original evidence boundaries.
+
+## Preview.21 publication and managed rollout
+
+Bryan requested review, publication and deployment after source qualification.
+Review found no release blocker. The personal GitHub release publishes the exact
+five qualified assets from `0d01779afb744805fcd007d7a8f4d80ddd5330d7`; fetched
+bytes and GitHub digests match. Python 3.11/3.14 CI passes the 451-test suite,
+inventory/worker validation and complete release build/verification. Source-only
+native acceptance remains the bounded proof below, not a new production trial.
+
+Published dotfiles `0d53a91bf375819320bd4fc9681a7c5639091344` updates three
+pin/validator files together. Generic selectors/validators need no change.
+The full dotfiles gate and isolated report-archive apply pass. All three canonical
+host checkouts converge to that commit; Snap's eight unrelated Claude source
+edits remain unchanged, and the already-absent retired source files on the remote
+hosts match their published deletions without replacement or divergent history.
+
+Snap OSS/work, Starship and Carbon verify preview.21 inventories/hashes/modes,
+four roles/seven workflows, empty scoped diffs and fresh 17/four-tool stdio.
+Across 2,587 existing protected paths only nine intended files change: two
+selectors and the worker provenance manifest per host. All 33 saved bindings and
+mtimes, all 30 captured native/MCP identities, native config/auth, old releases
+and report configuration remain unchanged. No native cache or unclassified
+protected change is observed. Report data/hosting stay outside the apply scope.
+
+No daemon restart, global MCP refresh, real input or real-monitor recovery is
+issued. Existing helpers/coordinators retain captured code until normal adoption;
+sampled loaded versions remain preview.20. Carbon's fresh protocols prove its
+selected entrypoints, with no loaded-owner claim or owner start. See the
+[delivery receipt](reliability-packaging-results.md#preview21-soak-refinement-publication-and-rollout).
 
 ## Completed locally: soak-driven reliability candidate
 
@@ -15,8 +45,9 @@ Bryan selected `$adaptive-goal-loop` after the November 12 analysis. The
 [plan](codex-plus-plan.md#selected-pass-soak-driven-reliability-refinement)
 keeps coordinator identity, receipt tracking, integration and native acceptance
 with the primary, with bounded validation/peer work delegated to Luna. No optional
-escalation is configured. This pass prepares source and private artifacts;
-publication, managed deployment and production recovery are not implied.
+escalation is configured. This historical pass prepared source and private
+artifacts. The publication above supersedes its delivery boundary; production
+recovery remains separate.
 
 The research reproduced a false-offline mechanism after the coordinator changes
 epoch without updating launch argv, and an early-acknowledgement receipt gap when

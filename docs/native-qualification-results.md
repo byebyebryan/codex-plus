@@ -3,8 +3,10 @@
 ## Soak-driven reliability: preview.21 source candidate
 
 Bryan selected `$adaptive-goal-loop` on 2026-11-12 after a passive daily-use
-review. Preview.21 is a local source/package candidate; preview.20 remains
-published and managed. The primary owns lifecycle design, integration and native
+review. This section records the original local candidate qualification while
+preview.20 remained published and managed. The later preview.21
+[publication/rollout](reliability-packaging-results.md#preview21-soak-refinement-publication-and-rollout)
+supersedes that delivery boundary. The primary owns lifecycle design, integration and native
 acceptance. Luna implemented argument/peer refinements and reviewed the lifecycle
 diff. Its completed native worker turn records `gpt-6-luna` / `max`; no optional
 escalation target was selected. Roles, skills, explicit invocation and the 17/four

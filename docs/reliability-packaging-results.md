@@ -1,5 +1,70 @@
 # Everyday reliability and native packaging results
 
+## Preview.21 soak refinement publication and rollout
+
+Completed 2026-11-12 after Bryan requested review, publication and deployment.
+Review found no release blocker. The
+[source qualification](native-qualification-results.md#soak-driven-reliability-preview21-source-candidate)
+records the failing regressions, two native handoffs/slow callback, discovered
+ephemeral-goal limit and corrected metadata-only probe. Delivery does not expand
+that bounded acceptance into real-source or general native compatibility proof.
+
+[Preview.21](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.21)
+is published through the personal GitHub account from immutable
+`0d01779afb744805fcd007d7a8f4d80ddd5330d7`. All five downloaded assets match the
+qualified local bytes and GitHub SHA-256 digests. Python 3.11/3.14 CI passes all
+451 tests, worker/inventory checks and complete release build/verification.
+Ten skill validators, private relocated installation and actual preview.20
+runtime/report rollback pass. Role definitions, workflow bodies, explicit
+invocation and routing remain unchanged.
+
+| Archive | SHA-256 |
+| --- | --- |
+| Workers | `41f8bbc0a9bbd4b0c0ff3e94babd3522dcf4ecc4239b7c62927d34a46f158091` |
+| Monitoring | `696cb9b8a79388a93c5411492951f497bbbb27ea10bef367b96a39ef31be908c` |
+| Reporting | `24d23faeaa160d27534585d157d176788ca8336c0a8c34abad4eb5b51716b515` |
+
+Managed source `0d53a91bf375819320bd4fc9681a7c5639091344` updates three files:
+worker/runtime externals, report release selection and its version validator.
+The existing generic runtime selector and other validators need no change.
+The full dotfiles suite reaches its completion marker, and the actual isolated
+report archive status/diff/dry-run/apply passes before live selection. All three
+canonical host sources converge to the published commit. Snap retains eight
+unrelated Claude source edits; remote already-absent retired source files match
+their published deletions without replacement or divergent local commits.
+
+| Target | Canonical managed source | Verified installation |
+| --- | --- | --- |
+| Snap OSS/work | `0d53a91` | Preview.21; all three manifests/inventories/hashes/modes, four roles/seven workflows, empty scoped diff and fresh 17/four-tool stdio in both homes. |
+| Starship | `0d53a91` | Same exact preview.21 checks in its native home. |
+| Carbon | `0d53a91` | Same exact preview.21 checks; its native owner is unavailable and was not started. |
+
+Fresh preimages and worker/role/skill backups precede staging and scoped apply.
+Across 2,587 existing protected paths, only nine intended files change: two
+selectors and the worker provenance manifest per host. Config/auth, older
+immutable releases, report configuration and all 33 captured bindings/mtimes
+remain unchanged. All 30 captured native/MCP process identities remain exact;
+there are no observed exits, native cache changes or unclassified protected-file
+changes. Report data and hosting are outside the apply scope. No daemon restart,
+global MCP refresh, real input or real-monitor recovery is issued.
+
+Selected and loaded versions remain separate. All four loaded Snap conversations
+and three of eight loaded Starship conversations were sampled after delivery;
+their 14 inspected monitoring/reporting connections remain connected on
+preview.20. Carbon has no loaded-version claim. Existing helpers/coordinators
+retain their captured code until normal adoption. Byte installation and fresh
+stdio do not retroactively repair an old observer or establish its recovery.
+
+Current README, lifecycle references and walkthrough release markers identify
+preview.21 while retaining dated qualification/delivery history. The Pages build
+checks 314 local links/assets/anchors and 15 published/managed claims; 37 focused
+Pages tests pass. GitHub Pages deployment and served-file verification are checked
+separately from source rendering. Private captures and host/session identities
+remain outside committed source.
+
+Real-source MCP/authentication recovery, longer outages and a completed
+representative monitoring soak on each host remain separate acceptance work.
+
 ## Preview.20 health and restart publication and rollout
 
 Completed the reachable-host rollout on 2026-11-07 under the

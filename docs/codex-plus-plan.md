@@ -1,5 +1,27 @@
 # Codex Plus implementation plan
 
+## Selected publication: preview.21 soak refinement
+
+Bryan requested review, publication and deployment of the qualified candidate.
+Publish immutable source `0d01779` through the personal GitHub account and verify
+all five fetched assets against qualified bytes and GitHub digests. Update the
+managed URLs/revision/checksums and matching validator together from current
+dotfiles main, retaining generic selectors and unrelated concurrent work.
+Run the full dotfiles gate and actual isolated report-archive apply, then capture
+fresh host preimages/backups and stage verified components before scoped selection.
+Preserve active sessions, native config/auth, old releases, report storage/hosting,
+bindings and invocation policy. No daemon restart, global MCP refresh or real
+monitor recovery is part of delivery. Loaded adoption remains separate.
+
+Completed: release `0d01779` and managed commit `0d53a91` are published. Snap
+OSS/work, Starship and Carbon verify exact preview.21 component manifests,
+roles/skills/modes, empty scoped diffs and fresh 17/four-tool protocols. All 33
+captured bindings/mtimes and 30 native/MCP identities are unchanged; Carbon's
+native owner remains unavailable and was not started. Existing sampled
+connections retain preview.20. The source checkout's two bytecode files and
+Snap's eight unrelated Claude source edits are preserved. See the
+[delivery receipt](reliability-packaging-results.md#preview21-soak-refinement-publication-and-rollout).
+
 ## Selected pass: soak-driven reliability refinement
 
 Bryan invoked `$adaptive-goal-loop` after the November 12 research review.
@@ -7,8 +29,9 @@ Keep the primary responsible for coordinator/receipt design, integration and
 native acceptance. Luna owns bounded argument-validation and partial-peer
 inspection changes. No escalation target is configured. Worker identities,
 explicit invocation, native ownership and source authorization remain unchanged.
-Prepare a local **preview.21** candidate; preview.20 remains published and
-managed. Commit validated slices without incidental publication or deployment.
+This historical pass prepared a local **preview.21** candidate while preview.20
+remained published and managed. The selected publication above supersedes that
+delivery boundary; its original source-only scope is retained below.
 
 The passive review found substantial Starship monitoring use and little Snap
 monitoring use. Its bounded history counts are observations, not a complete
@@ -66,8 +89,9 @@ MCP-started native 0.167.2 fixture completes two handoffs and a slow callback us
 two completed Luna/max turns. A subsequent zero-inference probe qualifies the
 native-discovered ephemeral-goal correction. See the
 [qualification and limits](native-qualification-results.md#soak-driven-reliability-preview21-source-candidate).
-Production sessions and managed selection remain unchanged; preview.21 is still
-a local candidate. The canonical bytecode files are preserved.
+At that source-only boundary production sessions and managed selection remained
+unchanged. The canonical bytecode files are preserved. The later publication
+above records delivery separately.
 
 ## Selected publication: preview.20 health and restart refinement
 

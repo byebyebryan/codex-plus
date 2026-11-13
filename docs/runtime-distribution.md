@@ -4,8 +4,9 @@ For installation and maintenance, give your agent the
 [canonical lifecycle guide](manage-agent.md). This page remains the component
 reference for artifacts, configuration and behavior.
 
-Preview.20 corrects normal MCP-started coordinator handoff and clarifies read-only
-health diagnostics. It retains verified restart recovery, verification and
+Preview.21 preserves truthful coordinator status across repeated handoffs, tracks
+slow callback receipts and clarifies invalid options and partial peer inspection.
+It retains preview.20's MCP launch/health fixes, verified restart recovery and
 rollback support. It extends clean rollover and archived inspection through the
 [owner recovery contract](owner-recovery.md). Publishing or selecting an archive
 does not reload an already running process. Managed rollout is recorded separately
@@ -15,14 +16,17 @@ The runtime is a Linux/Unix preview qualified against Codex 0.162.1. It uses
 Python 3.11 or newer and RTK for the existing native status/coordinator command
 paths. It requires an already running owning daemon and loaded independent
 sessions; it never starts a daemon or cold-resumes a target. Bounded owner
-replacement is qualified on native 0.167.0; long production operation and personal
+replacement, slow-callback receipts and ephemeral-peer limits are qualified on
+native 0.167.2; long production operation and personal
 UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.20](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.20)
-fixes supervisor log placement for the normal MCP launch path and improves
-doctor reasons/actions. Preview.19 introduced verified daemon restart recovery
+[v0.1.0-preview.21](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.21)
+fixes coordinator identity and callback receipt lifetime, improves argument
+diagnostics and handles verified ephemeral history/goal limits as partial
+capabilities. Preview.20 fixed supervisor log placement and doctor reasons/actions.
+Preview.19 introduced verified daemon restart recovery
 and honest quarantine/continuation within original limits. Preview.18 added explicit Sol, Astra and current-Terra tasks,
 for seven workflows and four current roles. Preview.17 removed the worker-name compatibility entries.
 The adaptive names arrived in preview.16; optional
@@ -40,9 +44,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.20.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.20.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.20.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.21.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.21.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.21.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains
@@ -90,35 +94,31 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Managed source selects workers, monitoring and reporting **preview.20**,
-source `f787ad6`, through published chezmoi pins `e73785e`.
+Managed source selects workers, monitoring and reporting **preview.21**,
+source `0d01779`, through published chezmoi pins `0d53a91`.
 
-| Context | Verified installation, 2026-11-07 | Runtime evidence |
+| Context | Verified installation, 2026-11-12 | Runtime evidence |
 | --- | --- | --- |
-| Snap OSS | Preview.20; all three manifests and copied roles/skills verify; scoped diff empty. | Fresh stdio: 17 monitoring/four report tools. Native owner unchanged; one sampled existing conversation still reports preview.18. |
-| Snap work | Same verified release in its separate home. | Fresh stdio verified; existing native owner unchanged. |
-| Starship | Same verified release and empty scoped diff. | Shared 0.167 owner remains reachable and unchanged. Fresh stdio reports preview.20; three sampled existing monitoring connections still report preview.19. Old-watch recovery is separate. |
-| Carbon | Offline; deployment deferred. Last verified preview.18 on 2026-11-05. | No current runtime or installation claim. Refresh preflight before applying. |
+| Snap OSS | Preview.21; all three manifests, four roles/seven skills, exact modes and empty scoped diff. | Fresh stdio: 17 monitoring/four reporting tools. Three sampled existing conversations still report preview.20 for both servers. |
+| Snap work | Same verified release in its separate home. | Fresh stdio verified. Its sampled existing conversation still reports preview.20 for both servers. |
+| Starship | Same verified release and empty scoped diff. | Native owner unchanged; three of eight loaded conversations sampled still report preview.20 for both servers. |
+| Carbon | Same verified release, copied roles/skills and empty scoped diff. | Fresh stdio verified; native owner unavailable, so no loaded-version claim. No owner was started. |
 
-The worker bundle includes four native roles and seven current workflow skills;
-both worker-name compatibility entries are removed. Optional instruction-based
-escalation remains in the two adaptive workflows.
-Exact inventories, payload hashes and modes verify, and native configuration,
-credentials, invocation metadata and older releases are preserved. Fresh MCP
-protocol discovery reports preview.20 on the three reachable contexts above.
-Already loaded process versions remain
-independent of selected files.
+The worker bundle retains four native roles and seven current workflows.
+Instruction-based escalation and explicit invocation remain unchanged. All five
+fetched release assets match the qualified bytes and GitHub digests. The full
+dotfiles gate and actual isolated report-archive apply pass. Native configuration,
+credentials, old releases, report configuration and all 33 captured bindings/mtimes
+are preserved. Across 2,587 existing protected paths, only the two selectors and
+worker provenance manifest on each host change. All 30 captured native/MCP
+process identities remain exact; no cache or unclassified protected-file change
+is observed.
 
-No native daemon restart or global MCP refresh was issued. Native daemon
-identities on both reachable hosts were preserved. All 28 existing conversation
-binding files and mtimes remain unchanged; no unclassified protected-file changes
-were found. The final 23:49 UTC audit
-also retains two changed existing native-system cache files on Snap work, with
-no new cache paths. Four pre-existing Starship MCP processes had ended by that
-audit with unlocalized cause; no lifecycle
-action was issued. Report hosting remains independent of stdio protocol
-discovery. See the [rollout receipt](reliability-packaging-results.md#preview20-health-and-restart-publication-and-rollout)
-for preservation details and runtime execution limits. The full dotfiles gate passes.
+No daemon restart, global MCP refresh or real-monitor recovery was issued.
+Already loaded helpers/coordinators keep their captured code until normal
+adoption. Report data and hosting are outside the apply scope. See the
+[rollout receipt](reliability-packaging-results.md#preview21-soak-refinement-publication-and-rollout)
+for source, installation and runtime evidence.
 
 Workers retain their own installation. The 349 inspector
 is retired, and native notifications remain selected. The earlier [managed activation report](managed-activation-results.md)
