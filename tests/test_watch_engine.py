@@ -25,6 +25,7 @@ class Backend:
         self.start_error = None
         self.source_sandbox = {'type': 'dangerFullAccess'}
         self.source_cwd = '/'
+        self.turns = []
 
     def bind(self, thread, timeout=None):
         return self.binding
@@ -44,6 +45,8 @@ class Backend:
             return {'thread': {'id': self.binding['thread_id'], 'canAcceptDirectInput': True, 'status': self.runtime}}
         if method == 'thread/goal/get':
             return {'goal': self.goal}
+        if method == 'thread/turns/list':
+            return {'data': self.turns[:params['limit']], 'nextCursor': None}
         if method == 'thread/queue/add':
             if self.add_error:
                 raise self.add_error
@@ -289,6 +292,112 @@ class EngineTests(unittest.TestCase):
         receipt = self.store.event(event)
         self.assertEqual(receipt['turn_outcome'], 'completed')
         self.assertFalse(receipt['acknowledged'])
+
+    def consumed_callback(self):
+        job = self.store.create('watch', self.spec)
+        event = self.store.emit(job, 'synthetic callback')
+        self.store.admitted(event, 'synthetic-native-id')
+        self.store.link_turn(event, 'synthetic-turn')
+        self.store.acknowledge(event)
+        self.store.cancel(job)
+        return job, event
+
+    def test_consumed_turn_receipts_outlive_acknowledgement_cancellation_and_expiry(self):
+        job, event = self.consumed_callback()
+        expiry = self.store.job(job)['expires']
+        self.now = expiry + 1
+        self.backend.turns = [{'id': 'synthetic-turn', 'status': 'inProgress'}]
+        self.tick()
+        self.assertTrue(self.engine.awaiting_receipts())
+        self.assertEqual(self.store.job(job)['expires'], expiry)
+        self.assertEqual(self.store.job(job)['intent'], 'cancelled')
+        self.assertEqual(self.backend.commands, [])
+        self.assertFalse(any(method.startswith('thread/queue/') for method, _ in self.backend.calls))
+        self.backend.turns[0]['status'] = 'completed'
+        self.now += 5
+        self.tick()
+        self.assertEqual(self.store.event(event)['turn_outcome'], 'completed')
+        self.assertFalse(self.engine.awaiting_receipts())
+
+    def test_reconnect_reconciles_a_missed_terminal_notification_without_replay(self):
+        _job, event = self.consumed_callback()
+        self.backend.turns = [{'id': 'synthetic-turn', 'status': 'inProgress'}]
+        self.tick()
+        self.assertTrue(self.engine.awaiting_receipts())
+        self.engine._disconnect('synthetic connection gap')
+        self.assertFalse(self.engine.awaiting_receipts())
+        replacement = Backend(self.binding)
+        replacement.turns = [{'id': 'synthetic-turn', 'status': 'failed',
+                              'error': {'message': 'synthetic failure'}}]
+        self.now += 2
+        with patch('codex_plus.engine.Client', return_value=replacement):
+            self.tick()
+        receipt = self.store.event(event)
+        self.assertEqual(receipt['turn_outcome'], 'failed')
+        self.assertIn('synthetic failure', receipt['turn_error'])
+        self.assertEqual(replacement.commands, [])
+        self.assertFalse(any(method.startswith(('thread/queue/', 'turn/')) for method, _ in replacement.calls))
+        self.assertFalse(self.engine.awaiting_receipts())
+
+    def test_missing_unavailable_or_malformed_history_cannot_extend_an_unknown_receipt(self):
+        _job, event = self.consumed_callback()
+        for response in ({'data': []}, None, {'data': [{'id': 'synthetic-turn', 'status': 'unclassified'}]},
+                         {'data': [{'id': 'synthetic-turn', 'status': 'completed'}, None]},
+                         RpcError('synthetic unavailable history'), TimeoutError('synthetic deadline')):
+            with self.subTest(response=response):
+                self.engine.next_receipt_check = 0
+                original = self.backend.call
+                def call(method, params, timeout=None):
+                    if method == 'thread/turns/list':
+                        if isinstance(response, Exception): raise response
+                        return response
+                    return original(method, params, timeout)
+                with patch.object(self.backend, 'call', side_effect=call):
+                    self.engine._reconcile_receipts()
+                self.assertIsNone(self.store.event(event)['turn_outcome'])
+                self.assertFalse(self.engine.awaiting_receipts())
+
+    def test_receipt_reconciliation_requires_the_same_owner_and_selected_epoch(self):
+        _job, event = self.consumed_callback()
+        self.backend.turns = [{'id': 'synthetic-turn', 'status': 'completed'}]
+        with patch.object(self.backend, 'bind', return_value={**self.binding, 'pid': 'different'}):
+            self.engine._reconcile_receipts()
+        self.assertIsNone(self.store.event(event)['turn_outcome'])
+        self.binding['thread_id'] = self.store.root.name
+        self.engine.next_receipt_check = 0
+        with patch('codex_plus.owner_recovery.selected_state', return_value=(self.root / 'other', None, None, None)):
+            self.engine._reconcile_receipts()
+        self.assertIsNone(self.store.event(event)['turn_outcome'])
+
+    def test_receipt_history_scan_has_a_total_page_and_time_bound(self):
+        _job, event = self.consumed_callback()
+        calls = []
+        original = self.backend.call
+        def call(method, params, timeout=None):
+            if method == 'thread/turns/list':
+                calls.append((params, timeout))
+                return {'data': [{'id': 'other-' + str(len(calls)), 'status': 'completed'}],
+                        'nextCursor': str(len(calls))}
+            return original(method, params, timeout)
+        with patch.object(self.backend, 'call', side_effect=call):
+            self.engine._reconcile_receipts()
+        self.assertEqual(len(calls), 4)
+        self.assertTrue(all(p['limit'] == 50 and p['itemsView'] == 'notLoaded' and 0 < timeout <= 2
+                            for p, timeout in calls))
+        self.assertIsNone(self.store.event(event)['turn_outcome'])
+        self.assertFalse(self.engine.awaiting_receipts())
+        self.engine.next_receipt_check = 0
+        calls.clear()
+        def slow(method, params, timeout=None):
+            if method == 'thread/turns/list':
+                calls.append(params)
+                self.now += 3
+                return {'data': [], 'nextCursor': 'more'}
+            return original(method, params, timeout)
+        with patch.object(self.backend, 'call', side_effect=slow):
+            self.engine._reconcile_receipts()
+        self.assertEqual(len(calls), 1)
+        self.assertIsNone(self.store.event(event)['turn_outcome'])
 
     def test_source_renewal_has_no_overlap(self):
         parent, process = self.source()

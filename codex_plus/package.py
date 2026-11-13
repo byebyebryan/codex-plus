@@ -72,7 +72,7 @@ def manifest(files, source_revision):
 def version_files(version):
     if version == VERSION:
         return RUNTIME_FILES
-    if version == '0.1.0-preview.19':
+    if version in ('0.1.0-preview.19', '0.1.0-preview.20'):
         return PREVIEW_NINETEEN_FILES
     if version in tuple('0.1.0-preview.' + str(number) for number in range(11, 19)):
         return PREVIEW_EIGHTEEN_FILES

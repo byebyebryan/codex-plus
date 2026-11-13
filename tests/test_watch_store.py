@@ -30,6 +30,16 @@ class StoreTests(unittest.TestCase):
         self.assertIsNone(self.store.emit(watch, 'same'))
         self.assertEqual(len(self.store.events(watch)), 2)
 
+    def test_invalid_command_or_cwd_creates_no_registration(self):
+        for changes, reason in (({'command': []}, 'command'), ({'cwd': None}, 'cwd is required'),
+                                ({'cwd': 'relative-private-name'}, 'absolute'),
+                                ({'cwd': str(self.root / 'private-missing-path')}, 'existing')):
+            with self.subTest(reason=reason), self.assertRaises(ValueError) as failure:
+                self.store.create('watch', {**self.spec, **changes})
+            self.assertIn(reason, str(failure.exception))
+            self.assertNotIn('private-', str(failure.exception))
+            self.assertEqual(self.store.jobs(), [])
+
     def test_snapshot_noise_and_initially_satisfied_option(self):
         spec = {**self.spec, 'snapshot_fields': ['status', 'progress'], 'quiet_initial': True}
         watch = self.store.create('watch', spec)
@@ -98,6 +108,18 @@ class StoreTests(unittest.TestCase):
         self.store = Store(self.root / 'state', clock=lambda: self.now)
         self.store.reconcile()
         self.assertEqual(self.store.event(event)['delivery'], 'uncertain')
+
+    def test_terminal_receipt_cannot_be_replaced_by_a_contradictory_outcome(self):
+        watch = self.store.create('watch', self.spec)
+        event = self.store.emit(watch, 'synthetic')
+        self.store.admitted(event, 'synthetic-native')
+        self.store.link_turn(event, 'synthetic-turn')
+        self.store.turn_completed('synthetic-turn', 'failed', {'message': 'original error'})
+        self.store.turn_completed('synthetic-turn', 'failed')
+        with self.assertRaises(ValueError):
+            self.store.turn_completed('synthetic-turn', 'completed')
+        self.assertEqual(self.store.event(event)['turn_outcome'], 'failed')
+        self.assertIn('original error', self.store.event(event)['turn_error'])
         self.assertFalse(self.store.reserve(event))
 
     def test_live_turn_receipt_can_arrive_before_link(self):

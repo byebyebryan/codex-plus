@@ -131,8 +131,12 @@ def validate_spec(kind: str, spec: dict) -> dict:
             ) or not command[0]:
                 raise ValueError('source command must be a nonempty argv without NUL bytes')
             cwd = spec.get('cwd')
-            if not isinstance(cwd, str) or not Path(cwd).is_absolute() or not Path(cwd).is_dir():
-                raise ValueError('source cwd must be an existing absolute directory')
+            if not isinstance(cwd, str) or not cwd:
+                raise ValueError('source cwd is required and must be an existing absolute directory')
+            if not Path(cwd).is_absolute():
+                raise ValueError('source cwd must be an absolute directory')
+            if not Path(cwd).is_dir():
+                raise ValueError('source cwd must be an existing directory')
             if spec.get('execution') is not None:
                 validate_grant(spec['execution'], cwd)
             interval = spec.get('command_interval')
@@ -528,6 +532,11 @@ class Store:
             return
         encoded = json.dumps(error)[:2048] if error is not None else None
         with self.transaction():
+            previous = self.db.execute('SELECT * FROM turn_receipts WHERE turn_id=?', (turn_id,)).fetchone()
+            if previous:
+                if previous['outcome'] != outcome:
+                    raise ValueError('native terminal turn receipt contradicts its recorded outcome')
+                encoded = previous['error']
             self.db.execute('INSERT OR REPLACE INTO turn_receipts VALUES (?,?,?)', (turn_id, outcome, encoded))
             self.db.execute('UPDATE events SET turn_outcome=?,turn_error=? WHERE turn_id=?', (outcome, encoded, turn_id))
 

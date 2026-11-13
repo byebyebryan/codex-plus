@@ -21,6 +21,10 @@ from .store import Store
 
 STDOUT_BYTES = 65536
 STDERR_BYTES = 16384
+RECEIPT_INTERVAL = 5
+RECEIPT_TIMEOUT = 2
+RECEIPT_PAGE_SIZE = 50
+RECEIPT_PAGES = 4
 
 
 @dataclass
@@ -51,6 +55,9 @@ class Engine:
         self.next_delivery = 0.0
         self.stopping = False
         self.successor = None
+        self.next_receipt_check = 0.0
+        self.receipt_running: set[str] = set()
+        self.receipt_valid_until = 0.0
         self.store.reconcile()
 
     def _connect(self):
@@ -73,12 +80,15 @@ class Engine:
                 client.close()
                 raise
             self.client = client
+            self.next_receipt_check = 0.0
         return True
 
     def _disconnect(self, reason):
         if self.client:
             self.client.close()
         self.client = None
+        self.receipt_running.clear()
+        self.receipt_valid_until = 0.0
         for job_id in list(self.sources):
             self.store.source(job_id, 'lost', reason, self.generation)
         self.sources.clear()
@@ -87,6 +97,79 @@ class Engine:
         self.command_due.clear()
         self.store.reconcile()
         self.next_connect = self.monotonic() + 2
+
+    def _unsettled_turns(self):
+        return {row[0] for row in self.store.db.execute('''
+            SELECT turn_id FROM events WHERE delivery='native_queued'
+            AND turn_id IS NOT NULL AND turn_outcome IS NULL
+            AND withdraw_state!='withdrawn'
+            GROUP BY turn_id ORDER BY MAX(created) DESC,turn_id LIMIT ?''', (RECEIPT_PAGE_SIZE,))}
+
+    def awaiting_receipts(self):
+        """Only a positively running consumed turn extends receipt observation."""
+        return (self.client is not None and self.monotonic() < self.receipt_valid_until
+                and bool(self.receipt_running & self._unsettled_turns()))
+
+    def _reconcile_receipts(self):
+        """Bounded passive status reads; never replay input or inspect a source."""
+        if self.monotonic() < self.next_receipt_check:
+            return
+        self.next_receipt_check = self.monotonic() + RECEIPT_INTERVAL
+        wanted = self._unsettled_turns()
+        self.receipt_running.clear()
+        self.receipt_valid_until = 0.0
+        if not wanted:
+            return
+        deadline = self.monotonic() + RECEIPT_TIMEOUT
+        found, cursors = {}, set()
+        cursor = None
+        try:
+            for _ in range(RECEIPT_PAGES):
+                params = {'threadId': self.binding['thread_id'], 'limit': RECEIPT_PAGE_SIZE,
+                          'itemsView': 'notLoaded', 'sortDirection': 'desc'}
+                if cursor:
+                    params['cursor'] = cursor
+                page = self.client.call('thread/turns/list', params,
+                                        timeout=self._remaining(deadline))
+                if not isinstance(page, dict):
+                    raise RpcError('invalid native receipt page')
+                rows = page.get('data')
+                if not isinstance(rows, list) or len(rows) > RECEIPT_PAGE_SIZE:
+                    raise RpcError('invalid native receipt page')
+                for turn in rows:
+                    if (not isinstance(turn, dict) or not isinstance(turn.get('id'), str)
+                            or turn.get('status') not in ('inProgress', 'completed', 'failed', 'interrupted')):
+                        raise RpcError('invalid native turn receipt')
+                    if turn['id'] in wanted:
+                        previous = found.get(turn['id'])
+                        if previous and previous['status'] != turn['status']:
+                            raise RpcError('native receipt pages disagree')
+                        found[turn['id']] = turn
+                cursor = page.get('nextCursor')
+                if wanted <= found.keys() or cursor is None:
+                    break
+                if not isinstance(cursor, str) or not cursor or len(cursor) > 4096 or cursor in cursors:
+                    raise RpcError('invalid native receipt cursor')
+                cursors.add(cursor)
+            if self.client.bind(self.binding['thread_id'], timeout=self._remaining(deadline)) != self.binding:
+                raise RpcError('native receipt owner changed')
+            container = (self.store.root.parent.parent if self.store.root.parent.name == 'incarnations'
+                         else self.store.root)
+            if container.name == self.binding['thread_id']:
+                from .owner_recovery import selected_state
+                if selected_state(container, expected_binding=self.binding)[0] != self.store.root:
+                    raise RpcError('native receipt incarnation changed')
+            with self.store.transaction():
+                for identity, turn in found.items():
+                    if turn['status'] != 'inProgress':
+                        self.store.turn_completed(identity, turn['status'], turn.get('error'))
+            self.receipt_running = {identity for identity, turn in found.items()
+                                    if turn['status'] == 'inProgress'}
+            self.receipt_valid_until = self.monotonic() + RECEIPT_INTERVAL + RECEIPT_TIMEOUT
+        except (OSError, ValueError, KeyError, RpcError, TimeoutError):
+            # Missing history or a changed/unavailable owner is not proof of
+            # completion. Do not keep an unknown callback alive indefinitely.
+            self.receipt_running.clear()
 
     def _control(self):
         if self.client.bind(self.binding['thread_id']) != self.binding:
@@ -299,6 +382,7 @@ class Engine:
         elif method == 'turn/completed':
             turn = params['turn']
             self.store.turn_completed(turn['id'], turn['status'], turn.get('error'))
+            self.receipt_running.discard(turn['id'])
         # An interrupted turn is a receipt, not cancellation of its observers.
 
     def _drain(self):
@@ -557,6 +641,7 @@ class Engine:
                 self._drain()
             for job in self.store.jobs():
                 self.store.settle(job['id'])
+            self._reconcile_receipts()
         except Exception as error:
             for job in self.store.jobs():
                 if job['intent'] == 'active':

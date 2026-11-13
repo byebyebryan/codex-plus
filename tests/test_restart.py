@@ -187,6 +187,28 @@ class RestartTests(unittest.TestCase):
             self.assertIsNone(cli._serve_once(self.root / A))
         self.assertEqual(owners._tree_manifest(self.root / A), before)
 
+    def test_handoff_reenters_same_release_for_each_selected_epoch(self):
+        selected = self.root / A / 'incarnations' / 'e-fixture'
+        selected.mkdir(parents=True, mode=0o700)
+        changed = binding(A)
+        class Recovery:
+            def __init__(inner, *args, **kwargs): pass
+            def __enter__(inner): return inner
+            def __exit__(inner, *args): pass
+            def handoff(inner): return {'continued_registrations': 1}
+        for original, successor in ((self.root / A, selected),
+                                    (selected, selected.with_name('e-next'))):
+            with self.subTest(state=original.name), \
+                 patch('codex_plus.cli._serve_once', side_effect=[changed, None]) as run, \
+                 patch('codex_plus.owner_recovery.Recovery', Recovery), \
+                 patch('codex_plus.owner_recovery.selected_state', return_value=(successor, None, None, None)), \
+                 patch('codex_plus.cli.os.execv') as execute:
+                cli.serve(original)
+            execute.assert_called_once_with(cli.sys.executable, [cli.sys.executable, '-B',
+                str(Path(cli.__file__).resolve().parents[1] / 'scripts/codex-plus-watch'),
+                '--state', str(successor), 'serve'])
+            self.assertEqual(run.call_count, 1)
+
     def test_writer_transition_is_separate_from_model_lock_and_exclusive(self):
         with owners.thread_locks(self.root, [A]):
             with owners.writer_transition(self.root, A):

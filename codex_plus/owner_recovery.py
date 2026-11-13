@@ -64,9 +64,9 @@ class OwnerRecoveryError(ValueError):
         if detail:
             fields.append(detail)
         if role == 'recipient':
-            fields.append('This operation registered no new recipient intent; prior delivery and handling remain as recorded. The recipient must run owner_status and, if clean, owner_recover in its own conversation.')
+            fields.append('This operation registered no new recipient intent; prior delivery and handling remain as recorded. The recipient must diagnose with owner_status in its own conversation; do not recover it as a side effect of sending.')
         elif role == 'caller':
-            fields.append('Run owner_status in this conversation; owner_recover is available only for a clean exact-thread rollover.')
+            fields.append('Run owner_status in this conversation. Explicit owner_recover requires an unchanged same-mode preview and confirm=true: clean refuses unsettled work, quarantine preserves it without replay, and resume continues only eligible original observations. No mode bypasses owner, writer, scope or queue checks.')
         super().__init__('; '.join(fields))
 
 

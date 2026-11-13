@@ -97,7 +97,7 @@ PREVIOUS_FILES = tuple(name for name in PREVIEW_EIGHT_FILES if name not in ('cod
 
 def version_files(version):
     if version == VERSION: return FILES
-    if version in tuple('0.1.0-preview.' + str(number) for number in range(9, 20)): return FILES
+    if version in tuple('0.1.0-preview.' + str(number) for number in range(9, 21)): return FILES
     if version == '0.1.0-preview.8': return PREVIEW_EIGHT_FILES
     if version == '0.1.0-preview.7': return PREVIOUS_FILES
     raise ValueError('unsupported report package version')

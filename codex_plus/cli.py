@@ -165,7 +165,14 @@ def serve(root: Path):
                     receipt = recovery.handoff()
                 if stopping or not receipt.get('continued_registrations'):
                     return
-                root = selected_state(container, expected_binding=changed)[0]
+                selected = selected_state(container, expected_binding=changed)[0]
+                # Keep the strict procfs argv/state proof true after each
+                # handoff. Re-enter this captured release, rather than a
+                # mutable installed selector, after releasing the old writer.
+                wrapper = Path(__file__).resolve().parents[1] / 'scripts/codex-plus-watch'
+                os.execv(sys.executable, [sys.executable, '-B', str(wrapper),
+                                         '--state', str(selected), 'serve'])
+                return  # execv only returns in a test double.
             except (OSError, ValueError, RuntimeError, TimeoutError, sqlite3.Error) as error:
                 # Intent remains on its old fenced binding. Retrying never
                 # starts old commands or replays uncertain submissions.
@@ -212,6 +219,7 @@ def _serve_once(root: Path, *, stop_requested=lambda: False):
                 awaiting = any(event['delivery'] == 'pending' or
                     event['delivery'] == 'native_queued' and event['expires'] > store.clock() and event['turn_outcome'] is None and
                     event['withdraw_state'] != 'withdrawn' and not event['acknowledged'] for event in store.events())
+                awaiting = awaiting or engine.awaiting_receipts()
                 if not active and not awaiting and not engine.sources and not engine.peer_polls and not engine.inspections and not engine.command_due:
                     idle_since = idle_since or time.monotonic()
                     if time.monotonic() - idle_since >= 10:

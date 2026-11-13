@@ -71,6 +71,40 @@ class CliTests(unittest.TestCase):
         self.assertTrue(result['source_receipts_may_be_stale'])
         native.assert_not_called(); start.assert_not_called()
 
+    def test_early_acknowledgement_keeps_a_consumed_callback_until_completion(self):
+        from codex_plus import cli
+        for outcome in ('completed', 'failed', 'interrupted'):
+            with self.subTest(outcome=outcome):
+                watch = self.store.create('watch', self.spec)
+                event = self.store.emit(watch, 'synthetic callback')
+                self.store.admitted(event, 'synthetic-native-id')
+                self.store.link_turn(event, 'synthetic-' + outcome)
+                self.store.acknowledge(event)
+                self.store.cancel(watch)
+                ticks = [0]
+                class CallbackEngine:
+                    def __init__(inner, store, frozen):
+                        inner.store = store
+                        inner.generation = 'synthetic-generation'
+                        inner.successor = None
+                        inner.sources, inner.peer_polls = {}, {}
+                        inner.inspections, inner.command_due = {}, {}
+                        inner.client = object()
+                    def tick(inner):
+                        ticks[0] += 1
+                        if ticks[0] == 20:
+                            inner.store.turn_completed('synthetic-' + outcome, outcome)
+                        if ticks[0] > 40:
+                            raise AssertionError('coordinator did not settle')
+                    def awaiting_receipts(inner):
+                        return ticks[0] < 20
+                    def close(inner): pass
+                with patch('codex_plus.cli.Engine', CallbackEngine), \
+                     patch('codex_plus.cli.time.monotonic', side_effect=lambda: float(ticks[0])):
+                    cli._serve_once(self.state)
+                self.assertEqual(self.store.event(event)['turn_outcome'], outcome)
+                self.assertGreaterEqual(ticks[0], 20)
+
     def test_reminder_cli_default_expiry_covers_requested_delay_before_admission(self):
         with patch('codex_plus.cli.validate_binding'), patch('codex_plus.cli.ensure_coordinator'):
             code, result = self.run_cli(['wake_schedule', '--after', '600', '--prompt', 'Reassess fixture.'])
