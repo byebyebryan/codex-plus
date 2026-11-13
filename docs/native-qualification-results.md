@@ -1,5 +1,110 @@
 # Native qualification and operational clarity
 
+## Soak-driven reliability: preview.21 source candidate
+
+Bryan selected `$adaptive-goal-loop` on 2026-11-12 after a passive daily-use
+review. Preview.21 is a local source/package candidate; preview.20 remains
+published and managed. The primary owns lifecycle design, integration and native
+acceptance. Luna implemented argument/peer refinements and reviewed the lifecycle
+diff. Its completed native worker turn records `gpt-6-luna` / `max`; no optional
+escalation target was selected. Roles, skills, explicit invocation and the 17/four
+monitoring/reporting tool inventories remain unchanged.
+
+### Mechanisms corrected
+
+- A coordinator that changed selected epoch retained its old launch path in
+  procfs argv, making strict status checks report it offline. After releasing
+  the old writer and completing handoff, it now re-enters the same captured
+  release at the selected epoch. The strict identity check is preserved.
+- Early acknowledgement allowed an otherwise idle coordinator to exit before
+  its consumed callback completed. Receipt observation now follows an exact
+  positively running turn independently of source cancellation/expiry. A bounded
+  status-only history scan reconciles missed terminal notifications after
+  reconnect; missing or contradictory evidence stays unknown.
+- Argument errors identify schema fields, indexes and accepted bounds without
+  echoing private values. Command cwd failures distinguish missing, relative and
+  nonexistent directories. Invalid source setup creates no registration/effect.
+- Ephemeral peer inspection preserves available metadata and reports unsupported
+  history/goals separately. Unavailable signals cannot produce empty-success
+  snapshots; native provenance, child exclusion and ambiguity checks remain.
+- Shared owner errors describe explicit clean/quarantine/resume diagnosis
+  accurately. They do not recover a recipient while sending or replay input.
+
+The research counterexamples became failing regressions before the lifecycle
+fixes. These mechanisms do not establish that every field ownership refusal was
+a bug or that a historical callback was lost. The one inspected incomplete
+receipt had a completed turn in native history. A reminder due and expired
+between host boots remains an outage/lease limitation, not a running-host failure.
+
+### Offline and package qualification
+
+The corrected source passes **451 tests on Python 3.11.13 and 3.14**, ten skill
+validators, the clean 145-file inventory and whitespace checks. The original
+checkout retains its two pre-existing bytecode files, so its strict inventory
+failure is reported separately rather than hidden by deleting them. The Pages
+build verifies 314 local links/assets/anchors and 15 published/managed claims;
+source-candidate notes do not claim a release or host installation.
+
+The unified private release and relocated monitoring/reporting components verify.
+Fresh stdio reports preview.21 and 17/four tools. The actual fetched preview.20
+runtime/report archives remain verifiable and selectable for rollback; both old
+and candidate immutable release directories are retained. Worker definitions and
+invocation policy bytes are unchanged. No managed selector is advanced.
+
+### Native 0.167.2 acceptance
+
+The core fixture used the relocated `7dc3a71` payload, a private native home,
+endpoint, source and continuing conversation. A real Luna/max setup turn
+registered one quiet replay-safe periodic command watch through the normal MCP
+launch path. The controller replaced only that disposable daemon twice and
+explicitly reattached only its owned fixture conversation. Both automatic
+handoffs preserved the original expiry/monotonic lease and remaining allowance.
+The same coordinator process was recognized at each new epoch; a normal startup
+check returned without creating a duplicate. No unchanged-source event or model
+turn was manufactured by handoff.
+
+A fresh source change then produced one native follow-up. It acknowledged the
+event, explicitly cancelled its own fixture watch, and called a deterministic
+18-second local fixture tool. At twelve seconds into that hold, the coordinator
+remained live and the native callback remained in progress. Its completed final
+receipt was recorded afterward. The queue ended empty and both immutable prior
+epochs retained no replayed events. There were exactly **two started/completed
+native model turns**, both with persisted Luna/max selection.
+
+An additional ephemeral fork inspection exposed a second native capability limit:
+`thread/goal/get` is unsupported as well as `thread/turns/list`. Thus the first
+combined recipe ended with an inspection failure after its core restart/callback
+checks had passed. Source `6f47b31` adds only the exact verified per-target goal
+refusal to partial coverage. Its runtime changes relative to the core payload
+are confined to peer reading/rendering; the coordinator, engine and store bodies
+are identical.
+
+A separate metadata-only native probe qualified that correction. Its first
+preparation attempt correctly refused to resume the already archived owned
+fixture; after explicitly unarchiving that fixture, the probe passed. Both
+attempts started **zero model turns**. A protocol allowlist excluded input,
+queue and command methods. Controller preparation of its own fixture is separate
+from the passive peer reader, whose permitted methods did not change.
+Persisted peer history/goals remained available; an independent ephemeral peer
+returned name/project/phase with explicit unsupported history and goals. Phase
+snapshots worked, while reply/progress/turn/goal snapshots refused unavailable
+coverage. The existing two completed turns remained unchanged.
+
+All owned fixture processes ended and temporary credential copies were removed.
+The two production native identities, eight captured config/auth/binding files
+and both captured managed selectors remained unchanged. No production restart,
+global MCP refresh, real-monitor recovery, publication or deployment occurred.
+Raw captures and fixture identities remain outside source.
+
+### Qualification limits
+
+This is bounded source/native acceptance on 0.167.2, not a new general native
+compatibility promise or a completed real-source soak on both hosts. Successful
+field messaging, MCP-source/authentication recovery and long outages remain open.
+Old immutable archive outcomes are not rewritten. Machine reboot does not revive
+the original monotonic lease or replay missed reminders. Managed adoption and
+any production use of preview.21 remain a later delivery step.
+
 ## Health and restart follow-up: preview.20 source pass
 
 Bryan invoked `$luna-goal-loop` after the 2026-11-07 overview. This source pass

@@ -9,7 +9,7 @@ this pass. Preserve the older report checkout, Starship owner-recovery worktree,
 concurrent work and the two existing untracked bytecode files. The dated rollout
 sections retain their original host/loaded-version evidence.
 
-## In progress: soak-driven reliability candidate
+## Completed locally: soak-driven reliability candidate
 
 Bryan selected `$adaptive-goal-loop` after the November 12 analysis. The
 [plan](codex-plus-plan.md#selected-pass-soak-driven-reliability-refinement)
@@ -28,9 +28,24 @@ native history can reconcile missed terminal notifications; missing or conflicti
 evidence stays unknown. Strict ownership, no replay, immutable history and the
 original observation bounds remain in force.
 
-Argument diagnostics, partial ephemeral-peer inspection, mode-aware recovery
-guidance and final package/native evidence are being integrated. Record the
-actual final checks and disposable-fixture outcomes here before closing the goal.
+Completed source: lifecycle `297c4f3`, argument/history refinements `751f3f9`,
+and the native-discovered ephemeral-goal correction `6f47b31`. The clean 145-file
+gate, **451 tests on Python 3.11.13/3.14**, ten skill validators, whitespace,
+unified private release/relocated verification, preview.20 runtime/report rollback
+and Pages checks pass. Canonical inventory still reports only the two preserved
+pre-existing bytecode files.
+
+Native 0.167.2 acceptance completes two automatic handoffs with the same correctly
+recognized coordinator, original bounds and no duplicate start, followed by an
+early-acknowledged/cancelled source and an 18-second callback whose terminal
+receipt is recorded. Exactly two native Luna/max turns start and complete.
+The extra ephemeral fork check discovers unsupported native goals; a corrected
+metadata-only probe passes with no additional model turn. The initial combined
+inspection failure and archived-fixture preparation refusal are retained in the
+[qualification receipt](native-qualification-results.md#soak-driven-reliability-preview21-source-candidate).
+All owned processes/credential copies are cleaned up; production owners, captured
+config/auth/bindings and selectors are unchanged. Source, private candidate
+artifacts and native evidence are separate from the published/managed preview.20.
 
 ## Preview.20 publication and managed rollout
 

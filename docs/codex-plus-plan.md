@@ -59,6 +59,16 @@ real-monitor recovery. Keep credentials, transcripts and runtime evidence privat
 Source, candidate artifacts, publication, managed installation, loaded processes
 and native acceptance are separate exit evidence.
 
+Completed locally: 451 tests pass on Python 3.11.13/3.14, with ten skill
+validators, clean tracked-source inventory, whitespace, unified private packaging,
+relocated runtime/report verification and actual preview.20 rollback. The normal
+MCP-started native 0.167.2 fixture completes two handoffs and a slow callback using
+two completed Luna/max turns. A subsequent zero-inference probe qualifies the
+native-discovered ephemeral-goal correction. See the
+[qualification and limits](native-qualification-results.md#soak-driven-reliability-preview21-source-candidate).
+Production sessions and managed selection remain unchanged; preview.21 is still
+a local candidate. The canonical bytecode files are preserved.
+
 ## Selected publication: preview.20 health and restart refinement
 
 Bryan requested publication and deployment after reviewing source `f787ad6`.

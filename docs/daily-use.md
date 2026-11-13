@@ -136,6 +136,10 @@ that acknowledges early and continues working. Source expiry or cancellation
 does not end observation of its positively running native turn. Bounded passive
 native history can fill a missed final receipt after reconnect; missing evidence
 stays unknown. This candidate is not yet the published/managed preview.20.
+For an ephemeral peer, the same candidate can show name/project/phase while
+explaining that native history or goals are unsupported. It does not infer an
+empty reply or absent goal from that limit, and it cannot watch unavailable
+signals. Ephemeral status does not change the native independent/subagent rules.
 
 <a id="return-to-unfinished-work--source-preview"></a>
 
