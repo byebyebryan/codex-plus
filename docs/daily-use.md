@@ -131,6 +131,12 @@ reported with cached receipt freshness. An offline coordinator makes a previous
 running receipt unknown. Ask for watch history to page through settled entries;
 history and handling receipts remain retained.
 
+The **preview.21 source candidate** improves receipt tracking for a callback
+that acknowledges early and continues working. Source expiry or cancellation
+does not end observation of its positively running native turn. Bounded passive
+native history can fill a missed final receipt after reconnect; missing evidence
+stays unknown. This candidate is not yet the published/managed preview.20.
+
 <a id="return-to-unfinished-work--source-preview"></a>
 
 ### Return to unfinished work

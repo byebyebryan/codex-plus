@@ -1,10 +1,36 @@
 # Implementation handoff
 
-Updated 2026-11-07. The owner-recovery work was isolated on Starship
-in `/home/bryan/code/codex-plus-owner-recovery`, based on maintained main. Preserve
-the older report checkout and the existing worktrees. Preview.20 is published
-and selected on Snap OSS/work and Starship. Carbon is offline, last verified on
-preview.18. Selected and loaded versions remain distinct.
+Updated 2026-11-12. The active source pass is the soak-driven preview.21
+reliability candidate below. Preview.20 remains published and managed. The
+November 12 passive Snap OSS/work and Starship samples report preview.20 on all
+enabled inspected monitoring/reporting connections; this is sampled connection
+evidence, not proof of every old watch's recovery. Carbon is not rechecked in
+this pass. Preserve the older report checkout, Starship owner-recovery worktree,
+concurrent work and the two existing untracked bytecode files. The dated rollout
+sections retain their original host/loaded-version evidence.
+
+## In progress: soak-driven reliability candidate
+
+Bryan selected `$adaptive-goal-loop` after the November 12 analysis. The
+[plan](codex-plus-plan.md#selected-pass-soak-driven-reliability-refinement)
+keeps coordinator identity, receipt tracking, integration and native acceptance
+with the primary, with bounded validation/peer work delegated to Luna. No optional
+escalation is configured. This pass prepares source and private artifacts;
+publication, managed deployment and production recovery are not implied.
+
+The research reproduced a false-offline mechanism after the coordinator changes
+epoch without updating launch argv, and an early-acknowledgement receipt gap when
+the coordinator exits before a consumed callback finishes. These are isolated
+mechanism proofs, not a causal claim for every field refusal or missing receipt.
+The implementation re-enters the captured release after handoff and observes
+known running callback receipts independently of source expiry. Bounded passive
+native history can reconcile missed terminal notifications; missing or conflicting
+evidence stays unknown. Strict ownership, no replay, immutable history and the
+original observation bounds remain in force.
+
+Argument diagnostics, partial ephemeral-peer inspection, mode-aware recovery
+guidance and final package/native evidence are being integrated. Record the
+actual final checks and disposable-fixture outcomes here before closing the goal.
 
 ## Preview.20 publication and managed rollout
 

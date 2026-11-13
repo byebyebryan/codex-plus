@@ -1,5 +1,64 @@
 # Codex Plus implementation plan
 
+## Selected pass: soak-driven reliability refinement
+
+Bryan invoked `$adaptive-goal-loop` after the November 12 research review.
+Keep the primary responsible for coordinator/receipt design, integration and
+native acceptance. Luna owns bounded argument-validation and partial-peer
+inspection changes. No escalation target is configured. Worker identities,
+explicit invocation, native ownership and source authorization remain unchanged.
+Prepare a local **preview.21** candidate; preview.20 remains published and
+managed. Commit validated slices without incidental publication or deployment.
+
+The passive review found substantial Starship monitoring use and little Snap
+monitoring use. Its bounded history counts are observations, not a complete
+failure rate or proof of all source/host combinations. Ownership refusals are
+intentional fencing, not fourteen demonstrated lost watches. A reminder due
+between host boots does not establish a continuously-running scheduler failure.
+Successful field messaging, MCP-source monitoring/authentication recovery and
+long outages remain separate qualification gaps.
+
+Implement these slices in order:
+
+1. Preserve truthful coordinator identity after repeated handoff. Re-enter the
+   captured release at the verified selected epoch after releasing the old
+   writer; keep strict PID/start/executable/wrapper/state checks and original
+   bounds. Qualify the normal RTK/MCP launch path and absence of duplicate starts.
+2. Separate receipt lifetime from source lifetime. Early acknowledgement,
+   cancellation and source expiry do not finish a consumed native callback.
+   Retain observation of an exact positively running turn, and reconcile bounded
+   status-only native history after reconnect. Missing, changed-owner or
+   contradictory evidence stays unknown; no cold resume, replay, lease extension
+   or archive rewriting is permitted. Ordinary recap tools remain cached reads.
+3. Name invalid fields and accepted types/ranges without exposing their private
+   text. Keep schema bounds and reject before registration or native effects.
+   Distinguish missing argv and missing/nonabsolute/nonexistent command cwd.
+4. Inspect available ephemeral-peer metadata with explicit history/goal coverage.
+   Preserve independent/child provenance and ambiguity checks. Unavailable
+   history cannot become an empty-reply success; watches hold unsupported signals
+   while phase-only observation can use verified metadata. Unknown errors remain
+   failures and no peer is loaded or resumed to manufacture context.
+5. Reconcile recovery guidance, daily-use limits and source/release claims. Manual
+   recovery retains explicit authorization, same-mode preview and confirmation;
+   a send never repairs another conversation or retries uncertain input.
+
+Promote the isolated research counterexamples to behavior regressions before
+changing the lifecycle code. Run focused tests, full unittest discovery, the
+inventory/worker gate, ten skill validators, whitespace, unified package build
+and relocated verification/rollback, and Pages checks. Preserve the canonical
+checkout's two pre-existing bytecode files; report a clean tracked-source gate
+separately instead of removing them to manufacture success.
+
+Native acceptance uses only disposable native 0.167.2 homes, endpoints, sources
+and conversations. Exercise two handoffs before a fresh source event, truthful
+running status and no duplicate launch, then early acknowledgement and a slow
+callback with a terminal receipt. Use at most eight started model turns combined,
+including two reserved for settlement, and count failed attempts. Replacing a
+fixture owner does not authorize any production restart, global MCP refresh or
+real-monitor recovery. Keep credentials, transcripts and runtime evidence private.
+Source, candidate artifacts, publication, managed installation, loaded processes
+and native acceptance are separate exit evidence.
+
 ## Selected publication: preview.20 health and restart refinement
 
 Bryan requested publication and deployment after reviewing source `f787ad6`.

@@ -1,9 +1,22 @@
 # Daily-use soak checklist
 
 The installed preview is ready for normal-use trials on Snap and Starship.
-Bounded synthetic acceptance is complete; a daily-use soak has not been completed.
-Use existing work and already authorized sources rather than creating workloads
-just to keep a monitor busy. The [daily guide](daily-use.md) supplies the requests.
+The November 12 passive review found representative Starship monitoring use;
+Snap had worker/report activity but no new monitoring registrations in the
+review window. This is partial field evidence, not completed qualification of
+both hosts or every source. Use existing work and already authorized sources
+rather than creating workloads just to keep a monitor busy. The
+[daily guide](daily-use.md) supplies the requests.
+
+The review identified generic argument errors, an ephemeral-peer history limit,
+ownership-recovery friction and one incomplete completion receipt whose native
+turn was actually completed. Separate local reproductions exposed coordinator
+status after handoff and early-acknowledgement receipt tracking gaps. The
+[preview.21 source pass](codex-plus-plan.md#selected-pass-soak-driven-reliability-refinement)
+addresses those mechanisms; it is not yet the installed release. Successful
+field message handling, configured MCP-source monitoring, authentication recovery
+and longer outages retain their own evidence limits. A reminder whose due and
+expiry window fell between boots is not proof of failure on a running host.
 
 ## During the first several working days
 

@@ -209,6 +209,23 @@ class RestartTests(unittest.TestCase):
                 '--state', str(successor), 'serve'])
             self.assertEqual(run.call_count, 1)
 
+    def test_failed_reentry_never_runs_the_selected_epoch_with_old_arguments(self):
+        changed = binding(A)
+        original = self.root / A
+        selected = original / 'incarnations' / 'e-fixture'
+        class Recovery:
+            def __init__(inner, *args, **kwargs): pass
+            def __enter__(inner): return inner
+            def __exit__(inner, *args): pass
+            def handoff(inner): return {'continued_registrations': 1}
+        with patch('codex_plus.cli._serve_once', side_effect=[changed, None]) as run, \
+             patch('codex_plus.owner_recovery.Recovery', Recovery), \
+             patch('codex_plus.owner_recovery.selected_state', return_value=(selected, None, None, None)), \
+             patch('codex_plus.cli.os.execv', side_effect=OSError('synthetic exec refusal')), \
+             patch('codex_plus.cli.time.sleep'), patch('sys.stderr'):
+            cli.serve(original)
+        self.assertEqual([call.args[0] for call in run.call_args_list], [original, original])
+
     def test_writer_transition_is_separate_from_model_lock_and_exclusive(self):
         with owners.thread_locks(self.root, [A]):
             with owners.writer_transition(self.root, A):

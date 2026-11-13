@@ -1,5 +1,27 @@
 # Native owner recovery
 
+## Source candidate: preview.21 soak refinement
+
+Preview.21 is a local candidate; preview.20 remains published and managed.
+After a successful handoff releases its writer, the coordinator re-enters the
+same captured release using the selected epoch path. Its launch arguments and
+private process record agree again, so strict status checks can recognize the
+live successor and avoid a duplicate startup attempt. Owner/writer/queue proofs,
+original observation bounds and the RTK log boundary remain unchanged.
+
+Receipt observation is separate from source observation. An acknowledged native
+callback can still be running after the source is cancelled or expires. The
+candidate observes that exact positively running turn and uses bounded passive
+history after reconnect to reconcile terminal receipts. Missing or conflicting
+evidence stays unknown; no input, source or external action is replayed, and
+immutable archives are not rewritten. Cached inspection does not restart work.
+
+Manual recovery still requires an explicit request, unchanged same-mode preview
+and confirmation. The shared owner error now describes clean/quarantine/resume
+without suggesting that a send should repair its recipient. A host reboot is
+different from a same-boot daemon replacement: original monotonic lease anchors
+do not survive the new boot, and missed reminders are not replayed as catch-up.
+
 ## Preview.20: MCP-started coordinator handoff
 
 The health/follow-up pass found a launch-path defect in published preview.19.
