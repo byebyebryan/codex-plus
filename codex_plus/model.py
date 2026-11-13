@@ -189,34 +189,104 @@ def tool_definitions(max_duration=86400, max_events=1000):
 
 
 def validate_arguments(schema, args):
-    if not isinstance(args, dict) or set(args) - set(schema['properties']):
-        raise ValueError('unknown tool arguments; caller identity comes only from native metadata')
-    if set(schema.get('required', [])) - set(args):
-        raise ValueError('required tool arguments are missing')
-    def check(value, rule):
+    properties = schema['properties']
+    if not isinstance(args, dict):
+        raise ValueError('arguments: expected object')
+
+    def expected(rule):
+        kind = rule['type']
+        if kind in ('integer', 'number'):
+            name = kind + ' (finite)'
+            minimum, maximum = rule.get('minimum'), rule.get('maximum')
+            exclusive = rule.get('exclusiveMaximum')
+            if minimum is not None or maximum is not None or exclusive is not None:
+                lower = str(minimum) if minimum is not None else '-infinity'
+                if exclusive is not None:
+                    upper = '< ' + str(exclusive)
+                else:
+                    upper = str(maximum) if maximum is not None else 'infinity'
+                name += ' in [' + lower + ', ' + upper + ']'
+        elif kind == 'string':
+            lower, upper = rule.get('minLength', 0), rule.get('maxLength', 65536)
+            name = 'string with ' + str(lower) + '..' + str(upper) + ' characters'
+        elif kind == 'array':
+            name = 'array with ' + str(rule.get('minItems', 0)) + '..' + str(rule.get('maxItems', 1000)) + ' items'
+        else:
+            name = kind
+        if 'enum' in rule:
+            name += ' (one of ' + ', '.join(repr(value) for value in rule['enum']) + ')'
+        return name
+
+    def invalid(path, rule, reason):
+        raise ValueError(path + ': expected ' + expected(rule) + '; ' + reason)
+
+    required = schema.get('required', [])
+    for key in required:
+        if key not in args:
+            invalid('arguments.' + key, properties[key], 'required field is missing')
+    if set(args) - set(properties):
+        # Unknown names can themselves contain arbitrary caller text. Do not echo them.
+        raise ValueError('arguments: contains an unsupported field')
+
+    def valid_json(value):
+        if value is None or isinstance(value, (str, bool, int)):
+            return True
+        if isinstance(value, float):
+            return math.isfinite(value)
+        if isinstance(value, list):
+            return all(valid_json(item) for item in value)
+        if isinstance(value, dict):
+            return all(isinstance(key, str) and valid_json(item) for key, item in value.items())
+        return False
+
+    def check(value, rule, path):
         kind = rule['type']
         if kind == 'string':
-            if not isinstance(value, str) or not rule.get('minLength', 0) <= len(value) <= rule.get('maxLength', 65536):
-                raise ValueError('tool text is empty or exceeds its bound')
+            if not isinstance(value, str):
+                invalid(path, rule, 'value has the wrong type')
+            if len(value) < rule.get('minLength', 0):
+                invalid(path, rule, 'text is shorter than the minimum length')
+            if len(value) > rule.get('maxLength', 65536):
+                invalid(path, rule, 'text exceeds the maximum length')
         elif kind in ('integer', 'number'):
-            if isinstance(value, bool) or not isinstance(value, int if kind == 'integer' else (int, float)) or not math.isfinite(value):
-                raise ValueError('numeric tool arguments must be finite and correctly typed')
-            if not rule.get('minimum', -math.inf) <= value <= rule.get('maximum', math.inf):
-                raise ValueError('numeric tool argument outside its bound')
+            if isinstance(value, bool) or not isinstance(value, int if kind == 'integer' else (int, float)):
+                invalid(path, rule, 'value has the wrong type')
+            if isinstance(value, float) and not math.isfinite(value):
+                invalid(path, rule, 'value must be finite')
+            if value < rule.get('minimum', -math.inf):
+                invalid(path, rule, 'value is below the minimum')
+            if value > rule.get('maximum', math.inf):
+                invalid(path, rule, 'value is above the maximum')
             if value >= rule.get('exclusiveMaximum', math.inf):
-                raise ValueError('numeric tool argument must be below its exclusive bound')
+                invalid(path, rule, 'value must be below the exclusive maximum')
         elif kind == 'boolean':
-            if not isinstance(value, bool): raise ValueError('boolean tool argument required')
+            if not isinstance(value, bool):
+                invalid(path, rule, 'value has the wrong type')
         elif kind == 'array':
-            if not isinstance(value, list) or not rule.get('minItems', 0) <= len(value) <= rule.get('maxItems', 1000):
-                raise ValueError('tool array outside its bound')
-            for item in value: check(item, rule['items'])
+            if not isinstance(value, list):
+                invalid(path, rule, 'value has the wrong type')
+            if len(value) < rule.get('minItems', 0):
+                invalid(path, rule, 'array has fewer than the minimum number of items')
+            if len(value) > rule.get('maxItems', 1000):
+                invalid(path, rule, 'array exceeds the maximum number of items')
+            for index, item in enumerate(value):
+                check(item, rule['items'], path + '[' + str(index) + ']')
         elif kind == 'object':
             if not isinstance(value, dict):
-                raise ValueError('tool object argument required')
+                invalid(path, rule, 'value has the wrong type')
+            try:
+                is_json = valid_json(value)
+            except RecursionError:
+                is_json = False
+            if not is_json:
+                invalid(path, rule, 'object must contain only finite JSON values')
         if 'enum' in rule and value not in rule['enum']:
-            raise ValueError('unsupported tool choice')
-    for key, value in args.items(): check(value, schema['properties'][key])
+            invalid(path, rule, 'choice is unsupported')
+
+    # Walk in schema order so a combined invalid call has a stable first diagnosis.
+    for key, rule in properties.items():
+        if key in args:
+            check(args[key], rule, 'arguments.' + key)
 
 
 def native_context(meta):
@@ -393,6 +463,76 @@ class ModelAPI:
         validate_arguments(definition['inputSchema'], args)
         return getattr(self, '_' + name)(**args)
 
+    @staticmethod
+    def _preflight_watch_source(peer, command, cwd, interval, signals, turn_limit,
+                                source_access, network_access, mcp_server, mcp_tool,
+                                mcp_arguments, snapshot_fields, command_interval):
+        """Reject local source-shape errors before native reads or durable writes."""
+        if mcp_server is None and (mcp_tool is not None or mcp_arguments is not None):
+            raise ValueError('arguments.mcp_server: required with mcp_tool or mcp_arguments')
+
+        if peer is not None:
+            if source_access != 'session':
+                raise ValueError('arguments.source_access: applies only to command sources')
+            if network_access != 'inherit':
+                raise ValueError('arguments.network_access: applies only to command sources')
+            if command_interval is not None:
+                raise ValueError('arguments.command_interval: applies only to command sources')
+            if command is not None:
+                raise ValueError('arguments.command: cannot be combined with arguments.peer')
+            if cwd is not None:
+                raise ValueError('arguments.cwd: cannot be combined with arguments.peer')
+            if snapshot_fields is not None:
+                raise ValueError('arguments.snapshot_fields: cannot be combined with arguments.peer')
+            if mcp_server is not None:
+                raise ValueError('arguments.mcp_server: cannot be combined with arguments.peer')
+            return 'peer', None
+
+        if mcp_server is not None:
+            if command_interval is not None:
+                raise ValueError('arguments.command_interval: applies only to command sources')
+            if command is not None:
+                raise ValueError('arguments.command: cannot be combined with arguments.mcp_server')
+            if cwd is not None:
+                raise ValueError('arguments.cwd: cannot be combined with arguments.mcp_server')
+            if snapshot_fields is not None:
+                raise ValueError('arguments.snapshot_fields: cannot be combined with arguments.mcp_server')
+            if signals is not None:
+                raise ValueError('arguments.signals: applies only to peer sources')
+            if turn_limit != 3:
+                raise ValueError('arguments.turn_limit: applies only to peer sources')
+            if source_access != 'session':
+                raise ValueError('arguments.source_access: applies only to command sources')
+            if network_access != 'inherit':
+                raise ValueError('arguments.network_access: applies only to command sources')
+            if mcp_tool is None:
+                raise ValueError('arguments.mcp_tool: required with arguments.mcp_server')
+            from .access import mcp_spec
+            try:
+                selected = mcp_spec(mcp_server, mcp_tool,
+                                    mcp_arguments if mcp_arguments is not None else {})
+            except ValueError as error:
+                # mcp_spec emits fixed messages; never include its input values here.
+                if 'MCP server/tool' in str(error):
+                    raise ValueError('arguments.mcp_server or arguments.mcp_tool: expected a bounded configured name') from None
+                raise ValueError('arguments.mcp_arguments: expected finite JSON arguments within the configured bound') from None
+            return 'mcp', selected
+
+        if interval is not None:
+            raise ValueError('arguments.interval: applies to peer or MCP checks; use command_interval for repeated commands')
+        if not command:
+            raise ValueError('arguments.command: command source requires a nonempty argv array')
+        for index, argument in enumerate(command):
+            if '\0' in argument:
+                raise ValueError('arguments.command[' + str(index) + ']: expected text without NUL characters')
+        if cwd is None:
+            raise ValueError('arguments.cwd: command source requires an existing absolute directory')
+        if not Path(cwd).is_absolute():
+            raise ValueError('arguments.cwd: expected an absolute directory')
+        if not Path(cwd).is_dir():
+            raise ValueError('arguments.cwd: expected an existing directory')
+        return 'command', None
+
     def _peer_list(self, limit=20, include_children=False):
         reader = PeerReader(self.client)
         inventory = reader.discover(caller=self.context['thread_id'], limit=limit)
@@ -401,11 +541,18 @@ class ModelAPI:
         for peer in inventory['peers']:
             frozen = {**inventory['owner'], 'thread_id': peer['thread_id']}
             ref = self._remember('peer', peer['thread_id'], frozen)
-            lines.append(ref + ': ' + label(peer['name'], 'untitled session') + ' | ' + label(peer['cwd']) + ' | ' + peer['status']['type'])
+            ephemeral = 'true' if peer['ephemeral'] is True else 'false' if peer['ephemeral'] is False else 'not reported'
+            direct_input = 'true' if peer['direct_input'] is True else 'false' if peer['direct_input'] is False else 'not reported'
+            lines.append(ref + ': ' + label(peer['name'], 'untitled session') + ' | project/cwd ' + label(peer['cwd']) +
+                         ' | phase ' + peer['status']['type'] + ' | ephemeral ' + ephemeral +
+                         ' | direct-input capability ' + direct_input)
             try:
                 read = reader.read(frozen, turn_limit=1, goal=False, timeout=min(5, self.client.remaining(deadline)))
-                text = [i['text'] for t in read['turns'] for i in t['items']]
-                lines.append('  Recent agent context:\n' + quote('\n'.join(text[-2:]) or 'No recent agent context available.'))
+                if read['coverage']['history'] == 'unsupported':
+                    lines.append('  Recent agent context unavailable: native turn history is unsupported; name, project/cwd and phase remain available.')
+                else:
+                    text = [i['text'] for t in read['turns'] for i in t['items']]
+                    lines.append('  Recent agent context:\n' + quote('\n'.join(text[-2:]) or 'No recent agent context available.'))
             except (OSError, ValueError, KeyError, RpcError, TimeoutError):
                 lines.append('  Recent context unavailable/not sampled; inspect this peer before task selection.')
             if peer['context_truncated']: lines.append('  Identifying context is truncated; do not infer unique selection.')
@@ -421,52 +568,47 @@ class ModelAPI:
     def _peer_inspect(self, peer, turn_limit=3):
         row, frozen, _ = self._peer(peer)
         read = PeerReader(self.client).read(frozen, turn_limit=turn_limit)
-        lines = [row['ref'] + ': ' + label(read['peer']['name']) + ' | ' + label(read['peer']['cwd']),
-                 'Native phase: ' + str(read['peer']['status']['type']) + '; native goal: ' + str(read['goal_status'])]
-        for turn in read['turns']:
-            for item in turn['items']: lines.append('Agent/plan context:\n' + quote(item['text']))
-        lines.append('Bounded snapshot; not lossless and not proof of task completion.' + (' Content is truncated.' if read['coverage']['content_truncated'] else ''))
+        info = read['peer']
+        ephemeral = 'true' if info['ephemeral'] is True else 'false' if info['ephemeral'] is False else 'not reported'
+        direct_input = 'true' if info['direct_input'] is True else 'false' if info['direct_input'] is False else 'not reported'
+        lines = [row['ref'] + ': ' + label(info['name']) + ' | project/cwd ' + label(info['cwd']),
+                 'Native phase: ' + info['status']['type'] + '; ephemeral: ' + ephemeral +
+                 '; direct-input capability: ' + direct_input + '; native goal: ' + str(read['goal_status']) +
+                 ' (coverage ' + read['coverage']['goal'] + ')']
+        if read['coverage']['history'] == 'unsupported':
+            lines.append('Turn history coverage: unsupported by this ephemeral peer. No empty history, reply or turn is inferred.')
+        else:
+            for turn in read['turns']:
+                for item in turn['items']: lines.append('Agent/plan context:\n' + quote(item['text']))
+            lines.append('Turn history coverage: bounded window of ' + str(read['coverage']['turn_window']) +
+                         '; not lossless.' + (' Content is truncated.' if read['coverage']['content_truncated'] else ''))
+        lines.append('This inspection is not proof of task completion.')
         return '\n'.join(lines)
 
     def _watch_start(self, followup, peer=None, label=None, command=None, cwd=None, duration=None,
                      event_limit=None, interval=None, signals=None, turn_limit=3, quiet_initial=True,
                      notify_end=True, snapshot_fields=None, source_access='session', network_access='inherit',
                      mcp_server=None, mcp_tool=None, mcp_arguments=None, command_interval=None, restart=None):
+        source, selected_mcp = self._preflight_watch_source(peer, command, cwd, interval,
+            signals, turn_limit, source_access, network_access, mcp_server, mcp_tool,
+            mcp_arguments, snapshot_fields, command_interval)
         self._mutable()
         duration = min(120, self.max_duration) if duration is None else duration
         event_limit = min(2, self.max_events) if event_limit is None else event_limit
         args = ['watch_start', '--duration', str(duration), '--limit', str(event_limit), '--followup', followup]
         if restart is not None:
             args += ['--restart', restart]
-        if mcp_server is None and (mcp_tool is not None or mcp_arguments is not None):
-            raise ValueError('MCP inspection needs a configured server and tool')
-        if peer is not None:
-            if source_access != 'session' or network_access != 'inherit':
-                raise ValueError('command source access choices do not apply to peer observation')
-            if command_interval is not None:
-                raise ValueError('periodic command interval does not apply to peer observation')
-            if command is not None or cwd is not None or snapshot_fields is not None or mcp_server is not None:
-                raise ValueError('choose a peer source or a command/cwd/projection source')
+        if source == 'peer':
             row, frozen, info = self._peer(peer)
             display = label or row['label'] or info['name'] or 'peer session'
             self._remember('peer', frozen['thread_id'], frozen, display)
             args += ['--peer', frozen['thread_id'], '--interval', str(interval if interval is not None else 5), '--signals', ','.join(signals or ['reply', 'needs_input', 'goal']), '--turn-limit', str(turn_limit)]
-        elif mcp_server is not None:
-            if command_interval is not None:
-                raise ValueError('periodic command interval does not apply to MCP inspection')
-            if command is not None or cwd is not None or snapshot_fields is not None or signals is not None or turn_limit != 3 or source_access != 'session' or network_access != 'inherit':
-                raise ValueError('choose a scheduled MCP inspection or command/peer source')
-            from .access import mcp_spec
-            selected = mcp_spec(mcp_server, mcp_tool, mcp_arguments if mcp_arguments is not None else {})
+        elif source == 'mcp':
             display = label or mcp_server + '.' + mcp_tool
-            args += ['--mcp-server', selected['server'], '--mcp-tool', selected['tool'],
-                '--mcp-arguments', json.dumps(selected['arguments'], allow_nan=False),
+            args += ['--mcp-server', selected_mcp['server'], '--mcp-tool', selected_mcp['tool'],
+                '--mcp-arguments', json.dumps(selected_mcp['arguments'], allow_nan=False),
                 '--interval', str(interval if interval is not None else 30)]
         else:
-            if interval is not None:
-                raise ValueError('use command_interval for periodic endpoint reads, or a continuing observer script')
-            if not command or not cwd or not Path(cwd).is_absolute():
-                raise ValueError('a command source needs argv and an existing absolute cwd')
             display = label or 'registered source'
             args += ['--cwd', cwd, '--source-access', source_access, '--network-access', network_access]
             if command_interval is not None:

@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from codex_plus.native import RpcError
-from codex_plus.peers import PeerReader, classification, snapshot, READ_METHODS
+from codex_plus.peers import PeerReader, classification, metadata, snapshot, READ_METHODS
 
 
 A = '00000000-0000-4000-8000-000000000001'
@@ -101,6 +101,88 @@ class PeerTests(unittest.TestCase):
                        {'source': {'subAgent': {'thread_spawn': {'parent_thread_id': B}}}, 'parentThreadId': A},
                        {'source': 'vscode', 'parentThreadId': 'not-a-uuid'}):
             self.assertEqual(classification(thread)['kind'], 'unknown')
+
+    def test_metadata_preserves_native_ephemeral_and_direct_input_capabilities(self):
+        thread = ordinary(B)
+        thread.update(ephemeral=True, canAcceptDirectInput=False)
+        row = metadata(thread)
+        self.assertTrue(row['ephemeral'])
+        self.assertFalse(row['direct_input'])
+        self.assertEqual(row['kind'], 'independent')
+        persisted = metadata({**ordinary(B), 'ephemeral': False})
+        self.assertFalse(persisted['ephemeral'])
+        self.assertIsNone(metadata(ordinary(B))['ephemeral'])
+        with self.assertRaisesRegex(ValueError, 'ephemeral metadata is malformed'):
+            metadata({**ordinary(B), 'ephemeral': 'true'})
+
+    def test_verified_ephemeral_unsupported_history_keeps_metadata_and_separate_goal_coverage(self):
+        self.backend.threads[B].update(ephemeral=True, canAcceptDirectInput=False)
+        self.backend.goal = {'threadId': B, 'status': 'active'}
+        original = self.backend.call
+        def call(method, params, timeout=None):
+            if method == 'thread/turns/list' and params['threadId'] == B:
+                self.backend.calls.append((method, copy.deepcopy(params), timeout))
+                raise RpcError('ephemeral threads do not support thread/turns/list')
+            return original(method, params, timeout)
+        self.backend.call = call
+
+        read = self.reader.read(self.frozen)
+        self.assertIsNone(read['turns'])
+        self.assertTrue(read['peer']['ephemeral'])
+        self.assertFalse(read['peer']['direct_input'])
+        self.assertEqual(read['coverage']['history'], 'unsupported')
+        self.assertEqual(read['coverage']['goal'], 'available')
+        self.assertEqual(read['goal_status'], 'active')
+        phase = snapshot(read, ['phase', 'needs_input', 'goal'])
+        self.assertEqual(phase['phase']['type'], 'idle')
+        self.assertEqual(phase['goal'], 'active')
+        self.assertEqual(phase['coverage']['history'], 'unsupported')
+        self.assertNotIn('reply', phase)
+        for signal in ('turn', 'reply', 'progress'):
+            with self.subTest(signal=signal):
+                with self.assertRaisesRegex(ValueError, 'turn history coverage is unsupported'):
+                    snapshot(read, [signal])
+
+    def test_only_known_ephemeral_history_capability_error_degrades(self):
+        original = self.backend.call
+        cases = ((False, 'ephemeral threads do not support thread/turns/list'),
+                 (True, 'permission denied while reading history'))
+        for ephemeral, error in cases:
+            with self.subTest(ephemeral=ephemeral, error=error):
+                self.backend.threads[B]['ephemeral'] = ephemeral
+                def call(method, params, timeout=None):
+                    if method == 'thread/turns/list' and params['threadId'] == B:
+                        raise RpcError(error)
+                    return original(method, params, timeout)
+                self.backend.call = call
+                with self.assertRaises(RpcError):
+                    self.reader.read(self.frozen)
+        self.backend.threads[B]['ephemeral'] = True
+        def serialized(method, params, timeout=None):
+            if method == 'thread/turns/list' and params['threadId'] == B:
+                raise RpcError('{"code":-32603,"message":"ephemeral threads do not support thread/turns/list"}')
+            return original(method, params, timeout)
+        self.backend.call = serialized
+        self.assertEqual(self.reader.read(self.frozen)['coverage']['history'], 'unsupported')
+        self.backend.call = original
+
+    def test_partial_history_does_not_hide_goal_identity_or_owner_failures(self):
+        self.backend.threads[B]['ephemeral'] = True
+        original = self.backend.call
+        def unsupported(method, params, timeout=None):
+            if method == 'thread/turns/list' and params['threadId'] == B:
+                raise RpcError('ephemeral threads do not support thread/turns/list')
+            return original(method, params, timeout)
+        self.backend.call = unsupported
+        self.backend.goal = {'threadId': A, 'status': 'complete'}
+        with self.assertRaisesRegex(RpcError, 'peer goal identity mismatch'):
+            self.reader.read(self.frozen)
+
+        self.backend.goal = None
+        changed = {**OWNER, 'start_ticks': '201'}
+        with patch('codex_plus.peers.listener_identity', side_effect=[dict(OWNER), dict(OWNER), changed]):
+            with self.assertRaisesRegex(RpcError, 'peer daemon owner changed'):
+                self.reader.read(self.frozen)
 
     def test_duplicate_independent_names_require_exact_selection(self):
         self.backend.threads[OTHER] = ordinary(OTHER)

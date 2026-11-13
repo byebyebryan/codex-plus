@@ -11,6 +11,7 @@ from unittest.mock import patch
 
 from codex_plus.model import MODEL_GUIDANCE, ModelAPI, native_context, tool_definitions, validate_arguments
 from codex_plus.model_server import Server
+from codex_plus.native import RpcError
 from codex_plus.store import Store
 from codex_plus import cli, owner_recovery as owners
 from test_peers import A, B, CHILD, OWNER, ordinary
@@ -70,6 +71,82 @@ class ModelTests(unittest.TestCase):
         self.assertTrue(tools['peer_send']['annotations']['destructiveHint'])
         self.assertTrue(tools['watch_cancel']['annotations']['destructiveHint'])
 
+    def test_argument_validation_reports_schema_paths_ranges_and_nested_indexes(self):
+        peer_list = next(t for t in tool_definitions() if t['name'] == 'peer_list')['inputSchema']
+        for bound in (1, 100):
+            validate_arguments(peer_list, {'limit': bound})
+        for value in (True, 0, 101, 1.5, float('inf'), float('nan')):
+            with self.subTest(value=value):
+                with self.assertRaises(ValueError) as failure:
+                    validate_arguments(peer_list, {'limit': value})
+                message = str(failure.exception)
+                self.assertIn('arguments.limit', message)
+                self.assertIn('integer (finite) in [1, 100]', message)
+
+        watch = next(t for t in tool_definitions() if t['name'] == 'watch_start')['inputSchema']
+        private_followup = 'private prompt body'
+        with self.assertRaises(ValueError) as failure:
+            validate_arguments(watch, {'followup': private_followup,
+                'command': ['echo safe', ['private nested command']]})
+        message = str(failure.exception)
+        self.assertIn('arguments.command[1]', message)
+        self.assertIn('string with 1..4096 characters', message)
+        self.assertNotIn(private_followup, message)
+        self.assertNotIn('private nested command', message)
+
+        with self.assertRaises(ValueError) as combined:
+            validate_arguments(peer_list, {'limit': 0, 'include_children': 'private option'})
+        self.assertIn('arguments.limit', str(combined.exception))
+        self.assertIn('integer (finite) in [1, 100]', str(combined.exception))
+        self.assertNotIn('private option', str(combined.exception))
+
+    def test_argument_validation_preserves_schema_boundary_values(self):
+        watch = next(t for t in tool_definitions() if t['name'] == 'watch_start')['inputSchema']
+        validate_arguments(watch, {'followup': 'check', 'duration': 0.001, 'event_limit': 1,
+                                   'interval': 1, 'command_interval': 1, 'turn_limit': 1})
+        validate_arguments(watch, {'followup': 'check', 'duration': 86400, 'event_limit': 1000,
+                                   'interval': 3600, 'command_interval': 3600, 'turn_limit': 10})
+
+        wake = next(t for t in tool_definitions() if t['name'] == 'wake_schedule')['inputSchema']
+        validate_arguments(wake, {'after': 0, 'prompt': 'check'})
+        validate_arguments(wake, {'after': 86399.999, 'prompt': 'check'})
+        with self.assertRaisesRegex(ValueError, 'arguments.after'):
+            validate_arguments(wake, {'after': 86400, 'prompt': 'check'})
+
+    def test_invalid_watch_options_are_rejected_before_native_operations_or_registration(self):
+        with self.api() as api:
+            before = list(self.backend.calls)
+            cases = [
+                ({'followup': 'check', 'duration': 0}, 'arguments.duration', 'number (finite) in [0.001, 86400]'),
+                ({'followup': 'check', 'event_limit': True}, 'arguments.event_limit', 'integer (finite) in [1, 1000]'),
+                ({'followup': 'check', 'mcp_server': 'configured', 'mcp_tool': 'inspect',
+                  'mcp_arguments': {'credential': float('nan')}}, 'arguments.mcp_arguments', 'finite JSON'),
+                ({'followup': 'check'}, 'arguments.command', 'nonempty argv array'),
+                ({'followup': 'check', 'command': ['echo ok']}, 'arguments.cwd', 'requires an existing absolute directory'),
+                ({'followup': 'check', 'command': ['echo ok'], 'cwd': 'relative/path'}, 'arguments.cwd', 'absolute directory'),
+                ({'followup': 'check', 'command': ['echo ok'], 'cwd': str(Path(self.tmp.name) / 'missing')}, 'arguments.cwd', 'existing directory'),
+                ({'followup': 'check', 'command': ['private command\0body'], 'cwd': self.tmp.name}, 'arguments.command[0]', 'without NUL characters'),
+                ({'followup': 'check', 'mcp_server': 'private-endpoint\nbody', 'mcp_tool': 'inspect',
+                  'mcp_arguments': {'credential': 'private mcp argument'}}, 'arguments.mcp_server', 'bounded configured name'),
+                ({'followup': 'check', 'mcp_server': 'configured', 'mcp_tool': 'inspect',
+                  'mcp_arguments': {'credential': 'private mcp argument ' + ('x' * 5000)}}, 'arguments.mcp_arguments', 'finite JSON arguments'),
+            ]
+            for arguments, field, detail in cases:
+                with self.subTest(field=field, arguments=arguments.keys()):
+                    with self.assertRaises(ValueError) as failure:
+                        api.call('watch_start', arguments)
+                    message = str(failure.exception)
+                    self.assertIn(field, message)
+                    self.assertIn(detail, message)
+                    self.assertNotIn('private command', message)
+                    self.assertNotIn('private-endpoint', message)
+                    self.assertNotIn('private mcp argument', message)
+                    self.assertEqual(self.backend.calls, before)
+                    self.assertEqual(api.store.jobs(), [])
+
+            self.assertEqual(api._preflight_watch_source(None, ['echo ok'], self.tmp.name, None,
+                ['reply'], 7, 'session', 'inherit', None, None, None, None, None), ('command', None))
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name) / 'model'
@@ -104,6 +181,31 @@ class ModelTests(unittest.TestCase):
             self.assertEqual(api.store.db.execute("SELECT COUNT(*) FROM model_refs WHERE identity=?", (CHILD,)).fetchone()[0], 0)
             self.assertIn('redwood samples', api.call('peer_inspect', {'peer': ref}))
         self.assertTrue(all(method in ('thread/loaded/list', 'thread/read', 'thread/turns/list', 'thread/goal/get') for method, _ in self.backend.calls))
+
+    def test_ephemeral_peer_discovery_and_inspection_keep_metadata_when_history_is_unsupported(self):
+        self.backend.rows[B]['ephemeral'] = True
+        original = self.backend.call
+        def call(method, params, timeout=None):
+            if method == 'thread/turns/list' and params['threadId'] == B:
+                self.backend.calls.append((method, copy.deepcopy(params)))
+                raise RpcError('ephemeral threads do not support thread/turns/list')
+            return original(method, params, timeout)
+        self.backend.call = call
+        with self.api() as api:
+            ref, listing = self.discover(api)
+            self.assertIn('phase idle', listing)
+            self.assertIn('ephemeral true', listing)
+            self.assertIn('Recent agent context unavailable: native turn history is unsupported', listing)
+            inspected = api.call('peer_inspect', {'peer': ref})
+            self.assertIn('project/cwd /fixture', inspected)
+            self.assertIn('Native phase: idle; ephemeral: true', inspected)
+            self.assertIn('native goal: None (coverage available)', inspected)
+            self.assertIn('Turn history coverage: unsupported by this ephemeral peer', inspected)
+            self.assertIn('No empty history, reply or turn is inferred', inspected)
+            self.assertNotIn('Agent/plan context:', inspected)
+            self.assertEqual(api.store.jobs(), [])
+        self.assertTrue(all(method in ('thread/loaded/list', 'thread/read', 'thread/turns/list', 'thread/goal/get')
+                            for method, _ in self.backend.calls))
 
     def test_alias_is_persistent_and_never_retargets_after_name_reuse(self):
         with self.api() as api:
@@ -190,7 +292,7 @@ class ModelTests(unittest.TestCase):
             self.assertEqual(failure.exception.role, 'recipient')
             self.assertNotIn('caller_owner_state=', str(failure.exception))
             self.assertNotIn('Run owner_status in this conversation', str(failure.exception))
-            self.assertIn('recipient must run owner_status', str(failure.exception))
+            self.assertIn('diagnose with owner_status in its own conversation', str(failure.exception))
             self.assertFalse((destination / 'journal.sqlite3').exists())
             self.assertEqual(cli.binding(destination), old)
             self.assertEqual(api.store.db.execute("SELECT COUNT(*) FROM model_refs WHERE kind='message'").fetchone()[0], 0)

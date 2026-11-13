@@ -1,4 +1,5 @@
 import copy
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -7,6 +8,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from codex_plus.engine import Engine
+from codex_plus.native import RpcError
 from codex_plus.store import Store
 from test_peers import A, B, CHILD, OWNER, ordinary
 from test_watch_engine import Backend as QueueBackend
@@ -183,6 +185,46 @@ class PeerWatchTests(unittest.TestCase):
         self.assertEqual(self.store.job(job)['source_state'], 'stopped')
         self.assertEqual(self.engine.peer_polls, {})
         self.assertTrue(self.backend.peer_loaded)
+
+    def test_ephemeral_phase_only_watch_uses_verified_metadata_without_turn_history(self):
+        self.backend.peer['ephemeral'] = True
+        original = self.backend.call
+        def call(method, params, timeout=None):
+            if method == 'thread/turns/list' and params.get('threadId') == B:
+                raise RpcError('ephemeral threads do not support thread/turns/list')
+            return original(method, params, timeout)
+        self.backend.call = call
+        spec = {**self.spec, 'signals': ['phase', 'needs_input']}
+        job = self.store.create('watch', spec)
+        self.tick(); self.tick()
+        self.assertEqual(self.store.job(job)['source_state'], 'running')
+        self.assertFalse(any(method == 'thread/turns/list' and params.get('threadId') == B
+                             for method, params in self.backend.calls))
+
+        self.backend.peer['status'] = {'type': 'active', 'activeFlags': ['waitingOnUserInput']}
+        self.advance()
+        self.assertEqual(self.store.job(job)['source_state'], 'running')
+        events = self.store.events(job)
+        self.assertEqual(len(events), 1)
+        observation = json.loads(events[0]['observation'])
+        self.assertEqual(observation['phase']['type'], 'active')
+        self.assertEqual(observation['needs_input'], ['waitingOnUserInput'])
+        self.assertEqual(observation['coverage']['history'], 'not_requested')
+
+    def test_ephemeral_reply_watch_holds_unavailable_history_without_emitting_empty_reply(self):
+        self.backend.peer['ephemeral'] = True
+        original = self.backend.call
+        def call(method, params, timeout=None):
+            if method == 'thread/turns/list' and params.get('threadId') == B:
+                raise RpcError('ephemeral threads do not support thread/turns/list')
+            return original(method, params, timeout)
+        self.backend.call = call
+
+        job = self.watch()
+        self.assertEqual(self.store.job(job)['source_state'], 'lost')
+        self.assertEqual(self.engine.peer_polls, {})
+        self.assertFalse(any(event['kind'] == 'source' for event in self.store.events(job)))
+        self.assertFalse(any(method == 'thread/queue/add' for method, _ in self.backend.calls))
 
     def test_coordinator_loss_preserves_baseline_and_requires_explicit_recovery(self):
         job = self.watch()

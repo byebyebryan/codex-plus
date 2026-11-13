@@ -59,18 +59,43 @@ def classification(thread):
 
 
 def metadata(thread):
+    if not isinstance(thread, dict):
+        raise ValueError('native peer metadata is not an object')
     identity = thread_id(thread.get('id'))
     status = thread.get('status')
-    if not isinstance(status, dict):
-        status = {'type': 'unknown'}
+    if not isinstance(status, dict) or not isinstance(status.get('type'), str):
+        raise ValueError('native peer runtime status is malformed')
+    active_flags = status.get('activeFlags')
+    if active_flags is not None and (not isinstance(active_flags, list) or
+            any(not isinstance(flag, str) for flag in active_flags)):
+        raise ValueError('native peer active flags are malformed')
+    ephemeral = thread.get('ephemeral')
+    if ephemeral is not None and not isinstance(ephemeral, bool):
+        raise ValueError('native peer ephemeral metadata is malformed')
+    direct_input = thread.get('canAcceptDirectInput')
+    if direct_input is not None and not isinstance(direct_input, bool):
+        raise ValueError('native peer direct-input capability is malformed')
     name, name_cut = bounded_text(thread.get('name'), 512)
     cwd, cwd_cut = bounded_text(thread.get('cwd'), 1024)
     return {'thread_id': identity, **classification(thread), 'name': name, 'cwd': cwd,
             'name_truncated': name_cut, 'cwd_truncated': cwd_cut,
             'context_truncated': name_cut or cwd_cut, 'status': status,
+            'ephemeral': ephemeral,
             'forked_from': thread.get('forkedFromId'),
-            'direct_input': thread.get('canAcceptDirectInput'),
+            'direct_input': direct_input,
             'updated_at': thread.get('updatedAt')}
+
+
+def _known_ephemeral_history_unsupported(error):
+    """Recognize only the observed native capability refusal for ephemeral history."""
+    message = str(error)
+    try:
+        response = json.loads(message)
+    except (TypeError, ValueError):
+        response = None
+    if isinstance(response, dict) and isinstance(response.get('message'), str):
+        message = response['message']
+    return message == 'ephemeral threads do not support thread/turns/list'
 
 
 class PeerReader:
@@ -201,37 +226,65 @@ class PeerReader:
         deadline = self.monotonic() + timeout
         result = self.validate(frozen, deadline=deadline)
         target = frozen['thread_id']
-        turns, clipped = [], False
+        turns, clipped = None, False
+        history_coverage = 'not_requested'
         if history:
-            page = self.rpc('thread/turns/list', {'threadId': target, 'limit': turn_limit,
-                'itemsView': 'summary', 'sortDirection': 'desc'}, deadline)
-            if not isinstance(page.get('data'), list) or len(page['data']) > turn_limit:
-                raise RpcError('invalid or oversized peer turn window')
-            for turn in page['data']:
-                items = []
-                # Tool outputs and user prompts are deliberately not exported here.
-                relevant = [item for item in turn.get('items', [])
-                            if item.get('type') in ('agentMessage', 'plan')]
-                for item in relevant[-6:]:
-                    text, cut = bounded_text(item.get('text'), 1024)
-                    items.append({'id': item['id'], 'type': item['type'],
-                                  'phase': item.get('phase'), 'text': text, 'text_truncated': cut})
-                    clipped |= cut
-                clipped |= len(relevant) > 6
-                turns.append({'id': turn['id'], 'status': turn['status'], 'items': items})
+            try:
+                page = self.rpc('thread/turns/list', {'threadId': target, 'limit': turn_limit,
+                    'itemsView': 'summary', 'sortDirection': 'desc'}, deadline)
+            except RpcError as error:
+                if result['peer']['ephemeral'] is not True or not _known_ephemeral_history_unsupported(error):
+                    raise
+                history_coverage = 'unsupported'
+            else:
+                if not isinstance(page, dict) or not isinstance(page.get('data'), list) or len(page['data']) > turn_limit:
+                    raise RpcError('invalid or oversized peer turn window')
+                turns = []
+                for turn in page['data']:
+                    if (not isinstance(turn, dict) or not isinstance(turn.get('id'), str) or
+                            not isinstance(turn.get('status'), str) or not isinstance(turn.get('items', []), list)):
+                        raise RpcError('malformed native peer turn response')
+                    items = []
+                    # Tool outputs and user prompts are deliberately not exported here.
+                    turn_items = turn.get('items', [])
+                    if any(not isinstance(item, dict) or not isinstance(item.get('type'), str)
+                           for item in turn_items):
+                        raise RpcError('malformed native peer turn items')
+                    relevant = [item for item in turn_items
+                                if item.get('type') in ('agentMessage', 'plan')]
+                    for item in relevant[-6:]:
+                        if not isinstance(item.get('id'), str):
+                            raise RpcError('malformed native peer history item identity')
+                        if item.get('text') is not None and not isinstance(item.get('text'), str):
+                            raise RpcError('malformed native peer history item text')
+                        text, cut = bounded_text(item.get('text'), 1024)
+                        phase = item.get('phase')
+                        if phase is not None and not isinstance(phase, str):
+                            raise RpcError('malformed native peer history item phase')
+                        items.append({'id': item['id'], 'type': item['type'],
+                                      'phase': phase, 'text': text, 'text_truncated': cut})
+                        clipped |= cut
+                    clipped |= len(relevant) > 6
+                    turns.append({'id': turn['id'], 'status': turn['status'], 'items': items})
+                history_coverage = 'available'
         goal_state = 'not_requested'
+        goal_coverage = 'not_requested'
         if goal:
             response = self.rpc('thread/goal/get', {'threadId': target}, deadline)
-            if 'goal' not in response:
+            if not isinstance(response, dict) or 'goal' not in response:
                 raise RpcError('peer goal state unavailable')
             native_goal = response['goal']
             if native_goal is not None and (not isinstance(native_goal, dict) or native_goal.get('threadId') != target):
                 raise RpcError('peer goal identity mismatch')
             goal_state = native_goal.get('status', 'unknown') if native_goal is not None else None
+            if goal_state is not None and not isinstance(goal_state, str):
+                raise RpcError('peer goal status is malformed')
+            goal_coverage = 'available'
         self.check_owner()
         result.update(turns=turns, goal_status=goal_state, observed_at=time.time(),
                       coverage={'mode': 'bounded_snapshot', 'lossless': False,
-                                'turn_window': turn_limit if history else 0,
+                                'turn_window': turn_limit if history_coverage == 'available' else 0,
+                                'history': history_coverage, 'goal': goal_coverage,
                                 'content_truncated': clipped})
         return result
 
@@ -239,8 +292,19 @@ class PeerReader:
 def snapshot(read, signals, *, gap=False):
     if not isinstance(signals, list) or not signals or len(signals) != len(set(signals)) or set(signals) - SIGNALS:
         raise ValueError('select distinct supported peer signals')
+    coverage = read['coverage']
+    turns = read.get('turns')
+    history_coverage = coverage.get('history', 'available' if isinstance(turns, list) else 'unavailable')
+    history_signals = set(signals) & {'turn', 'reply', 'progress'}
+    if history_signals and history_coverage != 'available':
+        names = ', '.join(sorted(history_signals))
+        raise ValueError('requested peer signal(s) ' + names + ' are unavailable because turn history coverage is ' + history_coverage)
+    goal_coverage = coverage.get('goal', 'available' if read.get('goal_status') != 'not_requested' else 'not_requested')
+    if 'goal' in signals and goal_coverage != 'available':
+        raise ValueError('requested peer signal goal is unavailable because native goal coverage is ' + goal_coverage)
     result = {'peer_id': read['peer']['thread_id'],
-              'coverage': {**read['coverage'], 'observation_gap': gap},
+              'coverage': {**coverage, 'history': history_coverage, 'goal': goal_coverage,
+                           'observation_gap': gap},
               'task_outcome': 'unknown'}
     status = read['peer']['status']
     if 'phase' in signals:
@@ -251,7 +315,7 @@ def snapshot(read, signals, *, gap=False):
                                  if isinstance(flags, list) else 'unknown')
     if 'goal' in signals:
         result['goal'] = read['goal_status']
-    turns = read['turns']
+    turns = turns or []
     if 'turn' in signals:
         result['turn'] = {'id': turns[0]['id'], 'status': turns[0]['status']} if turns else None
     for signal in ('reply', 'progress'):
