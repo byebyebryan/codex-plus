@@ -98,6 +98,19 @@ def _known_ephemeral_history_unsupported(error):
     return message == 'ephemeral threads do not support thread/turns/list'
 
 
+def _known_ephemeral_goal_unsupported(error, target):
+    """Recognize only the verified per-thread ephemeral goal capability error."""
+    expected = 'ephemeral thread does not support goals: ' + target
+    message = str(error)
+    try:
+        response = json.loads(message)
+    except (TypeError, ValueError):
+        response = None
+    if isinstance(response, dict):
+        return type(response.get('code')) is int and response['code'] == -32600 and response.get('message') == expected
+    return message == expected
+
+
 class PeerReader:
     def __init__(self, client, *, monotonic=time.monotonic):
         self.client = client
@@ -270,16 +283,23 @@ class PeerReader:
         goal_state = 'not_requested'
         goal_coverage = 'not_requested'
         if goal:
-            response = self.rpc('thread/goal/get', {'threadId': target}, deadline)
-            if not isinstance(response, dict) or 'goal' not in response:
-                raise RpcError('peer goal state unavailable')
-            native_goal = response['goal']
-            if native_goal is not None and (not isinstance(native_goal, dict) or native_goal.get('threadId') != target):
-                raise RpcError('peer goal identity mismatch')
-            goal_state = native_goal.get('status', 'unknown') if native_goal is not None else None
-            if goal_state is not None and not isinstance(goal_state, str):
-                raise RpcError('peer goal status is malformed')
-            goal_coverage = 'available'
+            try:
+                response = self.rpc('thread/goal/get', {'threadId': target}, deadline)
+            except RpcError as error:
+                if result['peer']['ephemeral'] is not True or not _known_ephemeral_goal_unsupported(error, target):
+                    raise
+                goal_state = 'unsupported'
+                goal_coverage = 'unsupported'
+            else:
+                if not isinstance(response, dict) or 'goal' not in response:
+                    raise RpcError('peer goal state unavailable')
+                native_goal = response['goal']
+                if native_goal is not None and (not isinstance(native_goal, dict) or native_goal.get('threadId') != target):
+                    raise RpcError('peer goal identity mismatch')
+                goal_state = native_goal.get('status', 'unknown') if native_goal is not None else None
+                if goal_state is not None and not isinstance(goal_state, str):
+                    raise RpcError('peer goal status is malformed')
+                goal_coverage = 'available'
         self.check_owner()
         result.update(turns=turns, goal_status=goal_state, observed_at=time.time(),
                       coverage={'mode': 'bounded_snapshot', 'lossless': False,

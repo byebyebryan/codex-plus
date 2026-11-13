@@ -226,6 +226,26 @@ class PeerWatchTests(unittest.TestCase):
         self.assertFalse(any(event['kind'] == 'source' for event in self.store.events(job)))
         self.assertFalse(any(method == 'thread/queue/add' for method, _ in self.backend.calls))
 
+    def test_ephemeral_goal_watch_holds_unsupported_goal_without_emitting_a_source_event(self):
+        self.backend.peer['ephemeral'] = True
+        original = self.backend.call
+        def call(method, params, timeout=None):
+            if method == 'thread/goal/get' and params.get('threadId') == B:
+                raise RpcError(json.dumps({'code': -32600,
+                    'message': 'ephemeral thread does not support goals: ' + B}))
+            return original(method, params, timeout)
+        self.backend.call = call
+        spec = {**self.spec, 'signals': ['phase', 'goal']}
+
+        job = self.store.create('watch', spec)
+        self.tick(); self.tick()
+        self.assertEqual(self.store.job(job)['source_state'], 'lost')
+        self.assertEqual(self.engine.peer_polls, {})
+        self.assertFalse(any(event['kind'] == 'source' for event in self.store.events(job)))
+        self.assertFalse(any(method == 'thread/turns/list' and params.get('threadId') == B
+                             for method, params in self.backend.calls))
+        self.assertFalse(any(method == 'thread/queue/add' for method, _ in self.backend.calls))
+
     def test_coordinator_loss_preserves_baseline_and_requires_explicit_recovery(self):
         job = self.watch()
         baseline = self.store.job(job)['baseline']

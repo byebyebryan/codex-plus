@@ -1,4 +1,5 @@
 import copy
+import json
 from pathlib import Path
 import sys
 import unittest
@@ -142,6 +143,78 @@ class PeerTests(unittest.TestCase):
             with self.subTest(signal=signal):
                 with self.assertRaisesRegex(ValueError, 'turn history coverage is unsupported'):
                     snapshot(read, [signal])
+
+    def test_verified_ephemeral_goal_capability_is_separate_from_history_coverage(self):
+        self.backend.threads[B].update(ephemeral=True, canAcceptDirectInput=False)
+        expected = 'ephemeral thread does not support goals: ' + B
+        original = self.backend.call
+        def call(method, params, timeout=None):
+            if method == 'thread/turns/list' and params['threadId'] == B:
+                raise RpcError('ephemeral threads do not support thread/turns/list')
+            if method == 'thread/goal/get' and params['threadId'] == B:
+                raise RpcError(json.dumps({'code': -32600, 'message': expected}))
+            return original(method, params, timeout)
+        self.backend.call = call
+
+        read = self.reader.read(self.frozen)
+        self.assertIsNone(read['turns'])
+        self.assertEqual(read['goal_status'], 'unsupported')
+        self.assertEqual(read['coverage']['history'], 'unsupported')
+        self.assertEqual(read['coverage']['goal'], 'unsupported')
+        phase = snapshot(read, ['phase'])
+        self.assertEqual(phase['phase']['type'], 'idle')
+        self.assertEqual(phase['coverage']['goal'], 'unsupported')
+        with self.assertRaisesRegex(ValueError, 'native goal coverage is unsupported'):
+            snapshot(read, ['goal'])
+
+        self.backend.call = original
+        def raw_error(method, params, timeout=None):
+            if method == 'thread/goal/get' and params['threadId'] == B:
+                raise RpcError(expected)
+            return original(method, params, timeout)
+        self.backend.call = raw_error
+        self.assertEqual(self.reader.read(self.frozen)['coverage']['goal'], 'unsupported')
+        self.backend.call = original
+
+    def test_ephemeral_goal_refusal_requires_exact_thread_and_known_error(self):
+        self.backend.threads[B]['ephemeral'] = True
+        original = self.backend.call
+        cases = (
+            RpcError(json.dumps({'code': -32600, 'message': 'ephemeral thread does not support goals: ' + A})),
+            RpcError(json.dumps({'code': -32601, 'message': 'ephemeral thread does not support goals: ' + B})),
+            RpcError(json.dumps({'code': -32600.0, 'message': 'ephemeral thread does not support goals: ' + B})),
+            RpcError('ephemeral thread does not support goals: ' + A),
+            RpcError('permission denied while reading the native goal'),
+            RpcError('malformed native error response'),
+            TimeoutError('native goal transport ended'),
+        )
+        for failure in cases:
+            with self.subTest(error=str(failure)):
+                def call(method, params, timeout=None):
+                    if method == 'thread/goal/get' and params['threadId'] == B:
+                        raise failure
+                    return original(method, params, timeout)
+                self.backend.call = call
+                with self.assertRaises(type(failure)):
+                    self.reader.read(self.frozen)
+
+        def malformed(method, params, timeout=None):
+            if method == 'thread/goal/get' and params['threadId'] == B:
+                return {'unexpected': None}
+            return original(method, params, timeout)
+        self.backend.call = malformed
+        with self.assertRaisesRegex(RpcError, 'peer goal state unavailable'):
+            self.reader.read(self.frozen)
+
+        self.backend.threads[B]['ephemeral'] = False
+        def non_ephemeral(method, params, timeout=None):
+            if method == 'thread/goal/get' and params['threadId'] == B:
+                raise RpcError('ephemeral thread does not support goals: ' + B)
+            return original(method, params, timeout)
+        self.backend.call = non_ephemeral
+        with self.assertRaises(RpcError):
+            self.reader.read(self.frozen)
+        self.backend.call = original
 
     def test_only_known_ephemeral_history_capability_error_degrades(self):
         original = self.backend.call

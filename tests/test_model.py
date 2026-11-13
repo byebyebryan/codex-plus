@@ -189,6 +189,10 @@ class ModelTests(unittest.TestCase):
             if method == 'thread/turns/list' and params['threadId'] == B:
                 self.backend.calls.append((method, copy.deepcopy(params)))
                 raise RpcError('ephemeral threads do not support thread/turns/list')
+            if method == 'thread/goal/get' and params['threadId'] == B:
+                self.backend.calls.append((method, copy.deepcopy(params)))
+                raise RpcError(json.dumps({'code': -32600,
+                    'message': 'ephemeral thread does not support goals: ' + B}))
             return original(method, params, timeout)
         self.backend.call = call
         with self.api() as api:
@@ -199,7 +203,7 @@ class ModelTests(unittest.TestCase):
             inspected = api.call('peer_inspect', {'peer': ref})
             self.assertIn('project/cwd /fixture', inspected)
             self.assertIn('Native phase: idle; ephemeral: true', inspected)
-            self.assertIn('native goal: None (coverage available)', inspected)
+            self.assertIn('Native goal unavailable: capability unsupported for this ephemeral peer', inspected)
             self.assertIn('Turn history coverage: unsupported by this ephemeral peer', inspected)
             self.assertIn('No empty history, reply or turn is inferred', inspected)
             self.assertNotIn('Agent/plan context:', inspected)

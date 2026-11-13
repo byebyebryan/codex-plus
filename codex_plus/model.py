@@ -571,10 +571,12 @@ class ModelAPI:
         info = read['peer']
         ephemeral = 'true' if info['ephemeral'] is True else 'false' if info['ephemeral'] is False else 'not reported'
         direct_input = 'true' if info['direct_input'] is True else 'false' if info['direct_input'] is False else 'not reported'
+        goal_line = ('Native goal unavailable: capability unsupported for this ephemeral peer.'
+                     if read['coverage']['goal'] == 'unsupported' else
+                     'Native goal: ' + str(read['goal_status']) + ' (coverage ' + read['coverage']['goal'] + ')')
         lines = [row['ref'] + ': ' + label(info['name']) + ' | project/cwd ' + label(info['cwd']),
                  'Native phase: ' + info['status']['type'] + '; ephemeral: ' + ephemeral +
-                 '; direct-input capability: ' + direct_input + '; native goal: ' + str(read['goal_status']) +
-                 ' (coverage ' + read['coverage']['goal'] + ')']
+                 '; direct-input capability: ' + direct_input + '; ' + goal_line]
         if read['coverage']['history'] == 'unsupported':
             lines.append('Turn history coverage: unsupported by this ephemeral peer. No empty history, reply or turn is inferred.')
         else:
