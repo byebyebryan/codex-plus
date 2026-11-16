@@ -1,5 +1,21 @@
 # Implementation handoff
 
+Updated 2026-11-16. The latest
+[Sol-primary Terra-offload assessment](codex-plus-plan.md#proposed-pass-sol-primary-terra-offload)
+closed before implementation because the bounded review did not establish
+sufficient additional routing opportunities. No model comparison or savings
+claim was made. Keep the current adaptive default, Luna-only/named tasks and
+all native role pins unchanged.
+
+The reviewed design is retained as an unimplemented proposal. Trial allowances
+are closed; future evaluation requires a newly selected scope and concrete
+acceptance criteria. Keep personal examples, case-level observations and
+runtime evidence private. Public records contain only generic conclusions and
+methods. No release, managed deployment, restart or global reload was part of
+this assessment.
+
+The previous delivery receipt is retained below with its original date.
+
 Updated 2026-11-12. Preview.21 is published from `0d01779` and selected on
 Snap OSS/work, Starship and Carbon through chezmoi `0d53a91`. All three component
 manifests, copied roles/skills, modes and fresh protocols verify in each context.

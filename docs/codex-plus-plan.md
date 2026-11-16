@@ -1,5 +1,103 @@
 # Codex Plus implementation plan
 
+## Proposed pass: Sol-primary Terra offload
+
+### Assessment outcome
+
+A bounded private workflow review did not establish sufficient additional work
+for an automatic Terra route alongside the existing primary/Luna policy. The
+assessment stopped before implementation, Terra-worker qualification or a
+comparative model trial. No capability ranking or cost-saving result follows.
+
+Keep the shipped adaptive policy, explicit Luna workflows, named tasks and
+native role pins unchanged. The result is specific to the available evidence;
+it does not establish that Terra is generally unsuitable. A future evaluation
+needs a concrete, independently verifiable reason to expect additional value.
+The proposed design below remains unimplemented and its trial allowances are
+closed.
+
+### Candidate design
+
+Retain the user's native primary and its reasoning setting. For an explicitly
+invoked adaptive workflow with a reliably identified Sol primary, a future
+request-scoped Terra option could add economical delegation alongside Luna.
+Extra-cost escalation would remain a separate opt-in permission.
+
+A hypothetical permission example is:
+
+> Allow experimental Terra XHigh offload for this adaptive goal. Keep the
+> current primary and useful Luna assignments. Grant no additional escalation.
+
+This is instruction-based policy, not a parsed setting or enforced spending
+limit. Bare adaptive invocation would retain its existing behavior. Native
+permissions, user exclusions, exact model/effort pins and explicit invocation
+boundaries remain effective.
+
+Route each assignment by its expected complete execution and review cost:
+
+- Keep cohesive, verifiable work eligible for Luna, including substantial
+  implementation and investigation.
+- Consider Terra for a concrete assignment otherwise retained by Sol when
+  expected Luna assistance or repair would be material and an independent
+  acceptance check can establish the result.
+- Keep continuing decisions, inadequate verification and work whose handoff
+  would reproduce most of the solving in the primary.
+- Require no failed Luna attempt, fixed tier sequence, delegation quota,
+  mandatory reviewer or nested escalation chain.
+
+Use the existing `terra-6-1-xhigh` role, pinned to `gpt-6.1-terra` / `xhigh`,
+with a self-contained contract and `fork_turns="none"`. Unknown primary metadata
+holds this Sol-specific option while primary/Luna work remains useful. Explicit
+named-worker requests retain their separate authority. No new service, model
+catalog, preference hierarchy, skill identity or permanent cost collector is
+part of this proposal.
+
+### Conditions for a future evaluation
+
+First establish credible additional opportunities without assuming that work
+retained in the primary reflects a smaller worker's capability limit. Missing
+invocation, withheld authority, integration ownership and short remaining work
+are alternative explanations. If the opportunity is not established, keep the
+current routing rather than manufacture examples.
+
+Qualify the exact Terra worker route through a useful bounded assignment,
+separately from model availability or primary-model execution. Inspect native
+controls directly outside Code Mode, honor exact role pins and report missing
+controls, rejected spawning, execution errors and observed selection changes
+distinctly. Do not substitute a model, change provider, launch a second model
+process or recommend a daemon restart as a workaround.
+
+Use invented or independently prepared neutral fixtures with frozen inputs and
+acceptance checks. Compare direct primary execution, the matching unchanged
+Luna workflow and an isolated opt-in adaptive candidate. Include a substantial
+Luna-suitable control. Let each workflow choose its own decomposition; do not
+require Luna failure or Terra selection. Keep host, runtime, primary settings,
+provider and tool access comparable, and isolate answers and edits between arms.
+Declare resource and settlement limits before execution; do not expand a trial
+automatically. Preserve active work and managed installations.
+
+Measure primary preparation, worker work, review, corrections and takeover.
+Attribute usage to actual turn settings rather than role names or latest thread
+metadata. Deduplicate per-response records and validate cache and reasoning-token
+accounting before applying a dated rate basis. Missing attribution or unfair
+starting conditions make economics inconclusive. Token rates alone do not
+establish accepted-task cost or included subscription usage. See the
+[official rate basis](https://learn.chatgpt.com/docs/pricing#token-rates).
+
+Separate access, behavior, accepted results, economics and default promotion.
+A small positive sample supports limited opt-in use, not a universal ranking or
+automatic default change. Source, private candidate artifacts, publication,
+managed installation and loaded runtime require separate evidence.
+
+### Documentation and privacy boundary
+
+Public documentation records generic decisions, methods and limitations.
+Personal workload examples, case matrices, conversation excerpts, identifying
+paths, session identifiers and raw runtime captures belong only in private
+evidence outside the repository. Use invented neutral scenarios in public
+examples and fixtures, and audit the full unpublished commit range before
+publication; removing a detail only from the latest tree is insufficient.
+
 ## Selected publication: preview.21 soak refinement
 
 Bryan requested review, publication and deployment of the qualified candidate.
