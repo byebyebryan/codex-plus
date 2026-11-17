@@ -1,6 +1,20 @@
 # Implementation handoff
 
-Updated 2026-11-16. The latest
+Updated 2026-11-16. The latest proposal is
+[targeted routing diagnostics and policy comparison](codex-plus-plan.md#proposed-pass-targeted-routing-soak-and-policy-comparison),
+reviewed through the explicit Astra task. It separates an ordinary adaptive A
+readiness soak, isolated paired exploration and a later ordinary-use A/B stage.
+A and B differ only in Terra eligibility. Goals are outcome units; connected
+parent contexts retain one policy and are treated as related observations.
+
+The recommended next implementation scope is private diagnostic readiness and
+normal A-use support, not a B rollout or comparative trial. Prospective records
+must join routing, actual parent/child usage, first-pass defects, primary repair
+and acceptance. Keep extra grading overhead separate and actual cases private.
+No diagnostics, new routing, experiment, managed apply or background follow-up
+is started by this planning review. Old trial allowances remain closed.
+
+The earlier
 [Sol-primary Terra-offload assessment](codex-plus-plan.md#proposed-pass-sol-primary-terra-offload)
 closed before implementation because the bounded review did not establish
 sufficient additional routing opportunities. No model comparison or savings

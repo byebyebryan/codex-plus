@@ -1,5 +1,191 @@
 # Codex Plus implementation plan
 
+## Proposed pass: targeted routing soak and policy comparison
+
+Status: reviewed planning proposal. Diagnostics, the Terra-enabled policy and
+comparative trials have not been implemented or started. Prior experiment
+allowances remain closed. Use generic methods and invented neutral examples in
+public source; actual goals, traces, context identifiers and outcomes stay in
+private evaluation records.
+
+### Question and fixed policies
+
+Evaluate whether offering Terra improves the complete workflow's accepted
+quality, supervision, usage or latency. Keep those outcomes separate rather
+than combining them into an invented score.
+
+| Arm | Policy |
+| --- | --- |
+| A | Shipped adaptive workflow with Sol XHigh primary and selective Luna Max. |
+| B | The same adaptive workflow plus request-scoped eligibility for the existing Terra XHigh role. |
+
+Only Terra eligibility differs. Preserve native primary and role/effort pins,
+acceptance requirements, provider, permissions, tool access and Astra policy.
+For the first comparison, automatic Astra escalation can remain unset in both;
+separately requested help is recorded, not made into a compulsory grading step.
+Equal permission does not require equal actual model calls.
+
+An A-only soak establishes adaptive behavior and diagnostic readiness. It does
+not establish that replacing the explicit Luna workflow improves outcomes;
+that would require its own comparator. Keep that separate from the Terra
+question. A plausible offload hypothesis and independent acceptance check are
+enough for bounded exploration once diagnostics and execution scope are ready;
+do not require historical proof of Terra wins or worker incapability first.
+
+### Minimum private diagnostic records
+
+Use a small private ledger joined to existing native records. Reference existing
+messages and artifacts instead of copying whole conversations. Prefer evidence
+already produced by ordinary work, without routine grading model calls or a
+visible form for every step. Count annotation/collection overhead when present.
+Add no new router, monitoring service or permanent tracking dependency.
+
+| Record | Minimum useful evidence |
+| --- | --- |
+| Enrollment | Private goal/episode identity, parent-context lineage, A/B assignment before routing, starting state, policy/runtime/settings versions and observation boundaries. |
+| Assignment | Goal linkage, compact contract and independent acceptance check, actual route with a brief existing rationale, parent/child and correction/reuse links, including meaningful primary-retained work. |
+| Response | Native response/attempt identity, thread/turn linkage, available actual model/effort evidence, completion/error state, timestamps and raw usage categories. |
+| Outcome | First delivered result and review, material defects, corrections, substantial primary repair/takeover, final acceptance evidence, user interventions, unresolved/censored status and later regressions inside the declared follow-up window. |
+
+Native completion is not acceptance. Where records cannot establish acceptance,
+use a short private annotation after actual review. Define substantial repair
+as the primary redoing or replacing a central part of the investigation or
+deliverable; distinguish routine integration, minor corrections and ordinary
+clarification. These are diagnostic observations, not routing confidence scores.
+Retain private references to first-handoff artifacts/review evidence before
+repair, as well as the accepted result. If first-pass evidence is missing, do
+not reconstruct first-pass quality from the final corrected artifact alone.
+
+Measure the whole goal from before planning/handoff through integration and
+acceptance, including relevant parent and worker attempts, corrections and
+takeover. Prior conversation spending is sunk, but tokens spent replaying that
+context during the measured goal count. Count shared primary responses once
+at goal level; leave assignment-level allocation unknown when it cannot be
+established without invention.
+
+Deduplicate per-response records and keep cumulative thread/turn snapshots
+separate. Validate cached-input overlap, reasoning-output inclusion, cache-write
+semantics and retries against the actual native schema before applying rates.
+Unsupported fields or missing usage are unknown, not zero. Attribute usage to
+actual available turn settings, not role labels or latest thread metadata.
+Report coverage first. Unknown applicable rates, speed/account tier or
+subscription charging rules permit only explicitly labeled dated scenario
+estimates, not a purported bill or precise end-to-end savings claim.
+
+### Quality and evaluation overhead
+
+Freeze observable requirements and useful checks before seeing either answer.
+The primary performs ordinary result inspection and proportionate validation
+in both arms; this review, corrections and repair belong to workflow cost.
+Record acceptance at first review, acceptance after correction/repair, or an
+unresolved result, together with material failed requirements and human rescue.
+Do not infer quality solely from a worker's own passing tests.
+
+Any extra blinded audit is experiment overhead and is reported separately.
+Where practical, hide route labels and vary presentation order for that audit.
+Use objective evidence and human judgment when needed; Astra is optional and
+is not an oracle. State limits when quality cannot be independently assessed.
+Keep latency, user waiting and external blocking separate from token usage.
+
+### Stage 1: diagnostic readiness and ordinary A use
+
+The recommended first implementation scope is the private ledger/reader,
+offline accounting checks and readiness for normal A use. It does not require
+a public evaluation CLI, a running background agent, a B rollout or duplicate
+live work. Preserve existing native threads and managed files.
+
+Deliver a minimal enrollment/outcome record, a read-only post-run extractor,
+invented accounting fixtures and a short start/close checklist. Enroll only
+prospectively selected goals; do not inject prompts into active conversations
+or infer new task authority from observations. Reuse current A skills and
+native records without changing their routing policy. Any needed deployed-file
+change remains owner-managed and separately scoped; a private reader is not an
+installed-only skill repair.
+
+A starting observation-window proposal is seven calendar days or eight
+prospectively enrolled natural goals, whichever comes first. This is a future
+sampling recommendation, not authorization or a statistical threshold. Audit
+the first completed episodes end to end, including delegation if it occurs
+naturally. Use invented records for unobserved parser/error cases rather than
+manufacturing live failures.
+
+Exit when actual routes, parent/child usage and reviewed outcomes can be
+reconstructed without duplicate accounting. If the declared window supplies
+too little usable evidence, close it as insufficient coverage rather than
+automatically extending it. Closing enrollment or observation never stops the
+user's ongoing work. Keep normal-work costs and additional evaluation overhead
+visible separately.
+
+### Stage 2: small paired exploration
+
+This is a separate future launch gate after readiness, an isolated B candidate
+and selected execution authority. One starting proposal is four preselected
+pairs, eight policy-arm starts, with no outcome-driven reruns. Include a
+substantial Luna-suitable control and plausible additional offload assignments;
+do not select only expected Terra wins.
+
+Prepare both arms' input state and acceptance checks before either executes.
+Use isolated copies and disposable external resources. Neither arm may consume
+the other's answer, edits, added tests or resulting live state. Compare outputs
+after both settle where practical. Compact brief pairs establish effects under
+those starting contexts; they are not automatically evidence about long-lived
+continuing contexts. Preserve comparable relevant pre-decision state or label
+that limitation.
+
+Sequential execution with balanced randomized A/B order is the default proposal.
+Concurrency may introduce shared quota, CPU, network or cache interference.
+Record actual order, cached usage, provider conditions and relevant contention;
+do not clear production caches or claim unobserved control. Workflow-caused
+cache differences are part of realized usage, while cross-arm warming is an
+interference limitation. A common-rate sensitivity calculation does not replace
+observed usage.
+
+Let each policy decompose and route freely within its identical task authority.
+Forcing Terra into B changes the question into a model comparison. B selecting
+no Terra is a valid policy result with no Terra execution evidence. Retain both
+arms of every selected pair, including unavailable routes, errors, cancellations
+and incomplete outcomes, with all observed costs and attribution gaps.
+
+Before admission, select worker/turn, elapsed-time, additional-usage and
+settlement limits as well as arm starts; eight starts alone is not a spending
+bound. Size cases for roughly thirty minutes per arm as a planning target, not
+a billing guarantee. If an exact Terra-worker qualification assignment is
+needed, budget and label it separately or count an eligible scored assignment
+once. Stop the affected lane on unresolved access, role/pin or ownership
+failures without substitution, replay or a daemon workaround.
+
+Four pairs may reveal mechanisms or obvious disadvantages. They cannot establish
+reliable superiority, quality equivalence or a universal routing region. Report
+all results at the declared endpoint; do not continue until a favorable answer.
+
+### Stage 3: later ordinary-use randomized evaluation
+
+Launch only through a later selected scope, after usable diagnostics, intended
+policy behavior and a worthwhile remaining question. Demonstrated savings are
+not an entry requirement. Execute only the assigned arm on actual workloads.
+
+The goal is the outcome unit. Randomize prospectively at naturally independent
+goal/context boundaries and keep the policy fixed through dependent work. For
+related goals sharing a parent conversation or artifacts, retain a sticky arm
+for the context lineage during the window and treat it as an assignment cluster.
+Child calls, responses and connected goals are not independent replications.
+Do not force the user to abandon native continuing threads for the experiment.
+If too few independent boundaries exist, report descriptive evidence rather
+than a causal or statistically decisive A/B result.
+
+Predeclare enrollment and follow-up cutoffs. Incomplete goals are censored or
+unresolved, not silently replaced. Material protocol/runtime/permission/primary
+changes or unusable telemetry can close the affected comparison block early;
+retain observations and do not pool materially different versions as one test.
+Keep the normal user work running when evaluation enrollment closes.
+
+The final assessment separates whether Terra was selected, how it performed
+when selected, and whether offering it improved the whole workflow. Include
+all enrolled goals, even when B used no Terra. Missing economics can coexist
+with useful quality, assistance or latency observations. Limited measured benefit
+in a small sample is not proof of a model's general capability or suitability.
+Default promotion, publication and managed delivery remain separate decisions.
+
 ## Proposed pass: Sol-primary Terra offload
 
 ### Assessment outcome
@@ -54,11 +240,11 @@ part of this proposal.
 
 ### Conditions for a future evaluation
 
-First establish credible additional opportunities without assuming that work
-retained in the primary reflects a smaller worker's capability limit. Missing
-invocation, withheld authority, integration ownership and short remaining work
-are alternative explanations. If the opportunity is not established, keep the
-current routing rather than manufacture examples.
+The historical pass used a strict opportunity-screening gate and closed at that
+gate. The targeted-soak protocol above supersedes that prospective entry rule:
+use a plausible hypothesis, independent checks and diagnostic readiness rather
+than require historical proof before a small comparative exploration. Retained
+primary work still does not establish a smaller worker's capability limit.
 
 Qualify the exact Terra worker route through a useful bounded assignment,
 separately from model availability or primary-model execution. Inspect native
