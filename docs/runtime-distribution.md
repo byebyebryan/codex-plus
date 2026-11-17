@@ -22,9 +22,10 @@ UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.21](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.21)
-fixes coordinator identity and callback receipt lifetime, improves argument
-diagnostics and handles verified ephemeral history/goal limits as partial
+[v0.1.0-preview.22](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.22)
+adds [opt-in private A-policy diagnostics](routing-diagnostics.md) while preserving
+the current Sol/Luna routing policy. Preview.21 fixed coordinator identity and
+callback receipt lifetime, improved argument diagnostics and handled verified ephemeral history/goal limits as partial
 capabilities. Preview.20 fixed supervisor log placement and doctor reasons/actions.
 Preview.19 introduced verified daemon restart recovery
 and honest quarantine/continuation within original limits. Preview.18 added explicit Sol, Astra and current-Terra tasks,
@@ -44,9 +45,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.21.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.21.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.21.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.22.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.22.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.22.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains

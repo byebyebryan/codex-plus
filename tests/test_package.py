@@ -119,6 +119,21 @@ class PackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             package.read_archive(self.archive(metadata=unsupported, files=old_files))
 
+    def test_preview_twenty_one_remains_selectable_without_diagnostic_files(self):
+        files = {name: self.files[name] for name in package.PREVIEW_NINETEEN_FILES}
+        files['codex_plus/__init__.py'] = b"VERSION = '0.1.0-preview.21'\n"
+        metadata = package.manifest(files, 'e' * 40)
+        metadata['version'] = '0.1.0-preview.21'
+        prefix = self.root / 'preview-twenty-one'
+        installed = package.install(self.archive(metadata=metadata, files=files), prefix)
+        package.activate(prefix, 'e' * 40)
+        self.assertEqual(package.verify_install(installed)['version'], '0.1.0-preview.21')
+        self.assertFalse((installed / 'scripts/codex-plus-diagnostics').exists())
+        package.install(self.archive(), prefix)
+        package.activate(prefix, '1' * 40)
+        package.activate(prefix, 'e' * 40)
+        self.assertEqual((prefix / 'current').resolve(), installed)
+
     def test_previous_preview_two_inventory_remains_verifiable_and_selectable(self):
         files = {name: self.files[name] for name in package.PREVIEW_TWO_FILES}
         files['codex_plus/__init__.py'] = b"VERSION = '0.1.0-preview.2'\n"

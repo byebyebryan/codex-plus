@@ -1,5 +1,26 @@
 # Everyday reliability and native packaging results
 
+
+## Preview.22 private diagnostic readiness candidate
+
+The Stage 1 candidate adds a private bounded enrollment/outcome ledger,
+read-only native-record extraction and invented accounting fixtures. The small
+adaptive-goal enrollment step is inert without an already opened study. It
+preserves Sol/Luna routing, opt-in escalation, named tasks and native role pins;
+there is no Terra-enabled policy, new service or comparative trial.
+
+The clean 152-file gate, 480 tests on Python 3.11/3.14, ten skill validators and
+whitespace checks pass. The site builds ten guides plus the walkthrough, with
+347 local link/anchor checks and fifteen current-release claims. Preview.21's
+runtime inventory remains verifiable/selectable for rollback. The canonical
+checkout retains its two original untracked bytecode files unchanged; they
+remain its only inventory-check exception. Private case fingerprints and
+unpublished commit history were checked separately from the public source.
+
+Native qualification and managed delivery are recorded after their own checks;
+source validation alone does not prove model execution or installed adoption.
+See the [operator procedure](routing-diagnostics.md).
+
 ## Preview.21 soak refinement publication and rollout
 
 Completed 2026-11-12 after Bryan requested review, publication and deployment.

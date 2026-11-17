@@ -306,3 +306,10 @@ explicit invocation remain the same.
 
 The [routing design](worker-routing-design.md) explains the policy; the
 [routing study](worker-routing-study.md) records its evidence and limits.
+
+## Optional private routing observations
+
+The [routing diagnostics guide](routing-diagnostics.md) describes the opt-in
+seven-day/eight-goal Sol/Luna readiness window. The adaptive goal skill enrolls
+only into an already opened private study. Normal routing, named tasks and
+Luna-only invocation stay unchanged; no Terra comparison is enabled.

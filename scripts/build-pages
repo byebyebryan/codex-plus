@@ -29,10 +29,12 @@ GUIDES = {
     "architecture.md": ("architecture", "How it works"),
     "environments.md": ("environments", "Environments"),
     "soak-checklist.md": ("soak-checklist", "Daily trial"),
+    "routing-diagnostics.md": ("routing-diagnostics", "Routing diagnostics"),
     "html-report-usage.md": ("reports", "Reporting"),
     "runtime-distribution.md": ("installation", "Installation"),
 }
 DESCRIPTIONS = {
+    "routing-diagnostics.md": "Open and close a private adaptive Sol/Luna observation window, record reviewed outcomes and inspect native usage coverage.",
     "getting-started.md": "Choose workers, monitoring and reporting, then follow the setup path for your Codex environment.",
     "manage-agent.md": "Give your agent one guide to install, upgrade, inspect, configure, roll back or remove Codex Plus.",
     "daily-use.md": "Everyday requests for worker tasks, watches, later checks, session coordination and browser reports.",

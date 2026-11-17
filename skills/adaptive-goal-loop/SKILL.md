@@ -30,6 +30,20 @@ When execution is ready and goal tools are available, create the explicitly
 requested goal or continue a matching active goal. Report a conflicting active
 goal instead of replacing it. Do not invent a token budget.
 
+If `codex-plus-diagnostics` is installed, run `enroll --if-open
+--routing-not-started` before routing a new goal. This is a no-op without an
+already opened private study; never start or extend one implicitly. If enrolled,
+retain the returned episode identity. Use the helper's `link` command to record
+meaningful retained work, Luna attempts (including missing controls or failed
+spawns), native thread/turn identities and private contract/review references.
+Record first-result review separately from final acceptance. At closure, use
+`outcome` for actual review, repair/takeover and user intervention; attest child
+coverage only after checking it. Missing evidence stays unknown. These records
+change no routing permission. If the helper or telemetry is unavailable, keep
+the goal useful and report the diagnostic gap. Read subcommand `--help` or the
+[operator guide](https://dev.byebyebryan.com/codex-plus/routing-diagnostics/)
+only for an enrolled goal.
+
 ## Route each assignment
 
 Keep work in the primary when the benefit of delegation is uncertain. Delegate

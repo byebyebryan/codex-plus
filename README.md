@@ -51,7 +51,12 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.21** includes seven worker workflows and four current roles.
+**v0.1.0-preview.22** includes seven worker workflows and four current roles.
+
+Preview.22 adds [private routing diagnostics](docs/routing-diagnostics.md): bounded
+prospective A enrollment, assignment/outcome records and read-only native usage
+collection. The adaptive routing policy and native role pins stay unchanged.
+There is no Terra-enabled policy or A/B trial.
 
 Preview.21 keeps coordinator status accurate after repeated handoffs, tracks slow
 callbacks after early acknowledgement, clarifies invalid options and preserves

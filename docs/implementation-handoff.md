@@ -1,6 +1,15 @@
 # Implementation handoff
 
-Updated 2026-11-16. The latest proposal is
+Updated 2026-11-16. The selected Stage 1 implementation adds an opt-in private
+ledger, bounded read-only native accounting and invented fixtures. It preserves
+the shipped Sol/Luna policy and requires an already opened study before adaptive
+goal enrollment. Publication, managed delivery and native qualification are
+recorded separately when complete. The clean 152-file gate, 480 tests on Python
+3.11/3.14, ten skill validators and the ten-guide site build pass. The two
+original canonical bytecode files remain unchanged. See the [operator guide](routing-diagnostics.md).
+No Terra-enabled routing, A/B trial, daemon restart or global reload is included.
+
+The latest proposal is
 [targeted routing diagnostics and policy comparison](codex-plus-plan.md#proposed-pass-targeted-routing-soak-and-policy-comparison),
 reviewed through the explicit Astra task. It separates an ordinary adaptive A
 readiness soak, isolated paired exploration and a later ordinary-use A/B stage.

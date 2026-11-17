@@ -36,7 +36,9 @@ PREVIEW_THREE_FILES = (*PREVIEW_TWO_FILES, 'codex_plus/context.py', 'scripts/cod
 PREVIEW_TEN_FILES = (*PREVIEW_THREE_FILES, 'codex_plus/doctor.py', 'scripts/codex-plus-doctor')
 PREVIEW_EIGHTEEN_FILES = (*PREVIEW_TEN_FILES, 'codex_plus/owner_recovery.py', 'scripts/codex-plus-owner')
 PREVIEW_NINETEEN_FILES = (*PREVIEW_EIGHTEEN_FILES, 'codex_plus/restart.py')
-RUNTIME_FILES = PREVIEW_NINETEEN_FILES
+RUNTIME_FILES = (*PREVIEW_NINETEEN_FILES, 'codex_plus/diagnostic_records.py',
+                 'codex_plus/diagnostic_source.py', 'codex_plus/diagnostics.py',
+                 'scripts/codex-plus-diagnostics')
 COMPATIBILITY = {'os': 'linux', 'python': '>=3.11', 'codex': '0.162.1',
                  'rtk': 'required', 'transport': 'existing local Unix daemon'}
 SCOPED_CONTROLS = ('watch_start', 'watch_cancel', 'watch_renew', 'watch_recover',
@@ -72,7 +74,7 @@ def manifest(files, source_revision):
 def version_files(version):
     if version == VERSION:
         return RUNTIME_FILES
-    if version in ('0.1.0-preview.19', '0.1.0-preview.20'):
+    if version in ('0.1.0-preview.19', '0.1.0-preview.20', '0.1.0-preview.21'):
         return PREVIEW_NINETEEN_FILES
     if version in tuple('0.1.0-preview.' + str(number) for number in range(11, 19)):
         return PREVIEW_EIGHTEEN_FILES

@@ -2,8 +2,10 @@
 
 ## Proposed pass: targeted routing soak and policy comparison
 
-Status: reviewed planning proposal. Diagnostics, the Terra-enabled policy and
-comparative trials have not been implemented or started. Prior experiment
+Status: Stage 1 diagnostic-readiness implementation selected. The private ledger,
+read-only reader and invented accounting fixtures are implemented locally and
+qualified by the source gate for normal A use; see the [operator guide](routing-diagnostics.md). Terra-enabled
+routing and comparative trials remain unimplemented and unstarted. Prior experiment
 allowances remain closed. Use generic methods and invented neutral examples in
 public source; actual goals, traces, context identifiers and outcomes stay in
 private evaluation records.
