@@ -2,9 +2,9 @@
 
 ## Proposed pass: targeted routing soak and policy comparison
 
-Status: Stage 1 diagnostic-readiness implementation selected. The private ledger,
-read-only reader and invented accounting fixtures are implemented locally and
-qualified by the source gate for normal A use; see the [operator guide](routing-diagnostics.md). Terra-enabled
+Status: Stage 1 diagnostic readiness ships in preview.22. The private ledger,
+read-only reader and invented accounting fixtures pass source/native qualification
+and are deployed on the reachable primary-use hosts for normal A-use readiness; see the [operator guide](routing-diagnostics.md). Terra-enabled
 routing and comparative trials remain unimplemented and unstarted. Prior experiment
 allowances remain closed. Use generic methods and invented neutral examples in
 public source; actual goals, traces, context identifiers and outcomes stay in
@@ -91,8 +91,8 @@ Keep latency, user waiting and external blocking separate from token usage.
 
 ### Stage 1: diagnostic readiness and ordinary A use
 
-The recommended first implementation scope is the private ledger/reader,
-offline accounting checks and readiness for normal A use. It does not require
+The shipped Stage 1 scope is the private ledger/reader, offline accounting checks
+and readiness for normal A use. The natural-use window is ready but unopened. It does not require
 a public evaluation CLI, a running background agent, a B rollout or duplicate
 live work. Preserve existing native threads and managed files.
 

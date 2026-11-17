@@ -1,29 +1,32 @@
 # Implementation handoff
 
-Updated 2026-11-16. The selected Stage 1 implementation adds an opt-in private
-ledger, bounded read-only native accounting and invented fixtures. It preserves
-the shipped Sol/Luna policy and requires an already opened study before adaptive
-goal enrollment. Publication, managed delivery and native qualification are
-recorded separately when complete. The clean 152-file gate, 483 tests on Python
-3.11/3.14, ten skill validators and the ten-guide site build pass. The two
-original canonical bytecode files remain unchanged. See the [operator guide](routing-diagnostics.md).
-Native qualification verifies a completed Luna/max worker and honest partial
-parent coverage; see the [qualification](native-qualification-results.md#private-routing-diagnostics-source-qualification).
-No Terra-enabled routing, A/B trial, daemon restart or global reload is included.
+Updated 2026-11-16. Preview.22 is published from `8a60b10` and selected on
+Snap OSS/work and Starship through published chezmoi `0416d5f`. Exact manifests,
+roles/skills/modes, the new diagnostic command and fresh 17/four-tool protocols
+verify. Carbon passed initial worker preflight, then timed out over SSH before
+apply; its preview.22 delivery remains pending. No daemon restart or global
+reload was issued. Existing native work, 43 captured processes and 33 saved
+bindings/mtimes remain unchanged on the deployed hosts.
 
-The latest proposal is
-[targeted routing diagnostics and policy comparison](codex-plus-plan.md#proposed-pass-targeted-routing-soak-and-policy-comparison),
-reviewed through the explicit Astra task. It separates an ordinary adaptive A
-readiness soak, isolated paired exploration and a later ordinary-use A/B stage.
-A and B differ only in Terra eligibility. Goals are outcome units; connected
-parent contexts retain one policy and are treated as related observations.
+The clean 152-file source gate, 483 tests on Python 3.11/3.14, ten skill validators,
+unified artifacts, actual preview.21 monitoring/reporting rollback and the
+ten-guide site build pass. The installed helper completes enrollment, exact
+owned-worker linking, outcome recording, collection and closure in a private
+qualification study. Native evidence verifies a completed Luna/max worker; the
+late-enrolled, still-active primary remains partial. No ordinary-use or savings
+claim follows. All qualification studies are closed; the natural A window is
+ready but unopened. See the [operator guide](routing-diagnostics.md),
+[native qualification](native-qualification-results.md#private-routing-diagnostics-source-qualification)
+and [delivery receipt](reliability-packaging-results.md#preview22-publication-and-managed-rollout).
 
-The recommended next implementation scope is private diagnostic readiness and
-normal A-use support, not a B rollout or comparative trial. Prospective records
-must join routing, actual parent/child usage, first-pass defects, primary repair
-and acceptance. Keep extra grading overhead separate and actual cases private.
-No diagnostics, new routing, experiment, managed apply or background follow-up
-is started by this planning review. Old trial allowances remain closed.
+This Stage 1 delivery implements the private ledger/reader and invented fixtures
+from the [targeted routing plan](codex-plus-plan.md#proposed-pass-targeted-routing-soak-and-policy-comparison).
+It keeps Sol/Luna routing, named tasks, invocation boundaries and role pins.
+Terra-enabled routing and comparative trials remain unimplemented and unstarted.
+Goals remain outcome units; connected parent contexts are related observations.
+Private captures and actual cases stay outside public source, artifacts and
+unpublished history. The two original canonical bytecode files and unrelated
+chezmoi edits/history remain preserved. Old experiment allowances stay closed.
 
 The earlier
 [Sol-primary Terra-offload assessment](codex-plus-plan.md#proposed-pass-sol-primary-terra-offload)

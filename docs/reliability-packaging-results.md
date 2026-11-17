@@ -1,6 +1,42 @@
 # Everyday reliability and native packaging results
 
 
+## Preview.22 publication and managed rollout
+
+The personal GitHub release publishes five qualified assets from
+`8a60b101a0ea81a3448ac07217055d372d015c2b`. Fetched bytes and GitHub digests match;
+the three archive URLs also verify anonymously. Source CI passes both Python
+versions, and Pages publishes the new operator guide. Public source, artifact
+contents and unpublished history pass the private-case fingerprint audit.
+
+Published chezmoi `0416d5f` updates URLs/revision/checksums, the report validator
+and the new diagnostic command link together. The full managed gate passes;
+a concurrent Remote Chrome update is preserved with source/affected checks
+repeated after rebasing only the unpublished pin commit. Existing host source
+history and unrelated edits remain intact under scoped canonical pin commits.
+
+Snap OSS/work and Starship verify preview.22 manifests, payload hashes/modes,
+four native roles/seven workflows, the new command links and empty scoped diffs.
+Fresh stdio reports 17 monitoring/four reporting tools. The installed diagnostic
+helper completes its private enrollment/link/outcome/collect/close path, joins
+the completed Luna/max worker and keeps partial primary coverage explicit.
+Default study status stays unconfigured on all three deployed contexts, and
+`enroll --if-open` creates no state. No natural-use window is started implicitly.
+
+All 1,998 existing protected paths are classified: eleven intended existing
+files change, with no unclassified drift or native cache change. Native
+configuration/authentication, old releases and report settings remain unchanged.
+All 33 captured binding files and mtimes, and all 43 captured native/MCP process
+identities, remain exact. No restart, global refresh, real-monitor recovery or
+unsolicited input is issued. Fresh helper checks do not establish adoption by
+already running processes. Report hosting/data stay outside the apply scope.
+
+Carbon passed its initial worker preflight and then became unreachable over SSH.
+Bounded retries also time out, so the new apply and acceptance remain pending.
+The prior completed preview.21 fleet receipt below stays historical. There is
+no preview.22 installed or loaded claim for Carbon.
+
+
 ## Preview.22 private diagnostic readiness candidate
 
 The Stage 1 candidate adds a private bounded enrollment/outcome ledger,

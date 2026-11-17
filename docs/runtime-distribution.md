@@ -95,31 +95,37 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Managed source selects workers, monitoring and reporting **preview.21**,
-source `0d01779`, through published chezmoi pins `0d53a91`.
+Managed source selects workers, monitoring and reporting **preview.22**,
+source `8a60b10`, through published chezmoi pins `0416d5f`.
 
-| Context | Verified installation, 2026-11-12 | Runtime evidence |
+| Context | Verified installation, 2026-11-16 | Runtime evidence |
 | --- | --- | --- |
-| Snap OSS | Preview.21; all three manifests, four roles/seven skills, exact modes and empty scoped diff. | Fresh stdio: 17 monitoring/four reporting tools. Three sampled existing conversations still report preview.20 for both servers. |
-| Snap work | Same verified release in its separate home. | Fresh stdio verified. Its sampled existing conversation still reports preview.20 for both servers. |
-| Starship | Same verified release and empty scoped diff. | Native owner unchanged; three of eight loaded conversations sampled still report preview.20 for both servers. |
-| Carbon | Same verified release, copied roles/skills and empty scoped diff. | Fresh stdio verified; native owner unavailable, so no loaded-version claim. No owner was started. |
+| Snap OSS | Preview.22; all three manifests, four roles/seven skills, exact modes and empty scoped diff. | Fresh 17/four-tool stdio and installed diagnostic enrollment/link/outcome/collection/closure pass. |
+| Snap work | Same verified release in its separate home. | Fresh stdio and the inactive-study no-op pass without creating study state. |
+| Starship | Same verified release, command link and empty scoped diff. | Fresh stdio and inactive-study behavior pass. Existing native work stays running. |
+| Carbon | Pending: SSH timed out before the new apply. The prior completed fleet rollout was preview.21; its worker bundle still passed initial preflight. | No preview.22 installation or loaded-runtime acceptance is claimed. |
 
-The worker bundle retains four native roles and seven current workflows.
-Instruction-based escalation and explicit invocation remain unchanged. All five
-fetched release assets match the qualified bytes and GitHub digests. The full
-dotfiles gate and actual isolated report-archive apply pass. Native configuration,
-credentials, old releases, report configuration and all 33 captured bindings/mtimes
-are preserved. Across 2,587 existing protected paths, only the two selectors and
-worker provenance manifest on each host change. All 30 captured native/MCP
-process identities remain exact; no cache or unclassified protected-file change
-is observed.
+All five fetched release assets match the reviewed bytes and GitHub digests;
+all three public archive URLs also verify anonymously. The full managed-source
+gate passed. An unrelated upstream Remote Chrome delivery was preserved, with
+source/affected checks repeated after rebasing only the unpublished pin commit.
+Scoped canonical pin commits preserve existing host history and unrelated drift.
 
-No daemon restart, global MCP refresh or real-monitor recovery was issued.
-Already loaded helpers/coordinators keep their captured code until normal
-adoption. Report data and hosting are outside the apply scope. See the
-[rollout receipt](reliability-packaging-results.md#preview21-soak-refinement-publication-and-rollout)
-for source, installation and runtime evidence.
+Across 1,998 existing protected paths on Snap and Starship, eleven intended
+files change: selectors, worker provenance/instructions and the installed adaptive
+goal instructions. The new command links are separately verified. Native
+configuration/authentication, old releases, report configuration, all 33 captured
+binding contents/mtimes and all 43 captured native/MCP processes remain unchanged.
+No native cache or unclassified protected-file change is observed.
+
+The installed native reader qualifies a completed Luna/max handoff while
+preserving late enrollment and missing primary terminal evidence. Its private
+qualification studies are closed. A natural-use study is ready but unopened;
+see the [operator guide](routing-diagnostics.md). Installation does not establish
+adoption by an already running helper. No daemon restart, global MCP refresh,
+real-monitor recovery or unsolicited conversation input is issued. Report data
+and hosting stay outside the apply scope. See the
+[rollout receipt](reliability-packaging-results.md#preview22-publication-and-managed-rollout).
 
 Workers retain their own installation. The 349 inspector
 is retired, and native notifications remain selected. The earlier [managed activation report](managed-activation-results.md)

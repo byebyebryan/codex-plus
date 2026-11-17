@@ -125,18 +125,23 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Managed configuration selects **v0.1.0-preview.21** for workers, monitoring and
-reporting from source `0d01779` through chezmoi `0d53a91`. The 2026-11-12 rollout
-verifies Snap OSS/work, Starship and Carbon: exact payloads, copied roles/skills,
-doctor output and fresh 17/four-tool stdio protocols all match. Native configuration,
-credentials, bindings and old releases are preserved.
-[Delivery evidence](docs/reliability-packaging-results.md#preview21-soak-refinement-publication-and-rollout)
-separates installed files from loaded code: sampled Snap/Starship connections
-still report preview.20. Carbon's native owner is unavailable, so no loaded-version
-claim is made there. Existing helpers/coordinators retain captured code until
-normal adoption; no daemon restart or global MCP refresh was issued.
-The [implementation handoff](docs/implementation-handoff.md) records source,
-release and installed state.
+Managed configuration selects **v0.1.0-preview.22** for workers, monitoring and
+reporting from source `8a60b10` through published chezmoi `0416d5f`. The
+2026-11-16 rollout verifies Snap OSS/work and Starship: exact payloads,
+roles/skills, installed diagnostic commands and fresh 17/four-tool MCP protocols.
+Carbon timed out over SSH before apply and remains pending; its prior completed
+fleet delivery was preview.21. Native configuration, credentials, old releases,
+all 33 captured bindings/mtimes and all 43 captured native/MCP processes on the
+two deployed hosts are preserved.
+
+The [delivery receipt](docs/reliability-packaging-results.md#preview22-publication-and-managed-rollout)
+separates source, published assets, installed files and runtime evidence. The
+installed reader verified a completed Luna/max handoff and kept its still-active
+primary incomplete. The natural-use study is ready but unopened; follow the
+[private observation procedure](docs/routing-diagnostics.md) when selecting its
+window. Existing helpers/coordinators retain captured code until normal adoption.
+The [implementation handoff](docs/implementation-handoff.md) records the remaining
+Carbon delivery and the distinction between fresh checks and loaded code.
 
 Desktop notification delivery and terminal customization are outside Codex Plus.
 Native Codex alerts remain selected. Notification enrichment and lifecycle

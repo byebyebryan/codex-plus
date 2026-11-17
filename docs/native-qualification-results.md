@@ -9,7 +9,9 @@ completed on observed `gpt-6-luna` / `max`, returned its implementation and
 review, and its native response usage joined to the selected completed turn.
 No extra model call was needed just to fill the diagnostic fields.
 
-The private readiness probe also included its still-active primary. The reader
+A fresh installed command also completes private enrollment, exact native-worker
+linking, outcome recording, collection and closure outside the checkout. The
+private readiness probe included its still-active primary. The reader
 kept that parent's missing terminal evidence and the probe's late enrollment
 explicit, rather than claiming a prospectively measured complete workflow.
 This qualifies the mechanism, not ordinary-use coverage, savings, a model
