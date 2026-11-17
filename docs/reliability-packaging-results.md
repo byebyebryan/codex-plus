@@ -1,6 +1,23 @@
 # Everyday reliability and native packaging results
 
 
+## Preview.23 native timing compatibility candidate
+
+The follow-up accepts nullable integer Unix seconds in native timeline fields,
+normalizes supported values to UTC and preserves the outer record's finer
+precision for episode/worker boundaries. Arbitrary strings, bools, floats and
+overflow remain invalid; null remains unknown. Current and previous inventories
+remain explicit, with reporting archive checks covering the immediately previous
+preview when the version advances.
+
+The candidate passes 484 tests on Python 3.11/3.14. An unselected source reader
+qualifies current native timing, model and per-response usage evidence on the
+main host, with only its bounded-history notice left explicit. Installed files,
+active work and ordinary-use enrollment are unchanged by that source check.
+The published preview.22 assets remain immutable. New publication, previous
+artifact rollback and managed delivery are qualified separately.
+
+
 ## Preview.22 publication and managed rollout
 
 The personal GitHub release publishes five qualified assets from

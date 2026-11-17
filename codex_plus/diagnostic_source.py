@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import os
 from contextlib import closing
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import sqlite3
 import stat
@@ -120,7 +120,10 @@ class NativeRecords:
                         gaps.add('invalid_native_timestamp')
                     for key in ('started_at', 'completed_at'):
                         if key in projected:
-                            value = normalized_time(projected.pop(key))
+                            raw = projected.pop(key)
+                            if raw is None:
+                                continue
+                            value = normalized_time(raw, unix_seconds=True)
                             if value is None:
                                 gaps.add('invalid_native_timestamp')
                             else:
@@ -159,18 +162,23 @@ def start_time(records, turn_id):
         payload = record['payload']
         if (record['type'] == 'event_msg' and payload.get('type') == 'task_started'
                 and payload.get('turn_id') == turn_id):
-            value = payload.get('started_at') or record.get('timestamp')
+            # The outer record retains its native RFC3339 precision. Timeline
+            # integer seconds are a fallback for the turn-selection boundary.
+            value = record.get('timestamp') or payload.get('started_at')
             parsed = normalized_time(value)
             if parsed is not None:
                 values.add(parsed)
     return next(iter(values)) if len(values) == 1 else None
 
 
-def normalized_time(value):
+def normalized_time(value, *, unix_seconds=False):
     try:
-        parsed = datetime.fromisoformat(value)
+        if unix_seconds and type(value) is int:
+            parsed = datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(seconds=value)
+        else:
+            parsed = datetime.fromisoformat(value)
         if parsed.tzinfo is not None:
             return parsed.astimezone(timezone.utc).isoformat()
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         pass
     return None

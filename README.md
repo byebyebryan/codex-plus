@@ -51,7 +51,10 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.22** includes seven worker workflows and four current roles.
+**v0.1.0-preview.23** includes seven worker workflows and four current roles.
+
+Preview.23 accepts nullable native Unix-second timeline fields while preserving
+the precision of outer record timestamps for episode boundaries.
 
 Preview.22 adds [private routing diagnostics](docs/routing-diagnostics.md): bounded
 prospective A enrollment, assignment/outcome records and read-only native usage

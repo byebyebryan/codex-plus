@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import patch
 
 from codex_plus import diagnostics as d
-from codex_plus.diagnostic_source import NativeRecords
+from codex_plus.diagnostic_source import NativeRecords, normalized_time
 
 
 def record(kind, **payload):
@@ -196,6 +196,34 @@ class DiagnosticTests(unittest.TestCase):
         times = result['native_turn_times'][0]
         self.assertEqual(times['native_start_times'], ['2030-01-01T00:00:00+00:00'])
         self.assertEqual(times['native_completion_times'], [])
+
+    def test_native_nullable_unix_seconds_preserve_precision_and_reject_other_values(self):
+        records = run_records()
+        records[0]['timestamp'] = '2030-01-01T00:00:00.125Z'
+        records[0]['payload']['started_at'] = 1893456000
+        records[-1]['payload']['started_at'] = None
+        records[-1]['payload']['completed_at'] = 1893456001
+        self.add_thread('parent-a', records[:-1])
+        key = self.enroll()
+        self.add_thread('parent-a', records)
+        result = self.ledger.collect(key)
+        self.assertNotIn('invalid_native_timestamp', result['source_gaps'])
+        self.assertEqual(result['native_turn_times'][0]['native_start_times'], ['2030-01-01T00:00:00+00:00'])
+        self.assertEqual(result['native_turn_times'][0]['native_completion_times'], ['2030-01-01T00:00:01+00:00'])
+        from codex_plus.diagnostic_source import start_time
+        projected, _, _ = NativeRecords(self.home).read('parent-a')
+        self.assertEqual(start_time(projected, 'turn-one'), '2030-01-01T00:00:00.125000+00:00')
+        older = run_records('older-child', 'gpt-6-luna', 'max', 'worker-a')
+        older[0]['timestamp'] = '2030-01-01T00:00:00.100Z'
+        older[0]['payload']['started_at'] = 1893456000
+        self.add_thread('worker-a', older, 'parent-a')
+        with self.assertRaises(ValueError):
+            self.ledger.link(key, 'worker-a', 'older-child', route='luna')
+        self.assertIsNone(normalized_time(1893456000))
+        self.assertEqual(normalized_time(0, unix_seconds=True), '1970-01-01T00:00:00+00:00')
+        for value in (True, False, 1893456000.0, 10 ** 30, 'private timing text'):
+            with self.subTest(value_type=type(value).__name__):
+                self.assertIsNone(normalized_time(value, unix_seconds=True))
 
     def test_cutoff_and_changed_model_are_visible_without_dropping_usage(self):
         key = self.enroll()

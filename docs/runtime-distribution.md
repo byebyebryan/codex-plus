@@ -22,8 +22,9 @@ UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.22](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.22)
-adds [opt-in private A-policy diagnostics](routing-diagnostics.md) while preserving
+[v0.1.0-preview.23](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.23)
+normalizes nullable native Unix-second timing fields. Preview.22 added
+[opt-in private A-policy diagnostics](routing-diagnostics.md) while preserving
 the current Sol/Luna routing policy. Preview.21 fixed coordinator identity and
 callback receipt lifetime, improved argument diagnostics and handled verified ephemeral history/goal limits as partial
 capabilities. Preview.20 fixed supervisor log placement and doctor reasons/actions.
@@ -45,9 +46,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.22.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.22.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.22.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.23.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.23.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.23.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains

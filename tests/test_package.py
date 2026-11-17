@@ -119,20 +119,26 @@ class PackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             package.read_archive(self.archive(metadata=unsupported, files=old_files))
 
-    def test_preview_twenty_one_remains_selectable_without_diagnostic_files(self):
-        files = {name: self.files[name] for name in package.PREVIEW_NINETEEN_FILES}
-        files['codex_plus/__init__.py'] = b"VERSION = '0.1.0-preview.21'\n"
-        metadata = package.manifest(files, 'e' * 40)
-        metadata['version'] = '0.1.0-preview.21'
-        prefix = self.root / 'preview-twenty-one'
-        installed = package.install(self.archive(metadata=metadata, files=files), prefix)
-        package.activate(prefix, 'e' * 40)
-        self.assertEqual(package.verify_install(installed)['version'], '0.1.0-preview.21')
-        self.assertFalse((installed / 'scripts/codex-plus-diagnostics').exists())
-        package.install(self.archive(), prefix)
-        package.activate(prefix, '1' * 40)
-        package.activate(prefix, 'e' * 40)
-        self.assertEqual((prefix / 'current').resolve(), installed)
+    def test_recent_previews_keep_their_inventory_during_upgrade_and_rollback(self):
+        for number, inventory, has_diagnostics in (
+                (21, package.PREVIEW_NINETEEN_FILES, False),
+                (22, package.PREVIEW_TWENTYTWO_FILES, True)):
+            with self.subTest(version=number):
+                version = '0.1.0-preview.' + str(number)
+                revision = ('e' if number == 21 else 'f') * 40
+                files = {name: self.files[name] for name in inventory}
+                files['codex_plus/__init__.py'] = ('VERSION = ' + repr(version) + '\n').encode()
+                metadata = package.manifest(files, revision)
+                metadata['version'] = version
+                prefix = self.root / ('previous-' + str(number))
+                installed = package.install(self.archive(metadata=metadata, files=files), prefix)
+                package.activate(prefix, revision)
+                self.assertEqual(package.verify_install(installed)['version'], version)
+                self.assertEqual((installed / 'scripts/codex-plus-diagnostics').exists(), has_diagnostics)
+                package.install(self.archive(), prefix)
+                package.activate(prefix, '1' * 40)
+                package.activate(prefix, revision)
+                self.assertEqual((prefix / 'current').resolve(), installed)
 
     def test_previous_preview_two_inventory_remains_verifiable_and_selectable(self):
         files = {name: self.files[name] for name in package.PREVIEW_TWO_FILES}

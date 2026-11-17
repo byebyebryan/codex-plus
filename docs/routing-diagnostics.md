@@ -7,6 +7,11 @@ process. An A-only observation cannot establish savings over another policy. A s
 authorized non-Luna worker can be recorded as `--route other`; this grants no
 permission and flags a policy deviation instead of silently dropping its usage.
 
+Preview.23 also normalizes nullable integer Unix seconds in native timeline
+fields to UTC. It preserves the outer record timestamp's finer precision for
+episode boundaries, leaves null values unknown and rejects invalid timing data
+without copying arbitrary strings into output.
+
 ## Start and enroll
 
 Ask your agent: “Open a private seven-day/eight-goal A study, then use

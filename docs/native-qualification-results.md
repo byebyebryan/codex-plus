@@ -1,6 +1,24 @@
 # Native qualification and operational clarity
 
 
+## Native diagnostic timing follow-up
+
+A bounded read-only check on the main usage host exposed integer timeline timing
+fields that preview.22 left unsupported. The generated native schema permits
+nullable int64 fields; consistency checks against outer UTC record timestamps
+establish seconds, without copying values or transcripts into source. The
+preview.23 candidate accepts those seconds and nulls, while using the outer
+record's finer timestamp precision for episode boundary checks.
+
+The unselected candidate reader joins native usage/model evidence and accepts
+the supported timing fields. Its bounded-history notice remains explicit.
+Invented tests cover integer seconds, null, epoch zero, bool/float/overflow and
+arbitrary strings, plus an earlier worker inside the same calendar second.
+No managed installed-only patch, daemon restart, prompt injection or ordinary
+goal enrollment is used for this qualification. Publication and installed
+acceptance are recorded separately.
+
+
 ## Private routing diagnostics source qualification
 
 The preview.22 reader was exercised on owned native evidence without prompting,

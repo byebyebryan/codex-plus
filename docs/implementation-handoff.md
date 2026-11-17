@@ -1,6 +1,12 @@
 # Implementation handoff
 
-Updated 2026-11-16. Preview.22 is published from `8a60b10` and selected on
+Updated 2026-11-16. A preview.23 follow-up qualifies native nullable Unix-second
+timing fields while retaining precise outer-record boundaries. The source
+candidate passes 484 tests on Python 3.11/3.14 and a bounded read-only Starship
+check with supported timing/model/usage joins. No installed-only repair is used.
+Publication and managed acceptance are recorded after their own checks.
+
+Preview.22 is published from `8a60b10` and selected on
 Snap OSS/work and Starship through published chezmoi `0416d5f`. Exact manifests,
 roles/skills/modes, the new diagnostic command and fresh 17/four-tool protocols
 verify. Carbon passed initial worker preflight, then timed out over SSH before

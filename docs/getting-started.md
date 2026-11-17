@@ -37,11 +37,12 @@ release. Choose the archives you need from its single GitHub release; see
 
 ## Released and source features
 
-**v0.1.0-preview.22** supplies the released workflows shown in these guides. Updating
+**v0.1.0-preview.23** supplies the released workflows shown in these guides. Updating
 documentation or selecting an archive does not reload an existing MCP process.
 
 | Available in | What to expect |
 | --- | --- |
+| Fixed in preview.23 | Native nullable Unix-second timing fields normalize to UTC; outer record precision remains available for enrollment and worker boundaries. |
 | Added in preview.22 | Opt-in [private Sol/Luna routing diagnostics](routing-diagnostics.md), with prospective bounded enrollment and read-only native accounting. No Terra route or comparison trial is enabled. |
 | Fixed in preview.21 | Truthful coordinator status after handoff, callback completion tracking after early acknowledgement, clearer argument errors and partial ephemeral-peer inspection. Read the [qualification](native-qualification-results.md#soak-driven-reliability-preview21-source-candidate) for acceptance and limits. |
 | Preview.9 and later | Worker workflows, watches, one-shot later checks, same-daemon peer coordination, reports and selected-file diagnosis. |
