@@ -91,10 +91,17 @@ class NativeRecords:
                 except (ValueError, UnicodeError):
                     gaps.add('malformed_native_line')
                     continue
-                if not isinstance(record, dict) or not isinstance(record.get('payload'), dict):
+                if not isinstance(record, dict) or not isinstance(record.get('type'), str):
                     gaps.add('malformed_native_record')
                     continue
-                kind, payload = record.get('type'), record['payload']
+                kind = record['type']
+                if kind not in ('turn_context', 'token_usage_record', 'session_meta', 'event_msg'):
+                    continue
+                payload = record.get('payload')
+                if not isinstance(payload, dict):
+                    gaps.add('malformed_native_record'); continue
+                if 'thread_id' in payload and payload['thread_id'] != thread_id:
+                    gaps.add('foreign_thread_native_record'); continue
                 keys = {
                     'turn_context': ('thread_id', 'turn_id', 'root_turn_id', 'model', 'effort'),
                     'token_usage_record': ('thread_id', 'turn_id', 'session_id', 'root_turn_id',
@@ -107,8 +114,18 @@ class NativeRecords:
                                                    'error', 'turn_error', 'token_count'):
                         continue
                 if keys:
-                    records.append({'type': kind, 'timestamp': record.get('timestamp'),
-                                    'payload': {k: payload[k] for k in keys if k in payload}})
+                    projected = {k: payload[k] for k in keys if k in payload}
+                    observed = normalized_time(record.get('timestamp'))
+                    if record.get('timestamp') is not None and observed is None:
+                        gaps.add('invalid_native_timestamp')
+                    for key in ('started_at', 'completed_at'):
+                        if key in projected:
+                            value = normalized_time(projected.pop(key))
+                            if value is None:
+                                gaps.add('invalid_native_timestamp')
+                            else:
+                                projected[key] = value
+                    records.append({'type': kind, 'timestamp': observed, 'payload': projected})
         return records, sorted(gaps), parent
 
     def worker(self, parent_id, agent_path):
@@ -143,10 +160,17 @@ def start_time(records, turn_id):
         if (record['type'] == 'event_msg' and payload.get('type') == 'task_started'
                 and payload.get('turn_id') == turn_id):
             value = payload.get('started_at') or record.get('timestamp')
-            try:
-                parsed = datetime.fromisoformat(value)
-                if parsed.tzinfo is not None:
-                    values.add(parsed.astimezone(timezone.utc).isoformat())
-            except (TypeError, ValueError):
-                pass
+            parsed = normalized_time(value)
+            if parsed is not None:
+                values.add(parsed)
     return next(iter(values)) if len(values) == 1 else None
+
+
+def normalized_time(value):
+    try:
+        parsed = datetime.fromisoformat(value)
+        if parsed.tzinfo is not None:
+            return parsed.astimezone(timezone.utc).isoformat()
+    except (TypeError, ValueError):
+        pass
+    return None

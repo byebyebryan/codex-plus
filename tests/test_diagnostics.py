@@ -167,6 +167,36 @@ class DiagnosticTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.ledger.link(key, None, None, route='luna', worker='/root/foreign')
 
+    def test_foreign_records_cannot_supply_enrollment_context_or_window(self):
+        original = run_records()[:-1]
+        copied = [record('event_msg', type='task_started', turn_id='foreign-turn', thread_id='foreign'),
+                  record('turn_context', turn_id='foreign-turn', thread_id='foreign',
+                         model='gpt-6.1-sol', effort='xhigh')]
+        self.add_thread('parent-a', original + copied)
+        key = self.enroll()
+        episode = self.ledger.read()['episodes'][key]
+        self.assertEqual(episode['start_turn'], 'turn-one')
+        self.assertIn('foreign_thread_native_record', episode['source_gaps'])
+        self.ledger.outcome(key, 'unresolved')
+        foreign_context = record('turn_context', turn_id='own-turn', thread_id='foreign',
+                                 model='gpt-6.1-sol', effort='xhigh')
+        self.add_thread('another', [record('event_msg', type='task_started', turn_id='own-turn'), foreign_context])
+        with self.assertRaises(ValueError): self.ledger.enroll('another')
+
+    def test_timestamp_projection_normalizes_valid_and_omits_arbitrary_private_text(self):
+        key = self.enroll()
+        records = run_records()
+        records[0]['payload']['started_at'] = 'PRIVATE TIMESTAMP CONTENT'
+        records[-1]['payload']['completed_at'] = 'PRIVATE TIMESTAMP CONTENT'
+        records[-1]['timestamp'] = 'PRIVATE TIMESTAMP CONTENT'
+        self.add_thread('parent-a', records)
+        result = self.ledger.collect(key)
+        self.assertIn('invalid_native_timestamp', result['source_gaps'])
+        self.assertNotIn('PRIVATE TIMESTAMP CONTENT', json.dumps(result))
+        times = result['native_turn_times'][0]
+        self.assertEqual(times['native_start_times'], ['2030-01-01T00:00:00+00:00'])
+        self.assertEqual(times['native_completion_times'], [])
+
     def test_cutoff_and_changed_model_are_visible_without_dropping_usage(self):
         key = self.enroll()
         self.add_thread('worker-a', run_records('child', 'gpt-6.1-terra', 'xhigh', 'worker-a'), 'parent-a')

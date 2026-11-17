@@ -1,5 +1,27 @@
 # Native qualification and operational clarity
 
+
+## Private routing diagnostics source qualification
+
+The preview.22 reader was exercised on owned native evidence without prompting,
+resuming or interrupting unrelated work. The useful bounded accounting worker
+completed on observed `gpt-6-luna` / `max`, returned its implementation and
+review, and its native response usage joined to the selected completed turn.
+No extra model call was needed just to fill the diagnostic fields.
+
+The private readiness probe also included its still-active primary. The reader
+kept that parent's missing terminal evidence and the probe's late enrollment
+explicit, rather than claiming a prospectively measured complete workflow.
+This qualifies the mechanism, not ordinary-use coverage, savings, a model
+ranking or any A/B result. Naturally enrolled goals remain the next observation.
+
+Invented fixtures cover ownership, reused-worker turns, exact duplicates,
+conflicting usage, missing model/usage evidence, malformed timestamps,
+completion versus acceptance, enrollment bounds and private state handling.
+The review corrected foreign-record window boundaries and normalized timestamp
+projection. Real released preview.21 archives separately exercise rollback.
+Actual records and identifiers remain outside public source.
+
 ## Soak-driven reliability: preview.21 source candidate
 
 Bryan selected `$adaptive-goal-loop` on 2026-11-12 after a passive daily-use
