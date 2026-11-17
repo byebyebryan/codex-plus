@@ -111,6 +111,18 @@ class NativeRecords:
                                     'payload': {k: payload[k] for k in keys if k in payload}})
         return records, sorted(gaps), parent
 
+    def worker(self, parent_id, agent_path):
+        if not isinstance(agent_path, str) or not agent_path.startswith('/') or len(agent_path) > 512:
+            raise ValueError('use the exact native collaboration task path')
+        with closing(self.connect()) as connection:
+            rows = connection.execute(
+                'SELECT t.id FROM threads t JOIN thread_spawn_edges e ON e.child_thread_id=t.id '
+                'WHERE e.parent_thread_id=? AND t.agent_path=? LIMIT 2',
+                (parent_id, agent_path)).fetchall()
+        if len(rows) != 1:
+            raise ValueError('native worker path is missing or ambiguous')
+        return rows[0][0]
+
 
 def turns(records):
     """Ordered explicit native starts; context and cumulative usage are not starts."""

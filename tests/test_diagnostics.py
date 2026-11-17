@@ -37,7 +37,7 @@ class DiagnosticTests(unittest.TestCase):
         self.database = self.home / 'state_5.sqlite'
         with contextlib.closing(sqlite3.connect(self.database)) as connection, connection:
             connection.executescript('CREATE TABLE threads (id TEXT PRIMARY KEY, rollout_path TEXT, '
-                                     'attached_thread_parent_id TEXT); CREATE TABLE thread_spawn_edges '
+                                     'attached_thread_parent_id TEXT, agent_path TEXT); CREATE TABLE thread_spawn_edges '
                                      '(parent_thread_id TEXT, child_thread_id TEXT);')
         self.ledger = d.Ledger(self.root, self.home)
         self.add_thread('parent-a', run_records()[:-1])
@@ -46,7 +46,9 @@ class DiagnosticTests(unittest.TestCase):
         path = self.home / (name + '.jsonl')
         path.write_text(''.join(json.dumps(r) + '\n' for r in records))
         with contextlib.closing(sqlite3.connect(self.database)) as connection, connection:
-            connection.execute('INSERT OR REPLACE INTO threads VALUES (?,?,?)', (name, str(path), parent))
+            connection.execute('INSERT OR REPLACE INTO threads VALUES (?,?,?,?)',
+                               (name, str(path), parent, '/root/' + name))
+            connection.execute('DELETE FROM thread_spawn_edges WHERE child_thread_id=?', (name,))
             if parent:
                 connection.execute('INSERT INTO thread_spawn_edges VALUES (?,?)', (parent, name))
         return path
@@ -75,6 +77,7 @@ class DiagnosticTests(unittest.TestCase):
         self.assertFalse(self.ledger.status()['enrollment_open'])
         self.assertEqual(self.ledger.enroll('parent-a', if_open=True)['episode'], key)
         self.assertEqual(len(self.ledger.read()['episodes']), 1)
+        self.assertEqual(self.ledger.status()['episodes'][0]['episode'], key)
 
     def test_expiry_cap_and_close_do_not_stop_or_delete_native_work(self):
         study = self.ledger.start()
@@ -147,6 +150,22 @@ class DiagnosticTests(unittest.TestCase):
         self.add_thread('parent-a', run_records('turn-two')[:-1])
         another = self.ledger.enroll('parent-a')['episode']
         with self.assertRaises(ValueError): self.ledger.link(another, 'worker-a', 'new', route='luna')
+
+    def test_exact_worker_path_resolves_only_unambiguous_owned_new_turn(self):
+        key = self.enroll()
+        old = run_records('old', 'gpt-6-luna', 'max', 'worker-a')
+        for r in old: r['timestamp'] = '2029-01-01T00:00:00Z'
+        self.add_thread('worker-a', old + run_records('new', 'gpt-6-luna', 'max', 'worker-a'), 'parent-a')
+        result = self.ledger.link(key, None, None, route='luna', worker='/root/worker-a')
+        self.assertEqual((result['thread_id'], result['turn_id']), ('worker-a', 'new'))
+        with self.assertRaises(ValueError):
+            self.ledger.link(key, None, None, route='luna', worker='/root/worker-a')
+        self.add_thread('worker-a', run_records('next') + run_records('another'), 'parent-a')
+        with self.assertRaises(ValueError):
+            self.ledger.link(key, None, None, route='luna', worker='/root/worker-a')
+        self.add_thread('foreign', run_records('x'), 'another-parent')
+        with self.assertRaises(ValueError):
+            self.ledger.link(key, None, None, route='luna', worker='/root/foreign')
 
     def test_cutoff_and_changed_model_are_visible_without_dropping_usage(self):
         key = self.enroll()

@@ -112,6 +112,9 @@ class Ledger:
                 'runtime_version': study['runtime_version'], 'goals': len(study['episodes']),
                 'goal_limit': study['goal_limit'], 'enrollment_until': study['enrollment_until'],
                 'observation_until': study['observation_until'],
+                'episodes': [{'episode': key, 'lineage': value['lineage'],
+                              'outcome': value['outcome']['result'] if value['outcome'] else None}
+                             for key, value in study['episodes'].items()],
                 'enrollment_open': self.open(study), 'closed_at': study['closed_at']}
 
     @staticmethod
@@ -169,7 +172,22 @@ class Ledger:
         return {'enrolled': True, 'episode': key, 'existing': False}
 
     def link(self, key, thread_id, turn_id, *, route, contract_ref=None, status='returned',
-             first_result='unknown'):
+             first_result='unknown', worker=None):
+        if worker is not None:
+            if thread_id is not None or turn_id is not None:
+                raise ValueError('select either explicit identities or a native worker path')
+            episode = episode_for(self.read(), key)
+            source = NativeRecords(self.home)
+            thread_id = source.worker(episode['thread_id'], worker)
+            records, _, _ = source.read(thread_id)
+            linked = {a['turn_id'] for a in episode['assignments'] if a['thread_id'] == thread_id}
+            candidates = [turn for turn in turns(records) if turn not in linked
+                          and start_time(records, turn) is not None
+                          and episode['native_start_time'] is not None
+                          and start_time(records, turn) >= episode['native_start_time']]
+            if len(candidates) != 1:
+                raise ValueError('worker turn is missing or ambiguous; use explicit native identities')
+            turn_id = candidates[0]
         missing = status in ('controls_missing', 'spawn_rejected')
         if missing:
             if thread_id is not None or turn_id is not None or route == 'primary':
@@ -209,7 +227,7 @@ class Ledger:
                 raise ValueError('assignment bound reached')
             episode['assignments'].append(assignment)
             self.save(study)
-        return {'linked': True, 'episode': key}
+        return {'linked': True, 'episode': key, 'thread_id': thread_id, 'turn_id': turn_id}
 
     def outcome(self, key, result, evidence_ref=None, *, children_reviewed=False,
                 user_intervention='unknown'):
@@ -355,6 +373,7 @@ def main(argv=None):
     link = sub.add_parser('link')
     link.add_argument('episode'); link.add_argument('--thread')
     link.add_argument('--turn')
+    link.add_argument('--worker', help='Exact native task path; resolves only one unlinked turn in this episode')
     link.add_argument('--route', choices=('primary', 'luna', 'other'), required=True,
                       help='Observed route only; other preserves a policy deviation and grants no delegation permission')
     link.add_argument('--contract-ref')
@@ -385,7 +404,7 @@ def main(argv=None):
         elif args.command == 'link':
             result = ledger.link(args.episode, args.thread, args.turn, route=args.route,
                                  contract_ref=args.contract_ref, status=args.status,
-                                 first_result=args.first_result)
+                                 first_result=args.first_result, worker=args.worker)
         elif args.command == 'outcome':
             result = ledger.outcome(args.episode, args.result, args.evidence_ref,
                                     children_reviewed=args.children_reviewed,

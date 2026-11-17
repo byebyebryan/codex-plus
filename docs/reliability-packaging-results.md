@@ -9,10 +9,12 @@ adaptive-goal enrollment step is inert without an already opened study. It
 preserves Sol/Luna routing, opt-in escalation, named tasks and native role pins;
 there is no Terra-enabled policy, new service or comparative trial.
 
-The clean 152-file gate, 480 tests on Python 3.11/3.14, ten skill validators and
+The clean 152-file gate, 481 tests on Python 3.11/3.14, ten skill validators and
 whitespace checks pass. The site builds ten guides plus the walkthrough, with
 347 local link/anchor checks and fifteen current-release claims. Preview.21's
-runtime inventory remains verifiable/selectable for rollback. The canonical
+runtime inventory remains verifiable/selectable for rollback. The version bump
+also preserves reporting acceptance of preview.21 archives; actual released
+archives are checked in a relocated install separately from invented fixtures. The canonical
 checkout retains its two original untracked bytecode files unchanged; they
 remain its only inventory-check exception. Private case fingerprints and
 unpublished commit history were checked separately from the public source.

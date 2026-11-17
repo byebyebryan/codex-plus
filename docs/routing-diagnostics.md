@@ -45,6 +45,13 @@ references in the existing private conversation or artifact. Do not copy raw
 prompts, tool output or transcripts into this repository. Use the episode ID
 from enrollment and actual native IDs when recording work:
 
+When native collaboration returns a task path, the shorter form is
+`link EPISODE --route luna --worker /root/example-worker --first-result accepted`.
+It resolves only an exact direct-child path and one unlinked turn starting
+inside this episode. Missing or ambiguous matches are refused; no title/role
+guessing or target resume occurs. For multiple candidate turns, use explicit
+identities and record each relevant turn separately:
+
 ```sh
 rtk proxy codex-plus-diagnostics link EPISODE --route luna \
   --thread CHILD --turn CHILD_TURN --first-result accepted \
