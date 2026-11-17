@@ -96,37 +96,40 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Managed source selects workers, monitoring and reporting **preview.22**,
-source `8a60b10`, through published chezmoi pins `0416d5f`.
+Managed source selects workers, monitoring and reporting **preview.23**,
+source `1773892`, through published chezmoi pins `76c52c0`.
 
 | Context | Verified installation, 2026-11-16 | Runtime evidence |
 | --- | --- | --- |
-| Snap OSS | Preview.22; all three manifests, four roles/seven skills, exact modes and empty scoped diff. | Fresh 17/four-tool stdio and installed diagnostic enrollment/link/outcome/collection/closure pass. |
-| Snap work | Same verified release in its separate home. | Fresh stdio and the inactive-study no-op pass without creating study state. |
-| Starship | Same verified release, command link and empty scoped diff. | Fresh stdio and inactive-study behavior pass. Existing native work stays running. |
-| Carbon | Pending: SSH timed out before the new apply. The prior completed fleet rollout was preview.21; its worker bundle still passed initial preflight. | No preview.22 installation or loaded-runtime acceptance is claimed. |
+| Snap OSS | Preview.23; all three manifests, four roles/seven skills, exact modes and empty scoped diff. | Fresh 17/four-tool stdio and installed private diagnostic enrollment/link/outcome/collection/closure pass. |
+| Snap work | Same verified release in its separate home. | Fresh stdio and inactive-study no-op pass without creating study state. |
+| Starship | Same verified release, command link and empty scoped diff. | Fresh stdio and bounded installed native-record projection verify supported timing/model/usage evidence; its history-bound notice stays explicit. |
+| Carbon | Reconnected and completed preview.23 installation and verification. | Fresh stdio and inactive-study behavior pass. No loaded-owner adoption is claimed or owner started. |
 
-All five fetched release assets match the reviewed bytes and GitHub digests;
-all three public archive URLs also verify anonymously. The full managed-source
-gate passed. An unrelated upstream Remote Chrome delivery was preserved, with
-source/affected checks repeated after rebasing only the unpublished pin commit.
-Scoped canonical pin commits preserve existing host history and unrelated drift.
+Five fetched assets match reviewed bytes and GitHub digests; all three archive
+URLs verify anonymously. The full managed gate passed during preview.22 delivery;
+the preview.23 pin-only follow-up passes source checks, runtime/worker projection,
+private preference preservation and actual isolated report-archive apply.
+Scoped canonical pin commits preserve existing host history and unrelated edits.
 
-Across 1,998 existing protected paths on Snap and Starship, eleven intended
-files change: selectors, worker provenance/instructions and the installed adaptive
-goal instructions. The new command links are separately verified. Native
-configuration/authentication, old releases, report configuration, all 33 captured
-binding contents/mtimes and all 43 captured native/MCP processes remain unchanged.
-No native cache or unclassified protected-file change is observed.
+Across 2,860 existing protected paths in the follow-up, eleven intended files
+change, with no unclassified or native-cache changes. Native configuration,
+authentication, old releases and report settings are unchanged. All 33 captured
+binding contents/mtimes remain exact. Of 45 captured native/MCP processes, 41
+remain exact and four older MCP processes exit on Snap; their cause is
+unlocalized. Native owner identities remain exact. No process lifecycle command,
+daemon restart, global MCP refresh or real-monitor recovery is issued.
 
-The installed native reader qualifies a completed Luna/max handoff while
-preserving late enrollment and missing primary terminal evidence. Its private
-qualification studies are closed. A natural-use study is ready but unopened;
-see the [operator guide](routing-diagnostics.md). Installation does not establish
-adoption by an already running helper. No daemon restart, global MCP refresh,
-real-monitor recovery or unsolicited conversation input is issued. Report data
-and hosting stay outside the apply scope. See the
-[rollout receipt](reliability-packaging-results.md#preview22-publication-and-managed-rollout).
+The installed helper completes its private qualification flow and joins a
+completed Luna/max worker while preserving late enrollment and missing primary
+terminal evidence. Native nullable Unix-second timing now normalizes correctly.
+A small initial history probe lacked a turn start; qualification uses a larger
+bounded window and retains the history-bound notice. Private qualification
+studies are closed; natural-use collection is ready but unopened. See the
+[operator guide](routing-diagnostics.md) and
+[rollout receipt](reliability-packaging-results.md#preview23-publication-and-managed-rollout).
+Fresh checks do not establish adoption by already running helpers. Report data
+and hosting remain outside the apply scope.
 
 Workers retain their own installation. The 349 inspector
 is retired, and native notifications remain selected. The earlier [managed activation report](managed-activation-results.md)

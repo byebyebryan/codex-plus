@@ -16,7 +16,7 @@ coordinator owns bounded observation, timers, event admission and receipts.
 
 Codex Plus `v0.1.0-preview.23` unifies workers, monitoring and reporting under one
 version, source commit and release. Optional archives retain each component's
-dependencies and configuration. Managed source selects preview.22
+dependencies and configuration. Managed source selects preview.23
 artifacts from `0d01779`. The 2026-11-12 rollout verifies Snap OSS/work,
 Starship and Carbon. Snap OSS and work
 retain separate native homes. See the

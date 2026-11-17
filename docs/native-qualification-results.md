@@ -10,13 +10,13 @@ establish seconds, without copying values or transcripts into source. The
 preview.23 candidate accepts those seconds and nulls, while using the outer
 record's finer timestamp precision for episode boundary checks.
 
-The unselected candidate reader joins native usage/model evidence and accepts
-the supported timing fields. Its bounded-history notice remains explicit.
+The unselected candidate and fresh installed preview.23 reader join native
+usage/model evidence and accept the supported timing fields. Its bounded-history notice remains explicit.
 Invented tests cover integer seconds, null, epoch zero, bool/float/overflow and
 arbitrary strings, plus an earlier worker inside the same calendar second.
 No managed installed-only patch, daemon restart, prompt injection or ordinary
 goal enrollment is used for this qualification. Publication and installed
-acceptance are recorded separately.
+acceptance are recorded in the [rollout receipt](reliability-packaging-results.md#preview23-publication-and-managed-rollout).
 
 
 ## Private routing diagnostics source qualification

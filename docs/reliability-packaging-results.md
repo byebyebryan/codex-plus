@@ -1,6 +1,49 @@
 # Everyday reliability and native packaging results
 
 
+## Preview.23 publication and managed rollout
+
+The personal GitHub release publishes five verified assets from
+`17738923386255605c95810a13a47e4e0312a957`; fetched bytes and GitHub digests match,
+and all three archive URLs verify anonymously. Source CI passes 484 tests on
+both Python versions and complete package verification; ten skill validators,
+the clean 152-file gate and Pages build pass. Private case fingerprints remain
+absent from source, artifacts and unpublished history. Preview.22 assets remain
+immutable, and actual preview.21/22 archives verify rollback for both components.
+
+Published chezmoi `76c52c0` advances three pin/validator files together. The full
+managed gate passed during the preceding preview.22 delivery. This pin-only
+follow-up passes source checks, runtime/worker projection, private preference
+preservation and actual isolated report-archive status/diff/dry-run/apply.
+Canonical host pin commits preserve existing local history and unrelated drift.
+
+Snap OSS/work, Starship and Carbon verify all preview.23 manifests, payload
+hashes/modes, four native roles/seven workflows, command links and empty scoped
+diffs. Fresh stdio reports 17 monitoring/four reporting tools in each context.
+Carbon reconnects and completes its previously pending apply, without starting
+an owner for acceptance. The installed private helper completes enrollment,
+owned-worker linking, outcome, collection and closure; its completed Luna/max
+join is verified while late enrollment and active primary coverage remain
+partial. A bounded installed Starship read accepts its native timing fields and
+joins model/usage evidence. An initial smaller window lacked a start; the larger
+bounded check retains its history notice rather than claiming complete history.
+
+Across 2,860 existing protected paths, eleven intended existing files change,
+with no unclassified or native-cache changes. Native config/authentication,
+old releases and report settings remain exact. All 33 binding contents and
+mtimes remain unchanged. Of 45 captured native/MCP processes, 41 remain exact
+and four older Snap MCP processes exit; cause is unlocalized. Native owner
+identities remain exact. No process lifecycle command, daemon restart, global
+MCP refresh, real-monitor recovery or unsolicited input is issued. Fresh checks
+do not establish already loaded code adoption. Report data/hosting are untouched.
+
+All four deployed contexts report an unconfigured natural study; the inactive
+enrollment command creates no state. Private qualification studies are closed.
+No natural-use window, Terra eligibility or A/B trial starts implicitly. The
+[operator procedure](routing-diagnostics.md) is ready for a selected observation
+window. The earlier preview.22 receipt below records its historical scope.
+
+
 ## Preview.23 native timing compatibility candidate
 
 The follow-up accepts nullable integer Unix seconds in native timeline fields,

@@ -2,7 +2,8 @@
 
 ## Proposed pass: targeted routing soak and policy comparison
 
-Status: Stage 1 diagnostic readiness ships in preview.22. The private ledger,
+Status: Stage 1 diagnostic readiness ships in preview.23, including native
+nullable Unix-second timing compatibility. The private ledger,
 read-only reader and invented accounting fixtures pass source/native qualification
 and are deployed on the reachable primary-use hosts for normal A-use readiness; see the [operator guide](routing-diagnostics.md). Terra-enabled
 routing and comparative trials remain unimplemented and unstarted. Prior experiment

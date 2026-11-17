@@ -128,23 +128,25 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Managed configuration selects **v0.1.0-preview.22** for workers, monitoring and
-reporting from source `8a60b10` through published chezmoi `0416d5f`. The
-2026-11-16 rollout verifies Snap OSS/work and Starship: exact payloads,
-roles/skills, installed diagnostic commands and fresh 17/four-tool MCP protocols.
-Carbon timed out over SSH before apply and remains pending; its prior completed
-fleet delivery was preview.21. Native configuration, credentials, old releases,
-all 33 captured bindings/mtimes and all 43 captured native/MCP processes on the
-two deployed hosts are preserved.
+Managed configuration selects **v0.1.0-preview.23** for workers, monitoring and
+reporting from source `1773892` through published chezmoi `76c52c0`. The
+2026-11-16 rollout verifies Snap OSS/work, Starship and Carbon: exact payloads,
+roles/skills/modes, installed diagnostic commands and fresh 17/four-tool MCP
+protocols. Carbon reconnected and completed the rollout. Native configuration,
+credentials, old releases and all 33 captured bindings/mtimes are preserved.
+Native owner identities remain unchanged; four older MCP processes exited on
+Snap during the follow-up interval, with cause unlocalized and no lifecycle
+commands issued.
 
-The [delivery receipt](docs/reliability-packaging-results.md#preview22-publication-and-managed-rollout)
+The [delivery receipt](docs/reliability-packaging-results.md#preview23-publication-and-managed-rollout)
 separates source, published assets, installed files and runtime evidence. The
-installed reader verified a completed Luna/max handoff and kept its still-active
-primary incomplete. The natural-use study is ready but unopened; follow the
+installed reader verifies native Unix-second timing and a completed Luna/max
+handoff while leaving its still-active primary incomplete. The natural-use
+study is ready but unopened; follow the
 [private observation procedure](docs/routing-diagnostics.md) when selecting its
-window. Existing helpers/coordinators retain captured code until normal adoption.
-The [implementation handoff](docs/implementation-handoff.md) records the remaining
-Carbon delivery and the distinction between fresh checks and loaded code.
+window. Existing helpers/coordinators adopt through normal native lifecycle;
+no daemon restart or global MCP refresh was issued. The
+[implementation handoff](docs/implementation-handoff.md) records evidence limits.
 
 Desktop notification delivery and terminal customization are outside Codex Plus.
 Native Codex alerts remain selected. Notification enrichment and lifecycle

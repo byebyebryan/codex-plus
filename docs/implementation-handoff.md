@@ -1,29 +1,31 @@
 # Implementation handoff
 
-Updated 2026-11-16. A preview.23 follow-up qualifies native nullable Unix-second
-timing fields while retaining precise outer-record boundaries. The source
-candidate passes 484 tests on Python 3.11/3.14 and a bounded read-only Starship
-check with supported timing/model/usage joins. No installed-only repair is used.
-Publication and managed acceptance are recorded after their own checks.
+Updated 2026-11-16. Preview.23 is published from `1773892` and selected on
+Snap OSS/work, Starship and Carbon through published chezmoi `76c52c0`. Carbon
+reconnected and completed the previously pending delivery. Exact manifests,
+roles/skills/modes, command links and fresh 17/four-tool protocols verify in all
+four contexts. The installed reader supports native nullable Unix-second timing,
+with finer outer-record precision retained for episode boundaries.
 
-Preview.22 is published from `8a60b10` and selected on
-Snap OSS/work and Starship through published chezmoi `0416d5f`. Exact manifests,
-roles/skills/modes, the new diagnostic command and fresh 17/four-tool protocols
-verify. Carbon passed initial worker preflight, then timed out over SSH before
-apply; its preview.22 delivery remains pending. No daemon restart or global
-reload was issued. Existing native work, 43 captured processes and 33 saved
-bindings/mtimes remain unchanged on the deployed hosts.
+The clean 152-file gate, 484 tests on Python 3.11/3.14, ten skill validators,
+unified assets, actual preview.21/22 monitoring/reporting rollback and ten-guide
+site build pass. Source/affected managed checks and actual isolated report apply
+pass; the earlier full managed gate remains recorded with its original scope.
+The installed private helper flow passes, including a completed Luna/max worker
+join and honest partial primary coverage. A bounded installed Starship native
+read supports its timing/model/usage data; the history-bound notice stays
+explicit. Private qualification studies are closed; the natural A window is
+ready but unopened. No ordinary-use, savings or A/B result is claimed.
 
-The clean 152-file source gate, 483 tests on Python 3.11/3.14, ten skill validators,
-unified artifacts, actual preview.21 monitoring/reporting rollback and the
-ten-guide site build pass. The installed helper completes enrollment, exact
-owned-worker linking, outcome recording, collection and closure in a private
-qualification study. Native evidence verifies a completed Luna/max worker; the
-late-enrolled, still-active primary remains partial. No ordinary-use or savings
-claim follows. All qualification studies are closed; the natural A window is
-ready but unopened. See the [operator guide](routing-diagnostics.md),
-[native qualification](native-qualification-results.md#private-routing-diagnostics-source-qualification)
-and [delivery receipt](reliability-packaging-results.md#preview22-publication-and-managed-rollout).
+All 33 captured bindings/mtimes, native config/authentication, old releases and
+unrelated source edits/history remain intact. Native owner identities are
+unchanged. Four older Snap MCP processes exit during the follow-up interval;
+their cause remains unlocalized, with no lifecycle command issued. No daemon
+restart, global refresh, monitor recovery or unsolicited input is issued. The
+two original canonical bytecode files remain unchanged. See the
+[operator guide](routing-diagnostics.md),
+[native qualification](native-qualification-results.md#native-diagnostic-timing-follow-up)
+and [delivery receipt](reliability-packaging-results.md#preview23-publication-and-managed-rollout).
 
 This Stage 1 delivery implements the private ledger/reader and invented fixtures
 from the [targeted routing plan](codex-plus-plan.md#proposed-pass-targeted-routing-soak-and-policy-comparison).
