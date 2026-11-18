@@ -12,16 +12,34 @@ fields to UTC. It preserves the outer record timestamp's finer precision for
 episode boundaries, leaves null values unknown and rejects invalid timing data
 without copying arbitrary strings into output.
 
-## Model-version boundaries
+## Model-version tracking
 
-New studies freeze the exact supported Sol/XHigh primary on first enrollment.
-They accept a new Sol release such as `gpt-6.2-sol` without treating its usage as
-6.1. Subsequent goals with a different version are refused in that study; preserve
-it and explicitly select a separate private study root for a different cohort.
-Existing studies created before this feature retain their original 6.1 Sol
-requirement without automatic migration. A model change inside an episode is
-reported as a coverage gap. Actual Luna model versions remain visible, with
-mixed-version episodes flagged rather than silently pooled.
+New studies record exact model/effort on each episode and native turn. Supported
+Sol version updates do not stop enrollment or require another study. Collection
+exposes `model_observations` and `accounting.usage_by_context`, so analysis can
+separate versions without conflating their capability, quality or cost. A known
+version change within a goal is an observation, not a missing-coverage error.
+Unknown model context and actual family/effort deviations remain explicit gaps.
+The study still observes Sol XHigh with selective Luna Max; this enables no
+other routing policy or automatic model change.
+
+For an existing legacy or frozen study, explicitly request its policy update:
+
+```sh
+rtk proxy codex-plus-diagnostics allow-model-upgrades
+```
+
+Use the same native home and optional `--state-root` as that study. The operation
+creates a private byte-for-byte backup under the ledger lock, records the prior
+version policy, and preserves the study identity, existing episodes/outcomes,
+deadlines and goal limit. Repeating it changes nothing. It never reopens a closed
+study, extends an expired window, starts a new study or backfills ongoing work.
+Only new goals enroll prospectively. Existing episodes keep their recorded
+versions; older episode starting versions come from their own native contexts.
+
+Old studies remain unchanged until this explicit operation. Older helpers may
+refuse the updated policy; retain the new helper and backup when rolling back a
+runtime, and never restore an old ledger over subsequently recorded goals.
 
 ## Start and enroll
 

@@ -1,5 +1,31 @@
 # Implementation handoff
 
+Updated 2026-11-18. Preview.25 is published from `0dcb13f` and selected on Snap
+and Starship through published chezmoi `ef77faa`. It corrects preview.24's
+overly strict study version boundary. New studies record exact model/effort per
+episode and turn; supported version updates remain observable without stopping
+enrollment. Historical usage groups remain separate for analysis.
+
+An explicit `allow-model-upgrades` operation updates an existing open study under
+its lock, saves a private byte-for-byte backup and records the prior policy. It
+preserves identity, recorded goals/outcomes, deadline and goal limit; it does not
+backfill ongoing work or silently open/extend a window. Starting selections from
+older native history remain labeled separately from retained enrollment contracts.
+The selected private update, idempotence, bounds/history and model tags verify.
+
+The 155-file gate, 519 tests on Python 3.11/3.14, ten skill validators and actual
+published preview.24 payload rollback pass. Fetched unified assets, installed
+component manifests, fresh 17/four-tool protocols, affected managed/quick checks,
+isolated report/worker applies and empty scoped diffs verify. Current native
+role/skill definitions and model selections stay unchanged. Native config/auth,
+bindings/mtimes and owner identities remain intact. No daemon restart, global
+reload or session input is issued. Carbon remains outside this rollout.
+
+The dated preview.24 frozen-study policy below is historical. See the
+[operator guide](routing-diagnostics.md#model-version-tracking) and
+[delivery receipt](reliability-packaging-results.md#preview25-version-observation-correction).
+
+
 Updated 2026-11-18. Preview.24 is published from `c85d2ed` and selected on Snap
 and Starship through published chezmoi `350291a`, including Snap's Work worker
 files. Carbon retains preview.23 and was outside this rollout. Model preferences

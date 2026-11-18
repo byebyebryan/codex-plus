@@ -2,6 +2,9 @@
 
 ## Selected correction: observe model versions without stopping collection
 
+Completed in preview.25 (`0dcb13f`), selected through published chezmoi `ef77faa`.
+The authorized existing-study policy update preserves history and original bounds.
+
 Treat model version as observed metadata. New studies record exact primary
 selection per episode and retain per-turn model/effort usage groups. Supported
 Sol version changes admit new goals and remain visible within an episode;

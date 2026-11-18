@@ -1,5 +1,38 @@
 # Everyday reliability and native packaging results
 
+## Preview.25 version-observation correction
+
+Release `v0.1.0-preview.25`, source `0dcb13f`, corrects a study enrollment guard
+that treated an exact model version as a collection requirement. New studies
+record versions per episode and native turn; supported version changes are
+observations rather than coverage errors. Separate model/effort usage groups
+remain available without making comparative quality, savings or billing claims.
+
+The explicit existing-study update saves a private backup under lock, records
+the previous policy and leaves original episode dictionaries/outcomes, identity,
+deadlines and goal cap intact. It is idempotent and cannot reopen a closed study,
+extend a window or backfill ongoing work. Historical native observations and
+prior enrollment contracts are labeled separately when history is unavailable.
+The authorized private conversion and model-selection checks pass; no real goal
+is enrolled merely for qualification. Private data remains outside source.
+
+The 155-file gate, 519 tests on Python 3.11/3.14, ten skill validators, release
+verification and actual published preview.24 runtime/report rollback pass. Five
+fetched assets match the qualified build. Published chezmoi `ef77faa` updates
+the URL/revision/checksum/validator tuple together after publication. Affected
+managed and quick checks, actual isolated worker/report applies and scoped
+status/diff/dry-run/apply/convergence pass. The earlier full managed gate remains
+scoped to its recorded delivery.
+
+Snap and Starship select all three preview.25 components; fresh protocols report
+17 monitoring/four reporting tools. Current native role/skill bytes and concrete
+model choices remain unchanged. Native config/auth, captured bindings/mtimes,
+owners, prior releases and unrelated source drift remain intact. No daemon
+restart, global MCP refresh or session input is issued. Carbon is outside scope.
+Older diagnostic helpers may refuse the new policy; retain the new reader and
+backup rather than restoring an old ledger over subsequent goals during rollback.
+
+
 ## Preview.24 publication and model-family rollout
 
 Published release `v0.1.0-preview.24` is built from `c85d2ed` after the

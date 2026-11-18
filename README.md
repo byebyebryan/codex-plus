@@ -51,7 +51,11 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.24** includes seven worker workflows and four current roles.
+**v0.1.0-preview.25** includes seven worker workflows and four current roles.
+
+Preview.25 records exact model versions without blocking study enrollment.
+An explicit, backed-up policy update lets an existing study continue across
+model upgrades with its original history and bounds.
 
 Preview.24 adds family-based model preferences resolved at managed refresh,
 exact-model overrides and version-aware diagnostic studies.
@@ -133,8 +137,8 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Managed configuration selects **v0.1.0-preview.24** for workers, monitoring and
-reporting from source `c85d2ed` through published chezmoi `350291a`. The
+Managed configuration selects **v0.1.0-preview.25** for workers, monitoring and
+reporting from source `0dcb13f` through published chezmoi `ef77faa`. The
 2026-11-18 delivery verifies exact manifests, native role/skill bytes and modes,
 installed catalogue/resolver commands and fresh 17/four-tool MCP protocols on
 Snap and Starship. Snap's Work worker files are included. Carbon retains its
@@ -147,10 +151,10 @@ credentials, captured binding files/mtimes, owners and old releases are preserve
 Existing processes and children adopt through normal native lifecycle; no daemon
 restart or global MCP refresh was issued.
 
-The [delivery receipt](docs/reliability-packaging-results.md#preview24-publication-and-model-family-rollout)
-separates publication, managed files and runtime evidence. Existing private
-studies retain their original model cohort; new studies freeze the exact primary
-on first enrollment. See the [observation procedure](docs/routing-diagnostics.md)
+The [delivery receipt](docs/reliability-packaging-results.md#preview25-version-observation-correction)
+separates publication, managed files and runtime evidence. New private studies record versions per episode; an explicit policy update
+lets an existing study continue across model upgrades with its history and
+original bounds intact. See the [observation procedure](docs/routing-diagnostics.md)
 and [implementation handoff](docs/implementation-handoff.md).
 
 </details>

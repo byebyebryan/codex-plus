@@ -22,9 +22,11 @@ UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.24](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.24)
-adds family-based worker preferences, an offline resolver, native catalogue
-discovery and exact-version diagnostic cohorts. Preview.23 normalized nullable
+[v0.1.0-preview.25](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.25)
+records model versions per episode/turn without stopping collection on
+version upgrades. An explicit backed-up policy update preserves existing study
+history and limits. Preview.24 added family-based worker preferences, an offline
+resolver and native catalogue discovery. Preview.23 normalized nullable
 native Unix-second timing fields. Preview.22 added
 [opt-in private A-policy diagnostics](routing-diagnostics.md) while preserving
 the current Sol/Luna routing policy. Preview.21 fixed coordinator identity and
@@ -48,9 +50,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.24.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.24.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.24.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.25.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.25.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.25.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains
@@ -98,25 +100,26 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Managed source selects workers, monitoring and reporting **preview.24**,
-source `c85d2ed`, through published chezmoi pins `350291a`.
+Managed source selects workers, monitoring and reporting **preview.25**,
+source `0dcb13f`, through published chezmoi pins `ef77faa`.
 
 | Target | Installed selection | Runtime evidence |
 | --- | --- | --- |
-| Snap default | Preview.24; Sol 6.1, Astra 6, Luna 6 and current Terra 6.1 roles. | Installed catalogue/plan match; fresh monitoring/reporting protocols verify. |
+| Snap default | Preview.25; Sol 6.1, Astra 6, Luna 6 and current Terra 6.1 roles. | Installed catalogue/plan match; fresh monitoring/reporting protocols verify. |
 | Snap Work | Preview.24 worker definitions and skills; prior concrete model selections retained. | File/mode verification; no new owner or inference started. |
-| Starship | Preview.24; Sol/Astra 6.2, Luna 6 and current Terra 6.1 roles. | Installed catalogue/plan match; fresh monitoring/reporting protocols verify. |
+| Starship | Preview.25; Sol/Astra 6.2, Luna 6 and current Terra 6.1 roles. | Installed catalogue/plan match; fresh monitoring/reporting protocols verify. |
 | Carbon | Prior preview.23 retained. | Outside the requested rollout. |
 
-The 155-file gate, 515 tests on Python 3.11/3.14, ten skill validators, exact
-release verification and actual preview.23 runtime/report rollback pass. The
-managed full/quick gates and actual isolated worker/report applies pass. All
+The 155-file gate, 519 tests on Python 3.11/3.14, ten skill validators, exact
+release verification and actual preview.24 runtime/report rollback pass. The
+affected managed/quick gates and actual isolated worker/report applies pass;
+the prior full managed gate retains its original scope. All
 54 scoped native role/skill files verify. Native config/authentication, captured
 bindings/mtimes, owners and prior releases remain unchanged. Real 6.2 worker
 inference is not claimed from catalogue selection. Existing loaded MCPs and
 workers may retain prior code/settings; no restart or global reload was issued.
 
-See the [delivery receipt](reliability-packaging-results.md#preview24-publication-and-model-family-rollout)
+See the [delivery receipt](reliability-packaging-results.md#preview25-version-observation-correction)
 and the [worker model guide](workers.md#model-versions). Ordinary apply projects
 reviewed selections without querying native models. A later requested refresh
 can resolve newer account-specific candidates through the same owner.

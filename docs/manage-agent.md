@@ -117,8 +117,10 @@ reviewed per-home model selections through the manager. Do not hand-patch the
 installed files. "Latest" means latest at the last requested refresh; an
 ordinary apply performs no native catalogue call. Native loaded roles and active
 workers may retain prior definitions until ordinary adoption. Verify selected
-files and actual executed models separately. Exact-version diagnostic studies
-retain their frozen cohort across a model refresh.
+files and actual executed models separately. Diagnostic studies record exact versions for analysis without stopping
+collection on model updates. An existing frozen study needs the explicitly
+requested `allow-model-upgrades` operation; preserve its backup, history and
+bounds rather than creating or extending a window implicitly.
 
 ## Resolve and verify one published release
 
