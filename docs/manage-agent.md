@@ -81,6 +81,45 @@ authorized read against an existing owner. Never start a daemon to make diagnosi
 pass. Keep a private before/after record of affected files and process identities;
 do not put credentials or private runtime captures in source control.
 
+## Refresh worker model preferences
+
+During a requested install/upgrade or model-selection refresh, inspect each
+selected native home/provider independently. Never derive Work access from
+another home or assume a model catalogue proves entitlement. Keep exact-version
+preferences and restrictions. Otherwise use `latest-available` within the role's
+family and existing effort, using the selected release's offline resolver.
+
+When monitoring is installed, `codex-plus-context --models` (daemon-default provider; add
+`--model-provider NAME` for a configured provider override) reads the selected
+existing owner's bounded catalogue without inference, resuming threads, reload
+or owner start. Supply the resulting JSON to
+`WORKERS/scripts/codex-plus-workers resolve --catalog CATALOG.json`, optionally
+with a TOML `--preferences` file containing `[models.sol]` and
+`version = "latest-available"` or an exact model ID. Equivalent family keys are
+`astra`, `luna`, and `terra`. The worker archive includes the helper without
+requiring the monitoring runtime. Catalogue/preference files stay private.
+
+Retain the preferences file (or equivalent manager fields) and a private refresh
+receipt outside immutable releases. A concrete installed model alone cannot tell
+you whether its version was an exact preference or a previous latest selection.
+Treat unexplained local role edits as drift to preserve, not permission to reset.
+
+The plan contains concrete selections and unavailable-role reasons. Apply only
+reviewed candidates through the configuration owner, changing the native role's
+model while retaining instructions, effort, permissions and invocation rules.
+Do not replace a local exact preference or use a rejected candidate's older
+version automatically. Missing native discovery holds existing selections;
+do not start/restart a daemon to obtain a catalogue. Keep a private refresh
+receipt with the exact resolved models and catalogue date.
+
+For chezmoi, retain published role-file URLs/checksums as provenance and project
+reviewed per-home model selections through the manager. Do not hand-patch the
+installed files. "Latest" means latest at the last requested refresh; an
+ordinary apply performs no native catalogue call. Native loaded roles and active
+workers may retain prior definitions until ordinary adoption. Verify selected
+files and actual executed models separately. Exact-version diagnostic studies
+retain their frozen cohort across a model refresh.
+
 ## Resolve and verify one published release
 
 Use the public repository **byebyebryan/codex-plus**. Honor a requested version or
@@ -132,7 +171,8 @@ requested targets. Inspect rendered agent files, skill paths and both MCP entrie
 Do not overwrite managed output with the unmanaged commands below or run an
 unrelated full-manager apply. Respect explicit host/environment selectors.
 
-For Bryan's managed setup, `.chezmoiexternals/codex-plus.toml` owns the archives;
+For Bryan's managed setup, `.chezmoitemplates/codex-plus-release.toml` retains the immutable tuple;
+`.chezmoiexternals/codex-plus.toml.tmpl` projects its archives and reviewed role selections;
 the worker prefix retains the compatible `codex-worker-kit` name. Monitoring and
 reporting have separate selections. These personal paths are examples, not
 portable defaults. The [managed rollout reference](https://dev.byebyebryan.com/codex-plus/installation/#upgrade-rollback-and-activation)
@@ -165,8 +205,9 @@ from each of `luna-task`, `luna-goal-loop`, `adaptive-task`, `adaptive-goal-loop
 `sol-task`, `astra-task` and `terra-task`. Remove the
 retired `worker-task` and `worker-goal-loop` directories through their configuration
 owner, with backups and a scoped deletion preview; preserve unclassified local
-edits before removal. Verify both old paths are absent. Preserve fixed model/effort pins and any
-local restrictions. The Astra role's presence enables no automatic escalation.
+edits before removal. Verify both old paths are absent. Preserve local exact-version preferences, role efforts and any
+local restrictions. The packaged models are concrete compatibility seeds; resolve
+family preferences deliberately as described below. The Astra role's presence enables no automatic escalation.
 For older selected releases, use only the roles and skills they actually contain.
 Retain local disable preferences and restrictions on the canonical workflows.
 If upgrading directly from an older worker-name installation, carry its existing
@@ -182,7 +223,7 @@ Install both files per skill through the same owner,
 preserve invocation restrictions, and verify discovery and model execution as
 separate acceptance steps. The [named-task guide](workers.md#choose-sol-or-astra-explicitly-source-candidate)
 explains their assignment-scoped permission and primary ownership.
-Current Terra also requires `terra-6-1-xhigh` (`gpt-6.1-terra` / `xhigh`), separate
+Current Terra also requires `terra-6-1-xhigh` (current Terra family / `xhigh`), separate
 from legacy `terra-xhigh` (`gpt-5.6-terra`). Both task variants use `terra-task`:
 identify any installed variant from retained provenance, select one deliberately
 and preview a scoped migration through its owner. Preserve local edits and disable

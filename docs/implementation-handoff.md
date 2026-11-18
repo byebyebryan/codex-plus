@@ -1,5 +1,28 @@
 # Implementation handoff
 
+Updated 2026-11-18. Preview.24 is published from `c85d2ed` and selected on Snap
+and Starship through published chezmoi `350291a`, including Snap's Work worker
+files. Carbon retains preview.23 and was outside this rollout. Model preferences
+resolve latest stable catalogue candidates independently at requested refresh;
+native role TOMLs retain concrete IDs and effort. Exact preferences, native
+primary choice, opt-in escalation and explicit invocation stay intact.
+
+The 155-file gate, 515 tests on Python 3.11/3.14, ten skill validators, standalone
+worker CLI, release verification and actual preview.23 rollback pass. Managed
+full/quick checks and isolated worker/report applies pass; all 54 scoped native
+role/skill files, modes, manifests, command links, catalogue plans and fresh
+17/four-tool protocols verify. Runtime acceptance proves completed Luna/max
+handoffs; catalogue selection does not prove new 6.2 model execution.
+
+New private studies freeze their first exact Sol primary. Older cohorts remain
+unchanged; upgrading a model does not silently migrate a study or mix versions.
+Native config/auth, captured bindings/mtimes and owners, prior releases, unrelated
+source drift and original bytecode remain preserved. No daemon restart, global
+reload or unsolicited session input is issued. Loaded roles/processes may retain
+prior settings. See the [model guide](workers.md#model-versions) and
+[delivery receipt](reliability-packaging-results.md#preview24-publication-and-model-family-rollout).
+
+
 Updated 2026-11-16. Preview.23 is published from `1773892` and selected on
 Snap OSS/work, Starship and Carbon through published chezmoi `76c52c0`. Carbon
 reconnected and completed the previously pending delivery. Exact manifests,

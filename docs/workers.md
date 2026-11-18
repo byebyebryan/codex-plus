@@ -5,6 +5,48 @@ current primary keeps decisions, integration and acceptance. Choose an explicit
 Luna workflow, or let an adaptive workflow use direct work, useful Luna delegation
 and one optional escalation target without changing your primary model.
 
+## Model versions
+
+Worker names stay stable across model releases. The native role TOML records
+the concrete model selected during the last requested setup/refresh. The default
+preference is **latest available stable version in that family**, supporting
+XHigh for Sol/Astra/current Terra or Max for Luna. An exact-model preference
+keeps a deliberate older version. This does not change your chosen primary,
+Astra opt-in or explicit Luna-only workflows.
+
+For example, one account's catalogue can resolve Sol to `gpt-6.2-sol`, while
+another resolves to `gpt-6.1-sol`. Both use `$sol-task`. No `sol-latest` provider
+alias is assumed. Refresh happens during authorized setup/update, not at each
+assignment or while a child is running. Catalogue presence is candidate
+evidence; verify actual execution separately. An unavailable model is reported,
+not silently replaced after an execution failure.
+
+Ask your installation agent to refresh worker model selections using the
+[management guide](https://dev.byebyebryan.com/codex-plus/manage.md). It reads the
+selected native home's catalogue and applies concrete roles through the existing
+configuration owner. Workers alone include a stdlib-only offline resolver:
+
+```sh
+rtk proxy python3 -B WORKERS/scripts/codex-plus-workers resolve --catalog CATALOG.json --preferences PREFERENCES.toml
+```
+
+`WORKERS` is the verified retained worker release; the files are operator inputs,
+not user copy/paste parameters. Preferences are optional. For example:
+
+```toml
+[models.sol]
+version = "latest-available"
+[models.astra]
+version = "gpt-6-astra"
+```
+
+The resolver writes only its JSON plan to stdout. Review unavailable roles before
+applying any model changes. With monitoring installed,
+`codex-plus-context --models` (daemon-default provider; add
+`--model-provider NAME` for a configured provider override) reads a complete bounded catalogue from an existing
+owner. A workers-only agent can supply the equivalent native catalogue; no new
+component or daemon is required. Keep prior selections when discovery is unavailable.
+
 ## Choose a workflow
 
 | What you want | Invoke | What happens |
@@ -15,11 +57,11 @@ and one optional escalation target without changing your primary model.
 | A substantial goal with selective delegation | `$adaptive-goal-loop` | The primary routes each assignment and owns integration and acceptance across the goal. |
 | One named Sol task | `$sol-task` | Use Sol XHigh for the requested review, validation, investigation or implementation. |
 | One named Astra task | `$astra-task` | Use Astra XHigh for the requested review, validation, investigation or implementation. |
-| One named current-Terra task | `$terra-task` | Use GPT-6.1 Terra XHigh for the requested bounded task. |
+| One named current-Terra task | `$terra-task` | Use the configured current Terra XHigh for the requested bounded task. |
 
 Preview.17 removes `$worker-task` and `$worker-goal-loop`; update old requests to
-the corresponding adaptive name. There are no aliases. The four canonical
-instructions and native role pins are unchanged. Generic task/goal wording and
+the corresponding adaptive name. There are no aliases. The canonical
+workflow identities and invocation boundaries remain unchanged. Generic task/goal wording and
 discussion activate no worker workflow.
 
 Preview.18 adds the three named tasks. Preview.17 installations retain only the
@@ -88,8 +130,8 @@ Return findings and uncertainties; do not implement changes.
 
 | Named skill | Exact worker | Scope |
 | --- | --- | --- |
-| `$sol-task` | `sol-xhigh`: `gpt-6.1-sol`, `xhigh` | One explicitly assigned review, investigation or implementation. |
-| `$astra-task` | `astra-xhigh`: `gpt-6-astra`, `xhigh` | One explicitly assigned review, investigation or implementation. |
+| `$sol-task` | `sol-xhigh`: configured Sol version, `xhigh` | One explicitly assigned review, investigation or implementation. |
+| `$astra-task` | `astra-xhigh`: configured Astra version, `xhigh` | One explicitly assigned review, investigation or implementation. |
 
 The request determines the mode. Review/validation and investigation return
 findings and evidence without source fixes; implementation requires assigned
@@ -123,7 +165,7 @@ new skill does not invoke it. Existing Luna-only workflows stay Luna-only.
 
 `$terra-task` uses the same bounded review, validation, investigation or
 implementation contract as the named tasks above. It selects exactly
-`terra-6-1-xhigh`: `gpt-6.1-terra` with `xhigh` reasoning. It preserves your
+`terra-6-1-xhigh`: the configured current Terra version with `xhigh` reasoning. It preserves your
 primary and needs no automatic escalation preference or primary detection.
 
 ```text
@@ -146,6 +188,9 @@ that role was not exposed. Missing controls/roles or model errors are reported w
 substituting legacy Terra, another model, a new process or a daemon restart.
 
 ## Which agent does the work?
+
+Packaged compatibility seeds are listed below; managed refresh can select newer
+supported versions while preserving each native role name and effort.
 
 | Agent | Package selection | Role |
 | --- | --- | --- |
@@ -174,8 +219,8 @@ use primary/Luna by default, or configure one target for that primary:
 
 | Initiating primary | Optional automatic target | Default |
 | --- | --- | --- |
-| GPT-6.1 Terra | Sol XHigh OR Astra XHigh | None |
-| GPT-6.1 Sol | Astra XHigh | None |
+| Supported current Terra family | Sol XHigh OR Astra XHigh | None |
+| Supported Sol family | Astra XHigh | None |
 | Astra, Luna, another or unknown model | None in V1 | None |
 
 For example, with a Sol primary:
@@ -189,7 +234,7 @@ or unresolved issue warrants it. Keep Luna available for bounded work.
 Or put a soft default in existing user guidance, through the owner of that file:
 
 > In explicitly invoked adaptive worker workflows, allow Sol XHigh when the
-> initiating primary is GPT-6.1 Terra, and Astra XHigh when it is GPT-6.1 Sol.
+> initiating primary is current Terra, and Astra XHigh when it is Sol.
 > Otherwise use no automatic escalation.
 
 This example installs no preference. Native role files still pin model and

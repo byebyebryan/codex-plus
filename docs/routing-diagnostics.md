@@ -12,6 +12,17 @@ fields to UTC. It preserves the outer record timestamp's finer precision for
 episode boundaries, leaves null values unknown and rejects invalid timing data
 without copying arbitrary strings into output.
 
+## Model-version boundaries
+
+New studies freeze the exact supported Sol/XHigh primary on first enrollment.
+They accept a new Sol release such as `gpt-6.2-sol` without treating its usage as
+6.1. Subsequent goals with a different version are refused in that study; preserve
+it and explicitly select a separate private study root for a different cohort.
+Existing studies created before this feature retain their original 6.1 Sol
+requirement without automatic migration. A model change inside an episode is
+reported as a coverage gap. Actual Luna model versions remain visible, with
+mixed-version episodes flagged rather than silently pooled.
+
 ## Start and enroll
 
 Ask your agent: “Open a private seven-day/eight-goal A study, then use

@@ -51,14 +51,19 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.23** includes seven worker workflows and four current roles.
+**v0.1.0-preview.24** includes seven worker workflows and four current roles.
+
+Preview.24 adds family-based model preferences resolved at managed refresh,
+exact-model overrides and version-aware diagnostic studies.
 
 Preview.23 accepts nullable native Unix-second timeline fields while preserving
 the precision of outer record timestamps for episode boundaries.
 
 Preview.22 adds [private routing diagnostics](docs/routing-diagnostics.md): bounded
 prospective A enrollment, assignment/outcome records and read-only native usage
-collection. The adaptive routing policy and native role pins stay unchanged.
+collection. The adaptive routing policy stays unchanged. Worker model versions now follow
+[family preferences resolved at managed refresh](docs/workers.md#model-versions),
+with exact-version overrides and concrete native role files.
 There is no Terra-enabled policy or A/B trial.
 
 Preview.21 keeps coordinator status accurate after repeated handoffs, tracks slow
@@ -128,30 +133,25 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Managed configuration selects **v0.1.0-preview.23** for workers, monitoring and
-reporting from source `1773892` through published chezmoi `76c52c0`. The
-2026-11-16 rollout verifies Snap OSS/work, Starship and Carbon: exact payloads,
-roles/skills/modes, installed diagnostic commands and fresh 17/four-tool MCP
-protocols. Carbon reconnected and completed the rollout. Native configuration,
-credentials, old releases and all 33 captured bindings/mtimes are preserved.
-Native owner identities remain unchanged; four older MCP processes exited on
-Snap during the follow-up interval, with cause unlocalized and no lifecycle
-commands issued.
+Managed configuration selects **v0.1.0-preview.24** for workers, monitoring and
+reporting from source `c85d2ed` through published chezmoi `350291a`. The
+2026-11-18 delivery verifies exact manifests, native role/skill bytes and modes,
+installed catalogue/resolver commands and fresh 17/four-tool MCP protocols on
+Snap and Starship. Snap's Work worker files are included. Carbon retains its
+previous preview.23 installation; it was outside this rollout.
 
-The [delivery receipt](docs/reliability-packaging-results.md#preview23-publication-and-managed-rollout)
-separates source, published assets, installed files and runtime evidence. The
-installed reader verifies native Unix-second timing and a completed Luna/max
-handoff while leaving its still-active primary incomplete. The natural-use
-study is ready but unopened; follow the
-[private observation procedure](docs/routing-diagnostics.md) when selecting its
-window. Existing helpers/coordinators adopt through normal native lifecycle;
-no daemon restart or global MCP refresh was issued. The
-[implementation handoff](docs/implementation-handoff.md) records evidence limits.
+Starship's selected roles use 6.2 Sol/Astra; Snap retains its prior Sol/Astra
+versions. These are catalogue-compatible selections, not completed 6.2 inference
+receipts. Actual Luna/max handoffs are verified. Native configuration,
+credentials, captured binding files/mtimes, owners and old releases are preserved.
+Existing processes and children adopt through normal native lifecycle; no daemon
+restart or global MCP refresh was issued.
 
-Desktop notification delivery and terminal customization are outside Codex Plus.
-Native Codex alerts remain selected. Notification enrichment and lifecycle
-inspection are parked; [native terminal formatting](https://github.com/byebyebryan/dotfiles/blob/main/docs/kitty-notifications.md)
-is managed with Kitty/chezmoi.
+The [delivery receipt](docs/reliability-packaging-results.md#preview24-publication-and-model-family-rollout)
+separates publication, managed files and runtime evidence. Existing private
+studies retain their original model cohort; new studies freeze the exact primary
+on first enrollment. See the [observation procedure](docs/routing-diagnostics.md)
+and [implementation handoff](docs/implementation-handoff.md).
 
 </details>
 
@@ -291,7 +291,7 @@ The [runtime guide](docs/runtime-distribution.md) and
 [report guide](docs/html-report-usage.md) cover their independent artifacts.
 With a dotfile manager, update its source and published pins through that owner.
 
-Bryan's chezmoi distribution uses `.chezmoiexternals/codex-plus.toml` with pinned
+Bryan's chezmoi distribution uses `.chezmoiexternals/codex-plus.toml.tmpl` with pinned
 Codex Plus URLs and checksums. It retains `~/.local/share/codex-worker-kit` as the
 managed archive location for compatibility; native skill and agent paths remain
 ordinary managed files. This upgrade does not activate a watcher or change
@@ -304,7 +304,9 @@ model = "gpt-6.1-sol"
 model_reasoning_effort = "xhigh"
 ```
 
-Each custom agent pins both its model and reasoning effort. The client and
+Each installed custom agent pins a concrete model and reasoning effort.
+The table above lists packaged seed models; setup/refresh may select a newer
+compatible version from the same family for that account. The client and
 account must support these models, custom agents, and skills. A task label alone
 does not select a model; workflows use the named custom agent with a compact
 execution contract and minimal inherited context. See the official

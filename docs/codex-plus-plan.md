@@ -2,6 +2,10 @@
 
 ## Selected pass: model-family preferences and managed refresh
 
+Completed in preview.24 (`c85d2ed`), published and selected on the requested
+hosts through chezmoi `350291a`. See the
+[delivery receipt](reliability-packaging-results.md#preview24-publication-and-model-family-rollout).
+
 Keep the native primary unchanged and preserve explicit workflow invocation,
 Luna catchment and opt-in escalation. Stable worker names select a model family;
 ordinary native role TOMLs remain the execution authority. Default to the newest

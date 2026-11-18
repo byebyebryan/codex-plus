@@ -1,5 +1,41 @@
 # Everyday reliability and native packaging results
 
+## Preview.24 publication and model-family rollout
+
+Published release `v0.1.0-preview.24` is built from `c85d2ed` after the
+`315eb60` model-family implementation and the preview.23 report-compatibility
+correction. All five fetched assets match the qualified build; unified manifests
+verify exact inventories, hashes and modes. Personal GitHub publication and
+Python 3.11/3.14 CI pass.
+
+Published chezmoi `350291a` retains the immutable release tuple and projects
+reviewed per-home model preferences through native external-file filters. The
+filter changes only the model line of checksum-verified role definitions; exact
+preferences cannot disagree with the reviewed concrete selection. Ordinary apply
+performs no native model discovery. Canonical consumers preserve unrelated edits
+and history. Full/quick source gates, affected validators and actual isolated
+worker/report extraction and convergence pass.
+
+Scoped applies select preview.24 on Snap and Starship, including Snap's Work
+worker layer. All three component manifests, 54 native role/skill files and
+modes, command links, fresh 17/four-tool protocols and empty scoped diffs verify.
+Starship selects 6.2 Sol/Astra; Snap retains 6.1 Sol/GPT-6 Astra. Carbon retains
+preview.23 because it was outside this rollout. Catalogue/plan agreement is
+selection evidence, not successful inference on the new models.
+
+Two delegated implementations and a bounded review have completed Luna/max
+native evidence. The 515-test suite, ten skill validators, standalone worker-only
+CLI and isolated rollback using the actual published preview.23 runtime/report
+archives pass. An initial native effort-shape mismatch and the missing report
+rollback-version entry were corrected before release.
+
+Native configuration/authentication, captured binding contents/mtimes and owners,
+older releases and unrelated source drift remain intact. No daemon restart,
+global MCP refresh, unsolicited peer input or existing-study migration is issued.
+Old loaded roles/processes may retain their captured settings until normal native
+adoption. Private corpus/source/history/artifact audits find no new exposure.
+
+
 
 ## Preview.23 publication and managed rollout
 
