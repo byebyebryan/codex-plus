@@ -104,6 +104,44 @@ class EnvironmentTests(unittest.TestCase):
         with self.assertRaises(ValueError): context.existing_socket(run=status)
         self.assertEqual(calls, [(['rtk', 'proxy', 'codex', 'app-server', 'daemon', 'version'], str(selected.home))])
 
+    def test_model_catalog_collects_pages_without_binding_resuming_or_starting_inference(self):
+        client = MagicMock()
+        client.__enter__.return_value = client
+        client.call.side_effect = [
+            {'data': [{'model': 'gpt-6.1-sol'}], 'nextCursor': 'page-two'},
+            {'data': [{'model': 'gpt-6.2-sol'}], 'nextCursor': None}]
+        with patch('codex_plus.native.Client', return_value=client), \
+                patch.object(context, 'existing_socket', return_value='/fixture/socket'):
+            result = context.model_catalog()
+        self.assertEqual([r['model'] for r in result['data']], ['gpt-6.1-sol', 'gpt-6.2-sol'])
+        self.assertFalse(result['execution_verified'])
+        self.assertEqual([c.args[0] for c in client.call.call_args_list], ['model/list', 'model/list'])
+        self.assertEqual(client.call.call_args_list[1].args[1]['cursor'], 'page-two')
+        client.bind.assert_not_called()
+
+    def test_model_catalog_refuses_incomplete_or_cyclic_results(self):
+        for pages in ([{'data': None}], [{'data': [], 'nextCursor': ''}],
+                      [{'data': [], 'nextCursor': 'repeat'}] * 2):
+            client = MagicMock()
+            client.__enter__.return_value = client
+            client.call.side_effect = pages
+            with self.subTest(pages=pages), patch('codex_plus.native.Client', return_value=client), \
+                    patch.object(context, 'existing_socket', return_value='/fixture/socket'):
+                with self.assertRaises(ValueError):
+                    context.model_catalog()
+            client.bind.assert_not_called()
+
+    def test_model_catalog_can_target_a_configured_provider_without_fallback(self):
+        client = MagicMock()
+        client.__enter__.return_value = client
+        client.call.return_value = {'data': [], 'nextCursor': None}
+        with patch('codex_plus.native.Client', return_value=client), \
+                patch.object(context, 'existing_socket', return_value='/fixture/socket'):
+            result = context.model_catalog(model_provider='configured-provider')
+        self.assertEqual(result['model_provider'], 'configured-provider')
+        self.assertEqual(client.call.call_args.args[1]['modelProvider'], 'configured-provider')
+        client.bind.assert_not_called()
+
     def primary_client(self, **changes):
         thread_id = '01a00000-0000-7000-8000-000000000001'
         os.environ['CODEX_THREAD_ID'] = thread_id

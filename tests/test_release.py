@@ -53,7 +53,23 @@ class ReleaseTests(unittest.TestCase):
             self.assertFalse(json.loads(doctor)['loaded_processes_checked'])
         self.assertEqual(release.read_workers(first / result['components']['workers']['artifact'])['version'], VERSION)
 
-    def test_worker_archive_carries_exact_native_role_pins_and_explicit_invocation_metadata(self):
+    def test_worker_only_resolver_runs_relocated_without_runtime_or_native_owner(self):
+        output = self.root / 'release'; result = release.build(self.source, output)
+        target = self.root / 'worker-only'
+        with tarfile.open(output / result['components']['workers']['artifact'], 'r:gz') as archive:
+            for member in archive:
+                path = target / member.name.removeprefix('codex-plus-workers/')
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(archive.extractfile(member).read())
+                path.chmod(member.mode)
+        self.assertFalse((target / 'codex_plus/native.py').exists())
+        response = subprocess.check_output([sys.executable, '-B', str(target / 'scripts/codex-plus-workers'),
+                    'classify', '--model', 'gpt-6.2-sol'], cwd=self.root, text=True,
+                    env={'HOME': str(self.root / 'absent'), 'PATH': '/unavailable', 'PYTHONPATH': ''})
+        self.assertEqual(json.loads(response)['family'], 'sol')
+        self.assertFalse((self.root / 'absent').exists())
+
+    def test_worker_archive_carries_concrete_seed_roles_and_explicit_invocation_metadata(self):
         output = self.root / 'release'; result = release.build(self.source, output)
         path = output / result['components']['workers']['artifact']
         expected = {'luna-max': ('gpt-6-luna', 'max'),

@@ -16,10 +16,29 @@ import uuid
 from . import VERSION
 from .context import absolute, primary_selection, resolve
 from .diagnostic_source import MAX_THREADS, NativeRecords, identity, start_time, turns
+from .worker_models import family_for_model
 
 POLICY = 'adaptive-sol-luna-v1'
+VERSION_POLICY = 'freeze-first-primary'
+LEGACY_VERSION_POLICY = 'legacy-fixed-gpt-6.1-sol'
+LEGACY_PRIMARY_SELECTION = {'model': 'gpt-6.1-sol', 'effort': 'xhigh'}
 OUTCOMES = ('accepted_first_review', 'minor_correction', 'substantial_repair',
             'primary_takeover', 'unresolved', 'cancelled')
+
+
+def _version_policy(study):
+    return study.get('version_policy', LEGACY_VERSION_POLICY)
+
+
+def _study_primary_selection(study):
+    if 'version_policy' not in study:
+        return dict(LEGACY_PRIMARY_SELECTION)
+    selection = study.get('primary_selection')
+    return dict(selection) if isinstance(selection, dict) else None
+
+
+def _sol_primary(model, effort):
+    return family_for_model(model) == 'sol' and effort == 'xhigh'
 
 
 def now():
@@ -62,6 +81,17 @@ class Ledger:
                 or study.get('native_home') != str(self.home)
                 or not isinstance(study.get('episodes'), dict)):
             raise ValueError('diagnostic schema, policy or environment mismatch')
+        if 'version_policy' in study:
+            selection = study.get('primary_selection')
+            if (study['version_policy'] != VERSION_POLICY
+                    or ('primary_selection' not in study)
+                    or (selection is not None and (
+                        not isinstance(selection, dict)
+                        or set(selection) != {'model', 'effort'}
+                        or not _sol_primary(selection.get('model'), selection.get('effort'))))):
+                raise ValueError('diagnostic primary version policy is invalid')
+        elif 'primary_selection' in study:
+            raise ValueError('diagnostic primary version policy is incomplete')
         return study
 
     def check_root(self):
@@ -98,6 +128,7 @@ class Ledger:
             started = now()
             study = {'schema': 1, 'id': uuid.uuid4().hex, 'policy': POLICY,
                      'runtime_version': VERSION, 'native_home': str(self.home),
+                     'version_policy': VERSION_POLICY, 'primary_selection': None,
                      'started_at': stamp(started), 'enrollment_until': stamp(started + timedelta(days=7)),
                      'observation_until': stamp(started + timedelta(days=7)),
                      'goal_limit': 8, 'closed_at': None, 'episodes': {}}
@@ -109,6 +140,8 @@ class Ledger:
         if study is None:
             return {'configured': False, 'enrollment_open': False}
         return {'configured': True, 'study': study['id'], 'policy': POLICY,
+                'version_policy': _version_policy(study),
+                'primary_selection': _study_primary_selection(study),
                 'runtime_version': study['runtime_version'], 'goals': len(study['episodes']),
                 'goal_limit': study['goal_limit'], 'enrollment_until': study['enrollment_until'],
                 'observation_until': study['observation_until'],
@@ -122,7 +155,8 @@ class Ledger:
         return (not study['closed_at'] and now() < datetime.fromisoformat(study['enrollment_until'])
                 and len(study['episodes']) < study['goal_limit'])
 
-    def enroll(self, thread_id, *, if_open=False, acceptance_ref=None, routing_not_started=False):
+    def enroll(self, thread_id, *, if_open=False, acceptance_ref=None, routing_not_started=False,
+               loaded_selection=None):
         # The no-study path is a read-only no-op, including on worker-only installs.
         study = self.read()
         existing = next(((k, e) for k, e in (study or {}).get('episodes', {}).items()
@@ -147,9 +181,26 @@ class Ledger:
         contexts = [r['payload'] for r in records if r['type'] == 'turn_context'
                     and r['payload'].get('turn_id') == turn_id]
         selections = {(r.get('model'), r.get('effort')) for r in contexts}
-        if selections != {('gpt-6.1-sol', 'xhigh')}:
-            raise ValueError('this A study requires observed Sol XHigh primary context')
+        if len(selections) != 1:
+            raise ValueError('enrollment requires one unambiguous native primary selection')
+        model, effort = next(iter(selections))
+        observed_selection = {'model': model, 'effort': effort}
+        if not _sol_primary(model, effort):
+            raise ValueError('this A study requires a supported Sol XHigh primary context')
+        if loaded_selection is not None:
+            if (not isinstance(loaded_selection, dict)
+                    or set(loaded_selection) != {'model', 'effort'}
+                    or not _sol_primary(loaded_selection.get('model'), loaded_selection.get('effort'))):
+                raise ValueError('this A study requires a supported loaded Sol XHigh primary')
+            if loaded_selection != observed_selection:
+                raise ValueError('loaded and recorded primary selections changed during enrollment')
+        expected = (_study_primary_selection(study) if _version_policy(study) == VERSION_POLICY
+                    else dict(LEGACY_PRIMARY_SELECTION))
+        if expected is not None and observed_selection != expected:
+            raise ValueError('primary selection differs from the study version cohort')
         with self.write() as study:
+            if study is None:
+                raise ValueError('study disappeared before admission')
             for key, episode in study['episodes'].items():
                 if episode['thread_id'] == thread_id and not episode['outcome']:
                     return {'enrolled': True, 'episode': key, 'existing': True}
@@ -157,8 +208,16 @@ class Ledger:
                     raise ValueError('one native turn cannot be allocated to two episodes')
             if not self.open(study):
                 raise ValueError('enrollment closed before admission')
+            if _version_policy(study) == VERSION_POLICY:
+                frozen = study['primary_selection']
+                if frozen is not None and observed_selection != frozen:
+                    raise ValueError('primary selection changed before the study cohort was frozen')
+                if frozen is None:
+                    study['primary_selection'] = dict(observed_selection)
+            elif observed_selection != LEGACY_PRIMARY_SELECTION:
+                raise ValueError('legacy study requires its original Sol XHigh primary selection')
             key = uuid.uuid4().hex
-            study['episodes'][key] = {
+            episode = {
                 'thread_id': thread_id, 'lineage': thread_id, 'start_turn': turn_id,
                 'native_start_time': start_time(records, turn_id),
                 'enrolled_at': stamp(now()), 'runtime_version': VERSION,
@@ -168,6 +227,9 @@ class Ledger:
                 'scope': 'entire_start_turn_included',
                 'routing_not_started_attested': bool(routing_not_started),
             }
+            if _version_policy(study) == VERSION_POLICY:
+                episode['primary_selection'] = dict(observed_selection)
+            study['episodes'][key] = episode
             self.save(study)
         return {'enrolled': True, 'episode': key, 'existing': False}
 
@@ -309,16 +371,39 @@ class Ledger:
             for turn in all_turns)
         if not settled:
             gaps.add('selected_turn_terminal_evidence_missing')
+        version_policy = _version_policy(study)
+        study_primary_selection = _study_primary_selection(study)
+        episode_primary_selection = episode.get('primary_selection') or study_primary_selection
+        if version_policy == VERSION_POLICY:
+            if study_primary_selection is None or episode_primary_selection is None:
+                gaps.add('primary_selection_unfrozen_or_unknown')
+            elif episode_primary_selection != study_primary_selection:
+                gaps.add('primary_selection_cohort_mismatch')
+        else:
+            episode_primary_selection = dict(LEGACY_PRIMARY_SELECTION)
+        expected_primary = episode_primary_selection or {}
+        luna_threads = {a['thread_id'] for a in episode['assignments']
+                        if a['route'] == 'luna' and a['thread_id'] is not None}
+        luna_models = set()
         for thread in result['threads']:
             if thread['thread_id'] == root and any(
-                    (turn.get('model'), turn.get('effort')) != ('gpt-6.1-sol', 'xhigh')
+                    (turn.get('model'), turn.get('effort')) !=
+                    (expected_primary.get('model'), expected_primary.get('effort'))
                     for turn in thread['turns']):
                 gaps.add('primary_selection_changed_or_unknown')
-            if any(a['route'] == 'luna' and a['thread_id'] == thread['thread_id']
-                   for a in episode['assignments']) and any(
-                    (turn.get('model'), turn.get('effort')) != ('gpt-6-luna', 'max')
-                    for turn in thread['turns']):
-                gaps.add('luna_selection_mismatch_or_unknown')
+            if thread['thread_id'] in luna_threads:
+                for turn in thread['turns']:
+                    model, effort = turn.get('model'), turn.get('effort')
+                    if isinstance(model, str) and model:
+                        luna_models.add(model)
+                    if version_policy == LEGACY_VERSION_POLICY:
+                        supported = (model, effort) == ('gpt-6-luna', 'max')
+                    else:
+                        supported = family_for_model(model) == 'luna' and effort == 'max'
+                    if not supported:
+                        gaps.add('luna_selection_mismatch_or_unknown')
+        if len(luna_models) > 1:
+            gaps.add('luna_model_versions_mixed')
         time_evidence = []
         for thread, included in selected_turns.items():
             for turn in sorted(set(included)):
@@ -338,6 +423,9 @@ class Ledger:
                                       'native_completion_times': sorted(completions)})
         return {'schema': 1, 'policy': POLICY, 'episode': key,
                 'runtime_version': VERSION, 'study_runtime_version': study['runtime_version'],
+                'version_policy': version_policy,
+                'study_primary_selection': study_primary_selection,
+                'episode_primary_selection': episode_primary_selection,
                 'source_gaps': sorted(gaps), 'measurement_scope': episode['scope'],
                 'selected_turns_have_terminal_evidence': settled,
                 'acceptance': episode['outcome'], 'assignments': episode['assignments'],
@@ -392,15 +480,18 @@ def main(argv=None):
     try:
         ledger = Ledger(args.state_root)
         if args.command == 'enroll':
+            loaded_selection = None
             if ledger.status()['enrollment_open']:
                 if not args.thread or args.thread != os.environ.get('CODEX_THREAD_ID'):
                     raise ValueError('enroll only the invoking native primary')
                 selection = primary_selection()
-                if (selection.get('status'), selection.get('model'), selection.get('reasoning_effort')) != (
-                        'known', 'gpt-6.1-sol', 'xhigh'):
-                    raise ValueError('loaded initiating Sol XHigh primary unavailable')
+                if (selection.get('status') != 'known'
+                        or not _sol_primary(selection.get('model'), selection.get('reasoning_effort'))):
+                    raise ValueError('loaded initiating supported Sol XHigh primary unavailable')
+                loaded_selection = {'model': selection['model'], 'effort': selection['reasoning_effort']}
             result = ledger.enroll(args.thread, if_open=args.if_open, acceptance_ref=args.acceptance_ref,
-                                   routing_not_started=args.routing_not_started)
+                                   routing_not_started=args.routing_not_started,
+                                   loaded_selection=loaded_selection)
         elif args.command == 'link':
             result = ledger.link(args.episode, args.thread, args.turn, route=args.route,
                                  contract_ref=args.contract_ref, status=args.status,

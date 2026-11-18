@@ -53,9 +53,16 @@ or native permissions. Valid automatic routes are:
 
 | Initiating primary | Optional target | Named role |
 | --- | --- | --- |
-| `gpt-6.1-terra` | Sol XHigh OR Astra XHigh, exactly one | `sol-xhigh` OR `astra-xhigh` |
-| `gpt-6.1-sol` | Astra XHigh | `astra-xhigh` |
+| Supported current Terra family | Sol XHigh OR Astra XHigh, exactly one | `sol-xhigh` OR `astra-xhigh` |
+| Supported Sol family | Astra XHigh | `astra-xhigh` |
 | Astra, Luna, other or unknown | None | No automatic escalation |
+
+Identify the family from the exact loaded model ID, using the installed
+`codex-plus-workers classify --model MODEL` when useful. Supported stable IDs
+are `gpt-M[.m]-sol` (6.1+), `-astra` and `-luna` (6+), and current `-terra`
+(6.1+); aliases and other IDs stay unknown. Family recognition grants no
+additional route. Native role files hold the concrete model and effort selected
+at the last managed refresh; do not resolve or upgrade models during a task.
 
 Do not guess between conflicting targets. Hold escalation until that choice is
 clear; continue useful primary/Luna work. Do not automatically offload Sol work
@@ -91,7 +98,9 @@ role, spawning or model execution works.
 
 Select the exact named role with its fixed model/effort. Honor native pin
 precedence and requirements; an override does not retune a pinned role. A
-missing role or incompatible pin holds that route. Do not silently alias it.
+missing role, wrong family or incompatible effort holds that route. Verify the
+actual declared selection against the requested family and effort; an exact
+version preference remains binding. Do not silently alias or retune it.
 Distinguish missing controls/roles (no delegation attempted), a rejected spawn,
 post-start worker/model errors, and an observed model reroute. Report the actual
 observation and useful partial work honestly; do not claim the requested target

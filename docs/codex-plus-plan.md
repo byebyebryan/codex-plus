@@ -1,5 +1,34 @@
 # Codex Plus implementation plan
 
+## Selected pass: model-family preferences and managed refresh
+
+Keep the native primary unchanged and preserve explicit workflow invocation,
+Luna catchment and opt-in escalation. Stable worker names select a model family;
+ordinary native role TOMLs remain the execution authority. Default to the newest
+stable catalogue candidate in that family supporting the role's existing effort,
+with an optional exact-model preference. Resolve only during a requested setup
+or refresh, independently for each native home/provider; do not retune active
+children, invent provider aliases or retry inference on another model.
+
+Ship a small offline resolver with the worker component and a read-only native
+catalogue command with the monitoring component. Catalogue presence is candidate
+evidence, not an execution or entitlement receipt. Reject incomplete/ambiguous
+catalogues, unsupported effort and legacy Terra when resolving current Terra.
+An unavailable preference leaves the existing managed selection held.
+
+Remove duplicated old model-version requirements from canonical skills while
+checking the actual exposed role's family and effort. New private diagnostic
+studies freeze the exact Sol primary on first enrollment; historical studies
+retain their original exact-model requirement. Report changes inside an episode
+instead of pooling versions. Use invented public fixtures and keep host/runtime
+evidence private.
+
+Validate resolver behavior, packaging, native-home separation, skill invocation,
+versioned diagnostic boundaries and managed rendered files. Publish one unified
+release and guides, then update managed pins and scoped selections on the
+requested hosts. Preserve unrelated drift, old releases and live native owners;
+no daemon restart, global reload or unsolicited session input.
+
 ## Proposed pass: targeted routing soak and policy comparison
 
 Status: Stage 1 diagnostic readiness ships in preview.23, including native

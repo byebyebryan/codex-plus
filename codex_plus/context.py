@@ -157,20 +157,57 @@ def primary_selection(socket=None):
             'execution_verified': False}
 
 
+def model_catalog(socket=None, model_provider=None):
+    """Read the selected existing provider catalogue, without inference or reload."""
+    from .native import Client
+    if model_provider is not None and (not isinstance(model_provider, str)
+            or not model_provider.strip() or len(model_provider) > 128):
+        raise ValueError('a bounded configured model provider is required')
+    rows, cursor, seen = [], None, set()
+    with Client(existing_socket(socket), timeout=5) as client:
+        for _ in range(16):
+            params = {'limit': 100, 'includeHidden': True}
+            if model_provider is not None:
+                params['modelProvider'] = model_provider
+            if cursor is not None:
+                params['cursor'] = cursor
+            page = client.call('model/list', params, timeout=5)
+            if not isinstance(page, dict) or not isinstance(page.get('data'), list):
+                raise ValueError('native model catalogue unavailable')
+            rows.extend(page['data'])
+            if len(rows) > 1000:
+                raise ValueError('native model catalogue exceeds bound')
+            cursor = page.get('nextCursor')
+            if cursor is None:
+                return {'data': rows, 'nextCursor': None, 'execution_verified': False,
+                        'model_provider': model_provider or 'daemon_default'}
+            if not isinstance(cursor, str) or not cursor or cursor in seen:
+                raise ValueError('invalid native model catalogue pagination')
+            seen.add(cursor)
+    raise ValueError('native model catalogue pagination exceeds bound')
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--state-root', type=Path)
     parser.add_argument('--report-config', type=Path)
     parser.add_argument('--socket')
-    parser.add_argument('--primary', action='store_true',
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument('--primary', action='store_true',
                         help="Read this caller's loaded primary model/effort instead of paths")
+    selection.add_argument('--models', action='store_true',
+                           help='Read the selected existing native provider catalogue; no execution probe')
+    parser.add_argument('--model-provider', help='With --models, select a configured provider instead of the daemon default')
     args = parser.parse_args(argv)
+    if args.model_provider is not None and not args.models:
+        parser.error('--model-provider requires --models')
     try:
-        result = (primary_selection(args.socket) if args.primary else
+        result = (model_catalog(args.socket, args.model_provider) if args.models else
+                  primary_selection(args.socket) if args.primary else
                   describe(state_root=args.state_root, report_config=args.report_config,
                            socket=args.socket))
         print(json.dumps(result, indent=2))
         return 0
-    except (OSError, ValueError) as error:
+    except (OSError, ValueError, RuntimeError, ImportError, subprocess.SubprocessError) as error:
         print(json.dumps({'error': str(error)}))
         return 1

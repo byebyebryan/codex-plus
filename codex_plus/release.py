@@ -15,6 +15,7 @@ from .reports import package as reports
 
 WORKER_FILES = ('LICENSE', 'docs/worker-routing-design.md', 'docs/worker-routing-study.md',
                 'docs/worker-escalation-results.md',
+                'codex_plus/__init__.py', 'codex_plus/worker_models.py', 'scripts/codex-plus-workers',
                 'agents/luna-max.toml', 'agents/sol-xhigh.toml', 'agents/astra-xhigh.toml',
                 'agents/terra-6-1-xhigh.toml',
                 'legacy/agents/terra-xhigh.toml',
@@ -33,14 +34,14 @@ def workers(root, output, revision):
     content = {name: package.git(root, 'show', revision + ':' + name) for name in WORKER_FILES}
     metadata = {'schema': 1, 'name': 'codex-plus-workers', 'version': VERSION, 'source_revision': revision,
                 'compatibility': {'agent': 'native Codex custom agents and skills', 'legacy': 'explicit optional installation'},
-                'files': {name: {'sha256': package.sha(data), 'mode': 0o644} for name, data in sorted(content.items())}}
+                'files': {name: {'sha256': package.sha(data), 'mode': package.file_mode(name)} for name, data in sorted(content.items())}}
     content['workers.json'] = encoded(metadata)
     with output.open('xb') as destination:
         with gzip.GzipFile(filename='', fileobj=destination, mode='wb', mtime=0) as zipped:
             with tarfile.open(fileobj=zipped, mode='w', format=tarfile.USTAR_FORMAT) as archive:
                 for name, data in sorted(content.items()):
                     entry = tarfile.TarInfo('codex-plus-workers/' + name)
-                    entry.size, entry.mode, entry.mtime = len(data), 0o644, 0
+                    entry.size, entry.mode, entry.mtime = len(data), package.file_mode(name), 0
                     archive.addfile(entry, io.BytesIO(data))
     return metadata
 
@@ -54,7 +55,7 @@ def read_workers(path):
             prefix = 'codex-plus-workers/'
             name = entry.name.removeprefix(prefix)
             if (not entry.name.startswith(prefix) or name not in (*WORKER_FILES, 'workers.json')
-                    or name in content or not entry.isfile() or entry.mode != 0o644
+                    or name in content or not entry.isfile() or entry.mode != package.file_mode(name)
                     or not 0 <= entry.size <= package.MAX_FILE_BYTES):
                 raise ValueError('unexpected, duplicate, linked or oversized worker member')
             content[name] = archive.extractfile(entry).read(package.MAX_FILE_BYTES + 1)
@@ -68,7 +69,7 @@ def read_workers(path):
         raise ValueError('invalid worker manifest')
     package.revision(metadata['source_revision'])
     for name, data in content.items():
-        if metadata['files'][name] != {'sha256': package.sha(data), 'mode': 0o644}:
+        if metadata['files'][name] != {'sha256': package.sha(data), 'mode': package.file_mode(name)}:
             raise ValueError('worker content/mode mismatch: ' + name)
     return metadata
 

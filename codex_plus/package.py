@@ -39,7 +39,8 @@ PREVIEW_NINETEEN_FILES = (*PREVIEW_EIGHTEEN_FILES, 'codex_plus/restart.py')
 PREVIEW_TWENTYTWO_FILES = (*PREVIEW_NINETEEN_FILES, 'codex_plus/diagnostic_records.py',
                  'codex_plus/diagnostic_source.py', 'codex_plus/diagnostics.py',
                  'scripts/codex-plus-diagnostics')
-RUNTIME_FILES = PREVIEW_TWENTYTWO_FILES
+RUNTIME_FILES = (*PREVIEW_TWENTYTWO_FILES, 'codex_plus/worker_models.py',
+                 'scripts/codex-plus-workers')
 COMPATIBILITY = {'os': 'linux', 'python': '>=3.11', 'codex': '0.162.1',
                  'rtk': 'required', 'transport': 'existing local Unix daemon'}
 SCOPED_CONTROLS = ('watch_start', 'watch_cancel', 'watch_renew', 'watch_recover',
@@ -75,7 +76,7 @@ def manifest(files, source_revision):
 def version_files(version):
     if version == VERSION:
         return RUNTIME_FILES
-    if version == '0.1.0-preview.22':
+    if version in ('0.1.0-preview.22', '0.1.0-preview.23'):
         return PREVIEW_TWENTYTWO_FILES
     if version in ('0.1.0-preview.19', '0.1.0-preview.20', '0.1.0-preview.21'):
         return PREVIEW_NINETEEN_FILES

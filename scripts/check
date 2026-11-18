@@ -31,13 +31,16 @@ EXPLICIT_ONLY_SKILLS = {
     "terra-task",
 }
 AGENTS = {
-    "agents/luna-max.toml": ("gpt-6-luna", "max"),
-    "agents/sol-xhigh.toml": ("gpt-6.1-sol", "xhigh"),
-    "agents/astra-xhigh.toml": ("gpt-6-astra", "xhigh"),
-    "agents/terra-6-1-xhigh.toml": ("gpt-6.1-terra", "xhigh"),
+    "agents/luna-max.toml": ("luna", "max"),
+    "agents/sol-xhigh.toml": ("sol", "xhigh"),
+    "agents/astra-xhigh.toml": ("astra", "xhigh"),
+    "agents/terra-6-1-xhigh.toml": ("terra", "xhigh"),
     "legacy/agents/terra-xhigh.toml": ("gpt-5.6-terra", "xhigh"),
 }
 EXPECTED_FILES = {
+    "codex_plus/worker_models.py",
+    "scripts/codex-plus-workers",
+    "tests/test_worker_models.py",
     "codex_plus/diagnostic_records.py",
     "codex_plus/diagnostic_source.py",
     "codex_plus/diagnostics.py",
@@ -229,6 +232,9 @@ def check_inventory() -> None:
 
 
 def check_agents() -> None:
+    sys.dont_write_bytecode = True
+    sys.path.insert(0, str(ROOT))
+    from codex_plus.worker_models import family_for_model
     required = {
         "name",
         "description",
@@ -253,7 +259,8 @@ def check_agents() -> None:
         if data["name"] != path.stem:
             fail(f"agent name does not match filename: {name}")
         selection = (data["model"], data["model_reasoning_effort"])
-        if selection != expected_selection:
+        actual = selection if agent_path.startswith('legacy/') else (family_for_model(selection[0]), selection[1])
+        if actual != expected_selection:
             fail(f"model/effort drift in {name}: {selection} != {expected_selection}")
     print("[ok] agent TOML, required fields, and model/effort selections")
 

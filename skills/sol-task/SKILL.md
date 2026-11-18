@@ -41,6 +41,12 @@ files or responsibility the worker may change; do not infer write ownership.
 
 ## Delegate to Sol XHigh
 
+The native role file owns the concrete version selected at setup/refresh. Honor
+exact version preferences. Check supported stable family IDs with
+`codex-plus-workers classify --model MODEL` when available: Sol requires 6.1+.
+Do not select a newer version during this task. Catalogue presence alone is not
+execution proof; inspect actual native worker metadata and report differences.
+
 Inspect the declared native collaboration controls and available custom-agent
 roles before deciding delegation is unavailable. Call native controls directly
 in their declared namespace, outside `functions.exec`; collaboration controls
@@ -52,7 +58,8 @@ Select exactly `sol-xhigh`, with its existing pinned model and reasoning effort,
 and pass a compact, self-contained assignment using native
 `collaboration.spawn_agent` with `agent_type="sol-xhigh"` and
 `fork_turns="none"`. Do not infer role availability from the skill name. If the
-role is absent or its pin differs from `gpt-6.1-sol` with `xhigh` reasoning,
+role is absent, its concrete model is outside the supported Sol family, or its
+effort differs from `xhigh`,
 do not attempt a substitute; report that no delegation was attempted and why.
 If the actual spawn is rejected, report the spawn failure. If a worker starts
 but encounters an execution error, report that separately. Check available

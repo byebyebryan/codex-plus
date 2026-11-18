@@ -1,5 +1,30 @@
 # Worker routing design
 
+## Model families and managed refresh
+
+Current skills select stable native roles rather than one globally fixed model
+version. The role TOML owns the exact concrete model and effort. At requested
+setup/upgrade, resolve `latest-available` independently from the selected native
+home/provider catalogue, or honor an exact-model preference. Never change the
+primary or upgrade active children. No family-level provider alias is assumed.
+
+The worker archive includes the offline `scripts/codex-plus-workers` resolver
+and its stdlib-only module. The monitoring runtime adds
+`codex-plus-context --models` for bounded read-only discovery against an existing
+owner. A catalogue candidate does not prove entitlement or completed inference.
+Unsupported effort, incomplete catalogue or ambiguous identity holds selection;
+an execution error does not trigger another model/provider launch.
+
+Supported stable families are Sol 6.1+, Astra/Luna 6+, and current Terra 6.1+.
+Legacy Terra remains separate. Latest excludes hidden and nonstable IDs; an
+explicit exact pin still needs matching family, catalogue and effort evidence.
+Routing retains primary/Luna work and one optional compatible escalation family.
+Diagnostic studies retain exact versions and freeze the primary at admission.
+
+The dated exact-pin sections below describe their original release. Current
+setup follows this family contract and the public worker/operator guide.
+
+
 Updated 2026-11-05. Preview.15 implements the selected primary/Luna/optional
 escalation policy below. Existing installations need an explicit upgrade. See the
 [qualification record](worker-escalation-results.md) for native evidence and limits;

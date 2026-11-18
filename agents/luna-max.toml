@@ -1,5 +1,5 @@
 name = "luna-max"
-description = "GPT-6 Luna Max worker for bounded investigation, implementation, and validation with a clear outcome and practical acceptance check; return unresolved decisions to the primary."
+description = "Luna Max worker for bounded investigation, implementation, and validation with a clear outcome and practical acceptance check; return unresolved decisions to the primary."
 model = "gpt-6-luna"
 model_reasoning_effort = "max"
 

@@ -1,5 +1,5 @@
 name = "astra-xhigh"
-description = "GPT-6 Astra XHigh worker for bounded investigation, implementation or review; optional configured escalation from a Terra or Sol primary, or explicitly assigned work. The primary retains decisions and acceptance."
+description = "Astra XHigh worker for bounded investigation, implementation or review; optional configured escalation from a Terra or Sol primary, or explicitly assigned work. The primary retains decisions and acceptance."
 model = "gpt-6-astra"
 model_reasoning_effort = "xhigh"
 
