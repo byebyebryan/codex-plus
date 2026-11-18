@@ -259,6 +259,13 @@ class DiagnosticTests(unittest.TestCase):
         old=self.ledger.collect(key)
         self.assertEqual(old['episode_primary_selection'],{'model':'gpt-6.1-sol','effort':'xhigh'})
         self.assertEqual(old['model_observations']['primary_models'],['gpt-6.1-sol'])
+        self.assertEqual(old['episode_primary_selection_source'],'native_start_context')
+        self.add_thread('parent-a',[r for r in run_records() if r['type']!='turn_context'])
+        missing=self.ledger.collect(key)
+        self.assertEqual(missing['episode_primary_selection'],{'model':'gpt-6.1-sol','effort':'xhigh'})
+        self.assertEqual(missing['episode_primary_selection_source'],'prior_enrollment_contract')
+        self.assertIn('primary_start_selection_unknown',missing['source_gaps'])
+        self.assertEqual(missing['model_observations']['primary_models'],[])
 
     def test_frozen_study_remains_frozen_until_explicitly_updated(self):
         self.ledger.start()

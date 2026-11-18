@@ -182,7 +182,8 @@ class Ledger:
                     'recorded_at': stamp(now()), 'runtime_version': VERSION,
                     'previous_version_policy': _version_policy(study),
                     'previous_primary_selection': _study_primary_selection(study),
-                    'existing_goals': len(study['episodes']), 'backup': backup,
+                    'existing_goals': len(study['episodes']),
+                    'existing_episodes': sorted(study['episodes']), 'backup': backup,
                 }]
                 study['version_policy'] = VERSION_POLICY
                 study['primary_selection'] = None
@@ -409,6 +410,8 @@ class Ledger:
         version_policy = _version_policy(study)
         study_primary_selection = _study_primary_selection(study)
         episode_primary_selection = episode.get('primary_selection') or study_primary_selection
+        selection_source = ('episode_enrollment' if episode.get('primary_selection') else
+                            'study_enrollment_contract' if study_primary_selection else None)
         if version_policy == FROZEN_VERSION_POLICY:
             if study_primary_selection is None or episode_primary_selection is None:
                 gaps.add('primary_selection_unfrozen_or_unknown')
@@ -426,8 +429,17 @@ class Ledger:
                 model, effort = next(iter(starting))
                 if _sol_primary(model, effort):
                     episode_primary_selection = {'model': model, 'effort': effort}
+                    selection_source = 'native_start_context'
             if episode_primary_selection is None:
                 gaps.add('primary_start_selection_unknown')
+                for change in study.get('version_policy_changes', []):
+                    if not isinstance(change, dict) or key not in change.get('existing_episodes', []):
+                        continue
+                    previous = change.get('previous_primary_selection')
+                    if isinstance(previous, dict) and _sol_primary(previous.get('model'), previous.get('effort')):
+                        episode_primary_selection = dict(previous)
+                        selection_source = 'prior_enrollment_contract'
+                        break
         expected_primary = episode_primary_selection or {}
         luna_threads = {a['thread_id'] for a in episode['assignments']
                         if a['route'] == 'luna' and a['thread_id'] is not None}
@@ -477,6 +489,7 @@ class Ledger:
                 'version_policy': version_policy,
                 'study_primary_selection': study_primary_selection,
                 'episode_primary_selection': episode_primary_selection,
+                'episode_primary_selection_source': selection_source,
                 'model_observations': {'primary_models': sorted(primary_models),
                                        'luna_models': sorted(luna_models),
                                        'versions_changed_within_episode': len(primary_models) > 1 or len(luna_models) > 1,
