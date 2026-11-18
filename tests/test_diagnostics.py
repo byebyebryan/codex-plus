@@ -105,22 +105,18 @@ class DiagnosticTests(unittest.TestCase):
         other = self.base / 'other'; other.mkdir()
         with self.assertRaises(ValueError): d.Ledger(self.root, other).read()
 
-    def test_new_study_freezes_first_supported_primary_and_refuses_other_version_without_mutation(self):
+    def test_new_study_records_different_primary_versions_without_freezing(self):
         self.ledger.start()
-        self.add_thread('primary-62', run_records('first-62', 'gpt-6.2-sol', 'xhigh', 'primary-62')[:-1])
-        first = self.ledger.enroll('primary-62')
-        self.assertFalse(first['existing'])
-        self.assertEqual(self.ledger.read()['version_policy'], 'freeze-first-primary')
-        self.assertEqual(self.ledger.read()['primary_selection'],
-                         {'model': 'gpt-6.2-sol', 'effort': 'xhigh'})
-        self.assertEqual(self.ledger.read()['episodes'][first['episode']]['primary_selection'],
-                         {'model': 'gpt-6.2-sol', 'effort': 'xhigh'})
-
-        self.add_thread('primary-61', run_records('first-61', 'gpt-6.1-sol', 'xhigh', 'primary-61')[:-1])
-        before = (self.root / 'study.json').read_bytes()
-        with self.assertRaises(ValueError):
-            self.ledger.enroll('primary-61')
-        self.assertEqual((self.root / 'study.json').read_bytes(), before)
+        for suffix in ('61', '62', '63'):
+            model='gpt-6.'+suffix[-1]+'-sol'
+            name='primary-'+suffix
+            self.add_thread(name, run_records('first-'+suffix, model, 'xhigh', name)[:-1])
+            self.ledger.enroll(name)
+        study=self.ledger.read()
+        self.assertEqual(study['version_policy'], d.VERSION_POLICY)
+        self.assertIsNone(study['primary_selection'])
+        self.assertEqual({e['primary_selection']['model'] for e in study['episodes'].values()},
+                         {'gpt-6.1-sol','gpt-6.2-sol','gpt-6.3-sol'})
 
     def test_unversioned_legacy_study_keeps_exact_sol_61_expectation_without_migration(self):
         self.ledger.start()
@@ -148,7 +144,7 @@ class DiagnosticTests(unittest.TestCase):
         self.assertEqual(path.read_bytes(), before)
         self.assertEqual(len(self.ledger.read()['episodes']), 1)
 
-    def test_concurrent_first_enrollments_freeze_one_native_snapshot(self):
+    def test_concurrent_different_versions_keep_both_exact_selections(self):
         self.ledger.start()
         self.add_thread('primary-62', run_records('first-62', 'gpt-6.2-sol', 'xhigh', 'primary-62')[:-1])
         self.add_thread('primary-63', run_records('first-63', 'gpt-6.3-sol', 'xhigh', 'primary-63')[:-1])
@@ -173,15 +169,15 @@ class DiagnosticTests(unittest.TestCase):
             with ThreadPoolExecutor(max_workers=2) as pool:
                 results = [pool.submit(enroll, name) for name in ('primary-62', 'primary-63')]
                 outcomes = [future.result(timeout=10) for future in results]
-        self.assertEqual([state for state, _ in outcomes].count('enrolled'), 1)
-        self.assertEqual([state for state, _ in outcomes].count('refused'), 1)
+        self.assertEqual([state for state, _ in outcomes].count('enrolled'), 2)
+        self.assertEqual([state for state, _ in outcomes].count('refused'), 0)
         study = original_read()
-        self.assertEqual(len(study['episodes']), 1)
-        frozen = study['primary_selection']['model']
-        self.assertIn(frozen, ('gpt-6.2-sol', 'gpt-6.3-sol'))
-        self.assertEqual(next(iter(study['episodes'].values()))['primary_selection']['model'], frozen)
+        self.assertEqual(len(study['episodes']), 2)
+        self.assertIsNone(study['primary_selection'])
+        self.assertEqual({e['primary_selection']['model'] for e in study['episodes'].values()},
+                         {'gpt-6.2-sol','gpt-6.3-sol'})
 
-    def test_mid_episode_primary_upgrade_is_reported_against_frozen_selection(self):
+    def test_mid_episode_upgrade_is_an_observation_with_separate_usage_groups(self):
         self.ledger.start()
         self.add_thread('parent-a', run_records('turn-62', 'gpt-6.2-sol', 'xhigh')[:-1])
         key = self.ledger.enroll('parent-a', routing_not_started=True)['episode']
@@ -189,13 +185,18 @@ class DiagnosticTests(unittest.TestCase):
                         run_records('turn-63', 'gpt-6.3-sol', 'xhigh'))
         self.assertTrue(self.ledger.enroll('parent-a')['existing'])
         result = self.ledger.collect(key)
-        self.assertIn('primary_selection_changed_or_unknown', result['source_gaps'])
-        self.assertEqual(result['version_policy'], 'freeze-first-primary')
-        self.assertEqual(result['study_primary_selection'], {'model': 'gpt-6.2-sol', 'effort': 'xhigh'})
+        self.assertNotIn('primary_selection_changed_or_unknown', result['source_gaps'])
+        self.assertEqual(result['version_policy'], d.VERSION_POLICY)
+        self.assertIsNone(result['study_primary_selection'])
+        self.assertEqual(result['episode_primary_selection'], {'model':'gpt-6.2-sol','effort':'xhigh'})
+        self.assertTrue(result['model_observations']['versions_changed_within_episode'])
+        groups=result['accounting']['usage_by_context']
+        self.assertEqual({g['model'] for g in groups}, {'gpt-6.2-sol','gpt-6.3-sol'})
+        self.assertEqual([g['categories']['total_tokens']['unambiguous_sum'] for g in groups], [14,14])
         turns = result['accounting']['threads'][0]['turns']
         self.assertEqual({turn['model'] for turn in turns}, {'gpt-6.2-sol', 'gpt-6.3-sol'})
 
-    def test_luna_new_versions_remain_visible_and_mixed_versions_are_a_gap(self):
+    def test_luna_versions_remain_separate_without_becoming_coverage_errors(self):
         key = self.enroll()
         worker_records = (run_records('luna-61', 'gpt-6.1-luna', 'max', 'worker-a') +
                           run_records('luna-62', 'gpt-6.2-luna', 'max', 'worker-a'))
@@ -203,7 +204,8 @@ class DiagnosticTests(unittest.TestCase):
         self.ledger.link(key, 'worker-a', 'luna-61', route='luna')
         self.ledger.link(key, 'worker-a', 'luna-62', route='luna')
         result = self.ledger.collect(key)
-        self.assertIn('luna_model_versions_mixed', result['source_gaps'])
+        self.assertNotIn('luna_model_versions_mixed', result['source_gaps'])
+        self.assertTrue(result['model_observations']['versions_changed_within_episode'])
         self.assertNotIn('luna_selection_mismatch_or_unknown', result['source_gaps'])
         worker = next(thread for thread in result['accounting']['threads']
                       if thread['thread_id'] == 'worker-a')
@@ -222,6 +224,96 @@ class DiagnosticTests(unittest.TestCase):
         self.ledger.link(key, 'worker-a', 'luna-61', route='luna')
         result = self.ledger.collect(key)
         self.assertIn('luna_selection_mismatch_or_unknown', result['source_gaps'])
+
+    def test_explicit_update_preserves_legacy_goals_outcomes_bounds_and_native_files(self):
+        self.ledger.start()
+        path=self.root/'study.json'
+        legacy=json.loads(path.read_text())
+        legacy.pop('version_policy');legacy.pop('primary_selection')
+        path.write_text(json.dumps(legacy))
+        key=self.ledger.enroll('parent-a')['episode']
+        self.add_thread('parent-a',run_records())
+        self.ledger.outcome(key,'minor_correction','artifact:review',children_reviewed=True)
+        before=self.ledger.read()
+        original_bytes=path.read_bytes()
+        native={p:p.read_bytes() for p in self.home.iterdir() if p.is_file()}
+        result=self.ledger.allow_model_upgrades()
+        after=self.ledger.read()
+        self.assertTrue(result['version_policy_updated'])
+        for name,value in before.items():
+            self.assertEqual(after[name],value)
+        self.assertEqual(after['version_policy'],d.VERSION_POLICY)
+        self.assertEqual(after['version_policy_changes'][0]['previous_version_policy'],d.LEGACY_VERSION_POLICY)
+        backup=self.root/after['version_policy_changes'][0]['backup']
+        self.assertEqual(backup.read_bytes(),original_bytes)
+        self.assertEqual(backup.stat().st_mode&0o777,0o600)
+        self.assertEqual(native,{p:p.read_bytes() for p in native})
+        snapshot=path.read_bytes()
+        self.assertFalse(self.ledger.allow_model_upgrades()['version_policy_updated'])
+        self.assertEqual(path.read_bytes(),snapshot)
+        self.assertEqual(len(list(self.root.glob('study.before-model-upgrades-*.json'))),1)
+        self.add_thread('parent-a',run_records()+run_records('next-turn','gpt-6.2-sol','xhigh')[:-1])
+        second=self.ledger.enroll('parent-a')['episode']
+        self.assertNotEqual(second,key)
+        self.assertEqual(self.ledger.read()['episodes'][key],before['episodes'][key])
+        old=self.ledger.collect(key)
+        self.assertEqual(old['episode_primary_selection'],{'model':'gpt-6.1-sol','effort':'xhigh'})
+        self.assertEqual(old['model_observations']['primary_models'],['gpt-6.1-sol'])
+
+    def test_frozen_study_remains_frozen_until_explicitly_updated(self):
+        self.ledger.start()
+        with self.ledger.write() as study:
+            study['version_policy']=d.FROZEN_VERSION_POLICY
+            self.ledger.save(study)
+        key=self.ledger.enroll('parent-a')['episode']
+        self.add_thread('other',run_records('other-turn','gpt-6.2-sol','xhigh','other')[:-1])
+        before=(self.root/'study.json').read_bytes()
+        with self.assertRaises(ValueError):self.ledger.enroll('other')
+        self.assertEqual((self.root/'study.json').read_bytes(),before)
+        episode=self.ledger.read()['episodes'][key]
+        self.ledger.allow_model_upgrades()
+        self.assertEqual(self.ledger.read()['episodes'][key],episode)
+        self.assertTrue(self.ledger.enroll('other')['enrolled'])
+        self.assertIsNone(self.ledger.status()['primary_selection'])
+
+    def test_cli_explicit_policy_update_does_not_start_or_extend_study(self):
+        self.ledger.start()
+        with self.ledger.write() as study:
+            study['version_policy']=d.FROZEN_VERSION_POLICY
+            self.ledger.save(study)
+        before=self.ledger.read()
+        output=io.StringIO()
+        with patch.dict(os.environ,{'CODEX_HOME':str(self.home)}), contextlib.redirect_stdout(output):
+            self.assertEqual(d.main(['--state-root',str(self.root),'allow-model-upgrades']),0)
+        result=json.loads(output.getvalue())
+        self.assertTrue(result['version_policy_updated'])
+        self.assertEqual(result['version_policy'],d.VERSION_POLICY)
+        after=self.ledger.read()
+        for name in ('id','episodes','started_at','enrollment_until','observation_until','goal_limit'):
+            self.assertEqual(after[name],before[name])
+
+    def test_update_never_reopens_closed_or_extends_expired_study(self):
+        with self.assertRaises(ValueError):self.ledger.allow_model_upgrades()
+        self.assertFalse(self.root.exists())
+        self.ledger.start()
+        with self.ledger.write() as study:
+            study['version_policy']=d.FROZEN_VERSION_POLICY
+            self.ledger.save(study)
+        before=self.ledger.read()
+        with patch.object(d,'now',return_value=d.datetime.fromisoformat(before['enrollment_until'])):
+            self.ledger.allow_model_upgrades()
+            self.assertFalse(self.ledger.status()['enrollment_open'])
+            self.assertFalse(self.ledger.enroll('parent-a',if_open=True)['enrolled'])
+        after=self.ledger.read()
+        for name in ('id','started_at','enrollment_until','observation_until','goal_limit'):
+            self.assertEqual(after[name],before[name])
+        with self.ledger.write() as study:
+            study['version_policy']=d.FROZEN_VERSION_POLICY
+            self.ledger.save(study)
+        self.ledger.close()
+        snapshot=(self.root/'study.json').read_bytes()
+        with self.assertRaises(ValueError):self.ledger.allow_model_upgrades()
+        self.assertEqual((self.root/'study.json').read_bytes(),snapshot)
 
     def test_parent_continuations_child_reuse_and_explicit_outcome(self):
         key = self.enroll()
@@ -273,7 +365,8 @@ class DiagnosticTests(unittest.TestCase):
               contextlib.redirect_stdout(output)):
             self.assertEqual(d.main(['--state-root', str(self.root), 'enroll']), 0)
         self.assertTrue(json.loads(output.getvalue())['enrolled'])
-        self.assertEqual(self.ledger.status()['primary_selection'],
+        self.assertIsNone(self.ledger.status()['primary_selection'])
+        self.assertEqual(next(iter(self.ledger.read()['episodes'].values()))['primary_selection'],
                          {'model': 'gpt-6.2-sol', 'effort': 'xhigh'})
 
     def test_old_worker_turn_and_shared_worker_turn_are_not_reassigned(self):

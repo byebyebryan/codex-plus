@@ -19,7 +19,8 @@ from .diagnostic_source import MAX_THREADS, NativeRecords, identity, start_time,
 from .worker_models import family_for_model
 
 POLICY = 'adaptive-sol-luna-v1'
-VERSION_POLICY = 'freeze-first-primary'
+VERSION_POLICY = 'record-per-episode'
+FROZEN_VERSION_POLICY = 'freeze-first-primary'
 LEGACY_VERSION_POLICY = 'legacy-fixed-gpt-6.1-sol'
 LEGACY_PRIMARY_SELECTION = {'model': 'gpt-6.1-sol', 'effort': 'xhigh'}
 OUTCOMES = ('accepted_first_review', 'minor_correction', 'substantial_repair',
@@ -83,8 +84,9 @@ class Ledger:
             raise ValueError('diagnostic schema, policy or environment mismatch')
         if 'version_policy' in study:
             selection = study.get('primary_selection')
-            if (study['version_policy'] != VERSION_POLICY
+            if (study['version_policy'] not in (VERSION_POLICY, FROZEN_VERSION_POLICY)
                     or ('primary_selection' not in study)
+                    or (study['version_policy'] == VERSION_POLICY and selection is not None)
                     or (selection is not None and (
                         not isinstance(selection, dict)
                         or set(selection) != {'model', 'effort'}
@@ -155,6 +157,39 @@ class Ledger:
         return (not study['closed_at'] and now() < datetime.fromisoformat(study['enrollment_until'])
                 and len(study['episodes']) < study['goal_limit'])
 
+    def allow_model_upgrades(self):
+        """Explicitly enable per-episode versions without rewriting past goals."""
+        if self.read() is None:
+            raise ValueError('an existing study is required')
+        changed = False
+        with self.write() as study:
+            if study is None:
+                raise ValueError('study disappeared before policy update')
+            if _version_policy(study) != VERSION_POLICY:
+                if study['closed_at']:
+                    raise ValueError('preserve closed study history')
+                changes = study.get('version_policy_changes', [])
+                if not isinstance(changes, list):
+                    raise ValueError('invalid study policy history')
+                backup = 'study.before-model-upgrades-' + uuid.uuid4().hex + '.json'
+                with os.fdopen(private_file(self.root / 'study.json', os.O_RDONLY), 'rb') as source:
+                    original = source.read(2 * 1024 * 1024 + 1)
+                if len(original) > 2 * 1024 * 1024:
+                    raise ValueError('diagnostic ledger exceeds size bound')
+                with os.fdopen(private_file(self.root / backup, os.O_WRONLY | os.O_CREAT | os.O_EXCL), 'wb') as saved:
+                    saved.write(original); saved.flush(); os.fsync(saved.fileno())
+                study['version_policy_changes'] = [*changes, {
+                    'recorded_at': stamp(now()), 'runtime_version': VERSION,
+                    'previous_version_policy': _version_policy(study),
+                    'previous_primary_selection': _study_primary_selection(study),
+                    'existing_goals': len(study['episodes']), 'backup': backup,
+                }]
+                study['version_policy'] = VERSION_POLICY
+                study['primary_selection'] = None
+                self.save(study)
+                changed = True
+        return {**self.status(), 'version_policy_updated': changed}
+
     def enroll(self, thread_id, *, if_open=False, acceptance_ref=None, routing_not_started=False,
                loaded_selection=None):
         # The no-study path is a read-only no-op, including on worker-only installs.
@@ -194,8 +229,7 @@ class Ledger:
                 raise ValueError('this A study requires a supported loaded Sol XHigh primary')
             if loaded_selection != observed_selection:
                 raise ValueError('loaded and recorded primary selections changed during enrollment')
-        expected = (_study_primary_selection(study) if _version_policy(study) == VERSION_POLICY
-                    else dict(LEGACY_PRIMARY_SELECTION))
+        expected = _study_primary_selection(study)
         if expected is not None and observed_selection != expected:
             raise ValueError('primary selection differs from the study version cohort')
         with self.write() as study:
@@ -208,13 +242,14 @@ class Ledger:
                     raise ValueError('one native turn cannot be allocated to two episodes')
             if not self.open(study):
                 raise ValueError('enrollment closed before admission')
-            if _version_policy(study) == VERSION_POLICY:
+            if _version_policy(study) == FROZEN_VERSION_POLICY:
                 frozen = study['primary_selection']
                 if frozen is not None and observed_selection != frozen:
                     raise ValueError('primary selection changed before the study cohort was frozen')
                 if frozen is None:
                     study['primary_selection'] = dict(observed_selection)
-            elif observed_selection != LEGACY_PRIMARY_SELECTION:
+            elif (_version_policy(study) == LEGACY_VERSION_POLICY
+                  and observed_selection != LEGACY_PRIMARY_SELECTION):
                 raise ValueError('legacy study requires its original Sol XHigh primary selection')
             key = uuid.uuid4().hex
             episode = {
@@ -227,7 +262,7 @@ class Ledger:
                 'scope': 'entire_start_turn_included',
                 'routing_not_started_attested': bool(routing_not_started),
             }
-            if _version_policy(study) == VERSION_POLICY:
+            if _version_policy(study) in (VERSION_POLICY, FROZEN_VERSION_POLICY):
                 episode['primary_selection'] = dict(observed_selection)
             study['episodes'][key] = episode
             self.save(study)
@@ -374,23 +409,39 @@ class Ledger:
         version_policy = _version_policy(study)
         study_primary_selection = _study_primary_selection(study)
         episode_primary_selection = episode.get('primary_selection') or study_primary_selection
-        if version_policy == VERSION_POLICY:
+        if version_policy == FROZEN_VERSION_POLICY:
             if study_primary_selection is None or episode_primary_selection is None:
                 gaps.add('primary_selection_unfrozen_or_unknown')
             elif episode_primary_selection != study_primary_selection:
                 gaps.add('primary_selection_cohort_mismatch')
-        else:
+        elif version_policy == LEGACY_VERSION_POLICY:
             episode_primary_selection = dict(LEGACY_PRIMARY_SELECTION)
+        elif episode_primary_selection is None:
+            # Older episode dictionaries remain immutable during policy updates.
+            # Recover their starting selection from their own native turn only.
+            starting = {(r['payload'].get('model'), r['payload'].get('effort'))
+                        for r in records if r['type'] == 'turn_context'
+                        and r['payload'].get('turn_id') == episode['start_turn']}
+            if len(starting) == 1:
+                model, effort = next(iter(starting))
+                if _sol_primary(model, effort):
+                    episode_primary_selection = {'model': model, 'effort': effort}
+            if episode_primary_selection is None:
+                gaps.add('primary_start_selection_unknown')
         expected_primary = episode_primary_selection or {}
         luna_threads = {a['thread_id'] for a in episode['assignments']
                         if a['route'] == 'luna' and a['thread_id'] is not None}
-        luna_models = set()
+        luna_models, primary_models = set(), set()
         for thread in result['threads']:
-            if thread['thread_id'] == root and any(
-                    (turn.get('model'), turn.get('effort')) !=
-                    (expected_primary.get('model'), expected_primary.get('effort'))
-                    for turn in thread['turns']):
-                gaps.add('primary_selection_changed_or_unknown')
+            if thread['thread_id'] == root:
+                for turn in thread['turns']:
+                    model, effort = turn.get('model'), turn.get('effort')
+                    if isinstance(model, str) and model:
+                        primary_models.add(model)
+                    supported = (_sol_primary(model, effort) if version_policy == VERSION_POLICY else
+                                 (model, effort) == (expected_primary.get('model'), expected_primary.get('effort')))
+                    if not supported:
+                        gaps.add('primary_selection_changed_or_unknown')
             if thread['thread_id'] in luna_threads:
                 for turn in thread['turns']:
                     model, effort = turn.get('model'), turn.get('effort')
@@ -402,7 +453,7 @@ class Ledger:
                         supported = family_for_model(model) == 'luna' and effort == 'max'
                     if not supported:
                         gaps.add('luna_selection_mismatch_or_unknown')
-        if len(luna_models) > 1:
+        if len(luna_models) > 1 and version_policy != VERSION_POLICY:
             gaps.add('luna_model_versions_mixed')
         time_evidence = []
         for thread, included in selected_turns.items():
@@ -426,6 +477,10 @@ class Ledger:
                 'version_policy': version_policy,
                 'study_primary_selection': study_primary_selection,
                 'episode_primary_selection': episode_primary_selection,
+                'model_observations': {'primary_models': sorted(primary_models),
+                                       'luna_models': sorted(luna_models),
+                                       'versions_changed_within_episode': len(primary_models) > 1 or len(luna_models) > 1,
+                                       'analysis_groups': 'accounting.usage_by_context'},
                 'source_gaps': sorted(gaps), 'measurement_scope': episode['scope'],
                 'selected_turns_have_terminal_evidence': settled,
                 'acceptance': episode['outcome'], 'assignments': episode['assignments'],
@@ -452,6 +507,7 @@ def main(argv=None):
     sub = parser.add_subparsers(dest='command', required=True)
     for name in ('start', 'status', 'close'):
         sub.add_parser(name)
+    sub.add_parser('allow-model-upgrades', help='Record versions per episode in an existing study; preserve history and bounds')
     enroll = sub.add_parser('enroll')
     enroll.add_argument('--thread', default=os.environ.get('CODEX_THREAD_ID'))
     enroll.add_argument('--if-open', action='store_true')
@@ -479,7 +535,9 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         ledger = Ledger(args.state_root)
-        if args.command == 'enroll':
+        if args.command == 'allow-model-upgrades':
+            result = ledger.allow_model_upgrades()
+        elif args.command == 'enroll':
             loaded_selection = None
             if ledger.status()['enrollment_open']:
                 if not args.thread or args.thread != os.environ.get('CODEX_THREAD_ID'):

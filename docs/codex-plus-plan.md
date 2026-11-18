@@ -1,5 +1,25 @@
 # Codex Plus implementation plan
 
+## Selected correction: observe model versions without stopping collection
+
+Treat model version as observed metadata. New studies record exact primary
+selection per episode and retain per-turn model/effort usage groups. Supported
+Sol version changes admit new goals and remain visible within an episode;
+unknown attribution and actual family/effort deviations remain explicit gaps.
+Compare version groups separately when needed instead of blocking collection.
+
+Provide an explicit, locked, idempotent update for existing open studies. Keep
+their identity, old episode dictionaries/outcomes, deadlines and goal limit
+unchanged; record previous version-policy metadata. Do not enroll ongoing work
+retrospectively, open another study or extend its window. Preserve frozen legacy
+behavior until that update is explicitly requested.
+
+Qualify mixed-version enrollment, concurrency, per-version accounting, immutable
+history, idempotent policy updates and old-reader compatibility. Publish the
+corrected helper and guides through the existing release/chezmoi path, apply it
+on the requested hosts and update the selected private study without daemon
+restart, global reload or session input. Keep private evidence outside source.
+
 ## Selected pass: model-family preferences and managed refresh
 
 Completed in preview.24 (`c85d2ed`), published and selected on the requested

@@ -19,7 +19,8 @@ Supported stable families are Sol 6.1+, Astra/Luna 6+, and current Terra 6.1+.
 Legacy Terra remains separate. Latest excludes hidden and nonstable IDs; an
 explicit exact pin still needs matching family, catalogue and effort evidence.
 Routing retains primary/Luna work and one optional compatible escalation family.
-Diagnostic studies retain exact versions and freeze the primary at admission.
+Diagnostic studies record exact versions per episode/turn and expose separate
+model/effort usage groups; a version update does not stop ordinary collection.
 
 The dated exact-pin sections below describe their original release. Current
 setup follows this family contract and the public worker/operator guide.
