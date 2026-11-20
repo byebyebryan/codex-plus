@@ -15,7 +15,7 @@ without copying arbitrary strings into output.
 
 ## Current run usage
 
-The source candidate adds `codex-plus-diagnostics usage` for a read-only
+Preview.27 adds `codex-plus-diagnostics usage` for a read-only
 snapshot of the invoking primary's active native root. Pass `--worker PATH`
 once per participating worker using the exact task path returned by native
 collaboration. The reader counts observed responses within that root and its

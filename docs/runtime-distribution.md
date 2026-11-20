@@ -22,8 +22,9 @@ UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.26](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.26)
-defaults to Astra eligibility in the explicit adaptive workflows for supported
+[v0.1.0-preview.27](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.27)
+adds [adaptive contribution and usage summaries](routing-diagnostics.md#current-run-usage).
+Preview.26 defaults to Astra eligibility in the explicit adaptive workflows for supported
 Sol and current Terra primaries. Preview.25 records model versions per
 episode/turn without stopping collection on
 version upgrades. An explicit backed-up policy update preserves existing study
@@ -52,9 +53,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.26.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.26.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.26.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.27.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.27.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.27.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains
@@ -102,25 +103,25 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Managed source selects workers, monitoring and reporting **preview.26**,
-source `66262c6`, through published chezmoi pins `607935f`.
+Managed source selects workers, monitoring and reporting **preview.27**,
+source `877591e`, through published chezmoi pins `5481551`.
 
 | Target | Installed selection | Runtime evidence |
 | --- | --- | --- |
-| Snap default | Preview.26; Sol 6.1, Astra 6, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
-| Snap Work | Preview.26 worker definitions and skills; existing concrete model selections retained. | Native file bytes and modes verified in its separate home. |
-| Starship | Preview.26; Sol/Astra 6.2, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
+| Snap default | Preview.27; Sol 6.1, Astra 6, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
+| Snap Work | Preview.27 worker definitions and skills; existing concrete model selections retained. | Native file bytes and modes verified in its separate home. |
+| Starship | Preview.27; Sol/Astra 6.2, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
 | Carbon | Outside this rollout. | No new acceptance check. |
 
-The 155-file gate, 519 tests on Python 3.11/3.14, affected skill validators, and
-public release verification pass. The new component verifiers accept the actual
-published preview.25 monitoring and report archives. The managed quick gate,
+The 155-file gate, 522 tests on Python 3.11/3.14, affected skill validators, and
+public release verification pass. The component verifiers accept the actual
+published preview.26 monitoring and report archives. The managed quick gate,
 affected source checks, and isolated report apply pass. The live checks verify
 54 scoped role and skill files and converged diffs. Native config, authentication,
 owner identities, and prior release paths remain intact. Existing sessions and
 MCP processes can adopt the change through normal native lifecycle.
 
-See the [delivery receipt](reliability-packaging-results.md#preview26-default-astra-publication-and-rollout)
+See the [delivery receipt](reliability-packaging-results.md#preview27-adaptive-usage-publication-and-rollout)
 and the [worker model guide](workers.md#model-versions). Ordinary apply projects
 reviewed selections without querying native models. A later requested refresh
 can resolve newer account-specific candidates through the same owner.

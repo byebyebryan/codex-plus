@@ -1,5 +1,30 @@
 # Everyday reliability and native packaging results
 
+## Preview.27 adaptive usage publication and rollout
+
+Release `v0.1.0-preview.27` from `877591e` adds closing contribution summaries
+to the two explicit adaptive workflows. The optional read-only usage command
+projects native responses for the current native root and named direct workers.
+A live primary turn yields partial usage. A goal that spans several roots can
+have more work than one snapshot covers. Routing and worker role pins keep
+their existing policies.
+
+All five published assets match the verified build and GitHub digests. The
+155-file inventory, 522 tests on Python 3.11 and 3.14, skill validators, and
+source CI pass. The preview.27 verifiers accept the published preview.26
+monitoring and reporting archives for rollback. Native live reading verifies the
+current primary's partial usage. Synthetic records exercise model grouping and
+exclusion of unrelated worker turns.
+
+Published chezmoi `5481551` advances all three component pins. The portable
+quick gate, affected Codex checks, and isolated report apply pass. Scoped
+applies select preview.27 on Snap and Starship, including Snap Work's worker
+files. Verification covers all 54 scoped native role and skill files, exact
+component manifests, empty scoped diffs, and the fresh 17/four-tool protocols.
+Sampled native owners, auth/config, role pins, and the study ledger are
+preserved. Running MCP and worker instructions adopt through native lifecycle.
+Carbon was outside this rollout.
+
 ## Preview.26 default Astra publication and rollout
 
 Release `v0.1.0-preview.26`, source `66262c6`, makes Astra XHigh the default

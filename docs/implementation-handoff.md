@@ -1,5 +1,12 @@
 # Implementation handoff
 
+Preview.27 adds short model contribution summaries to the adaptive task and
+goal loop. Its read-only usage snapshot summarizes scoped native responses by
+model and effort without study enrollment. The release from `877591e` is
+selected through chezmoi `5481551` on Snap default/Work and Starship. See the
+[delivery receipt](reliability-packaging-results.md#preview27-adaptive-usage-publication-and-rollout)
+for coverage and adoption.
+
 Preview.26 makes Astra XHigh available by default for explicit
 adaptive invocations from supported Sol and current Terra primaries. Calls
 still require a concrete reason. The Luna-only workflows, role pins, and

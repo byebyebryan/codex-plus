@@ -43,7 +43,7 @@ Read the [daily-use guide](docs/daily-use.md), open the
 
 Workers, monitoring and reporting share **one Codex Plus version and release**.
 Choose the component archives you need in the setup guide; an existing managed setup can use these requests
-directly. The public site includes the walkthrough and nine HTML guides. Their
+directly. The public site includes the walkthrough and ten HTML guides. Their
 Markdown sources and technical evidence are linked below.
 
 ## Current status
@@ -51,7 +51,10 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.26** includes seven worker workflows and four current roles.
+**v0.1.0-preview.27** includes seven worker workflows and four current roles.
+
+Preview.27 adds a short contribution summary to the adaptive workflows, with
+observed tokens by model when native records are available.
 
 Preview.26 makes [Astra XHigh available by default](docs/workers.md#optional-escalation)
 inside the explicit adaptive workflows for Sol and current Terra primaries.
@@ -141,8 +144,8 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Managed configuration selects **v0.1.0-preview.26** for workers, monitoring and
-reporting from source `66262c6` through published chezmoi `607935f`.
+Managed configuration selects **v0.1.0-preview.27** for workers, monitoring and
+reporting from source `877591e` through published chezmoi `5481551`.
 Snap and Starship verify the installed manifests, native role and skill files,
 and fresh 17/four-tool MCP protocols. Snap's Work worker files are included.
 Carbon was outside this rollout.
@@ -153,7 +156,7 @@ inference. Native configuration, credentials, owners and old releases are preser
 Existing processes and children adopt through normal native lifecycle; no daemon
 restart or global MCP refresh was issued.
 
-The [delivery receipt](docs/reliability-packaging-results.md#preview26-default-astra-publication-and-rollout)
+The [delivery receipt](docs/reliability-packaging-results.md#preview27-adaptive-usage-publication-and-rollout)
 separates publication, managed files and runtime evidence. New private studies record versions per episode; an explicit policy update
 lets an existing study continue across model upgrades with its history and
 original bounds intact. See the [observation procedure](docs/routing-diagnostics.md)

@@ -37,11 +37,12 @@ release. Choose the archives you need from its single GitHub release; see
 
 ## Released and source features
 
-**v0.1.0-preview.26** supplies the released workflows shown in these guides. Updating
+**v0.1.0-preview.27** supplies the released workflows shown in these guides. Updating
 documentation or selecting an archive does not reload an existing MCP process.
 
 | Available in | What to expect |
 | --- | --- |
+| Added in preview.27 | Adaptive tasks and goal loops summarize who did what and can show [observed tokens by model](routing-diagnostics.md#current-run-usage). |
 | Changed in preview.26 | Explicit adaptive workflows make Astra XHigh available by default for supported Sol or current Terra primaries. Luna workflows stay Luna-only. |
 | Fixed in preview.25 | Model upgrades no longer block new-study enrollment. An explicit backed-up update preserves an existing study and its bounds while exact versions remain available for analysis. |
 | Added in preview.24 | Resolve latest available stable worker versions at managed refresh, preserve exact preferences, recognize supported primary families; its original frozen-study policy is superseded by preview.25. |
