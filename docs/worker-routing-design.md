@@ -80,18 +80,17 @@ owner, preserving local edits and restrictions instead of merging skill roots.
 
 Use three operating tiers: high = Astra, mid = Sol/Terra, low = Luna. These are
 workflow categories, not a proven universal capability ranking. The user picks
-the native primary and its reasoning setting for the project. Routine adaptive
-routing chooses direct primary work, a useful Luna assignment, or one explicitly
-configured escalation target. No quality/balanced/economy selector belongs to V1.
+the native primary and its reasoning setting for the project. Preview.26 makes
+Astra available by default inside explicit adaptive invocations. Luna-only workflows give the
+user a direct way to limit delegation to Luna.
 
 ### Routes and defaults
 
-| Initiating primary | Optional automatic escalation target | Default |
+| Initiating primary | Default eligible target | Compatible explicit alternative |
 | --- | --- | --- |
-| GPT-6.1 Terra | Sol XHigh or Astra XHigh, exactly one | None |
-| GPT-6.1 Sol | Astra XHigh | None |
-| GPT-6 Astra | None in V1 | None |
-| Luna, another model or unknown identity | None in V1; explicit user assignments remain separate | None |
+| Supported current Terra family | Astra XHigh | Sol XHigh |
+| Supported Sol family | Astra XHigh | None |
+| Astra, Luna, another model or unknown identity | None | None |
 
 Luna Max remains available for cohesive, bounded, verifiable assignments in
 every supported workflow. Such work can be substantial implementation or
@@ -113,31 +112,21 @@ no implicit Sol-to-Astra chain: children return unresolved gaps to the original
 primary and do not reapply their own model as a new primary policy. Only the
 user's actual primary/configuration change can select a different route later.
 
-### Configure through existing native instruction mechanisms
+### Respect user and study scope
 
 Keep [native agent files](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents)
-authoritative for model/effort pins. Express the
-optional escalation policy in an explicit adaptive request or applicable user
-guidance, defaulting to none when unset. A current request can override a soft
-default for its task; distinct restrictions, scope and native permissions still
-apply. No new native TOML keys, preference file or configuration hierarchy are
-needed for the first candidate. Later persistent instructions remain chezmoi
-owned and are changed only in their canonical source within deployment scope.
-
-An opt-in instruction example, not an installed setting:
-
-> In explicitly invoked adaptive worker workflows, allow Sol XHigh escalation
-> when the initiating primary is GPT-6.1 Terra, and Astra XHigh when it is
-> GPT-6.1 Sol. Otherwise use no automatic escalation. Keep Luna available for
-> useful bounded assignments.
+authoritative for model and effort pins. An explicit compatible choice or
+restriction in the current request or applicable user guidance takes precedence.
+An enrolled Sol/Luna baseline holds the default, and a separately authorized
+non-Luna assignment is recorded as a deviation. The adaptive default introduces
+no TOML option or preference file.
 
 Resolve policy for the actual initiating primary, rather than a guessed host
 default. Re-read at new assignment boundaries. Existing children retain their
 contracts, settings and write ownership when the user changes the primary or
-guidance. Explicitly enabling a target authorizes suitable assignments within
-the task without a permission question for every spawn; it starts no work and
-does not itself invoke a skill. Disabling a target prevents new assignments,
-while handling an active child follows the user's stop/ownership instructions.
+guidance. Availability alone starts no task. Use the selected target only for
+a concrete assignment whose value justifies the handoff and review. A restriction
+applies to new assignments. Existing work follows explicit stop or handoff instructions.
 
 Native loaded-thread metadata is the qualified primary source. The preview.15
 read-only helper supplies loaded-thread selection; a config default or model

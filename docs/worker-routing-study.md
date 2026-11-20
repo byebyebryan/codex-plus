@@ -12,9 +12,11 @@ evidence; the follow-up does not change the shipped workflows.
 The latest [focused capability research](#focused-capability-evidence-astra-sol-and-terra-2026-11-02)
 compares independent coding evaluations and first-person reports. It revises
 the proposed capability priors without changing installed model selections.
-The subsequent [selected design](worker-routing-design.md#selected-design-primary-luna-and-one-escalation-target)
-uses that evidence for direct primary work, Luna and one opt-in escalation
-target. The earlier three-preference draft is retained as research history.
+The earlier implementation used that evidence for direct primary work, Luna
+and one opt-in escalation target. See the
+[selected design](worker-routing-design.md#selected-design-primary-luna-and-one-escalation-target)
+for the current source defaults. The earlier three-preference draft is retained
+as research history.
 
 Selective delegation and coordination overhead are established research topics.
 The evidence supports keeping the adaptive workflows led by the primary,

@@ -22,8 +22,10 @@ UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.25](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.25)
-records model versions per episode/turn without stopping collection on
+[v0.1.0-preview.26](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.26)
+defaults to Astra eligibility in the explicit adaptive workflows for supported
+Sol and current Terra primaries. Preview.25 records model versions per
+episode/turn without stopping collection on
 version upgrades. An explicit backed-up policy update preserves existing study
 history and limits. Preview.24 added family-based worker preferences, an offline
 resolver and native catalogue discovery. Preview.23 normalized nullable
@@ -50,9 +52,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.25.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.25.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.25.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.26.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.26.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.26.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains

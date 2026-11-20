@@ -1,5 +1,10 @@
 # Implementation handoff
 
+Preview.26 makes Astra XHigh available by default for explicit
+adaptive invocations from supported Sol and current Terra primaries. Calls
+still require a concrete reason. The Luna-only workflows, role pins, and
+Sol/Luna baseline study remain distinct from this default.
+
 Updated 2026-11-18. Preview.25 is published from `0dcb13f` and selected on Snap
 and Starship through published chezmoi `ef77faa`. It corrects preview.24's
 overly strict study version boundary. New studies record exact model/effort per

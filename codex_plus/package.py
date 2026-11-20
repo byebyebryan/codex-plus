@@ -74,9 +74,7 @@ def manifest(files, source_revision):
 
 
 def version_files(version):
-    if version == VERSION:
-        return RUNTIME_FILES
-    if version == '0.1.0-preview.24':
+    if version in (VERSION, '0.1.0-preview.24', '0.1.0-preview.25'):
         return RUNTIME_FILES
     if version in ('0.1.0-preview.22', '0.1.0-preview.23'):
         return PREVIEW_TWENTYTWO_FILES

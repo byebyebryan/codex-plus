@@ -37,11 +37,12 @@ release. Choose the archives you need from its single GitHub release; see
 
 ## Released and source features
 
-**v0.1.0-preview.25** supplies the released workflows shown in these guides. Updating
+**v0.1.0-preview.26** supplies the released workflows shown in these guides. Updating
 documentation or selecting an archive does not reload an existing MCP process.
 
 | Available in | What to expect |
 | --- | --- |
+| Changed in preview.26 | Explicit adaptive workflows make Astra XHigh available by default for supported Sol or current Terra primaries. Luna workflows stay Luna-only. |
 | Fixed in preview.25 | Model upgrades no longer block new-study enrollment. An explicit backed-up update preserves an existing study and its bounds while exact versions remain available for analysis. |
 | Added in preview.24 | Resolve latest available stable worker versions at managed refresh, preserve exact preferences, recognize supported primary families; its original frozen-study policy is superseded by preview.25. |
 | Fixed in preview.23 | Native nullable Unix-second timing fields normalize to UTC; outer record precision remains available for enrollment and worker boundaries. |
@@ -87,12 +88,11 @@ Your client and account must support custom agents, skills and the selected
 models. You select the primary; workflows keep your current primary
 selection.
 
-Start with `$luna-task` for one bounded assignment. Use `$luna-goal-loop` for a
-substantial goal with Luna, or the adaptive `$adaptive-task` / `$adaptive-goal-loop`
-workflows when the primary should choose useful delegation. Your primary owns
-decisions and review. Generic “goal loop” wording does not select a worker. Optional escalation is
-off unless your adaptive request or existing guidance allows one target; see
-[examples and defaults](workers.md#optional-escalation).
+Use `$luna-task` for one bounded assignment or `$luna-goal-loop` for a larger
+goal when Luna should be the only delegated model. Choose `$adaptive-task` or
+`$adaptive-goal-loop` when the primary should also have the option to escalate.
+Your primary owns decisions and review. Generic “goal loop” wording does not
+select a worker. See the [adaptive defaults](workers.md#optional-escalation).
 
 ## Set up monitoring and coordination
 

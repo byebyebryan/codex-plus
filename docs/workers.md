@@ -1,9 +1,8 @@
 # Luna workers and task workflows
 
-Preview.18 includes four native custom agents and seven worker workflows. Your
-current primary keeps decisions, integration and acceptance. Choose an explicit
-Luna workflow, or let an adaptive workflow use direct work, useful Luna delegation
-and one optional escalation target without changing your primary model.
+Your current primary keeps decisions, integration and acceptance. Choose an
+explicit Luna workflow when Luna should be the only delegated model. Choose an
+adaptive workflow when the primary should also have the option to escalate.
 
 ## Model versions
 
@@ -11,8 +10,8 @@ Worker names stay stable across model releases. The native role TOML records
 the concrete model selected during the last requested setup/refresh. The default
 preference is **latest available stable version in that family**, supporting
 XHigh for Sol/Astra/current Terra or Max for Luna. An exact-model preference
-keeps a deliberate older version. This does not change your chosen primary,
-Astra opt-in or explicit Luna-only workflows.
+keeps a deliberate older version. The same routing policy applies across
+supported versions of each family.
 
 For example, one account's catalogue can resolve Sol to `gpt-6.2-sol`, while
 another resolves to `gpt-6.1-sol`. Both use `$sol-task`. No `sol-latest` provider
@@ -53,7 +52,7 @@ component or daemon is required. Keep prior selections when discovery is unavail
 | --- | --- | --- |
 | One bounded task with Luna | `$luna-task` | Delegate one cohesive investigation or implementation to Luna; the primary reviews it. |
 | A substantial goal with Luna | `$luna-goal-loop` | Use Luna across useful bounded assignments until the goal and its checks are complete. |
-| One task with selective delegation | `$adaptive-task` | The primary chooses direct work, useful Luna delegation, or one configured escalation target. |
+| One task with selective delegation | `$adaptive-task` | The primary chooses direct work, useful Luna delegation, or justified escalation. |
 | A substantial goal with selective delegation | `$adaptive-goal-loop` | The primary routes each assignment and owns integration and acceptance across the goal. |
 | One named Sol task | `$sol-task` | Use Sol XHigh for the requested review, validation, investigation or implementation. |
 | One named Astra task | `$astra-task` | Use Astra XHigh for the requested review, validation, investigation or implementation. |
@@ -197,13 +196,13 @@ supported versions while preserving each native role name and effort.
 | Current primary | Selected separately by you, including Sol, Terra or Astra | Decisions, difficult portions, integration, review and acceptance. |
 | `luna-max` | `gpt-6-luna`, reasoning effort `max` | Bounded investigation, implementation and validation with a practical acceptance check. |
 | `sol-xhigh` | `gpt-6.1-sol`, reasoning effort `xhigh` | Optional configured escalation from Terra, or explicitly assigned independent execution. |
-| `astra-xhigh` | `gpt-6-astra`, reasoning effort `xhigh` | Optional configured escalation from Sol or Terra, or explicitly assigned work. |
+| `astra-xhigh` | `gpt-6-astra`, reasoning effort `xhigh` | Escalation from Sol or current Terra in an adaptive workflow, or explicitly assigned work. |
 | `terra-6-1-xhigh` | `gpt-6.1-terra`, reasoning effort `xhigh` | Explicit bounded task only; distinct from legacy GPT-5.6 Terra. |
 
 The Luna workflows use Luna as their only delegated model. If Luna is unavailable,
 the primary explains that limitation rather than silently substituting a paid
-worker. Difficult portions can stay with the primary. The adaptive worker
-workflows use the optional policy below; escalation is off when unset.
+worker. Difficult portions can stay with the primary. Adaptive workflows can
+also escalate under the policy below.
 
 Delegate when the objective, ownership boundary and acceptance check are clear,
 and expected savings justify the handoff and review. A specified migration or
@@ -214,39 +213,27 @@ the package does not promise a universal cost saving.
 
 ## Optional escalation
 
-Choose your primary normally in Codex. In explicitly invoked adaptive workflows,
-use primary/Luna by default, or configure one target for that primary:
+In **preview.26**, explicitly invoking either adaptive skill makes
+Astra XHigh available for justified escalation from a known Sol or current
+Terra primary. Preview.25 requires an opt-in.
 
-| Initiating primary | Optional automatic target | Default |
+| Initiating primary | Default eligible target | Compatible explicit alternative |
 | --- | --- | --- |
-| Supported current Terra family | Sol XHigh OR Astra XHigh | None |
+| Supported current Terra family | Astra XHigh | Sol XHigh |
 | Supported Sol family | Astra XHigh | None |
-| Astra, Luna, another or unknown model | None in V1 | None |
-
-For example, with a Sol primary:
+| Astra, Luna, another or unknown model | None | None |
 
 ```text
 $adaptive-task Review the importer migration and fix any confirmed defects.
-Allow Astra XHigh escalation for this task when a useful independent review
-or unresolved issue warrants it. Keep Luna available for bounded work.
 ```
 
-Or put a soft default in existing user guidance, through the owner of that file:
-
-> In explicitly invoked adaptive worker workflows, allow Sol XHigh when the
-> initiating primary is current Terra, and Astra XHigh when it is Sol.
-> Otherwise use no automatic escalation.
-
-This example installs no preference. Native role files still pin model and
-reasoning effort; no extra TOML setting or Plus preference file is needed.
-The permission is a natural-language instruction interpreted by the primary,
-not a parsed configuration flag or an enforced spending limit.
-Enabling a route starts no work or skill and permits suitable assignments within
-the authorized task without approval for every spawn. A current request can
-change a soft default; native restrictions and permissions remain effective.
-Reviews and implementation share that single target. There is no automatic
-Sol-to-Terra cost offload, default Terra-to-Sol escalation or child-to-child
-escalation chain. The primary keeps acceptance responsibility.
+The primary escalates only when a concrete issue, demanding slice, or useful
+second opinion justifies the handoff and review. For cost-sensitive work, use
+`$luna-task` or `$luna-goal-loop`. The primary also honors a request to rule
+out escalation for a particular run. An enrolled [Sol/Luna baseline](routing-diagnostics.md)
+keeps its study policy. For a Terra primary, an explicit Sol request replaces
+Astra as the one escalation target. Native role files still pin model and
+effort. There is no new setting, automatic Sol-to-Terra route, or escalation chain.
 
 Resolve the initiating primary from reliable loaded-thread metadata at each
 assignment boundary. The read-only `codex-plus-context --primary`
@@ -254,22 +241,12 @@ mode reports configured selection, not completed inference. Worker-only setups
 need no monitoring runtime: if no reliable native selection is exposed, continue
 primary/Luna work and hold automatic escalation. An explicit named-worker
 request remains possible. Host defaults and model self-descriptions are not
-identity evidence. Existing workers retain their contracts, settings and write
-ownership when the primary or policy changes; disabling a target prevents new
-assignments rather than silently cancelling active work.
+identity evidence. When the selected target is unavailable, continue in the
+primary or with useful Luna work. Existing workers retain their contracts and
+ownership until completion or an explicit stop or handoff.
 
-To revoke permission before the next assignment, say:
-
-> Disable automatic escalation for the next assignment. Continue suitable Luna work.
-
-That prevents new target assignments, including reuse of an existing target
-worker for new work. Active workers keep their contracts and ownership until
-completion or an explicit stop/handoff. In the matched native fixture, permission
-omitted, enabled for Astra and revoked produced Luna, Astra and Luna respectively.
-This is bounded instruction-following evidence, not a hard spending control.
-
-The [qualification](worker-escalation-results.md) separates source,
-artifact, native execution and the unavailable local Terra-primary paths.
+The [preview.15 qualification](worker-escalation-results.md) records native
+evidence for the earlier opt-in policy.
 
 ## Native delegation and availability
 
@@ -333,10 +310,10 @@ choice, not the released installation procedure.
 The bundle also contains the separate `skills/html-report` skill. Add it when
 you configure the report component; the seven worker skills above do not install
 that skill or either runtime.
-The `astra-xhigh` role is available for permitted escalation; installing it does
-not opt in to automatic use or update an already loaded conversation. Your client and account must
-support the selected models, custom agents and skills; installation does not
-prove runtime model availability.
+The installed adaptive skills determine when `astra-xhigh` is eligible.
+Installing the role alone changes neither skill policy nor an already loaded
+conversation. Your client and account must support the selected models,
+custom agents and skills.
 
 Preview.17 contains no current `sol-task`, `astra-task` or GPT-6.1 `terra-task`.
 Upgrade through the configuration owner using preview.18's verified archive,

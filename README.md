@@ -51,7 +51,11 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.25** includes seven worker workflows and four current roles.
+**v0.1.0-preview.26** includes seven worker workflows and four current roles.
+
+Preview.26 makes [Astra XHigh available by default](docs/workers.md#optional-escalation)
+inside the explicit adaptive workflows for Sol and current Terra primaries.
+The Luna workflows keep Luna as their only delegated model.
 
 Preview.25 records exact model versions without blocking study enrollment.
 An explicit, backed-up policy update lets an existing study continue across
@@ -83,8 +87,8 @@ review, validation, investigation or implementation without changing your primar
 The old worker-name compatibility entries remain removed.
 It retains optional primary-aware escalation in the two
 adaptive worker workflows, the `astra-xhigh` role, read-only primary selection
-and graceful reporting-only metadata fallback. Escalation defaults off and uses
-your request or existing instructions; explicit Luna workflows remain Luna-only.
+and graceful reporting-only metadata fallback. Explicit Luna workflows use Luna
+as their only delegated model.
 It retains the native-control discovery fix, readable diagnostics, watch history
 and preview rollback support. See [released and source features](docs/getting-started.md#released-and-source-features).
 Updating a guide or checkout does not upgrade an installed runtime.
@@ -208,7 +212,7 @@ handoff is uncertain. Workflows preserve the selected primary model.
 | Current primary | Selected by you in Codex | Selected by you | Decisions, difficult portions, integration, and acceptance |
 | Cheaper worker `luna-max` | `gpt-6-luna` | `max` | Clear, bounded investigation and implementation with practical verification |
 | Optional worker `sol-xhigh` | `gpt-6.1-sol` | `xhigh` | Configured escalation from Terra or explicitly assigned independent execution |
-| Optional worker `astra-xhigh` | `gpt-6-astra` | `xhigh` | Configured escalation from Sol/Terra or explicitly assigned work |
+| Optional worker `astra-xhigh` | `gpt-6-astra` | `xhigh` | Escalation from Sol/Terra or explicitly assigned work |
 
 Delegate to Luna when the objective, responsibility boundary, and acceptance
 check are clear and expected savings justify packaging, review, and possible
@@ -217,13 +221,11 @@ need not solve every implementation detail first. A substantial specified
 migration or focused investigation can qualify. Evolving diagnosis, shared
 decisions, and small remainders often fit primary execution better.
 
-Automatic escalation defaults to none. In the adaptive workflows, Terra can
-opt in to Sol XHigh OR Astra XHigh, and Sol can opt in to Astra XHigh. Set the
-single target in the request or existing applicable user guidance. Reviews and
-implementation share that target; children return gaps to the initiating primary
-without an escalation chain. No automatic Sol-to-Terra offload is introduced.
-Unknown primary metadata holds automatic escalation while primary/Luna work
-remains useful. See [examples and configuration](docs/workers.md#optional-escalation).
+Explicitly invoke an adaptive workflow to make Astra XHigh available when a
+known Sol or current Terra primary has a good reason to
+escalate. The primary still decides whether to call it. A Terra primary can use
+Sol XHigh instead when explicitly requested. Choose a Luna workflow when Luna
+should be the only delegated model. See the [worker guide](docs/workers.md#optional-escalation).
 
 Escalation requires evidence: an unresolved decision, contradictory observations,
 a verification gap, or repeated failure without new evidence. Cross-module work,
@@ -237,8 +239,8 @@ over decisions outside the execution contract.
 | --- | --- | --- |
 | `$luna-task` | One bounded task; no goal management | Luna only; primary handles difficult portions |
 | `$luna-goal-loop` | A substantial goal across cohesive assignments | Luna only; primary handles difficult portions |
-| `$adaptive-task` | One bounded task; no goal management | Primary or selective Luna; one opt-in escalation target |
-| `$adaptive-goal-loop` | A substantial goal, routed per assignment | Primary or selective Luna; one opt-in escalation target |
+| `$adaptive-task` | One bounded task; no goal management | Primary, selective Luna, or justified escalation |
+| `$adaptive-goal-loop` | A substantial goal, routed per assignment | Primary, selective Luna, or justified escalation |
 | `$sol-task` | One bounded task; no goal management | Exact Sol XHigh worker; primary accepts the result |
 | `$astra-task` | One bounded task; no goal management | Exact Astra XHigh worker; primary accepts the result |
 | `$terra-task` | One bounded task; no goal management | Exact GPT-6.1 Terra XHigh worker; primary accepts the result |

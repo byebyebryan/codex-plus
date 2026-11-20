@@ -1,5 +1,18 @@
 # Codex Plus implementation plan
 
+## Preview.26: Astra available in adaptive workflows by default
+
+For explicit adaptive invocations, make Astra XHigh the default eligible
+escalation for supported Sol and current Terra primaries. The primary still
+decides whether a bounded assignment warrants escalation. Keep the explicit
+Terra-to-Sol choice, user instructions, capability checks, and single-target
+boundary. Use the Luna workflows for Luna-only delegation. Neither native
+settings nor role pins need a change.
+
+An enrolled Sol/Luna baseline and explicitly scoped comparison keep their
+declared escalation policy. Validate both skill entrypoints, user guides, and
+the browser routing illustration. Verify publication and managed rollout separately.
+
 ## Selected correction: observe model versions without stopping collection
 
 Completed in preview.25 (`0dcb13f`), selected through published chezmoi `ef77faa`.
@@ -75,13 +88,13 @@ than combining them into an invented score.
 
 | Arm | Policy |
 | --- | --- |
-| A | Shipped adaptive workflow with Sol XHigh primary and selective Luna Max. |
+| A | Adaptive workflow with Sol XHigh primary and selective Luna Max, scoped to Sol and Luna. |
 | B | The same adaptive workflow plus request-scoped eligibility for the existing Terra XHigh role. |
 
 Only Terra eligibility differs. Preserve native primary and role/effort pins,
 acceptance requirements, provider, permissions, tool access and Astra policy.
-For the first comparison, automatic Astra escalation can remain unset in both;
-separately requested help is recorded, not made into a compulsory grading step.
+For a Sol/Luna baseline, explicitly exclude Astra escalation in both arms;
+record separately requested help without making it a grading step.
 Equal permission does not require equal actual model calls.
 
 An A-only soak establishes adaptive behavior and diagnostic readiness. It does

@@ -1,11 +1,12 @@
 # Private routing diagnostics
 
 Preview.22 adds an opt-in ledger and a bounded, read-only native-record reader.
-The current study observes the shipped adaptive Sol XHigh/Luna Max policy A.
-It enables no Terra route, model comparison, automatic escalation or background
-process. An A-only observation cannot establish savings over another policy. A separately
-authorized non-Luna worker can be recorded as `--route other`; this grants no
-permission and flags a policy deviation instead of silently dropping its usage.
+The ledger observes policy A, with Sol XHigh and selective Luna Max. The adaptive
+goal skill holds its default Astra route for an enrolled A episode. A separately
+authorized non-Luna worker can be recorded as `--route other`, which flags a
+policy deviation and keeps its usage visible. The ledger enables no model
+comparison, additional routing permission, or background process. An A-only
+observation cannot establish savings over another policy.
 
 Preview.23 also normalizes nullable integer Unix seconds in native timeline
 fields to UTC. It preserves the outer record timestamp's finer precision for
@@ -44,7 +45,8 @@ runtime, and never restore an old ledger over subsequently recorded goals.
 ## Start and enroll
 
 Ask your agent: “Open a private seven-day/eight-goal A study, then use
-`$adaptive-goal-loop` for naturally selected goals. Keep the observations private.”
+`$adaptive-goal-loop` for naturally selected goals. Use Sol and Luna only for
+enrolled goals, and keep the observations private.”
 
 The operator runs `codex-plus-diagnostics start` once in the intended native
 environment. `CODEX_HOME` selects that environment; its diagnostics directory

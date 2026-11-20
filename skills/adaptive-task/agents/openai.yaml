@@ -1,7 +1,7 @@
 interface:
   display_name: "Adaptive Task"
-  short_description: "Complete a task with Luna and optional escalation"
-  default_prompt: "Use $adaptive-task to complete this bounded task in the primary, delegating clear, verifiable work to Luna when the savings justify the handoff, with automatic escalation off unless one compatible target is explicitly configured."
+  short_description: "Complete a task with Luna and Astra when warranted"
+  default_prompt: "Use $adaptive-task to complete this bounded task in the primary, with Luna for useful handoffs and Astra for justified escalation."
 
 policy:
   allow_implicit_invocation: false

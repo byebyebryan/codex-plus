@@ -1,6 +1,6 @@
 ---
 name: adaptive-goal-loop
-description: Use only when the user invokes $adaptive-goal-loop or explicitly asks to use the adaptive-goal-loop skill. Run a substantial goal in the primary, selectively delegating clear, verifiable assignments to Luna. Escalation uses one opt-in target for the initiating primary. A generic goal loop or discussion of the skill does not activate it.
+description: Use only when the user invokes $adaptive-goal-loop or explicitly asks to use the adaptive-goal-loop skill. Run a substantial goal in the primary, selectively delegating clear, verifiable assignments to Luna. Astra is available for justified escalation from a supported primary. A generic goal loop or discussion of the skill does not activate it.
 ---
 
 # Adaptive Goal Loop
@@ -9,9 +9,9 @@ Activate only through `$adaptive-goal-loop` or an explicit request to use this
 named skill. A generic "goal loop" uses the ordinary workflow; discussing or
 editing this skill does not activate it.
 
-Keep the current primary responsible for decisions, integration, and acceptance;
-selectively use Luna Max and one opt-in escalation target when useful. Route
-each assignment independently. This skill does not change the primary model.
+Keep the current primary responsible for decisions, integration, and acceptance.
+Use Luna Max for suitable handoffs and allow one escalation target when justified.
+Route each assignment independently. This skill does not change the primary model.
 
 ## Establish readiness and the goal
 
@@ -33,7 +33,9 @@ goal instead of replacing it. Do not invent a token budget.
 If `codex-plus-diagnostics` is installed, run
 `codex-plus-diagnostics enroll --if-open --routing-not-started` before routing a new goal. This is a no-op without an
 already opened private study; never start or extend one implicitly. If enrolled,
-retain the returned episode identity. Use the helper's `link` command to record
+retain the returned episode identity and keep the Sol/Luna baseline for that
+episode. A separately authorized exception is recorded as a policy deviation.
+Use the helper's `link` command to record
 meaningful retained work, Luna attempts (including missing controls or failed
 spawns), native thread/turn identities and private contract/review references.
 An exact returned native task path can use `link --worker`; ambiguity requires
@@ -62,7 +64,7 @@ can still suit Luna. Complexity labels, file count, or unfamiliarity alone do
 not decide the route. Do not require a failed Luna attempt before using the
 primary, or impose a delegation quota. Reassess each assignment on its own merits.
 
-## Resolve optional escalation
+## Resolve escalation
 
 Keep the user's native primary and its reasoning setting. At each new assignment
 boundary, read reliable loaded-thread metadata for the initiating primary. When
@@ -73,15 +75,16 @@ If reliable metadata is unavailable, keep primary/Luna work useful and hold
 automatic escalation; worker-only installs need no runtime or new service.
 An explicit user assignment to a named worker remains a separate native action.
 
-Resolve one optional target from the current request or applicable user guidance;
-otherwise use none. A request may override a soft default, but never restrictions
-or native permissions. Valid automatic routes are:
+Resolve at most one escalation target. Astra XHigh is the default for a
+supported Sol or current Terra primary. Honor a compatible explicit choice or
+a restriction on escalation in the request or applicable user guidance. The
+default applies only inside this explicitly invoked workflow.
 
-| Initiating primary | Optional target | Named role |
+| Initiating primary | Default target | Compatible explicit alternative |
 | --- | --- | --- |
-| Supported current Terra family | Sol XHigh OR Astra XHigh, exactly one | `sol-xhigh` OR `astra-xhigh` |
-| Supported Sol family | Astra XHigh | `astra-xhigh` |
-| Astra, Luna, other or unknown | None | No automatic escalation |
+| Supported current Terra family | Astra XHigh (`astra-xhigh`) | Sol XHigh (`sol-xhigh`) |
+| Supported Sol family | Astra XHigh (`astra-xhigh`) | None |
+| Astra, Luna, other or unknown | None | None |
 
 Identify the family from the exact loaded model ID, using the installed
 `codex-plus-workers classify --model MODEL` when useful. Supported stable IDs
@@ -90,26 +93,20 @@ are `gpt-M[.m]-sol` (6.1+), `-astra` and `-luna` (6+), and current `-terra`
 additional route. Native role files hold the concrete model and effort selected
 at the last managed refresh; do not resolve or upgrade models during a task.
 
-Do not guess between conflicting targets. Hold escalation until that choice is
-clear; continue useful primary/Luna work. Do not automatically offload Sol work
-to Terra or escalate Terra to Sol without opt-in. Explicit Luna workflows keep
-Luna as their only delegated model regardless of this setting.
+Hold escalation if instructions conflict or the selected target is unavailable.
+Continue useful primary/Luna work without substituting another escalation
+target. Sol does not automatically offload to Terra. Explicit Luna workflows
+use Luna as their only delegated model.
 
-Use the configured target for a concrete unresolved issue, demanding slice or
-useful second opinion whose benefit justifies handoff and review. Reviews and
-implementation use the same target; no separate review switch or mandatory
-review stage. Higher price alone does not prove a capability improvement.
-Do not require a failed Luna attempt or a diagnostic probe before the first
-useful assignment to a compatible exposed role.
+Use escalation for a concrete unresolved issue, demanding slice, or useful
+second opinion whose value justifies handoff and review. The default makes a
+target available; it creates no routine review, automatic spawn, or requirement
+to try Luna first. Reviews and implementation use the same target.
 
-One target is a model choice, not a one-call quota; bounded corrections may reuse
-it. Children return unresolved gaps to the initiating primary and receive no
-nested-delegation authority. A Terra-to-Sol child must not reapply a Sol-to-Astra
-default. Policy or primary changes affect the next assignment only: preserve
-active children's contracts, settings and write ownership. Disabling a target
-admits no new target assignments; handle active work under explicit stop and
-ownership instructions. Enabling a target starts no work, invokes no skill and
-needs no approval per suitable assignment within the authorized task.
+Reuse that target for bounded corrections when useful. Children return gaps to
+the initiating primary and receive no nested-delegation authority. A policy or
+primary change applies to new assignments. Active children retain their
+contracts, settings, and ownership until completion or an explicit stop or handoff.
 
 ## Discover native delegation
 
@@ -157,7 +154,7 @@ An investigation or review returns findings and evidence without implementation
 edits. Implementation requires explicit write ownership. Call the declared
 native spawn control directly, explicitly selecting the
 named role: for Luna, use `agent_type="luna-max"` and `fork_turns="none"` for the
-self-contained contract. For configured escalation select exactly `sol-xhigh`
+self-contained contract. For escalation select exactly `sol-xhigh`
 or `astra-xhigh` as resolved above, also with `fork_turns="none"`. Honor the
 declared client schema and role/model rules; a task label is not role selection. Use one writer by default and
 reuse it for related corrections. Do not duplicate its implementation. Use parallel
@@ -177,7 +174,7 @@ changes, and test gaps. Send ordinary defects back as bounded corrections.
 If the same failure repeats without new evidence, or a decision or verification
 gap emerges, have the primary diagnose or take over the difficult portion.
 Before changing write ownership, obtain the handoff or stop the writer and
-inspect partial changes. Preserve useful work. A subsequent escalation still requires the configured
+inspect partial changes. Preserve useful work. A subsequent escalation still requires the selected
 target and a concrete benefit; avoid cycling between workers. Return clear
 remaining work to Luna when useful.
 
