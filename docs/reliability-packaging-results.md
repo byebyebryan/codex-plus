@@ -1,5 +1,31 @@
 # Everyday reliability and native packaging results
 
+## Preview.26 default Astra publication and rollout
+
+Release `v0.1.0-preview.26`, source `66262c6`, makes Astra XHigh the default
+eligible escalation in explicitly invoked adaptive workflows for supported Sol
+and current Terra primaries. The primary calls it only for justified work and
+keeps acceptance. The Luna workflows keep Luna-only delegation. User restrictions,
+the Sol/Luna study boundary, and explicit Sol escalation from Terra remain available.
+
+All five public downloads match the verified build and GitHub digests. The
+155-file gate, 519 tests on Python 3.11 and 3.14, affected skill validators, and
+Pages publication pass. The current component readers verify the published
+preview.25 monitoring and reporting archives for rollback.
+
+Published chezmoi `607935f` updates the release URLs, revision, checksums, and
+report validator together. The portable quick gate, worker/split checks, and
+isolated report apply pass. Snap default and Starship select all three preview.26
+components. Snap Work also receives the preview.26 worker files. The scoped
+applies verify 54 native role and skill files and converge without drift. The
+installed role models stay at their previously selected versions.
+
+Fresh stdio advertises 17 monitoring and four reporting tools on both hosts.
+Native owner identities, prior releases, native config and authentication, and
+the private study ledger remain intact. This verifies installed files and fresh
+protocols. Worker behavior and already loaded instructions adopt and can be
+verified through normal native use. Carbon was outside this rollout.
+
 ## Preview.25 version-observation correction
 
 Release `v0.1.0-preview.25`, source `0dcb13f`, corrects a study enrollment guard

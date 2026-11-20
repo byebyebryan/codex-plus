@@ -102,26 +102,25 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Managed source selects workers, monitoring and reporting **preview.25**,
-source `0dcb13f`, through published chezmoi pins `ef77faa`.
+Managed source selects workers, monitoring and reporting **preview.26**,
+source `66262c6`, through published chezmoi pins `607935f`.
 
 | Target | Installed selection | Runtime evidence |
 | --- | --- | --- |
-| Snap default | Preview.25; Sol 6.1, Astra 6, Luna 6 and current Terra 6.1 roles. | Installed catalogue/plan match; fresh monitoring/reporting protocols verify. |
-| Snap Work | Preview.24 worker definitions and skills; prior concrete model selections retained. | File/mode verification; no new owner or inference started. |
-| Starship | Preview.25; Sol/Astra 6.2, Luna 6 and current Terra 6.1 roles. | Installed catalogue/plan match; fresh monitoring/reporting protocols verify. |
-| Carbon | Prior preview.23 retained. | Outside the requested rollout. |
+| Snap default | Preview.26; Sol 6.1, Astra 6, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
+| Snap Work | Preview.26 worker definitions and skills; existing concrete model selections retained. | Native file bytes and modes verified in its separate home. |
+| Starship | Preview.26; Sol/Astra 6.2, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
+| Carbon | Outside this rollout. | No new acceptance check. |
 
-The 155-file gate, 519 tests on Python 3.11/3.14, ten skill validators, exact
-release verification and actual preview.24 runtime/report rollback pass. The
-affected managed/quick gates and actual isolated worker/report applies pass;
-the prior full managed gate retains its original scope. All
-54 scoped native role/skill files verify. Native config/authentication, captured
-bindings/mtimes, owners and prior releases remain unchanged. Real 6.2 worker
-inference is not claimed from catalogue selection. Existing loaded MCPs and
-workers may retain prior code/settings; no restart or global reload was issued.
+The 155-file gate, 519 tests on Python 3.11/3.14, affected skill validators, and
+public release verification pass. The new component verifiers accept the actual
+published preview.25 monitoring and report archives. The managed quick gate,
+affected source checks, and isolated report apply pass. The live checks verify
+54 scoped role and skill files and converged diffs. Native config, authentication,
+owner identities, and prior release paths remain intact. Existing sessions and
+MCP processes can adopt the change through normal native lifecycle.
 
-See the [delivery receipt](reliability-packaging-results.md#preview25-version-observation-correction)
+See the [delivery receipt](reliability-packaging-results.md#preview26-default-astra-publication-and-rollout)
 and the [worker model guide](workers.md#model-versions). Ordinary apply projects
 reviewed selections without querying native models. A later requested refresh
 can resolve newer account-specific candidates through the same owner.
