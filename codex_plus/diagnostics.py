@@ -1,4 +1,4 @@
-"""Opt-in private A-policy bookkeeping and read-only native usage collection."""
+"""Read-only native usage snapshots and opt-in private routing studies."""
 from __future__ import annotations
 
 import argparse
@@ -514,6 +514,87 @@ def episode_for(study, key):
     return study['episodes'][key]
 
 
+def _turn_roots(records):
+    roots = {}
+    for record in records:
+        payload = record['payload']
+        if record['type'] == 'event_msg' and payload.get('type') == 'task_started':
+            turn = payload.get('turn_id')
+            root = payload.get('root_turn_id')
+            if isinstance(turn, str) and turn:
+                roots.setdefault(turn, set()).add(root if isinstance(root, str) and root else None)
+    return roots
+
+
+def current_usage(worker_paths):
+    """Measure the live native root and explicitly named direct workers."""
+    from .diagnostic_records import summarize
+
+    paths = dict.fromkeys(worker_paths)
+    if len(paths) >= MAX_THREADS:
+        raise ValueError('too many worker references')
+    primary = identity(os.environ.get('CODEX_THREAD_ID'))
+    source = NativeRecords(resolve().home)
+    records, reader_gaps, parent = source.read(primary)
+    if parent is not None:
+        raise ValueError('usage requires the invoking native primary')
+    roots = _turn_roots(records)
+    terminal = {record['payload'].get('turn_id') for record in records
+                if record['type'] == 'event_msg'
+                and record['payload'].get('type') in ('task_complete', 'turn_aborted')
+                and isinstance(record['payload'].get('turn_id'), str)}
+    live_turns = roots.keys() - terminal
+    if len(live_turns) != 1:
+        raise ValueError('current native turn is unavailable or ambiguous')
+    current = roots[next(iter(live_turns))]
+    if len(current) != 1 or None in current:
+        raise ValueError('current native root is unavailable or ambiguous')
+    root = next(iter(current))
+    primary_turns = {turn for turn, observed in roots.items() if observed == current}
+    gaps = {'primary': set(reader_gaps) | {'current_turn_in_progress'}, 'worker': set()}
+    if roots.get(root) != current or any(root in observed and observed != current for observed in roots.values()):
+        gaps['primary'].add('primary_root_history_incomplete')
+    records_by_thread = {primary: records}
+    selected = {primary: primary_turns}
+    related = primary_turns | current
+    for path in paths:
+        try:
+            thread = source.worker(primary, path)
+            child_records, child_gaps, owner = source.read(thread)
+            if owner != primary or thread == primary:
+                raise ValueError('worker ancestry does not match the primary')
+        except (OSError, ValueError, sqlite3.Error):
+            gaps['worker'].add('named_worker_unavailable')
+            continue
+        child_roots = _turn_roots(child_records)
+        child_turns = {turn for turn, observed in child_roots.items()
+                       if len(observed) == 1 and observed <= related}
+        gaps['worker'].update(child_gaps)
+        if not child_turns or any(len(observed) != 1 or None in observed for observed in child_roots.values()):
+            gaps['worker'].add('worker_turn_scope_incomplete')
+        if child_turns:
+            records_by_thread[thread] = child_records
+            selected[thread] = child_turns
+
+    accounting = summarize(records_by_thread, selected, primary_thread_id=primary)
+    for thread in accounting['threads']:
+        if thread['coverage'].get('unjoined_usage_record_count'):
+            gaps[thread['actor']].add('unjoined_usage_records')
+        if thread['actor'] == 'worker' and any(
+                not (turn['events']['completed'] or turn['events']['aborted']) for turn in thread['turns']):
+            gaps['worker'].add('selected_turn_terminal_evidence_missing')
+    rows = accounting['usage_by_context']
+    for row in rows:
+        if row['context_status'] != 'known':
+            gaps[row['actor']].add('model_or_effort_unattributed')
+    for row in rows:
+        total = row['categories']['total_tokens']
+        row['coverage'] = ('unavailable' if total['unambiguous_sum'] is None else
+                           'partial' if gaps[row['actor']] or not total['complete'] else 'recorded')
+    return {'scope': 'current_native_root_and_named_workers', 'usage_by_context': rows,
+            'source_gaps': {actor: sorted(codes) for actor, codes in gaps.items()}}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--state-root', type=Path, help='Private diagnostics directory; not a native home')
@@ -545,8 +626,14 @@ def main(argv=None):
     outcome.add_argument('--user-intervention', choices=('none', 'clarification', 'correction',
                                                        'rescue', 'unknown'), default='unknown')
     collect = sub.add_parser('collect'); collect.add_argument('episode')
+    usage = sub.add_parser('usage', help='Summarize native usage for the current run without a study')
+    usage.add_argument('--worker', action='append', default=[], metavar='PATH',
+                       help='Exact native collaboration task path (repeat for workers in this run)')
     args = parser.parse_args(argv)
     try:
+        if args.command == 'usage':
+            print(json.dumps(current_usage(args.worker), sort_keys=True))
+            return 0
         ledger = Ledger(args.state_root)
         if args.command == 'allow-model-upgrades':
             result = ledger.allow_model_upgrades()

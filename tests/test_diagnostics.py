@@ -19,8 +19,8 @@ def record(kind, **payload):
     return {'type': kind, 'timestamp': '2030-01-01T00:00:00Z', 'payload': payload}
 
 
-def run_records(turn='turn-one', model='gpt-6.1-sol', effort='xhigh', thread='parent-a'):
-    return [record('event_msg', type='task_started', turn_id=turn),
+def run_records(turn='turn-one', model='gpt-6.1-sol', effort='xhigh', thread='parent-a', *, root=None):
+    records = [record('event_msg', type='task_started', turn_id=turn),
             record('turn_context', turn_id=turn, model=model, effort=effort),
             record('token_usage_record', thread_id=thread, turn_id=turn,
                    response_id=turn + '-response', session_id='session-a', usage={
@@ -28,6 +28,9 @@ def run_records(turn='turn-one', model='gpt-6.1-sol', effort='xhigh', thread='pa
                        'output_tokens': 4, 'reasoning_output_tokens': 1, 'total_tokens': 14}),
             record('event_msg', type='task_complete', turn_id=turn,
                    last_agent_message='PRIVATE MESSAGE CONTENT')]
+    if root is not None:
+        records[0]['payload']['root_turn_id'] = root
+    return records
 
 
 class DiagnosticTests(unittest.TestCase):
@@ -375,6 +378,53 @@ class DiagnosticTests(unittest.TestCase):
         self.assertIsNone(self.ledger.status()['primary_selection'])
         self.assertEqual(next(iter(self.ledger.read()['episodes'].values()))['primary_selection'],
                          {'model': 'gpt-6.2-sol', 'effort': 'xhigh'})
+
+    def test_usage_reads_current_root_and_named_workers_without_touching_study(self):
+        primary = (run_records('old', root='old') + run_records('goal', root='goal')
+                   + run_records('continued', root='goal')[:-1])
+        self.add_thread('parent-a', primary)
+        luna = run_records('past-luna', 'gpt-6-luna', 'max', 'luna', root='old')
+        luna += run_records('related-luna', 'gpt-6-luna', 'max', 'luna', root='goal')
+        luna += run_records('correction', 'gpt-6-luna', 'max', 'luna', root='continued')
+        self.add_thread('luna', luna, 'parent-a')
+        self.add_thread('astra', run_records('review', 'gpt-6.2-astra', 'xhigh', 'astra', root='goal'), 'parent-a')
+        self.add_thread('unrelated', run_records('unused', thread='unrelated', root='goal'), 'parent-a')
+        before = {path: path.read_bytes() for path in self.home.iterdir()}
+        output = io.StringIO()
+        with (patch.dict(os.environ, {'CODEX_HOME': str(self.home), 'CODEX_THREAD_ID': 'parent-a'}),
+              contextlib.redirect_stdout(output)):
+            self.assertEqual(d.main(['--state-root', str(self.root), 'usage', '--worker', '/root/luna',
+                                     '--worker', '/root/astra', '--worker', '/root/luna']), 0)
+        rows = json.loads(output.getvalue())['usage_by_context']
+        self.assertEqual({(r['actor'], r['model'], r['effort']):
+                          (r['categories']['total_tokens']['unambiguous_sum'], r['coverage']) for r in rows},
+                         {('primary', 'gpt-6.1-sol', 'xhigh'): (28, 'partial'),
+                          ('worker', 'gpt-6-luna', 'max'): (28, 'recorded'),
+                          ('worker', 'gpt-6.2-astra', 'xhigh'): (14, 'recorded')})
+        self.assertEqual({path: path.read_bytes() for path in self.home.iterdir()}, before)
+        self.assertFalse(self.root.exists())
+        self.assertNotIn('PRIVATE MESSAGE CONTENT', output.getvalue())
+
+    def test_usage_marks_unavailable_or_unrelated_named_workers_and_missing_counts(self):
+        self.add_thread('parent-a', run_records('active', root='active')[:-1])
+        self.add_thread('unsettled', run_records('worker', 'gpt-6-luna', 'max', 'unsettled', root='active')[:2], 'parent-a')
+        self.add_thread('old', run_records('worker', thread='old', root='other'), 'parent-a')
+        self.add_thread('foreign', run_records('worker', thread='foreign', root='active'), 'other-parent')
+        with patch.dict(os.environ, {'CODEX_HOME': str(self.home), 'CODEX_THREAD_ID': 'parent-a'}):
+            result = d.current_usage(['/root/old', '/root/foreign', '/root/unsettled'])
+        worker_rows = [row for row in result['usage_by_context'] if row['actor'] == 'worker']
+        self.assertEqual([(r['model'], r['coverage'], r['categories']['total_tokens']['unambiguous_sum'])
+                          for r in worker_rows], [('gpt-6-luna', 'unavailable', None)])
+        self.assertEqual(set(result['source_gaps']['worker']), {
+            'named_worker_unavailable', 'worker_turn_scope_incomplete', 'selected_turn_terminal_evidence_missing'})
+
+    def test_usage_refuses_to_guess_the_current_native_root(self):
+        for records in (run_records('unlinked')[:-1], run_records('finished', root='finished'),
+                        run_records('first', root='first')[:-1] + run_records('second', root='second')[:-1]):
+            self.add_thread('parent-a', records)
+            with (patch.dict(os.environ, {'CODEX_HOME': str(self.home), 'CODEX_THREAD_ID': 'parent-a'}),
+                  self.assertRaisesRegex(ValueError, 'current native (root|turn)')):
+                d.current_usage([])
 
     def test_old_worker_turn_and_shared_worker_turn_are_not_reassigned(self):
         key = self.enroll()

@@ -193,6 +193,16 @@ deployment, and roadmap changes within existing authorization.
 Mark the goal complete only when the outcome and exit gate are satisfied with
 no required work remaining. Otherwise follow the goal tool's blocking rules;
 do not mark an active goal paused without a user request. Report the outcome,
-routing rationale, worker and primary contributions, validation, remaining
-uncertainty, and repository state. Include total usage or cost only when the
-runtime provides it.
+validation, remaining uncertainty, and repository state. Briefly say what
+the primary and each worker actually did and why delegation was useful. Use
+observed model/effort where available and label unknown attribution. For
+primary-only work, a short line is enough.
+
+When available, take one `codex-plus-diagnostics usage` snapshot near finish.
+Pass `--worker PATH` for each exact native collaboration task path used under
+the current native root. Add observed per-model token counts when useful.
+Label partial counts, including the active primary turn. If the goal spans
+several native roots, identify the snapshot as current-root usage. Use broader
+counts only when their scope is verified, for example from an enrolled episode.
+Cached input is part of input. Treat counts as tokens only. The snapshot needs
+no study. If telemetry is unavailable, finish with the contribution summary.

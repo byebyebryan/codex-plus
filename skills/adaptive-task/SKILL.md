@@ -158,5 +158,15 @@ checks only for an unresolved risk. Complete corrections within the original tas
 silently expanding scope or creating a goal.
 
 Keep commits, pushes, deployment, and other external actions within existing
-authorization. Report the outcome, routing rationale, worker and primary
-contributions, validation, remaining uncertainty, and repository state.
+authorization. Report the outcome, validation, remaining uncertainty, and
+repository state. Briefly say what the primary and each worker actually did
+and why delegation was useful. Use observed model/effort where available and
+label unknown attribution. For primary-only work, a short line is enough.
+
+When available, take one `codex-plus-diagnostics usage` snapshot near finish.
+Pass `--worker PATH` for each exact native collaboration task path used in
+this run. Use the snapshot only when its current native root matches this
+task. Add observed per-model token counts when useful. Label partial counts,
+including the active primary turn, and leave missing usage unknown. Cached
+input is part of input. Treat counts as tokens only. The snapshot needs no
+study. If telemetry is unavailable, finish with the contribution summary.

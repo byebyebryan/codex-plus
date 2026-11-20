@@ -107,6 +107,11 @@ resolve a difficult portion and then give Luna the next suitable assignment.
 Use `$adaptive-task` or `$adaptive-goal-loop` for the same task or goal when you want
 the primary to choose whether delegation is useful for each assignment.
 
+The adaptive source candidate adds a short closing summary of who did what.
+When native usage is available, the summary can include per-model token counts
+for the current run. Contributions can still be reported on a workers-only
+install. [How usage is scoped](routing-diagnostics.md#current-run-usage).
+
 <a id="choose-sol-or-astra-explicitly-source-candidate"></a>
 
 ### Choose Sol or Astra explicitly

@@ -13,6 +13,20 @@ fields to UTC. It preserves the outer record timestamp's finer precision for
 episode boundaries, leaves null values unknown and rejects invalid timing data
 without copying arbitrary strings into output.
 
+## Current run usage
+
+The source candidate adds `codex-plus-diagnostics usage` for a read-only
+snapshot of the invoking primary's active native root. Pass `--worker PATH`
+once per participating worker using the exact task path returned by native
+collaboration. The reader counts observed responses within that root and its
+named, directly linked workers. The command requires no study and prints only
+aggregate usage, model/effort metadata, and coverage cues.
+
+The primary's running turn has a partial count, and an unavailable or
+unattributed count stays unknown. A goal resumed under a new native root may
+span more work than this snapshot. Cached input is included in input tokens.
+The counts are native usage observations, with billing outside their scope.
+
 ## Model-version tracking
 
 New studies record exact model/effort on each episode and native turn. Supported

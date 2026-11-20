@@ -122,7 +122,8 @@ class PackageTests(unittest.TestCase):
     def test_recent_previews_keep_their_inventory_during_upgrade_and_rollback(self):
         for number, inventory, has_diagnostics in (
                 (21, package.PREVIEW_NINETEEN_FILES, False),
-                (22, package.PREVIEW_TWENTYTWO_FILES, True)):
+                (22, package.PREVIEW_TWENTYTWO_FILES, True),
+                (26, package.RUNTIME_FILES, True)):
             with self.subTest(version=number):
                 version = '0.1.0-preview.' + str(number)
                 revision = ('e' if number == 21 else 'f') * 40
