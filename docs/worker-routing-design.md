@@ -90,7 +90,8 @@ user a direct way to limit delegation to Luna.
 | --- | --- | --- |
 | Supported current Terra family | Astra XHigh | Sol XHigh |
 | Supported Sol family | Astra XHigh | None |
-| Astra, Luna, another model or unknown identity | None | None |
+| Supported Astra family | None | Sol XHigh delegated work for an opted-in scope or eligible study B context |
+| Luna, another model or unknown identity | None | None |
 
 Luna Max remains available for cohesive, bounded, verifiable assignments in
 every supported workflow. Such work can be substantial implementation or
@@ -177,11 +178,11 @@ activate no worker skill.
 
 | Case | Required result |
 | --- | --- |
-| Terra/Sol with no target | Primary/Luna only; no inferred Sol/Astra opt-in. |
+| Terra/Sol with escalation disabled | Primary/Luna only. An unrestricted request uses the default target above. |
 | Terra with Sol selected | Sol can review or own a bounded slice; Astra is not implicitly authorized. |
 | Terra with Astra selected | Use Astra when justified; Sol is not an automatic intermediate step. |
 | Sol with Astra selected | Additional help can use Astra for a concrete reason; no Terra cost offload. |
-| Astra primary | Direct work/Luna; no automatic mid-tier worker route. |
+| Astra primary | Default to direct work or Luna. Opt-in permits a bounded Sol handoff where local decisions justify independent judgment. Astra retains acceptance. |
 | Luna/other/unknown primary | Conservative primary/Luna path; no guessed escalation binding. |
 | Exact worker identity/effort differs from the target | Report the conflict; do not silently retune, alias or claim the requested selection ran. |
 | Native controls exposed despite empty Code Mode search | Discover and call the real native surface directly. |

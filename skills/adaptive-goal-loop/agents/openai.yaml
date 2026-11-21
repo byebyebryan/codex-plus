@@ -1,7 +1,7 @@
 interface:
   display_name: "Adaptive Goal Loop"
-  short_description: "Run a goal with Luna and Astra when warranted"
-  default_prompt: "Use $adaptive-goal-loop to complete this goal in the primary, with Luna for useful handoffs and Astra for justified escalation."
+  short_description: "Run a goal with primary-aware delegation"
+  default_prompt: "Use $adaptive-goal-loop to complete this goal in the primary, using the worker policy for my selected primary."
 
 policy:
   allow_implicit_invocation: false

@@ -14,7 +14,7 @@ coordinator owns bounded observation, timers, event admission and receipts.
 | Worker bundle | `luna-max`, `sol-xhigh`, `astra-xhigh`, `terra-6-1-xhigh`; seven workflow skills | Explicit named tasks and adaptive/Luna workflows; primary retains decisions and acceptance. |
 | Development source | Tests, validators, guides and research reports | Implementation and acceptance evidence; distinct from installed immutable artifacts. |
 
-Codex Plus `v0.1.0-preview.27` unifies workers, monitoring and reporting under one
+Codex Plus `v0.1.0-preview.28` unifies workers, monitoring and reporting under one
 version, source commit and release. Optional archives retain each component's
 dependencies and configuration. Managed source selects preview.27
 artifacts from `877591e`. The rollout verifies Snap default and Work plus

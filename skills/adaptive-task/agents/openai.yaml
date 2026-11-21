@@ -1,7 +1,7 @@
 interface:
   display_name: "Adaptive Task"
-  short_description: "Complete a task with Luna and Astra when warranted"
-  default_prompt: "Use $adaptive-task to complete this bounded task in the primary, with Luna for useful handoffs and Astra for justified escalation."
+  short_description: "Complete a task with primary-aware delegation"
+  default_prompt: "Use $adaptive-task to complete this bounded task in the primary, using the worker policy for my selected primary."
 
 policy:
   allow_implicit_invocation: false

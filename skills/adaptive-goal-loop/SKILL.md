@@ -1,6 +1,6 @@
 ---
 name: adaptive-goal-loop
-description: Use only when the user invokes $adaptive-goal-loop or explicitly asks to use the adaptive-goal-loop skill. Run a substantial goal in the primary, selectively delegating clear, verifiable assignments to Luna. Astra is available for justified escalation from a supported primary. A generic goal loop or discussion of the skill does not activate it.
+description: Use only when the user invokes $adaptive-goal-loop or explicitly asks to use the adaptive-goal-loop skill. Run a substantial goal in the primary, selectively delegating clear, verifiable assignments to Luna. Sol/Terra primaries can escalate to Astra. An Astra primary can delegate to Sol on opt-in. A generic goal loop or discussion of the skill does not activate it.
 ---
 
 # Adaptive Goal Loop
@@ -10,7 +10,8 @@ named skill. A generic "goal loop" uses the ordinary workflow; discussing or
 editing this skill does not activate it.
 
 Keep the current primary responsible for decisions, integration, and acceptance.
-Use Luna Max for suitable handoffs and allow one escalation target when justified.
+Use Luna Max for suitable handoffs. The primary-specific policy below may allow
+one additional worker for a justified assignment.
 Route each assignment independently. This skill does not change the primary model.
 
 ## Establish readiness and the goal
@@ -30,7 +31,7 @@ When execution is ready and goal tools are available, create the explicitly
 requested goal or continue a matching active goal. Report a conflicting active
 goal instead of replacing it. Do not invent a token budget.
 
-If `codex-plus-diagnostics` is installed, run
+For a known Sol primary, if `codex-plus-diagnostics` is installed, run
 `codex-plus-diagnostics enroll --if-open --routing-not-started` before routing a new goal. This is a no-op without an
 already opened private study; never start or extend one implicitly. If enrolled,
 retain the returned episode identity and keep the Sol/Luna baseline for that
@@ -64,7 +65,7 @@ can still suit Luna. Complexity labels, file count, or unfamiliarity alone do
 not decide the route. Do not require a failed Luna attempt before using the
 primary, or impose a delegation quota. Reassess each assignment on its own merits.
 
-## Resolve escalation
+## Resolve worker eligibility
 
 Keep the user's native primary and its reasoning setting. At each new assignment
 boundary, read reliable loaded-thread metadata for the initiating primary. When
@@ -84,7 +85,46 @@ default applies only inside this explicitly invoked workflow.
 | --- | --- | --- |
 | Supported current Terra family | Astra XHigh (`astra-xhigh`) | Sol XHigh (`sol-xhigh`) |
 | Supported Sol family | Astra XHigh (`astra-xhigh`) | None |
-| Astra, Luna, other or unknown | None | None |
+| Supported Astra family | None | Sol XHigh delegation under the opt-in below |
+| Luna, other or unknown | None | None |
+
+With an Astra primary, direct work and Luna are the default. Allow Sol only
+when the user permits this route for the current scope or an eligible private
+study assignment returns arm B. Apply direct-only, Luna-only, named assignments,
+exclusions and study restrictions first. An explicit named review covers that
+review and its corrections. Recheck permission at each new assignment.
+
+Give Sol a cohesive outcome and acceptance check when consequential local
+decisions remain and independent judgment is likely to save Astra execution
+or repair. State which decisions Sol owns and which it should return. Prefer
+Luna if it can meet the same check with comparable supervision. Keep work in
+Astra if the finding could change the goal or if acceptance would repeat the
+investigation. Sol can take the first assignment. Astra accepts the result.
+
+For ordinary unrestricted work with a known Astra primary and the diagnostics
+helper installed, run this before decomposition or routing. Supply the actual
+acceptance check.
+
+```sh
+codex-plus-diagnostics astra-study assign --workflow goal --check "prospective acceptance check"
+```
+
+Skip setup, probes, replays, already-routed work and requests
+that prescribe a worker or policy. Keep continuations in their existing study
+and arm, including through a primary change. Never count one context in both
+studies. In the Astra study, A permits Astra/Luna. B also permits Sol. If no assignment is returned,
+use the normal request policy. A closed or unavailable helper grants no new
+permission. For a continuing B context, recheck its assignment before a new
+Sol handoff after a pause. A final outcome or expired follow-up ends study
+permission. Keep later overrides and failed attempts in the assigned arm.
+
+In an enrolled context use `codex-plus-diagnostics astra-study note --text "…"`
+at routing and first return. Add `--final` to the closing outcome note.
+Record owner and reason, the alternative to a Sol handoff,
+observed role/model/effort, first return, repairs, takeover, final acceptance
+and any user rescue. Include the scoped usage snapshot or a private reference
+when available. Keep missing evidence unknown. See the
+[operator guide](https://dev.byebyebryan.com/codex-plus/routing-diagnostics/#astra-primary-daily-study).
 
 Identify the family from the exact loaded model ID, using the installed
 `codex-plus-workers classify --model MODEL` when useful. Supported stable IDs
@@ -154,7 +194,8 @@ An investigation or review returns findings and evidence without implementation
 edits. Implementation requires explicit write ownership. Call the declared
 native spawn control directly, explicitly selecting the
 named role: for Luna, use `agent_type="luna-max"` and `fork_turns="none"` for the
-self-contained contract. For escalation select exactly `sol-xhigh`
+self-contained contract. For an opted-in Astra-to-Sol handoff select `sol-xhigh` with
+`fork_turns="none"`. For escalation select exactly `sol-xhigh`
 or `astra-xhigh` as resolved above, also with `fork_turns="none"`. Honor the
 declared client schema and role/model rules; a task label is not role selection. Use one writer by default and
 reuse it for related corrections. Do not duplicate its implementation. Use parallel

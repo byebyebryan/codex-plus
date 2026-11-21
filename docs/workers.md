@@ -2,7 +2,7 @@
 
 Your current primary keeps decisions, integration and acceptance. Choose an
 explicit Luna workflow when Luna should be the only delegated model. Choose an
-adaptive workflow when the primary should also have the option to escalate.
+adaptive workflow for primary-specific delegation. Astra can use Sol on opt-in.
 
 ## Model versions
 
@@ -226,11 +226,26 @@ Terra primary. Preview.25 requires an opt-in.
 | --- | --- | --- |
 | Supported current Terra family | Astra XHigh | Sol XHigh |
 | Supported Sol family | Astra XHigh | None |
-| Astra, Luna, another or unknown model | None | None |
+| Supported Astra family | None | Sol XHigh for delegated work on opt-in |
+| Luna, another or unknown model | None | None |
 
 ```text
 $adaptive-task Review the importer migration and fix any confirmed defects.
 ```
+
+From an Astra primary, the default is to keep work in Astra or hand a
+verifiable assignment to Luna. In preview.28 you can permit Sol for one
+request with either adaptive skill.
+
+```text
+$adaptive-task Review the importer migration. You may delegate to Sol if useful.
+```
+
+Sol is a good fit when the acceptance check is clear but the worker must make
+consequential local decisions. Astra keeps cross-cutting decisions and accepts
+the result. If Luna could meet the same check with comparable supervision,
+prefer Luna. For a review that specifically requires Sol, use `$sol-task`.
+An operator can also open a bounded [Astra-primary daily study](routing-diagnostics.md#astra-primary-daily-study).
 
 The primary escalates only when a concrete issue, demanding slice, or useful
 second opinion justifies the handoff and review. For cost-sensitive work, use

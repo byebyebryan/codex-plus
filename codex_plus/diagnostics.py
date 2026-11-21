@@ -8,6 +8,7 @@ import fcntl
 import json
 import os
 from pathlib import Path
+import secrets
 import sqlite3
 import stat
 import tempfile
@@ -25,6 +26,17 @@ LEGACY_VERSION_POLICY = 'legacy-fixed-gpt-6.1-sol'
 LEGACY_PRIMARY_SELECTION = {'model': 'gpt-6.1-sol', 'effort': 'xhigh'}
 OUTCOMES = ('accepted_first_review', 'minor_correction', 'substantial_repair',
             'primary_takeover', 'unresolved', 'cancelled')
+
+ASTRA_STUDY_POLICY = 'adaptive-astra-primary-v1'
+ASTRA_STUDY_MODEL = 'gpt-6.2-astra'
+ASTRA_STUDY_EFFORT = 'xhigh'
+ASTRA_STUDY_CONTEXT_LIMIT = 12
+ASTRA_STUDY_INTAKE_DAYS = 14
+ASTRA_STUDY_FOLLOWUP_DAYS = 2
+ASTRA_STUDY_MAX_BYTES = 2 * 1024 * 1024
+ASTRA_STUDY_MAX_TEXT_BYTES = 512
+ASTRA_STUDY_MAX_NOTES = 32
+ASTRA_STUDY_ARMS = ('A', 'B')
 
 
 def _version_policy(study):
@@ -57,6 +69,45 @@ def private_file(path, flags):
         os.close(fd)
         raise ValueError('diagnostic files must be owned private regular files')
     return fd
+
+
+def check_private_directory(path, label='diagnostic directory'):
+    info = Path(path).lstat()
+    if (not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid()
+            or info.st_mode & 0o077 or Path(path).resolve() != Path(path)):
+        raise ValueError(f'{label} must be owned, private and without symlinks')
+
+
+@contextmanager
+def private_directory_write(root, check, read):
+    root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    check()
+    fd = private_file(root / '.lock', os.O_RDWR | os.O_CREAT)
+    with os.fdopen(fd, 'w') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        yield read()
+
+
+def atomic_private_json(root, filename, value, *, max_bytes=None):
+    payload = (json.dumps(value, sort_keys=True, indent=2) + '\n').encode('utf-8')
+    if max_bytes is not None and len(payload) > max_bytes:
+        raise ValueError('private study exceeds its serialized size bound')
+    fd, name = tempfile.mkstemp(prefix='.study-', dir=root)
+    try:
+        os.fchmod(fd, 0o600)
+        with os.fdopen(fd, 'wb') as stream:
+            stream.write(payload)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(name, root / filename)
+        directory_fd = os.open(root, os.O_RDONLY | getattr(os, 'O_DIRECTORY', 0))
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    finally:
+        if os.path.exists(name):
+            os.unlink(name)
 
 
 class Ledger:
@@ -97,31 +148,15 @@ class Ledger:
         return study
 
     def check_root(self):
-        info = self.root.lstat()
-        if (not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid()
-                or info.st_mode & 0o077 or self.root.resolve() != self.root):
-            raise ValueError('diagnostic directory must be owned, private and without symlinks')
+        check_private_directory(self.root)
 
     @contextmanager
     def write(self):
-        self.root.mkdir(mode=0o700, parents=True, exist_ok=True)
-        self.check_root()
-        fd = private_file(self.root / '.lock', os.O_RDWR | os.O_CREAT)
-        with os.fdopen(fd, 'w') as lock:
-            fcntl.flock(lock, fcntl.LOCK_EX)
-            study = self.read()
+        with private_directory_write(self.root, self.check_root, self.read) as study:
             yield study
 
     def save(self, study):
-        fd, name = tempfile.mkstemp(prefix='.study-', dir=self.root)
-        try:
-            with os.fdopen(fd, 'w') as stream:
-                json.dump(study, stream, sort_keys=True, indent=2)
-                stream.write('\n'); stream.flush(); os.fsync(stream.fileno())
-            os.replace(name, self.root / 'study.json')
-        finally:
-            if os.path.exists(name):
-                os.unlink(name)
+        atomic_private_json(self.root, 'study.json', study)
 
     def start(self):
         with self.write() as previous:
@@ -502,6 +537,374 @@ class Ledger:
                            'complete_workflow': False}}
 
 
+class AstraStudy:
+    """Private prospective assignments for an explicitly invoked Astra workflow."""
+
+    def __init__(self, root=None, home=None):
+        base = Ledger(root, home)
+        self.context = base.context
+        self.home = base.home
+        self.base = base.root
+        self.root = self.base / 'astra-study'
+
+    def check_base(self):
+        if self.base.exists() or self.base.is_symlink():
+            Ledger(self.base, self.home).check_root()
+
+    def check_root(self):
+        self.check_base()
+        check_private_directory(self.root, 'Astra study directory')
+
+    def read(self):
+        if not self.base.exists() and not self.base.is_symlink():
+            return None
+        self.check_base()
+        if not self.root.exists() and not self.root.is_symlink():
+            return None
+        self.check_root()
+        try:
+            fd = private_file(self.root / 'study.json', os.O_RDONLY)
+        except FileNotFoundError:
+            return None
+        with os.fdopen(fd) as stream:
+            text = stream.read(ASTRA_STUDY_MAX_BYTES + 1)
+        if len(text) > ASTRA_STUDY_MAX_BYTES:
+            raise ValueError('Astra study exceeds its private size bound')
+        study = json.loads(text)
+        self.validate(study)
+        return study
+
+    def validate(self, study):
+        if (not isinstance(study, dict) or study.get('schema') != 1
+                or study.get('policy') != ASTRA_STUDY_POLICY
+                or study.get('native_home') != str(self.home)
+                or not isinstance(study.get('contexts'), dict)):
+            raise ValueError('Astra study schema, policy or native home mismatch')
+        selection = study.get('primary_selection')
+        if (not isinstance(selection, dict) or set(selection) != {'model', 'effort'}
+                or family_for_model(selection.get('model')) != 'astra'
+                or selection.get('effort') != ASTRA_STUDY_EFFORT):
+            raise ValueError('Astra study primary selection is invalid')
+        sequence = study.get('sequence')
+        if (not isinstance(sequence, list) or len(sequence) != ASTRA_STUDY_CONTEXT_LIMIT
+                or any(arm not in ASTRA_STUDY_ARMS for arm in sequence)):
+            raise ValueError('Astra study allocation sequence is invalid')
+        if (study.get('context_limit') != ASTRA_STUDY_CONTEXT_LIMIT
+                or study.get('followup_days') != ASTRA_STUDY_FOLLOWUP_DAYS):
+            raise ValueError('Astra study context or follow-up bound is invalid')
+        for offset in range(0, ASTRA_STUDY_CONTEXT_LIMIT, 4):
+            block = sequence[offset:offset + 4]
+            if block.count('A') != 2 or block.count('B') != 2:
+                raise ValueError('Astra study allocation block is not balanced')
+        started = _study_time(study.get('started_at'))
+        intake_until = _study_time(study.get('intake_until'))
+        if intake_until != started + timedelta(days=ASTRA_STUDY_INTAKE_DAYS):
+            raise ValueError('Astra study intake window is invalid')
+        closed_at = study.get('intake_closed_at')
+        if closed_at is not None:
+            parsed_closed = _study_time(closed_at)
+            if parsed_closed < started or parsed_closed > intake_until:
+                raise ValueError('Astra study intake closure is invalid')
+        contexts = study['contexts']
+        if len(contexts) > ASTRA_STUDY_CONTEXT_LIMIT:
+            raise ValueError('Astra study context cap is exceeded')
+        indices = set()
+        for thread_id, context in contexts.items():
+            identity(thread_id)
+            if not isinstance(context, dict) or context.get('thread_id') != thread_id:
+                raise ValueError('Astra study context identity is invalid')
+            index = context.get('index')
+            if type(index) is not int or not 1 <= index <= ASTRA_STUDY_CONTEXT_LIMIT or index in indices:
+                raise ValueError('Astra study context index is invalid')
+            indices.add(index)
+            if context.get('arm') != sequence[index - 1]:
+                raise ValueError('Astra study context arm differs from its allocation')
+            if context.get('workflow') not in ('task', 'goal'):
+                raise ValueError('Astra study workflow is invalid')
+            _study_text(context.get('check'), 'acceptance check')
+            assigned_at = _study_time(context.get('assigned_at'))
+            if assigned_at < started or assigned_at >= intake_until:
+                raise ValueError('Astra study context was assigned outside intake')
+            identity(context.get('initiating_turn'))
+            notes = context.get('notes')
+            if not isinstance(notes, list) or len(notes) > ASTRA_STUDY_MAX_NOTES:
+                raise ValueError('Astra study note count exceeds its bound')
+            final_notes = 0
+            for note in notes:
+                if not isinstance(note, dict) or type(note.get('final')) is not bool:
+                    raise ValueError('Astra study note metadata is invalid')
+                _study_time(note.get('recorded_at'))
+                _study_text(note.get('text'), 'private note')
+                final_notes += note['final']
+            if final_notes > 1:
+                raise ValueError('Astra study context has multiple final notes')
+        if len(contexts) == ASTRA_STUDY_CONTEXT_LIMIT and closed_at is None:
+            raise ValueError('Astra study at its context cap must have closed intake')
+        return study
+
+    @contextmanager
+    def write(self):
+        self.base.mkdir(mode=0o700, parents=True, exist_ok=True)
+        self.check_base()
+        with private_directory_write(self.root, self.check_root, self.read) as study:
+            yield study
+
+    def save(self, study):
+        self.validate(study)
+        atomic_private_json(self.root, 'study.json', study,
+                            max_bytes=ASTRA_STUDY_MAX_BYTES)
+
+    @staticmethod
+    def allocation_sequence():
+        sequence = []
+        for _ in range(ASTRA_STUDY_CONTEXT_LIMIT // 4):
+            block = ['A', 'A', 'B', 'B']
+            secrets.SystemRandom().shuffle(block)
+            sequence.extend(block)
+        return sequence
+
+    def start(self, model=ASTRA_STUDY_MODEL, effort=ASTRA_STUDY_EFFORT):
+        if family_for_model(model) != 'astra' or effort != ASTRA_STUDY_EFFORT:
+            raise ValueError('Astra studies require a supported Astra XHigh selection')
+        with self.write() as previous:
+            if previous is not None:
+                if previous['primary_selection'] != {'model': model, 'effort': effort}:
+                    raise ValueError('an Astra study already exists with a different pinned selection')
+                return {**self.status(), 'created': False}
+            started = now()
+            study = {
+                'schema': 1, 'id': uuid.uuid4().hex, 'policy': ASTRA_STUDY_POLICY,
+                'runtime_version': VERSION, 'native_home': str(self.home),
+                'primary_selection': {'model': model, 'effort': effort},
+                'started_at': stamp(started),
+                'intake_until': stamp(started + timedelta(days=ASTRA_STUDY_INTAKE_DAYS)),
+                'intake_closed_at': None,
+                'context_limit': ASTRA_STUDY_CONTEXT_LIMIT,
+                'followup_days': ASTRA_STUDY_FOLLOWUP_DAYS,
+                'sequence': self.allocation_sequence(), 'contexts': {},
+            }
+            self.save(study)
+        return {**self.status(), 'created': True}
+
+    @staticmethod
+    def effective_intake_close(study):
+        if study['intake_closed_at'] is not None:
+            return _study_time(study['intake_closed_at'])
+        return _study_time(study['intake_until'])
+
+    @classmethod
+    def intake_open(cls, study, at=None):
+        at = at or now()
+        return (study['intake_closed_at'] is None
+                and len(study['contexts']) < ASTRA_STUDY_CONTEXT_LIMIT
+                and _study_time(study['started_at']) <= at < _study_time(study['intake_until']))
+
+    @classmethod
+    def followup_complete(cls, study, at=None):
+        at = at or now()
+        intake_open = cls.intake_open(study, at)
+        if intake_open:
+            return False
+        return at >= cls.effective_intake_close(study) + timedelta(days=ASTRA_STUDY_FOLLOWUP_DAYS)
+
+    def status(self):
+        study = self.read()
+        if study is None:
+            return {'configured': False, 'intake_open': False, 'assigned_contexts': 0,
+                    'followup_complete': False, 'recorded_final_notes': 0,
+                    'contexts_without_final_note': 0, 'contexts': []}
+        at = now()
+        followup_complete = self.followup_complete(study, at)
+        intake_open = self.intake_open(study, at)
+        contexts = []
+        for context in sorted(study['contexts'].values(), key=lambda item: item['index']):
+            final_recorded = any(note['final'] for note in context['notes'])
+            readiness = ('recorded' if final_recorded else
+                         'needs_final_note' if followup_complete else
+                         'in_progress' if intake_open else 'follow_up')
+            contexts.append({'index': context['index'], 'arm': context['arm'],
+                             'workflow': context['workflow'], 'assigned_at': context['assigned_at'],
+                             'note_count': len(context['notes']),
+                             'final_note_recorded': final_recorded,
+                             'outcome_readiness': readiness})
+        final_notes = sum(context['final_note_recorded'] for context in contexts)
+        return {'configured': True, 'study': study['id'], 'policy': ASTRA_STUDY_POLICY,
+                'primary_selection': dict(study['primary_selection']),
+                'started_at': study['started_at'], 'intake_until': study['intake_until'],
+                'followup_until': stamp(self.effective_intake_close(study)
+                                        + timedelta(days=ASTRA_STUDY_FOLLOWUP_DAYS)),
+                'intake_open': intake_open,
+                'assigned_contexts': len(contexts), 'context_limit': ASTRA_STUDY_CONTEXT_LIMIT,
+                'arm_counts': {arm: sum(context['arm'] == arm for context in contexts)
+                               for arm in ASTRA_STUDY_ARMS},
+                'followup_complete': followup_complete,
+                'recorded_final_notes': final_notes,
+                'contexts_without_final_note': len(contexts) - final_notes,
+                'contexts': contexts}
+
+    def needs_primary_verification(self, thread_id):
+        study = self.read()
+        if study is None:
+            return False
+        context = study['contexts'].get(thread_id)
+        if context is not None:
+            if any(note['final'] for note in context['notes']):
+                return False
+            if now() >= self.effective_intake_close(study) + timedelta(days=ASTRA_STUDY_FOLLOWUP_DAYS):
+                return False
+            return True
+        return self.intake_open(study)
+
+    def verify_initiating_context(self, thread_id, loaded_selection, study):
+        identity(thread_id)
+        if (not isinstance(loaded_selection, dict) or loaded_selection.get('status') != 'known'
+                or loaded_selection.get('model') != study['primary_selection']['model']
+                or loaded_selection.get('reasoning_effort', loaded_selection.get('effort'))
+                != study['primary_selection']['effort']):
+            raise ValueError('loaded initiating Astra model and effort must match the study pin')
+        records, _, parent = NativeRecords(self.home).read(thread_id)
+        if parent is not None:
+            raise ValueError('Astra study assignments require the owned native primary thread')
+        started = turns(records)
+        terminal = {record['payload'].get('turn_id') for record in records
+                    if record['type'] == 'event_msg'
+                    and record['payload'].get('type') in ('task_complete', 'turn_aborted',
+                                                         'error', 'turn_error')}
+        active = [turn for turn in started if turn not in terminal]
+        if len(active) != 1 or not started or active[0] != started[-1]:
+            raise ValueError('Astra assignment requires the current active native primary turn')
+        selections = {(record['payload'].get('model'), record['payload'].get('effort'))
+                      for record in records if record['type'] == 'turn_context'
+                      and record['payload'].get('turn_id') == active[0]}
+        if selections != {(study['primary_selection']['model'], study['primary_selection']['effort'])}:
+            raise ValueError('native initiating turn model and effort must match the study pin')
+        return active[0]
+
+    def assign(self, thread_id, workflow, check, *, loaded_selection=None):
+        study = self.read()
+        if study is None:
+            return {'assigned': False, 'reason': 'study_unconfigured'}
+        if not isinstance(thread_id, str) or not thread_id:
+            if self.intake_open(study):
+                raise ValueError('assign only the invoking native primary thread')
+            return {'assigned': False, 'reason': 'intake_closed'}
+        identity(thread_id)
+        existing = study['contexts'].get(thread_id)
+        if existing is None and not self.intake_open(study):
+            return {'assigned': False, 'reason': 'intake_closed'}
+        if existing is not None:
+            if any(note['final'] for note in existing['notes']):
+                return {'assigned': False, 'reason': 'context_finalized',
+                        'index': existing['index'], 'existing': True}
+            if now() >= self.effective_intake_close(study) + timedelta(days=ASTRA_STUDY_FOLLOWUP_DAYS):
+                return {'assigned': False, 'reason': 'context_window_expired',
+                        'index': existing['index'], 'existing': True}
+        if existing is None:
+            if workflow not in ('task', 'goal'):
+                raise ValueError('workflow must be task or goal')
+            _study_text(check, 'acceptance check')
+        initiating_turn = self.verify_initiating_context(thread_id, loaded_selection, study)
+        with self.write() as current:
+            if current is None:
+                raise ValueError('Astra study disappeared before assignment')
+            existing = current['contexts'].get(thread_id)
+            if existing is not None:
+                if any(note['final'] for note in existing['notes']):
+                    return {'assigned': False, 'reason': 'context_finalized',
+                            'index': existing['index'], 'existing': True}
+                if now() >= self.effective_intake_close(current) + timedelta(days=ASTRA_STUDY_FOLLOWUP_DAYS):
+                    return {'assigned': False, 'reason': 'context_window_expired',
+                            'index': existing['index'], 'existing': True}
+                return self.assignment_result(existing, existing=True)
+            if not self.intake_open(current):
+                return {'assigned': False, 'reason': 'intake_closed'}
+            index = len(current['contexts']) + 1
+            arm = current['sequence'][index - 1]
+            assigned_at = now()
+            context = {'thread_id': thread_id, 'index': index, 'arm': arm,
+                       'workflow': workflow, 'check': check,
+                       'initiating_turn': initiating_turn, 'assigned_at': stamp(assigned_at),
+                       'notes': []}
+            current['contexts'][thread_id] = context
+            if index == ASTRA_STUDY_CONTEXT_LIMIT:
+                current['intake_closed_at'] = stamp(assigned_at)
+            self.save(current)
+        return self.assignment_result(context, existing=False)
+
+    @staticmethod
+    def assignment_result(context, *, existing):
+        return {'assigned': True, 'index': context['index'], 'arm': context['arm'],
+                'workflow': context['workflow'], 'existing': existing}
+
+    def note(self, thread_id, text, *, final=False):
+        _study_text(text, 'private note')
+        if type(final) is not bool:
+            raise ValueError('final note marker must be boolean')
+        study = self.read()
+        if study is None or not isinstance(thread_id, str) or not thread_id:
+            raise ValueError('a current enrolled Astra context is required')
+        identity(thread_id)
+        context = study['contexts'].get(thread_id)
+        if context is None:
+            raise ValueError('notes can be added only to the current enrolled thread')
+        _, _, parent = NativeRecords(self.home).read(thread_id)
+        if parent is not None:
+            raise ValueError('notes require the enrolled native primary thread')
+        if now() >= self.effective_intake_close(study) + timedelta(days=ASTRA_STUDY_FOLLOWUP_DAYS):
+            return {'noted': False, 'reason': 'followup_closed'}
+        with self.write() as current:
+            if current is None or thread_id not in current['contexts']:
+                raise ValueError('enrolled Astra context is unavailable')
+            if now() >= self.effective_intake_close(current) + timedelta(days=ASTRA_STUDY_FOLLOWUP_DAYS):
+                return {'noted': False, 'reason': 'followup_closed'}
+            context = current['contexts'][thread_id]
+            has_final = any(note['final'] for note in context['notes'])
+            note_limit = ASTRA_STUDY_MAX_NOTES if final or has_final else ASTRA_STUDY_MAX_NOTES - 1
+            if len(context['notes']) >= note_limit:
+                raise ValueError('Astra context note limit reached')
+            if final and has_final:
+                raise ValueError('a final outcome note is already recorded')
+            note = {'recorded_at': stamp(now()), 'text': text, 'final': final}
+            context['notes'].append(note)
+            self.save(current)
+            number = len(context['notes'])
+        return {'noted': True, 'index': context['index'], 'note': number,
+                'final_note': final}
+
+    def close(self):
+        if self.read() is None:
+            raise ValueError('Astra study unavailable')
+        with self.write() as study:
+            if study is None:
+                raise ValueError('Astra study unavailable')
+            if study['intake_closed_at'] is None:
+                closed = min(now(), _study_time(study['intake_until']))
+                study['intake_closed_at'] = stamp(closed)
+                self.save(study)
+        return self.status()
+
+
+def _study_time(value):
+    if not isinstance(value, str):
+        raise ValueError('Astra study timestamp is invalid')
+    parsed = datetime.fromisoformat(value)
+    if parsed.tzinfo is None:
+        raise ValueError('Astra study timestamps must include a timezone')
+    return parsed
+
+
+def _study_text(value, label):
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f'{label} must be nonempty text')
+    try:
+        size = len(value.encode('utf-8'))
+    except UnicodeEncodeError as error:
+        raise ValueError(f'{label} is invalid text') from error
+    if size > ASTRA_STUDY_MAX_TEXT_BYTES:
+        raise ValueError(f'{label} exceeds its private size bound')
+    return value
+
+
 def reference(value):
     if value is not None and (not isinstance(value, str) or not value.strip() or len(value) > 512):
         raise ValueError('use a short private artifact or message reference')
@@ -629,10 +1032,47 @@ def main(argv=None):
     usage = sub.add_parser('usage', help='Summarize native usage for the current run without a study')
     usage.add_argument('--worker', action='append', default=[], metavar='PATH',
                        help='Exact native collaboration task path (repeat for workers in this run)')
+    astra = sub.add_parser('astra-study', help='Private prospective assignments for explicit adaptive Astra workflows')
+    astra_commands = astra.add_subparsers(dest='astra_command', required=True)
+    astra_start = astra_commands.add_parser('start', help='Start or inspect the pinned 12-context, 14-day study')
+    astra_start.add_argument('--model', default=ASTRA_STUDY_MODEL,
+                             help='Exact supported Astra model ID (default: gpt-6.2-astra)')
+    astra_start.add_argument('--effort', choices=(ASTRA_STUDY_EFFORT,), default=ASTRA_STUDY_EFFORT,
+                             help='Pinned Astra reasoning effort (xhigh)')
+    astra_commands.add_parser('status', help='Read assigned arms and final-note counts, not success counts or private text')
+    astra_assign = astra_commands.add_parser(
+        'assign', help='Call only from an explicitly invoked adaptive skill before routing ordinary work')
+    astra_assign.add_argument('--workflow', choices=('task', 'goal'), required=True)
+    astra_assign.add_argument('--check', required=True, help='Private acceptance check for this context')
+    astra_note = astra_commands.add_parser('note', help='Append a bounded private note to the current enrolled thread')
+    astra_note.add_argument('--text', required=True, help='Private outcome, usage evidence, or reference note')
+    astra_note.add_argument('--final', action='store_true',
+                            help='Record the final outcome, including unresolved; this does not imply success')
+    astra_commands.add_parser('close', help='Close new assignments and start the two-day follow-up window')
     args = parser.parse_args(argv)
     try:
         if args.command == 'usage':
             print(json.dumps(current_usage(args.worker), sort_keys=True))
+            return 0
+        if args.command == 'astra-study':
+            study = AstraStudy(args.state_root)
+            if args.astra_command == 'start':
+                result = study.start(args.model, args.effort)
+            elif args.astra_command == 'status':
+                result = study.status()
+            elif args.astra_command == 'close':
+                result = study.close()
+            elif args.astra_command == 'assign':
+                thread_id = os.environ.get('CODEX_THREAD_ID')
+                selection = primary_selection() if study.needs_primary_verification(thread_id) else None
+                result = study.assign(thread_id, args.workflow, args.check,
+                                      loaded_selection=selection)
+            elif args.astra_command == 'note':
+                result = study.note(os.environ.get('CODEX_THREAD_ID'), args.text,
+                                    final=args.final)
+            else:
+                raise ValueError('unknown Astra study operation')
+            print(json.dumps(result, sort_keys=True))
             return 0
         ledger = Ledger(args.state_root)
         if args.command == 'allow-model-upgrades':

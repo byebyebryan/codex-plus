@@ -22,8 +22,9 @@ UX acceptance remain separate.
 
 ## One Codex Plus release
 
-[v0.1.0-preview.27](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.27)
-adds [adaptive contribution and usage summaries](routing-diagnostics.md#current-run-usage).
+[v0.1.0-preview.28](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.28)
+adds opt-in Sol delegation for an Astra primary and a bounded [daily study](routing-diagnostics.md#astra-primary-daily-study).
+Preview.27 added [adaptive contribution and usage summaries](routing-diagnostics.md#current-run-usage).
 Preview.26 defaults to Astra eligibility in the explicit adaptive workflows for supported
 Sol and current Terra primaries. Preview.25 records model versions per
 episode/turn without stopping collection on
@@ -53,9 +54,9 @@ The single release contains three archives, `release.json` and `SHA256SUMS`:
 
 | Component | Archive |
 | --- | --- |
-| Workers | `codex-plus-workers-0.1.0-preview.27.tar.gz` |
-| Monitoring | `codex-plus-runtime-0.1.0-preview.27.tar.gz` |
-| Reporting | `codex-plus-report-0.1.0-preview.27.tar.gz` |
+| Workers | `codex-plus-workers-0.1.0-preview.28.tar.gz` |
+| Monitoring | `codex-plus-runtime-0.1.0-preview.28.tar.gz` |
+| Reporting | `codex-plus-report-0.1.0-preview.28.tar.gz` |
 
 `codex_plus/__init__.py` owns the source and built-artifact version. Both MCP
 adapters, report plugin manifests and all component manifests use it. The worker archive retains

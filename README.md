@@ -51,7 +51,12 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.27** includes seven worker workflows and four current roles.
+**v0.1.0-preview.28** includes seven worker workflows and four current roles.
+
+Preview.28 lets an Astra primary delegate to Sol when you opt in. Use either
+[adaptive workflow](docs/workers.md#optional-escalation) normally for Astra/Luna,
+or permit Sol for the request. Operators can enable a bounded
+[private daily-use comparison](docs/routing-diagnostics.md#astra-primary-daily-study).
 
 Preview.27 adds a short contribution summary to the adaptive workflows, with
 observed tokens by model when native records are available.
@@ -120,7 +125,7 @@ declared compatibility baseline remains unchanged.
 | Returning to work | “What am I still waiting on?” combines this conversation's stored watches, reminder outcomes and outgoing receipts, with stale or missing evidence explained. |
 | Peer coordination | Contextual independent-session discovery, attributed information/requests and handling receipts within one daemon. |
 | Browser reports | Immutable static HTML, project catalog, four report MCP tools, a report skill and independent HTTP hosting. |
-| Workers | Four native roles and seven worker workflows; explicit named tasks, selective Luna and one optional escalation target. |
+| Workers | Four native roles and seven worker workflows; explicit named tasks, selective Luna and primary-specific delegation. |
 
 Command polling can stay quiet without a model turn per read. Configured MCP
 checks use scheduled native model turns under normal authentication/approval;
@@ -240,8 +245,8 @@ over decisions outside the execution contract.
 | --- | --- | --- |
 | `$luna-task` | One bounded task; no goal management | Luna only; primary handles difficult portions |
 | `$luna-goal-loop` | A substantial goal across cohesive assignments | Luna only; primary handles difficult portions |
-| `$adaptive-task` | One bounded task; no goal management | Primary, selective Luna, or justified escalation |
-| `$adaptive-goal-loop` | A substantial goal, routed per assignment | Primary, selective Luna, or justified escalation |
+| `$adaptive-task` | One bounded task; no goal management | Primary, selective Luna, or a justified worker for the selected primary |
+| `$adaptive-goal-loop` | A substantial goal, routed per assignment | Primary, selective Luna, or a justified worker for the selected primary |
 | `$sol-task` | One bounded task; no goal management | Exact Sol XHigh worker; primary accepts the result |
 | `$astra-task` | One bounded task; no goal management | Exact Astra XHigh worker; primary accepts the result |
 | `$terra-task` | One bounded task; no goal management | Exact GPT-6.1 Terra XHigh worker; primary accepts the result |

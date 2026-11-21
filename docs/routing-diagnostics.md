@@ -13,6 +13,47 @@ fields to UTC. It preserves the outer record timestamp's finer precision for
 episode boundaries, leaves null values unknown and rejects invalid timing data
 without copying arbitrary strings into output.
 
+## Astra-primary daily study
+
+Preview.28 can compare two policies on ordinary work. Arm A permits Astra
+and Luna. Arm B also permits Sol for a suitable assignment. Use the same
+Astra model and effort and invoke `$adaptive-task` or `$adaptive-goal-loop`
+normally. Each eligible context runs once. The primary records its acceptance
+check before routing. Requests that prescribe a worker, rehearsals and work
+already routed are outside intake. Keep related follow-ups in the original
+thread. A thread contributes at most one context even if you invoke a skill
+there several times. Include later overrides, failed handoffs and unfinished work when
+judging the results.
+
+An operator opens intake explicitly in the participating native home.
+
+```sh
+codex-plus-diagnostics astra-study start
+codex-plus-diagnostics astra-study status
+```
+
+The starting selection defaults to `gpt-6.2-astra` at `xhigh`. The private
+schedule balances A and B in shuffled blocks of four. Intake ends at 12
+contexts or 14 days, followed by two days for outstanding outcomes. Recording
+a final outcome or reaching the end of follow-up ends study-based permission
+to start further Sol work in that context.
+`astra-study close` ends intake early. Existing Sol-primary observations are
+kept separately. The worker skills maintain the per-context observations.
+`status` reports assignment and final-note counts. A final note may record
+an unresolved outcome. For the acceptance check and full notes, inspect
+`astra-study/study.json` under this native home’s private diagnostics
+directory. Use the global `--state-root PATH` before `astra-study` for an
+isolated test ledger. Starting the study again preserves its original window.
+
+At review, compare final acceptance across **all assigned contexts**. For
+each Sol handoff, check what Astra expected to do otherwise, the first return,
+correction rounds, primary takeover and any user intervention. Compare elapsed
+time and native tokens only where their scope is comparable. Two independent,
+useful Sol returns with at most one bounded correction and evidence of
+reduced Astra effort or faster acceptance justify considering a default
+change. Sparse data leaves the route opt-in. The [study design](codex-plus-plan.md#validation-study)
+describes the decision and a possible later controlled comparison.
+
 ## Current run usage
 
 Preview.27 adds `codex-plus-diagnostics usage` for a read-only

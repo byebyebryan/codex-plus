@@ -1,5 +1,155 @@
 # Codex Plus implementation plan
 
+## Opt-in pilot for adaptive work with an Astra primary
+
+**Decision to test.** Preview.27 lets an Astra primary work directly or delegate
+to Luna Max. The candidate also lets Astra give Sol XHigh a cohesive assignment.
+Astra keeps the conversation, integration and final acceptance. The proposal
+covers both explicit adaptive skills. Implementation, study enrollment and
+promotion to a released default are separate decisions.
+
+### Choosing an owner
+
+| Owner | Choose this route when | Example within an import migration |
+| --- | --- | --- |
+| Astra primary | A finding could change the goal, public contract or other assignments. Also finish directly when briefing and checking a worker would consume the remaining work. | Decide whether interrupted imports should resume or roll back. |
+| Luna Max | The objective, ownership and check are clear, and Luna can reasonably deliver a useful first result. Luna can choose implementation details or conduct a focused investigation. | Extend existing fixtures to the agreed interruption points and verify their expected states. |
+| Sol XHigh | The outcome and check are stable, but consequential local decisions remain. Independent engineering judgment is likely to save Astra substantial execution or repair, or an independent review can resolve a specific risk. | Own resumable imports under the agreed contract, including checkpoint placement and evidence that retries preserve data. |
+
+For Sol, identify which decisions the worker owns, what would require returning
+to Astra and how Astra can accept the result. Prefer Luna if it can meet the
+same check with comparable supervision. Keep work with Astra if review would
+require redoing the investigation. Size, workflow phase and token price alone
+are weak reasons to delegate. Both skills choose one owner per assignment. An
+adaptive task can finish entirely in Astra. A goal can route different
+assignments independently. Both workers report directly to Astra.
+
+**Eligibility and restrictions.** Enable this option only for a reliably
+identified supported Astra primary. Preserve its native reasoning setting. Use
+the declared `sol-xhigh` role at the configured supported Sol version and
+`xhigh` effort. Apply direct-only, Luna-only, named assignments, explicit
+exclusions and existing study restrictions first. A named review authorizes
+that review and its corrections. Terra remains available by explicit assignment.
+Sol and Terra primaries retain their existing escalation rules. Unknown primary
+identity holds the automatic Sol route. Reassess at the next assignment when
+instructions or the primary change. An active writer keeps ownership through
+handoff or stop.
+
+Use direct native collaboration and a self-contained `fork_turns="none"`
+assignment. Children return unresolved decisions to Astra. Distinguish missing
+controls or roles, rejected spawn, execution failure and observed model
+mismatch. Astra can preserve useful partial work and finish the slice. Any new
+assignment needs its own rationale and clear ownership.
+
+### Implementation sequence
+
+1. Prepare a local candidate in `skills/adaptive-task` and
+   `skills/adaptive-goal-loop`. Update their routing tables, delegation
+   instructions and UI descriptions/prompts. Describe Astra-to-Sol as
+   delegated work. Reserve *escalation* for the existing Sol/Terra-primary
+   routes. Reuse native primary metadata, the family classifier, named roles
+   and usage command. The policy belongs in the skills and needs no runtime
+   router, account lookup or new setting.
+2. Check `agents/sol-xhigh.toml` for description alignment while preserving
+   the native model/effort pin and child permissions. Exercise workers-only
+   installs with reliable native metadata and with missing metadata or usage
+   tooling. Validate explicit invocation, generic requests, Luna-only and
+   named workflows, and the other primary families. Qualify observed behavior
+   alongside skill validators, inventory and repository tests.
+3. Keep the candidate opt-in during the study. Verify the loaded candidate
+   skills in each participating pilot context. At the start of an
+   eligible invocation the private diagnostics helper returns the preassigned arm.
+   In A the instruction retains Astra/Luna. In B it permits Sol when useful.
+   Both instructions leave the actual assignment to Astra.
+   Publish the opt-in policy in the worker guide, routing design, README
+   and Pages primary selector and its generated prompt. A change to the
+   default requires a separate promotion decision. Verify
+   package rollback and the site build, then use the normal release and
+   scoped chezmoi rollout. Verify installed skill bytes and fresh behavior
+   separately.
+
+### Validation study
+
+**1. Qualify behavior.** Give both skills neutral cases covering a
+cross-cutting decision, a Luna-suitable slice, a Sol-plausible implementation
+and a focused review. Record the route and rationale before seeing the result.
+Several choices can be defensible. Require hard constraints to hold in cases
+with worker exclusions, unknown primary, unavailable or mismatched Sol,
+rejected spawn, failed return and a user change while a worker owns files.
+Use fixtures for failures. In an authorized disposable native pilot, verify
+the Astra parent, direct Sol child, observed model/effort, completed return
+and Astra's acceptance check. A named probe qualifies transport. Separately
+observe a freely selected Sol handoff before claiming adaptive selection works.
+Verify the task creates no goal and the goal loop retains its native goal.
+
+**2. Compare ordinary work prospectively.** Enroll consecutive eligible daily
+requests on the primary-use host until 12 independent Astra-primary adaptive
+contexts or 14 days, whichever comes first. Before decomposition take the next
+assignment from a privately shuffled sequence balanced in blocks of four.
+A permits Astra and Luna. B also permits Sol. Start the pilot with one exact
+Astra primary model and effort. Use the same candidate, worker pins, tools,
+permissions and acceptance standard. Keep related continuations in one arm
+and count them once. Record whether each invocation was a task or goal.
+Execute each live task once. Prescribed-worker requests known before assignment
+are outside the comparison. Later overrides, unavailable workers, zero-handoff
+runs and unfinished goals stay in their assigned arms. Close intake at the
+cap and mark still-open outcomes after a proposed two-day follow-up.
+
+Use a private per-context record outside the repository. Record the arm and
+acceptance check up front. Have the primary maintain the record alongside
+normal work and capture three outcomes.
+
+- **Did the policy route usefully?** At the decision record the owner and reason.
+  For a Sol handoff, record the route Astra expects it would otherwise choose.
+  Treat that expectation as a hypothesis. Distinguish
+  Sol taking work Astra would have retained from Sol displacing a suitable
+  Luna assignment. Separate eligibility, attempted spawn and observed execution.
+- **Did the handoff pay off?** Score the first return as accepted, bounded
+  correction, substantial repair/takeover, or unresolved. Record final
+  acceptance, correction rounds, Astra takeovers, user rescue and elapsed time.
+  Record active review time only when observable. These counts give a usable
+  measure of supervision even when active time is unknown.
+  Apply the same final checks to direct work. Report accepted workflows over
+  **all assigned workflows** in each arm, then review Sol handoffs within B.
+- **What did it consume?** Use `codex-plus-diagnostics usage` near completion
+  with exact participating worker paths. Record observed model, effort, input,
+  cached input, output and coverage. Cached input is included in input. The
+  live primary is partial and a resumed goal can span roots. Keep snapshots
+  scoped, avoid summing overlapping responses, and mark unavailable usage or
+  timing unknown. Compare usage only for comparable scopes. Actual allowance
+  or billing requires separate attributable evidence.
+
+The existing `enroll/link/outcome/collect` ledger admits Sol-primary goals
+under its own policy. Use a separate private schedule and brief records for
+this pilot, with the existing read-only usage command. Record exact versions
+and flag account, configuration or workload differences. A small daily-use
+sample can show recurring opportunities even when the arms receive different
+kinds of work.
+
+**3. Resolve a specific uncertainty with controlled pairs if warranted.**
+Before either arm sees a case, freeze four replayable briefs with acceptance
+checks. Include two plausible Sol opportunities, one Luna control and one
+Astra-direct control. Start both arms from equal isolated snapshots, balance
+execution order and grade artifacts with the arm hidden where feasible. Allow free
+routing in B. Keep live side effects out of replays. Budget four pairs/eight
+arm starts, with a proposed 30-minute window and two worker turns per arm.
+Record cap hits and evaluation overhead. Set any additional usage ceiling
+before launch. Retain every started pair. Daily work measures opportunity
+frequency. Pairs compare outcomes for the same starting problem.
+
+**Decision at close.** Stop the candidate on a scope, invocation or ownership
+violation. Propose default Sol eligibility only with clean qualification and
+at least two independent daily contexts where Sol did useful work with
+first-pass acceptance or one bounded correction, alongside credible evidence
+of less Astra effort or faster accepted completion against A. A recurring loss
+of final quality, extra user rescue or Sol displacing equally effective Luna
+work calls for narrowing the rule and rechecking it. Review material increases
+in total usage against the observed benefit. Report counts, concrete repairs
+and coverage gaps. Sparse opportunities or an unresolved tradeoff favor
+keeping Sol available by named
+assignment. This pilot addresses routing conditional on choosing Astra as
+primary. Choosing the best primary is a separate comparison.
+
 ## Preview.26: Astra available in adaptive workflows by default
 
 For explicit adaptive invocations, make Astra XHigh the default eligible

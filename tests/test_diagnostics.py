@@ -58,6 +58,17 @@ class DiagnosticTests(unittest.TestCase):
                 connection.execute('INSERT INTO thread_spawn_edges VALUES (?,?)', (parent, name))
         return path
 
+    def astra_study(self):
+        return d.AstraStudy(self.root, self.home)
+
+    def add_astra_primary(self, name, turn='astra-turn', *, model='gpt-6.2-astra', effort='xhigh'):
+        return self.add_thread(name, run_records(turn, model, effort, name)[:-1])
+
+    @staticmethod
+    def loaded_astra(model='gpt-6.2-astra', effort='xhigh'):
+        return {'status': 'known', 'model': model, 'reasoning_effort': effort,
+                'source': 'loaded_thread_configuration', 'execution_verified': False}
+
     def enroll(self):
         self.ledger.start()
         return self.ledger.enroll('parent-a', routing_not_started=True)['episode']
@@ -585,6 +596,227 @@ class DiagnosticTests(unittest.TestCase):
         with contextlib.redirect_stdout(output):
             status = d.main(['--state-root', str(self.root), 'collect', 'unknown'])
         self.assertEqual(status, 1); self.assertNotIn(str(self.base), output.getvalue())
+
+    def test_astra_study_start_is_idempotent_private_and_separate_from_sol_ledger(self):
+        sol = self.ledger.start()
+        sol_bytes = (self.root / 'study.json').read_bytes()
+        study = self.astra_study()
+        started = study.start()
+        snapshot = (study.root / 'study.json').read_bytes()
+        repeated = study.start()
+        data = study.read()
+        self.assertTrue(started['created'])
+        self.assertFalse(repeated['created'])
+        self.assertEqual(snapshot, (study.root / 'study.json').read_bytes())
+        self.assertEqual(data['primary_selection'], {'model': 'gpt-6.2-astra', 'effort': 'xhigh'})
+        self.assertEqual(len(data['sequence']), 12)
+        for offset in range(0, 12, 4):
+            self.assertEqual(data['sequence'][offset:offset + 4].count('A'), 2)
+            self.assertEqual(data['sequence'][offset:offset + 4].count('B'), 2)
+        self.assertEqual(sol_bytes, (self.root / 'study.json').read_bytes())
+        self.assertNotEqual(self.root / 'study.json', study.root / 'study.json')
+        self.assertEqual(study.root.stat().st_mode & 0o777, 0o700)
+        for path in study.root.iterdir():
+            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.ledger.read()['id'], sol['id'])
+        with self.assertRaises(ValueError):
+            study.start('gpt-6.3-astra')
+        self.assertEqual(snapshot, (study.root / 'study.json').read_bytes())
+
+    def test_astra_assignment_requires_loaded_and_native_model_and_owned_active_thread(self):
+        study = self.astra_study()
+        study.start()
+        self.add_astra_primary('astra-primary')
+        path = study.root / 'study.json'
+        before = path.read_bytes()
+        for selection in (None, {'status': 'unknown'},
+                          self.loaded_astra('gpt-6.1-astra'),
+                          self.loaded_astra('gpt-6.2-astra', 'high')):
+            with self.assertRaises(ValueError):
+                study.assign('astra-primary', 'task', 'private check',
+                             loaded_selection=selection)
+            self.assertEqual(path.read_bytes(), before)
+        self.add_astra_primary('wrong-native-model', model='gpt-6.1-sol')
+        with self.assertRaises(ValueError):
+            study.assign('wrong-native-model', 'task', 'private check',
+                         loaded_selection=self.loaded_astra())
+        self.add_thread('astra-child', run_records('child-turn', 'gpt-6.2-astra', 'xhigh',
+                                                   'astra-child')[:-1], 'astra-primary')
+        with self.assertRaises(ValueError):
+            study.assign('astra-child', 'task', 'private check',
+                         loaded_selection=self.loaded_astra())
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_astra_assignment_is_sticky_final_note_is_not_success_and_status_hides_text(self):
+        study = self.astra_study()
+        study.start()
+        self.add_astra_primary('astra-primary')
+        assigned = study.assign('astra-primary', 'task', 'private acceptance check',
+                                loaded_selection=self.loaded_astra())
+        retry = study.assign('astra-primary', 'goal', 'later overridden check',
+                             loaded_selection=self.loaded_astra())
+        self.assertTrue(assigned['assigned'])
+        self.assertFalse(assigned['existing'])
+        self.assertTrue(retry['existing'])
+        self.assertEqual(retry['arm'], assigned['arm'])
+        self.assertEqual(retry['workflow'], 'task')
+        note = study.note('astra-primary', 'unresolved: independent evidence is incomplete', final=True)
+        self.assertTrue(note['final_note'])
+        status = study.status()
+        serialized = json.dumps(status)
+        self.assertEqual(status['recorded_final_notes'], 1)
+        self.assertEqual(status['contexts_without_final_note'], 0)
+        self.assertTrue(status['contexts'][0]['final_note_recorded'])
+        self.assertEqual(status['contexts'][0]['outcome_readiness'], 'recorded')
+        self.assertNotIn('private acceptance check', serialized)
+        self.assertNotIn('later overridden check', serialized)
+        self.assertNotIn('independent evidence is incomplete', serialized)
+        self.assertNotIn('success', serialized.lower())
+        final_retry = study.assign('astra-primary', 'task', 'another check',
+                                   loaded_selection=None)
+        self.assertFalse(final_retry['assigned'])
+        self.assertEqual(final_retry['reason'], 'context_finalized')
+        self.assertNotIn('arm', final_retry)
+        self.assertEqual(len(study.read()['contexts']['astra-primary']['notes']), 1)
+
+    def test_astra_concurrent_assignments_cap_at_twelve_balanced_contexts_with_duplicate_retries(self):
+        study = self.astra_study()
+        study.start()
+        names = [f'astra-primary-{number}' for number in range(13)]
+        for number, name in enumerate(names):
+            self.add_astra_primary(name, turn=f'astra-turn-{number}')
+
+        def assign(name):
+            return name, study.assign(name, 'task', f'private check for {name}',
+                                      loaded_selection=self.loaded_astra())
+
+        attempts = ['astra-primary-0', 'astra-primary-0', *names]
+        with ThreadPoolExecutor(max_workers=len(attempts)) as pool:
+            results = list(pool.map(assign, attempts))
+        saved = study.read()
+        self.assertEqual(len(saved['contexts']), 12)
+        self.assertEqual(sorted(context['index'] for context in saved['contexts'].values()),
+                         list(range(1, 13)))
+        for offset in range(0, 12, 4):
+            block = [saved['sequence'][offset + index] for index in range(4)]
+            self.assertEqual(block.count('A'), 2)
+            self.assertEqual(block.count('B'), 2)
+        by_thread = {}
+        for name, result in results:
+            if result['assigned']:
+                by_thread.setdefault(name, set()).add((result['index'], result['arm']))
+        self.assertTrue(any(not result['assigned'] for _, result in results))
+        self.assertTrue(all(len(values) == 1 for values in by_thread.values()))
+        self.assertEqual(set(by_thread), set(saved['contexts']))
+
+    def test_astra_close_dates_followup_cutoff_and_expired_assignments_are_side_effect_free(self):
+        study = self.astra_study()
+        start = d.datetime(2030, 1, 1, tzinfo=d.timezone.utc)
+        with patch.object(d, 'now', return_value=start):
+            study.start()
+        current = study.read()
+        with patch.object(d, 'now', return_value=start - d.timedelta(seconds=1)):
+            self.assertFalse(study.intake_open(current))
+            before_start = study.assign('not-started', 'task', 'not retained',
+                                        loaded_selection=None)
+        self.assertFalse(before_start['assigned'])
+        with patch.object(d, 'now', return_value=start):
+            self.assertTrue(study.intake_open(current))
+        with patch.object(d, 'now', return_value=start + d.timedelta(days=14)):
+            self.assertFalse(study.intake_open(current))
+        self.add_astra_primary('astra-primary')
+        with patch.object(d, 'now', return_value=start + d.timedelta(hours=1)):
+            study.assign('astra-primary', 'goal', 'private goal check',
+                         loaded_selection=self.loaded_astra())
+        self.add_astra_primary('next-primary', turn='next-turn')
+        with patch.object(d, 'now', return_value=start + d.timedelta(days=1)):
+            closed = study.close()
+        intake_until = d.datetime.fromisoformat(closed['intake_until'])
+        followup_until = d.datetime.fromisoformat(closed['followup_until'])
+        self.assertEqual(intake_until, start + d.timedelta(days=14))
+        self.assertEqual(followup_until, start + d.timedelta(days=3))
+        self.assertFalse(closed['intake_open'])
+        self.assertFalse(closed['followup_complete'])
+        state_path = study.root / 'study.json'
+        closed_bytes = state_path.read_bytes()
+        with patch.object(d, 'now', return_value=start + d.timedelta(days=1)):
+            skipped = study.assign('next-primary', 'task', 'not enrolled',
+                                   loaded_selection=None)
+        self.assertFalse(skipped['assigned'])
+        self.assertEqual(skipped['reason'], 'intake_closed')
+        self.assertEqual(state_path.read_bytes(), closed_bytes)
+        boundary = d.datetime.fromisoformat(closed['followup_until'])
+        with patch.object(d, 'now', side_effect=(boundary - d.timedelta(seconds=1), boundary)):
+            skipped_note = study.note('astra-primary', 'late final', final=True)
+        self.assertFalse(skipped_note['noted'])
+        self.assertEqual(skipped_note['reason'], 'followup_closed')
+        self.assertEqual(state_path.read_bytes(), closed_bytes)
+        with patch.object(d, 'now', return_value=boundary):
+            expired = study.assign('astra-primary', 'goal', 'retry after follow-up',
+                                   loaded_selection=None)
+            ready = study.status()
+        self.assertFalse(expired['assigned'])
+        self.assertEqual(expired['reason'], 'context_window_expired')
+        self.assertNotIn('arm', expired)
+        self.assertTrue(ready['followup_complete'])
+        self.assertEqual(state_path.read_bytes(), closed_bytes)
+
+    def test_astra_close_without_a_study_does_not_create_private_state(self):
+        study = self.astra_study()
+        with self.assertRaises(ValueError):
+            study.close()
+        self.assertFalse(self.root.exists())
+
+    def test_astra_note_bound_reserves_final_slot_and_serialized_size_is_checked(self):
+        study = self.astra_study()
+        study.start()
+        self.add_astra_primary('astra-primary')
+        study.assign('astra-primary', 'task', 'private acceptance check',
+                     loaded_selection=self.loaded_astra())
+        private_control_text = '\x01' * d.ASTRA_STUDY_MAX_TEXT_BYTES
+        for _ in range(d.ASTRA_STUDY_MAX_NOTES - 1):
+            self.assertTrue(study.note('astra-primary', private_control_text)['noted'])
+        state_path = study.root / 'study.json'
+        before = state_path.read_bytes()
+        with self.assertRaises(ValueError):
+            study.note('astra-primary', 'one too many ordinary notes')
+        self.assertEqual(state_path.read_bytes(), before)
+        self.assertTrue(study.note('astra-primary', private_control_text, final=True)['final_note'])
+        self.assertLess(len(state_path.read_bytes()), d.ASTRA_STUDY_MAX_BYTES)
+        before = state_path.read_bytes()
+        oversized = study.read()
+        oversized['untrusted_extra'] = '\x01' * d.ASTRA_STUDY_MAX_BYTES
+        with self.assertRaises(ValueError):
+            study.save(oversized)
+        self.assertEqual(state_path.read_bytes(), before)
+
+    def test_astra_assignment_cli_uses_loaded_primary_and_status_redacts_private_text(self):
+        study = self.astra_study()
+        output = io.StringIO()
+        with (patch.dict(os.environ, {'CODEX_HOME': str(self.home)}),
+              contextlib.redirect_stdout(output)):
+            self.assertEqual(d.main(['--state-root', str(self.root), 'astra-study', 'start']), 0)
+        self.add_astra_primary('cli-primary')
+        output = io.StringIO()
+        environment = {'CODEX_HOME': str(self.home), 'CODEX_THREAD_ID': 'cli-primary'}
+        with (patch.dict(os.environ, environment),
+              patch.object(d, 'primary_selection', return_value=self.loaded_astra()),
+              contextlib.redirect_stdout(output)):
+            self.assertEqual(d.main(['--state-root', str(self.root), 'astra-study', 'assign',
+                                     '--workflow', 'goal', '--check', 'private CLI check']), 0)
+        self.assertTrue(json.loads(output.getvalue())['assigned'])
+        output = io.StringIO()
+        with (patch.dict(os.environ, environment), contextlib.redirect_stdout(output)):
+            self.assertEqual(d.main(['--state-root', str(self.root), 'astra-study', 'note',
+                                     '--text', 'private CLI unresolved result', '--final']), 0)
+        output = io.StringIO()
+        with (patch.dict(os.environ, environment), contextlib.redirect_stdout(output)):
+            self.assertEqual(d.main(['--state-root', str(self.root), 'astra-study', 'status']), 0)
+        status_text = output.getvalue()
+        status = json.loads(status_text)
+        self.assertEqual(status['recorded_final_notes'], 1)
+        self.assertNotIn('private CLI check', status_text)
+        self.assertNotIn('private CLI unresolved result', status_text)
 
 
 if __name__ == '__main__':
