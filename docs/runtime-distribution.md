@@ -104,25 +104,25 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Managed source selects workers, monitoring and reporting **preview.27**,
-source `877591e`, through published chezmoi pins `5481551`.
+Managed source selects workers, monitoring and reporting **preview.28**,
+source `d853be4`, through published chezmoi pins `4dff0c0`.
 
 | Target | Installed selection | Runtime evidence |
 | --- | --- | --- |
-| Snap default | Preview.27; Sol 6.1, Astra 6, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
-| Snap Work | Preview.27 worker definitions and skills; existing concrete model selections retained. | Native file bytes and modes verified in its separate home. |
-| Starship | Preview.27; Sol/Astra 6.2, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
+| Snap default | Preview.28; Sol 6.1, Astra 6, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
+| Snap Work | Preview.28 worker definitions and skills; existing concrete model selections retained. | Native file bytes and modes verified in its separate home. |
+| Starship | Preview.28; Sol/Astra 6.2, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
 | Carbon | Outside this rollout. | No new acceptance check. |
 
-The 155-file gate, 522 tests on Python 3.11/3.14, affected skill validators, and
+The 155-file gate, 530 tests on Python 3.11/3.14, affected skill validators, and
 public release verification pass. The component verifiers accept the actual
-published preview.26 monitoring and report archives. The managed quick gate,
+published preview.27 monitoring and report archives. The managed quick gate,
 affected source checks, and isolated report apply pass. The live checks verify
 54 scoped role and skill files and converged diffs. Native config, authentication,
 owner identities, and prior release paths remain intact. Existing sessions and
 MCP processes can adopt the change through normal native lifecycle.
 
-See the [delivery receipt](reliability-packaging-results.md#preview27-adaptive-usage-publication-and-rollout)
+See the [delivery receipt](reliability-packaging-results.md#preview28-astra-primary-pilot)
 and the [worker model guide](workers.md#model-versions). Ordinary apply projects
 reviewed selections without querying native models. A later requested refresh
 can resolve newer account-specific candidates through the same owner.

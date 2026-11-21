@@ -149,19 +149,18 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Managed configuration selects **v0.1.0-preview.27** for workers, monitoring and
-reporting from source `877591e` through published chezmoi `5481551`.
+Managed configuration selects **v0.1.0-preview.28** for workers, monitoring and
+reporting from source `d853be4` through published chezmoi `4dff0c0`.
 Snap and Starship verify the installed manifests, native role and skill files,
 and fresh 17/four-tool MCP protocols. Snap's Work worker files are included.
 Carbon was outside this rollout.
 
 Starship's selected roles use Sol/Astra 6.2. Snap retains Sol 6.1 and Astra 6
-worker pins. The rollout verifies installed files without running worker
-inference. Native configuration, credentials, owners and old releases are preserved.
+worker pins. A disposable native task verified an Astra 6.2 to Sol 6.2 handoff. Native configuration, credentials, owners and old releases are preserved.
 Existing processes and children adopt through normal native lifecycle; no daemon
 restart or global MCP refresh was issued.
 
-The [delivery receipt](docs/reliability-packaging-results.md#preview27-adaptive-usage-publication-and-rollout)
+The [delivery receipt](docs/reliability-packaging-results.md#preview28-astra-primary-pilot)
 separates publication, managed files and runtime evidence. New private studies record versions per episode; an explicit policy update
 lets an existing study continue across model upgrades with its history and
 original bounds intact. See the [observation procedure](docs/routing-diagnostics.md)

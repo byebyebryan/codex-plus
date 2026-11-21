@@ -1,5 +1,29 @@
 # Everyday reliability and native packaging results
 
+## Preview.28 Astra-primary pilot
+
+Release `v0.1.0-preview.28` from `d853be4` adds opt-in Sol delegation to both
+adaptive workflows for an Astra primary. The private diagnostics command
+supports prospective assignment and outcome notes. Ordinary requests can
+still finish in the primary or use Luna.
+
+A disposable Starship task with native `gpt-6.2-astra` at XHigh chose a direct
+`sol-xhigh` child. Native records show `gpt-6.2-sol` at XHigh completed its
+review. The primary checked the result and finished without creating a goal.
+A direct-only goal completed with no child. A sandboxed task that could not
+identify its loaded primary held Sol. These checks establish routing and
+return behavior. The daily study evaluates whether the extra route pays off.
+
+All five release assets matched the build and GitHub digests. Both Python
+versions (3.11 and 3.14) passed 530 tests. The 155-file inventory, ten skill
+validators and rollback reads of the published preview.27 runtime and report
+archives passed. Published chezmoi `4dff0c0` selects all three components on
+Snap and Starship. Scoped applies verified the 54 native role and skill files
+across Snap default, Snap Work and Starship default, converged diffs, and fresh
+17-tool monitoring and four-tool reporting protocols. Both hosts retained their
+native owners, configurations and prior release directories. Existing sessions
+adopt changes through their normal lifecycle. Carbon was outside this rollout.
+
 ## Preview.27 adaptive usage publication and rollout
 
 Release `v0.1.0-preview.27` from `877591e` adds closing contribution summaries

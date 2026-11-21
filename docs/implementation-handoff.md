@@ -1,5 +1,10 @@
 # Implementation handoff
 
+Preview.28 ships the opt-in Astra-primary Sol route and private daily-use
+study. An independent native task exercised the route and verified the
+returned work. The default stays Astra/Luna pending daily-use evidence.
+See the [release and deployment receipt](reliability-packaging-results.md#preview28-astra-primary-pilot).
+
 Preview.27 adds short model contribution summaries to the adaptive task and
 goal loop. Its read-only usage snapshot summarizes scoped native responses by
 model and effort without study enrollment. The release from `877591e` is

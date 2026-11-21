@@ -16,10 +16,10 @@ coordinator owns bounded observation, timers, event admission and receipts.
 
 Codex Plus `v0.1.0-preview.28` unifies workers, monitoring and reporting under one
 version, source commit and release. Optional archives retain each component's
-dependencies and configuration. Managed source selects preview.27
-artifacts from `877591e`. The rollout verifies Snap default and Work plus
+dependencies and configuration. Managed source selects preview.28
+artifacts from `d853be4`. The rollout verifies Snap default and Work plus
 Starship. Snap's environments retain separate native homes. See the
-[delivery receipt](reliability-packaging-results.md#preview27-adaptive-usage-publication-and-rollout).
+[delivery receipt](reliability-packaging-results.md#preview28-astra-primary-pilot).
 Managed configuration, selected artifacts and already loaded processes
 are different layers: existing MCP processes adopt new code on normal reconnect.
 Journals, report data and hosting remain runtime-owned.
