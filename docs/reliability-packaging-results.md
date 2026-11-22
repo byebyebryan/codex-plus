@@ -1,5 +1,36 @@
 # Everyday reliability and native packaging results
 
+## Preview.29 parallel adaptive work
+
+Release [v0.1.0-preview.29](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.29)
+from `9904a27` lets the two explicitly invoked adaptive skills identify ready,
+independently checkable assignments at any stage. Existing worker eligibility
+applies to each assignment. Writers need distinct ownership and agreed
+interfaces. The primary verifies the combined result.
+
+In a disposable implementation trial, a Sol XHigh primary implemented one
+module while two Luna Max workers implemented and tested separate modules.
+Native records showed 71 seconds of worker overlap. All 19 fixture tests and
+independent integration checks passed. A second trial kept a formatter and
+its generated output together, verified the output byte for byte, and completed
+its native goal. These observations establish behavior. Speedup and cost savings
+over serial execution were outside the comparison.
+
+The inventory and ten skill validators passed. Python 3.11 and 3.14 each passed
+530 tests. All five published assets matched the verified build and GitHub
+digests. The current monitoring and reporting readers verified the published
+preview.28 archives for rollback.
+
+Published [chezmoi pins](https://github.com/byebyebryan/dotfiles/commit/6acde0331eada882b9515ca31f4c04dd1b3befb5)
+selected all three components on Snap, Starship and Carbon. The scoped applies
+verified the package manifests, installed modes, 72 native role and skill files
+across four homes, and empty scoped diffs. Fresh stdio checks returned 17
+monitoring and four reporting tools on each host. Existing native owners on
+Snap and Starship retained their identities. Carbon's native daemon control
+socket was absent before and after the apply. Role pins, protected native
+configuration and prior release directories were preserved. Adoption within
+already-open sessions was outside this check.
+
 ## Preview.28 Astra-primary pilot
 
 Release `v0.1.0-preview.28` from `d853be4` adds opt-in Sol delegation to both

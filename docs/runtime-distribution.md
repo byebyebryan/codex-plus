@@ -105,28 +105,25 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Managed source selects workers, monitoring and reporting **preview.28**,
-source `d853be4`, through published chezmoi pins `4dff0c0`.
+Managed source selects workers, monitoring and reporting **preview.29**,
+source `9904a27`, through published chezmoi pins `6acde03`.
 
 | Target | Installed selection | Runtime evidence |
 | --- | --- | --- |
-| Snap default | Preview.28; Sol 6.1, Astra 6, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
-| Snap Work | Preview.28 worker definitions and skills; existing concrete model selections retained. | Native file bytes and modes verified in its separate home. |
-| Starship | Preview.28; Sol/Astra 6.2, Luna 6 and current Terra 6.1 roles. | Installed manifests, native files, and fresh monitoring/reporting protocols verified. |
-| Carbon | Outside this rollout. | No new acceptance check. |
+| Snap default | Preview.29, Sol 6.1 and Astra 6 worker pins. | Running daemon identity preserved. Fresh monitoring and reporting entrypoints verified. |
+| Snap Work | Preview.29 worker definitions and skills in its separate home. | Native file bytes, modes and running daemon identity verified. |
+| Starship | Preview.29, Sol and Astra 6.2 worker pins. | Running daemon identity preserved. Fresh monitoring and reporting entrypoints verified. |
+| Carbon | Preview.29, Sol 6.1 and Astra 6 worker pins. | Fresh monitoring and reporting entrypoints verified. The native daemon control socket was absent during deployment. |
 
-The 155-file gate, 530 tests on Python 3.11/3.14, affected skill validators, and
-public release verification pass. The component verifiers accept the actual
-published preview.27 monitoring and report archives. The managed quick gate,
-affected source checks, and isolated report apply pass. The live checks verify
-54 scoped role and skill files and converged diffs. Native config, authentication,
-owner identities, and prior release paths remain intact. Existing sessions and
-MCP processes can adopt the change through normal native lifecycle.
+All three hosts retained their prior release directories. The 72 managed
+native role and skill files matched their expected bytes and modes across
+the four homes. Scoped chezmoi diffs converged. Existing sessions adopt
+changes through the native lifecycle.
 
-See the [delivery receipt](reliability-packaging-results.md#preview28-astra-primary-pilot)
-and the [worker model guide](workers.md#model-versions). Ordinary apply projects
-reviewed selections without querying native models. A later requested refresh
-can resolve newer account-specific candidates through the same owner.
+See the [delivery receipt](reliability-packaging-results.md#preview29-parallel-adaptive-work)
+and the [worker model guide](workers.md#model-versions). Managed apply projects
+reviewed selections. A separately requested refresh can resolve newer
+account-specific candidates through the same owner.
 
 ## Read-only diagnosis
 

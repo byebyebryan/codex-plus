@@ -1,5 +1,10 @@
 # Implementation handoff
 
+Preview.29 lets both adaptive workflows run independent assignments
+concurrently. Native trials verified parallel work and a dependent change
+completed in sequence. Snap, Starship and Carbon selected the release through
+chezmoi. See the [release and deployment receipt](reliability-packaging-results.md#preview29-parallel-adaptive-work).
+
 Preview.28 ships the opt-in Astra-primary Sol route and private daily-use
 study. An independent native task exercised the route and verified the
 returned work. The default stays Astra/Luna pending daily-use evidence.
