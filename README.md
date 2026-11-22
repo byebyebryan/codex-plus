@@ -157,13 +157,13 @@ separate homes and daemons; native `--profile` alone does not separate state.
 See [multiple environments](docs/environments.md) for portable defaults and the
 existing explicit Snap paths.
 
-Managed configuration selects **v0.1.0-preview.29** for workers, monitoring and
-reporting from source `9904a27` through published chezmoi `6acde03`. Snap
-(default and Work), Starship and Carbon verified their installed worker files.
-Fresh monitoring and reporting entrypoints returned 17 and four tools on each
-host. Running sessions adopt changes through their native lifecycle.
+Managed configuration selects **v0.1.0-preview.30** for workers, monitoring and
+reporting. Snap (default and Work) and Starship verified their installed worker
+files. Fresh MCP processes on both hosts returned 17 monitoring tools and four
+reporting tools. Carbon was offline during rollout. Its last verified release
+was preview.29.
 
-The [delivery receipt](docs/reliability-packaging-results.md#preview29-parallel-adaptive-work)
+The [delivery receipt](docs/reliability-packaging-results.md#preview30-worker-workflow-fixes)
 separates publication, managed files and runtime evidence. New private studies record versions per episode; an explicit policy update
 lets an existing study continue across model upgrades with its history and
 original bounds intact. See the [observation procedure](docs/routing-diagnostics.md)

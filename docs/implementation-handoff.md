@@ -1,5 +1,12 @@
 # Implementation handoff
 
+Preview.30 keeps a continuing goal in the routing study that enrolled it,
+recovers usage attribution after a failed turn, and checks native execution
+evidence when reporting Luna handoffs. Native qualification covered all four
+named tasks. Snap default, Snap Work and Starship verified the installed
+worker files. Carbon's rollout is pending. See the
+[release and deployment receipt](reliability-packaging-results.md#preview30-worker-workflow-fixes).
+
 Preview.29 lets both adaptive workflows run independent assignments
 concurrently. Native trials verified parallel work and a dependent change
 completed in sequence. Snap, Starship and Carbon selected the release through

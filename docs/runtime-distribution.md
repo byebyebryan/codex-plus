@@ -106,22 +106,22 @@ long-operation acceptance remain separate from local fixture results.
 
 ## Current managed state
 
-Managed source selects workers, monitoring and reporting **preview.29**,
-source `9904a27`, through published chezmoi pins `6acde03`.
+Managed source selects workers, monitoring and reporting **preview.30**
+from `33de05c` through published chezmoi pins `ac06fb7`.
 
 | Target | Installed selection | Runtime evidence |
 | --- | --- | --- |
-| Snap default | Preview.29, Sol 6.1 and Astra 6 worker pins. | Running daemon identity preserved. Fresh monitoring and reporting entrypoints verified. |
-| Snap Work | Preview.29 worker definitions and skills in its separate home. | Native file bytes, modes and running daemon identity verified. |
-| Starship | Preview.29, Sol and Astra 6.2 worker pins. | Running daemon identity preserved. Fresh monitoring and reporting entrypoints verified. |
-| Carbon | Preview.29, Sol 6.1 and Astra 6 worker pins. | Fresh monitoring and reporting entrypoints verified. The native daemon control socket was absent during deployment. |
+| Snap default | Preview.30 | Fresh monitoring and reporting processes reported preview.30. The running daemon retained its identity. |
+| Snap Work | Preview.30 worker definitions and skills | Verified native file bytes and modes in the separate Work home. The running Work daemon retained its identity. |
+| Starship | Preview.30 | Fresh monitoring and reporting processes reported preview.30. The running daemon retained its identity. |
+| Carbon | Preview.29 at last verification | The host was offline during this rollout. Preview.30 deployment is pending. |
 
-All three hosts retained their prior release directories. The 72 managed
-native role and skill files matched their expected bytes and modes across
-the four homes. Scoped chezmoi diffs converged. Existing sessions adopt
-changes through the native lifecycle.
+Snap and Starship retained their preview.29 release directories for rollback.
+Checks covered 54 native role and skill files across three homes.
+Scoped chezmoi diffs were empty after the apply. Already-open sessions adopt
+changes through their native lifecycle.
 
-See the [delivery receipt](reliability-packaging-results.md#preview29-parallel-adaptive-work)
+See the [delivery receipt](reliability-packaging-results.md#preview30-worker-workflow-fixes)
 and the [worker model guide](workers.md#model-versions). Managed apply projects
 reviewed selections. A separately requested refresh can resolve newer
 account-specific candidates through the same owner.

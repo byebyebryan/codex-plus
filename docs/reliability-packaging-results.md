@@ -1,5 +1,36 @@
 # Everyday reliability and native packaging results
 
+## Preview.30 worker workflow fixes
+
+[Release v0.1.0-preview.30](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.30)
+ships from `33de05c`. A continuing adaptive goal keeps its original study when
+the primary model changes. Usage attribution resumes on a later healthy turn
+after a scoped failure and preserves uncertainty for ambiguous retries.
+Luna workflows distinguish a configured role from evidence of execution.
+Validation covers the explicit invocation rule for `$luna-task`, and the worker
+guide walks through selecting a verified release for installation and upgrade.
+
+In synthetic read-only tasks, Sol, Astra, Terra and Luna each returned a
+finding that its parent independently verified. The
+[named-task qualification](worker-escalation-results.md#current-named-task-source-qualification-2026-11-21)
+records the model and effort reported in each child's native turn context.
+The clean source passed the 155-file inventory, ten skill validators and
+543 tests on each of Python 3.11 and 3.14. All five published assets matched
+the build and GitHub digests. The preview.30 package readers verified the
+published preview.29 monitoring and reporting archives for rollback.
+
+The published [chezmoi pins](https://github.com/byebyebryan/dotfiles/commit/ac06fb7076ea7365ca821dfb519e92e8a01662e6)
+select all three components. Snap default, Snap Work and Starship verified
+54 native role and skill files in total. Snap and Starship verified both
+installed package manifests, retained the prior release directories and
+finished with empty scoped diffs. Fresh MCP processes on each host reported
+preview.30 and exposed 17 monitoring tools and four reporting tools.
+All three running Codex daemons retained their identities. Loaded versions in
+already-open conversations were outside this check.
+
+Carbon was offline during rollout. Its last verified selection was preview.29.
+The preview.30 host apply and runtime checks are pending.
+
 ## Preview.29 parallel adaptive work
 
 Release [v0.1.0-preview.29](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.29)
