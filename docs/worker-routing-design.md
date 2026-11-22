@@ -1,5 +1,13 @@
 # Worker routing design
 
+## Independent assignments in the adaptive workflows
+
+From preview.29, either explicitly invoked adaptive workflow considers which
+assignments can start together before choosing models. Each needs a checkable
+result. Writers need distinct ownership and settled interfaces. The primary
+weighs any time or coverage gain against coordination and acceptance work,
+chooses an eligible role for each assignment and verifies the combined result.
+
 ## Model families and managed refresh
 
 Current skills select stable native roles rather than one globally fixed model

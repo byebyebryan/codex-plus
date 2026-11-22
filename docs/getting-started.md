@@ -37,11 +37,12 @@ release. Choose the archives you need from its single GitHub release; see
 
 ## Released and source features
 
-**v0.1.0-preview.28** supplies the released workflows shown in these guides. Updating
+**v0.1.0-preview.29** supplies the released workflows shown in these guides. Updating
 documentation or selecting an archive does not reload an existing MCP process.
 
 | Available in | What to expect |
 | --- | --- |
+| Added in preview.29 | Both adaptive workflows can [run independent assignments in parallel](workers.md#working-in-parallel), including implementation. |
 | Added in preview.28 | Astra primaries can opt into [bounded Sol delegation](workers.md#optional-escalation) and a [private daily study](routing-diagnostics.md#astra-primary-daily-study). |
 | Added in preview.27 | Adaptive tasks and goal loops summarize who did what and can show [observed tokens by model](routing-diagnostics.md#current-run-usage). |
 | Changed in preview.26 | Explicit adaptive workflows make Astra XHigh available by default for supported Sol or current Terra primaries. Luna workflows stay Luna-only. |

@@ -11,7 +11,7 @@ editing this skill does not activate it.
 
 Keep the current primary responsible for decisions, integration, and acceptance.
 Use Luna Max for suitable handoffs. The primary-specific policy below may allow
-one additional worker for a justified assignment.
+one additional worker role for a justified assignment.
 Route each assignment independently. This skill does not change the primary model.
 
 ## Establish readiness and the goal
@@ -27,9 +27,11 @@ investigation does not authorize implementation edits. Start an implementation
 writer only when the slice's intended behavior and invariants are settled.
 Individual coding steps need not be predetermined.
 
-When execution is ready and goal tools are available, create the explicitly
-requested goal or continue a matching active goal. Report a conflicting active
-goal instead of replacing it. Do not invent a token budget.
+Invoking this skill explicitly requests a native goal, including for read-only
+reviews and research. Once the outcome and acceptance check are clear, use
+the available goal tools to create or continue the matching goal before
+dispatching workers. Report a conflicting active goal instead of replacing it.
+Do not invent a token budget.
 
 For a known Sol primary, if `codex-plus-diagnostics` is installed, run
 `codex-plus-diagnostics enroll --if-open --routing-not-started` before routing a new goal. This is a no-op without an
@@ -49,7 +51,22 @@ report gaps if the helper or telemetry becomes unavailable. Read subcommand `--h
 [operator guide](https://dev.byebyebryan.com/codex-plus/routing-diagnostics/)
 only for an enrolled goal.
 
-## Route each assignment
+## Identify independent work before choosing models
+
+Obtain any applicable study assignment before decomposition. At each stage,
+look for outcomes that can start with the inputs and decisions already in hand.
+If you can check each result and working concurrently would save time or improve
+coverage enough to justify handoff and integration, dispatch the ready assignments
+before waiting. Choose an eligible model for each. Several assignments can use
+the same role, and the primary can own one. Respect available slots and user limits.
+
+Give each writer explicit, non-overlapping ownership, including any shared state
+its work changes. Writers can proceed together against an agreed interface.
+When one assignment needs another's result or a shared decision is still open,
+sequence the dependent work. Keep a cohesive task together when splitting it
+would add more coordination than it saves.
+
+## Choose an owner for each assignment
 
 Keep work in the primary when the benefit of delegation is uncertain. Delegate
 to `luna-max` when the objective, responsibility boundary, and acceptance check
@@ -190,18 +207,22 @@ self-contained contract containing:
 - unresolved decisions or conditions to return to the primary, including an
   explicit prohibition on nested delegation.
 
-An investigation or review returns findings and evidence without implementation
-edits. Implementation requires explicit write ownership. Call the declared
+For investigation or review, request findings, supporting file locations or source
+references, and gaps. Keep the assignment read-only. Implementation requires
+explicit write ownership. Call the declared
 native spawn control directly, explicitly selecting the
 named role: for Luna, use `agent_type="luna-max"` and `fork_turns="none"` for the
 self-contained contract. For an opted-in Astra-to-Sol handoff select `sol-xhigh` with
 `fork_turns="none"`. For escalation select exactly `sol-xhigh`
 or `astra-xhigh` as resolved above, also with `fork_turns="none"`. Honor the
-declared client schema and role/model rules; a task label is not role selection. Use one writer by default and
-reuse it for related corrections. Do not duplicate its implementation. Use parallel
-assignments only when independent responsibilities justify their overhead.
+declared client schema and role/model rules; a task label is not role selection.
+Keep one owner per change and return related corrections to that owner.
 
 ## Review and recover
+
+Check the evidence behind consequential claims, reconcile conflicting
+returns, and give one primary conclusion. Identify areas left unchecked,
+including work lost to an unavailable worker.
 
 Check completed-turn state and available native worker model/effort metadata
 before claiming the selected target ran. Keep unavailable selection evidence

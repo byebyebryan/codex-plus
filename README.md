@@ -51,7 +51,11 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.28** includes seven worker workflows and four current roles.
+**v0.1.0-preview.29** includes seven worker workflows and four current roles.
+
+Preview.29 lets either adaptive workflow run independent assignments concurrently.
+The primary chooses a model for each assignment, gives each change one owner,
+and checks the combined result. [Working in parallel](docs/workers.md#working-in-parallel)
 
 Preview.28 lets an Astra primary delegate to Sol when you opt in. Use either
 [adaptive workflow](docs/workers.md#optional-escalation) normally for Astra/Luna,
@@ -287,10 +291,10 @@ workflow. Discussing or editing a skill does not activate it. The adaptive skill
 disable implicit invocation in their metadata. Skills are enabled by default
 when installed; an existing local disable preference must be changed separately.
 
-Use one cohesive assignment and one writer by default. Reuse workers for related
-corrections, keep context compact, and transfer write ownership before taking
-over. Ordinary defects usually call for corrections. Failed attempts without
-new evidence call for primary diagnosis rather than repeated worker cycling.
+Give each worker a cohesive assignment and each change a single owner. Keep
+context compact, reuse workers for related corrections and transfer ownership
+before taking over. If a failure repeats without new evidence, the primary
+diagnoses it.
 
 ## Installation
 

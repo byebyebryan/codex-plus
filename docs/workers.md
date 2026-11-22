@@ -112,6 +112,28 @@ When native usage is available, the summary can include per-model token counts
 for the current run. Contributions can still be reported on a workers-only
 install. [How usage is scoped](routing-diagnostics.md#current-run-usage).
 
+### Working in parallel
+
+An ordinary request to either adaptive skill is enough for the primary to look
+for work that can run at the same time. Each assignment needs the inputs to
+start and a result the primary can verify. The primary chooses a model for each
+assignment and can do one itself. Use this behavior in preview.29 and later.
+
+For a review or research report, several workers can investigate separate
+questions. For implementation, workers can make changes at the same time when
+each owns its edits and the interface between them is settled. For example, two
+exporters can be built against the same agreed record format. If the format
+still needs a decision, settle it first. The primary checks the combined result.
+
+```text
+$adaptive-task Review this project's error handling and documentation for gaps.
+```
+
+```text
+$adaptive-goal-loop Add CSV and JSON exporters for the published record format
+and verify that both preserve every field.
+```
+
 <a id="choose-sol-or-astra-explicitly-source-candidate"></a>
 
 ### Choose Sol or Astra explicitly
@@ -299,7 +321,7 @@ successful control call alone do not establish execution.
 Workers are child agents assigned by the primary through native agent tools.
 The primary gives each worker a compact contract, preserves concurrent edits,
 reviews its actual findings or diff, and checks the result before accepting it.
-One cohesive assignment and one writer are the default.
+Each change has one owner. The adaptive skills can [run independent work in parallel](#working-in-parallel).
 
 The [peer tools](architecture.md#discovery-and-messaging) coordinate independent
 sessions in the same daemon. Ordinary peer discovery excludes child agents.

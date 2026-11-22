@@ -11,10 +11,10 @@ do not activate it.
 
 Keep the current primary responsible for decisions, integration, and acceptance.
 Use Luna Max for suitable handoffs. The primary-specific policy below may allow
-one additional worker for a justified assignment.
+one additional worker role for a justified assignment.
 This skill does not change the primary model or create or manage a goal.
 
-## Define and route the task
+## Define the task
 
 Inspect the request, repository instructions, worktree, and enough authoritative
 context to define the outcome, ownership boundary, and acceptance check. Resolve
@@ -22,6 +22,23 @@ ordinary technical decisions within the user's scope. Ask the user only for a
 missing preference, product choice, or authorization that materially affects
 the work. Start implementation once intended behavior and invariants are settled;
 individual coding steps need not be predetermined.
+
+## Identify independent work before choosing models
+
+Obtain any applicable study assignment before decomposition. At each stage,
+look for outcomes that can start with the inputs and decisions already in hand.
+If you can check each result and working concurrently would save time or improve
+coverage enough to justify handoff and integration, dispatch the ready assignments
+before waiting. Choose an eligible model for each. Several assignments can use
+the same role, and the primary can own one. Respect available slots and user limits.
+
+Give each writer explicit, non-overlapping ownership, including any shared state
+its work changes. Writers can proceed together against an agreed interface.
+When one assignment needs another's result or a shared decision is still open,
+sequence the dependent work. Keep a cohesive task together when splitting it
+would add more coordination than it saves.
+
+## Choose an owner for each assignment
 
 Keep work in the primary when the benefit of delegation is uncertain. Delegate
 to `luna-max` when the objective, responsibility boundary, and acceptance check
@@ -160,18 +177,22 @@ Give the selected worker a compact, self-contained contract containing:
 - unresolved decisions or conditions to return to the primary, including an
   explicit prohibition on nested delegation.
 
-An investigation or review returns findings and evidence without implementation
-edits. Implementation requires explicit write ownership. Call the declared
+For investigation or review, request findings, supporting file locations or source
+references, and gaps. Keep the assignment read-only. Implementation requires
+explicit write ownership. Call the declared
 native spawn control directly, explicitly selecting the named role: for Luna,
 use `agent_type="luna-max"` and `fork_turns="none"` for the self-contained
 contract. For an opted-in Astra-to-Sol handoff select `sol-xhigh` with
 `fork_turns="none"`. For escalation select exactly `sol-xhigh` or `astra-xhigh` as
 resolved above, also with `fork_turns="none"`.
 Honor the declared client schema and role/model rules; a task label is not role
-selection. Prefer one cohesive assignment over parallel microtasks. Do not
-duplicate the worker's implementation while it runs.
+selection. Keep one owner per change and return related corrections to that owner.
 
 ## Review and recover
+
+Check the evidence behind consequential claims, reconcile conflicting
+returns, and give one primary conclusion. Identify areas left unchecked,
+including work lost to an unavailable worker.
 
 Check completed-turn state and available native worker model/effort metadata
 before claiming the selected target ran. Keep unavailable selection evidence
