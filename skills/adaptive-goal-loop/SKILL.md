@@ -126,16 +126,21 @@ acceptance check.
 codex-plus-diagnostics astra-study assign --workflow goal --check "prospective acceptance check"
 ```
 
-Skip setup, probes, replays, already-routed work and requests
-that prescribe a worker or policy. Keep continuations in their existing study
-and arm, including through a primary change. Never count one context in both
-studies. In the Astra study, A permits Astra/Luna. B also permits Sol. If no assignment is returned,
-use the normal request policy. A closed or unavailable helper grants no new
-permission. For a continuing B context, recheck its assignment before a new
-Sol handoff after a pause. A final outcome or expired follow-up ends study
-permission. Keep later overrides and failed attempts in the assigned arm.
+Skip intake for setup, probes, replays, already-routed work and requests that
+prescribe a worker or policy. Count each context once. On a primary switch
+outside the applicable intake command, use
+`codex-plus-diagnostics enroll --existing-only` to recover an open assignment.
+Keep the original Sol episode and primary/Luna baseline, or the original Astra
+context and arm. A model switch grants no new worker permission. If the helper
+reports conflicting study history, hold automatic escalation and flag it.
 
-In an enrolled context use `codex-plus-diagnostics astra-study note --text "…"`
+In the Astra study, A permits Astra/Luna and B also permits Sol. Recheck a
+continuing B assignment before a new Sol handoff after a pause. A final
+outcome or expired follow-up ends study permission. Record later overrides
+and failed attempts in the assigned arm. With no assignment, follow the normal
+request policy. A closed or unavailable helper grants no new permission.
+
+In an enrolled Astra context use `codex-plus-diagnostics astra-study note --text "…"`
 at routing and first return. Add `--final` to the closing outcome note.
 Record owner and reason, the alternative to a Sol handoff,
 observed role/model/effort, first return, repairs, takeover, final acceptance

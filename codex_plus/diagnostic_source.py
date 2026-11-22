@@ -12,6 +12,29 @@ import stat
 MAX_BYTES = 64 * 1024 * 1024
 MAX_LINE = 1024 * 1024
 MAX_THREADS = 32
+_NON_TURN_ENDING_ERROR_CODES = {'threadrollbackfailed', 'activeturnnotsteerable'}
+
+
+def _error_terminal_classification(event_type, payload):
+    """Project only whether an error ends its native turn; never retain details."""
+    error = payload.get('error')
+    for details in (payload, error):
+        if not isinstance(details, dict):
+            continue
+        for key in ('codex_error_info', 'codexErrorInfo'):
+            code = details.get(key)
+            if isinstance(code, dict) and len(code) == 1:
+                code = next(iter(code))
+            if isinstance(code, str) and code.lower().replace('_', '') in _NON_TURN_ENDING_ERROR_CODES:
+                return False
+
+    retry = [payload[key] for key in ('will_retry', 'willRetry') if key in payload]
+    if retry:
+        # A retry or an inconsistent marker cannot establish a terminal error.
+        if any(value is True for value in retry):
+            return False
+        return True if all(value is False for value in retry) else None
+    return True if event_type == 'turn_error' else None
 
 
 def identity(value):
@@ -100,7 +123,8 @@ class NativeRecords:
                 payload = record.get('payload')
                 if not isinstance(payload, dict):
                     gaps.add('malformed_native_record'); continue
-                if 'thread_id' in payload and payload['thread_id'] != thread_id:
+                thread_keys = ('thread_id', 'threadId') if kind == 'event_msg' else ('thread_id',)
+                if any(key in payload and payload[key] != thread_id for key in thread_keys):
                     gaps.add('foreign_thread_native_record'); continue
                 keys = {
                     'turn_context': ('thread_id', 'turn_id', 'root_turn_id', 'model', 'effort'),
@@ -115,6 +139,18 @@ class NativeRecords:
                         continue
                 if keys:
                     projected = {k: payload[k] for k in keys if k in payload}
+                    if kind == 'event_msg':
+                        for snake, camel in (('thread_id', 'threadId'), ('turn_id', 'turnId')):
+                            if snake not in projected and camel in payload:
+                                projected[snake] = payload[camel]
+                        if ('turn_id' in payload and 'turnId' in payload
+                                and payload['turn_id'] != payload['turnId']):
+                            projected.pop('turn_id', None)
+                            gaps.add('conflicting_native_turn_identity')
+                        if payload.get('type') in ('error', 'turn_error'):
+                            classification = _error_terminal_classification(payload['type'], payload)
+                            if classification is not None:
+                                projected['error_terminal'] = classification
                     observed = normalized_time(record.get('timestamp'))
                     if record.get('timestamp') is not None and observed is None:
                         gaps.add('invalid_native_timestamp')
@@ -142,6 +178,37 @@ class NativeRecords:
         if len(rows) != 1:
             raise ValueError('native worker path is missing or ambiguous')
         return rows[0][0]
+
+
+def terminal_turn_ids(records):
+    """Find settled turns in one thread's normalized NativeRecords projection."""
+    terminal = set()
+    pending_errors = {}
+    last_start = -1
+    for index, record in enumerate(records):
+        payload = record['payload']
+        turn = payload.get('turn_id')
+        if not isinstance(turn, str) or not turn.strip():
+            continue
+        # Further evidence for this turn supersedes an unclassified error.
+        pending_errors.pop(turn, None)
+        if record['type'] != 'event_msg':
+            continue
+        event = payload.get('type')
+        if event == 'task_started':
+            last_start = index
+        elif event in ('task_complete', 'turn_aborted'):
+            terminal.add(turn)
+        elif event in ('error', 'turn_error'):
+            disposition = payload.get('error_terminal')
+            if disposition is True:
+                terminal.add(turn)
+            elif disposition is None:
+                pending_errors[turn] = index
+    # A new, distinct start corroborates an older error only while the errored
+    # turn has no subsequent activity. A retryable error never enters this set.
+    terminal.update(turn for turn, index in pending_errors.items() if index < last_start)
+    return terminal
 
 
 def turns(records):

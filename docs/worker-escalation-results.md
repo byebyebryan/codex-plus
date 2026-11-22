@@ -254,3 +254,29 @@ lifecycle test. Terra-primary access, active-writer revocation and provider-erro
 recovery retain the limits above. No new permission parser, installed policy,
 publication, deployment or real-session interruption was introduced. Captures,
 prompts and native identifiers remain private.
+
+## Current named-task source qualification (2026-11-21)
+
+Fresh read-only synthetic sessions explicitly invoked the three source skills
+through the existing native 0.171.0 daemon. Each parent selected one worker,
+independently verified its review and accepted the handoff.
+
+| Invocation | Selected role | Model in child turn context | Effort |
+| --- | --- | --- | --- |
+| `$sol-task` | `sol-xhigh` | `gpt-6.1-sol` | `xhigh` |
+| `$astra-task` | `astra-xhigh` | `gpt-6-astra` | `xhigh` |
+| `$terra-task` | `terra-6-1-xhigh` | `gpt-6.1-terra` | `xhigh` |
+
+All three workers found the same synthetic slice-before-sort defect and the
+primaries independently verified the expected and actual ordering. Native worker
+records showed completed turns with token usage and zero recorded reroutes.
+Model and effort attribution comes from each child's turn context. All primaries retained the
+existing `gpt-6.2-astra` / `xhigh` selection. No goals were created, fixture
+bytes stayed unchanged, and all synthetic parents and children were archived
+and unloaded with no native record gaps.
+
+A separate `$luna-task` investigation selected `luna-max`. Its native records
+showed `gpt-6-luna` / `max` and a completed turn. The
+primary disclosed the selected role, completion and role pin, and distinguished
+the runtime fields absent from its visible completion result. It independently
+verified and accepted the finding after correcting a line-reference discrepancy.

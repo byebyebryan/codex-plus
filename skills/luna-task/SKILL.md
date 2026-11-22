@@ -5,6 +5,10 @@ description: Delegate one bounded investigation or implementation task to luna-m
 
 # Luna Task
 
+Use this workflow only when the user explicitly invokes `$luna-task`. A generic
+task request, a direct native-worker request, or discussion or editing of this
+skill does not activate it.
+
 Use `luna-max` for one cohesive task. Keep the current primary responsible for
 decisions, integration, and acceptance; the intended setup is Sol XHigh. This
 skill does not change the primary model or create or manage a goal.
@@ -24,7 +28,7 @@ Ask the user only for a missing preference, product choice, or authorization
 that materially affects the work. Start implementation once its behavior and
 invariants are settled; coding steps need not be predetermined.
 
-## Delegate
+## Check Luna availability and delegate
 
 Inspect the actual native tool declarations and their exposed custom-agent roles
 before deciding delegation is unavailable. Native collaboration controls are
@@ -35,12 +39,23 @@ search is not evidence that native controls are missing. A directly declared
 `collaboration.list_agents` can check that control, but does not prove that the
 Luna role, spawning, or model execution works.
 
-Distinguish missing native controls or roles (no delegation attempted), an error
-from the actual spawn call (spawn failed), and model/task errors after a worker
-starts (worker execution failed). Report the observed limitation or error and
-any partial result honestly. Do not substitute another worker, launch a separate
-Codex process, or recommend a daemon restart to work around this discovery
-mistake. Retain this workflow's existing primary takeover and routing rules.
+Before spawning, check the exposed `luna-max` role's selected model and effort.
+Honor its concrete native pin and any exact-version preference; do not resolve or
+upgrade models during the task. The model must be in the supported stable Luna
+family (`gpt-6` or newer) and the reasoning effort must be `max`. Use
+`codex-plus-workers classify --model MODEL` when available to check the family.
+An installed role file alone does not prove native exposure or access. If the
+control or role is missing, report that limitation. If the selected model or
+effort evidence is unavailable, name the missing field. If its family or effort
+is incompatible, report the mismatch. Do not attempt delegation in any of these
+cases.
+
+Distinguish missing controls/roles or incompatible selection (no attempt), an
+error from the actual spawn call (spawn failed), and a model/task error after the
+worker starts (execution failed). Report the observed limitation or error and
+any partial result honestly. Never substitute another worker, launch a separate
+Codex process, change provider or billing, or recommend a daemon restart as a
+workaround. Retain this workflow's existing primary takeover and routing rules.
 
 If Luna genuinely cannot be used, report that limitation without claiming a Luna
 assignment or loop ran; do not silently substitute another delegated model.
@@ -83,6 +98,15 @@ Resolve verification gaps before acceptance, including work done by the primary.
 Run checks appropriate to the assignment and repository-required gates; broaden
 checks only for an unresolved risk. Complete corrections within the original task without
 silently expanding scope or creating a goal.
+
+Before claiming Luna ran or completed the task, check available native
+completed-turn state and inspect the actual result and validation evidence. Check
+available native result metadata for the selected role, model, and effort; a
+successful spawn, installed role, or worker self-description is not execution
+evidence. Report a model/effort mismatch separately from missing metadata, name
+which evidence is unavailable, and do not claim the requested selection ran when
+it differs or cannot be verified. If completed-turn state or selection metadata
+is unavailable, report that gap explicitly.
 
 Keep commits, pushes, deployment, and other external actions within existing
 authorization. Report the outcome, Luna's contribution, any primary takeover,

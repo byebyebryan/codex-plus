@@ -16,7 +16,7 @@ import uuid
 
 from . import VERSION
 from .context import absolute, primary_selection, resolve
-from .diagnostic_source import MAX_THREADS, NativeRecords, identity, start_time, turns
+from .diagnostic_source import MAX_THREADS, NativeRecords, identity, start_time, terminal_turn_ids, turns
 from .worker_models import family_for_model
 
 POLICY = 'adaptive-sol-luna-v1'
@@ -110,6 +110,18 @@ def atomic_private_json(root, filename, value, *, max_bytes=None):
             os.unlink(name)
 
 
+def _finished_context_overlaps(records, turn_id, first_turn, ended_at):
+    """Only admit a new context if its native root demonstrably began after closure."""
+    roots = _turn_roots(records)
+    current = roots.get(turn_id, set())
+    if len(current) != 1 or None in current or current & roots.get(first_turn, set()):
+        return True
+    root, = current
+    began = start_time(records, root)
+    return (roots.get(root) != {root} or began is None
+            or _study_time(began) <= _study_time(ended_at))
+
+
 class Ledger:
     def __init__(self, root=None, home=None):
         self.context = resolve()
@@ -192,6 +204,19 @@ class Ledger:
         return (not study['closed_at'] and now() < datetime.fromisoformat(study['enrollment_until'])
                 and len(study['episodes']) < study['goal_limit'])
 
+    @staticmethod
+    def prior_context(study, thread_id, records=None, turn_id=None):
+        for key, episode in (study or {}).get('episodes', {}).items():
+            if episode['thread_id'] != thread_id:
+                continue
+            outcome = episode['outcome']
+            if outcome is None:
+                return {'reason': 'retained_sol_episode', 'episode': key}
+            if records is not None and _finished_context_overlaps(
+                    records, turn_id, episode['start_turn'], outcome['recorded_at']):
+                return {'reason': 'previous_study_context'}
+        return None
+
     def allow_model_upgrades(self):
         """Explicitly enable per-episode versions without rewriting past goals."""
         if self.read() is None:
@@ -227,13 +252,20 @@ class Ledger:
         return {**self.status(), 'version_policy_updated': changed}
 
     def enroll(self, thread_id, *, if_open=False, acceptance_ref=None, routing_not_started=False,
-               loaded_selection=None):
+               loaded_selection=None, existing_only=False):
         # The no-study path is a read-only no-op, including on worker-only installs.
         study = self.read()
-        existing = next(((k, e) for k, e in (study or {}).get('episodes', {}).items()
-                         if e['thread_id'] == thread_id and not e['outcome']), None)
+        existing = self.prior_context(study, thread_id)
+        astra = AstraStudy(self.root, self.home)
+        prior = astra.prior_context(astra.read(), thread_id)
+        if prior:
+            if existing:
+                return {'enrolled': False, 'reason': 'conflicting_study_history'}
+            return {'enrolled': False, **prior}
         if existing:
-            return {'enrolled': True, 'episode': existing[0], 'existing': True}
+            return {'enrolled': True, 'episode': existing['episode'], 'existing': True}
+        if existing_only:
+            return {'enrolled': False, 'reason': 'no_open_context'}
         if study is None or not self.open(study):
             if if_open:
                 return {'enrolled': False, 'reason': 'enrollment_closed_or_unconfigured'}
@@ -245,9 +277,7 @@ class Ledger:
         if parent or not available:
             raise ValueError('enrollment requires an independent primary with a native turn start')
         turn_id = available[-1]
-        if any(r['type'] == 'event_msg' and r['payload'].get('turn_id') == turn_id
-               and r['payload'].get('type') in ('task_complete', 'turn_aborted', 'error')
-               for r in records):
+        if turn_id in terminal_turn_ids(records):
             raise ValueError('enroll in the active starting turn, never retrospectively')
         contexts = [r['payload'] for r in records if r['type'] == 'turn_context'
                     and r['payload'].get('turn_id') == turn_id]
@@ -271,6 +301,9 @@ class Ledger:
         with self.write() as study:
             if study is None:
                 raise ValueError('study disappeared before admission')
+            prior = astra.prior_context(astra.read(), thread_id, records, turn_id)
+            if prior:
+                return {'enrolled': False, **prior}
             for key, episode in study['episodes'].items():
                 if episode['thread_id'] == thread_id and not episode['outcome']:
                     return {'enrolled': True, 'episode': key, 'existing': True}
@@ -436,10 +469,9 @@ class Ledger:
         if any(a['route'] not in ('primary', 'luna') for a in episode['assignments']):
             gaps.add('policy_deviation_recorded')
         result = summarize(by_thread, selected_turns, primary_thread_id=root)
-        all_turns = [turn for thread in result['threads'] for turn in thread['turns']]
-        settled = bool(all_turns) and all(
-            any(turn['events'][state] for state in ('completed', 'aborted', 'error'))
-            for turn in all_turns)
+        settled = any(selected_turns.values()) and all(
+            set(turn_ids) <= terminal_turn_ids(by_thread[thread])
+            for thread, turn_ids in selected_turns.items())
         if not settled:
             gaps.add('selected_turn_terminal_evidence_missing')
         version_policy = _version_policy(study)
@@ -541,15 +573,15 @@ class AstraStudy:
     """Private prospective assignments for an explicitly invoked Astra workflow."""
 
     def __init__(self, root=None, home=None):
-        base = Ledger(root, home)
-        self.context = base.context
-        self.home = base.home
-        self.base = base.root
+        self.sol = Ledger(root, home)
+        self.context = self.sol.context
+        self.home = self.sol.home
+        self.base = self.sol.root
         self.root = self.base / 'astra-study'
 
     def check_base(self):
         if self.base.exists() or self.base.is_symlink():
-            Ledger(self.base, self.home).check_root()
+            self.sol.check_root()
 
     def check_root(self):
         self.check_base()
@@ -707,6 +739,22 @@ class AstraStudy:
             return False
         return at >= cls.effective_intake_close(study) + timedelta(days=ASTRA_STUDY_FOLLOWUP_DAYS)
 
+    @classmethod
+    def prior_context(cls, study, thread_id, records=None, turn_id=None):
+        context = (study or {}).get('contexts', {}).get(thread_id)
+        if context is None:
+            return None
+        final_at = next((n['recorded_at'] for n in context['notes'] if n['final']), None)
+        if final_at is None:
+            deadline = cls.effective_intake_close(study) + timedelta(days=ASTRA_STUDY_FOLLOWUP_DAYS)
+            if now() < deadline:
+                return {'reason': 'retained_astra_context', 'index': context['index']}
+            final_at = stamp(deadline)
+        if records is not None and _finished_context_overlaps(
+                records, turn_id, context['initiating_turn'], final_at):
+            return {'reason': 'previous_study_context'}
+        return None
+
     def status(self):
         study = self.read()
         if study is None:
@@ -766,10 +814,7 @@ class AstraStudy:
         if parent is not None:
             raise ValueError('Astra study assignments require the owned native primary thread')
         started = turns(records)
-        terminal = {record['payload'].get('turn_id') for record in records
-                    if record['type'] == 'event_msg'
-                    and record['payload'].get('type') in ('task_complete', 'turn_aborted',
-                                                         'error', 'turn_error')}
+        terminal = terminal_turn_ids(records)
         active = [turn for turn in started if turn not in terminal]
         if len(active) != 1 or not started or active[0] != started[-1]:
             raise ValueError('Astra assignment requires the current active native primary turn')
@@ -778,10 +823,15 @@ class AstraStudy:
                       and record['payload'].get('turn_id') == active[0]}
         if selections != {(study['primary_selection']['model'], study['primary_selection']['effort'])}:
             raise ValueError('native initiating turn model and effort must match the study pin')
-        return active[0]
+        return active[0], records
 
     def assign(self, thread_id, workflow, check, *, loaded_selection=None):
         study = self.read()
+        prior = self.sol.prior_context(self.sol.read(), thread_id)
+        if prior:
+            if self.prior_context(study, thread_id):
+                return {'assigned': False, 'reason': 'conflicting_study_history'}
+            return {'assigned': False, **prior}
         if study is None:
             return {'assigned': False, 'reason': 'study_unconfigured'}
         if not isinstance(thread_id, str) or not thread_id:
@@ -803,10 +853,15 @@ class AstraStudy:
             if workflow not in ('task', 'goal'):
                 raise ValueError('workflow must be task or goal')
             _study_text(check, 'acceptance check')
-        initiating_turn = self.verify_initiating_context(thread_id, loaded_selection, study)
-        with self.write() as current:
+        initiating_turn, records = self.verify_initiating_context(thread_id, loaded_selection, study)
+        # Both admission paths serialize on the base ledger lock. Always acquire
+        # it before the Astra lock, and recheck ownership before consuming an arm.
+        with self.sol.write() as sol_study, self.write() as current:
             if current is None:
                 raise ValueError('Astra study disappeared before assignment')
+            prior = self.sol.prior_context(sol_study, thread_id, records, initiating_turn)
+            if prior:
+                return {'assigned': False, **prior}
             existing = current['contexts'].get(thread_id)
             if existing is not None:
                 if any(note['final'] for note in existing['notes']):
@@ -942,11 +997,7 @@ def current_usage(worker_paths):
     if parent is not None:
         raise ValueError('usage requires the invoking native primary')
     roots = _turn_roots(records)
-    terminal = {record['payload'].get('turn_id') for record in records
-                if record['type'] == 'event_msg'
-                and record['payload'].get('type') in ('task_complete', 'turn_aborted')
-                and isinstance(record['payload'].get('turn_id'), str)}
-    live_turns = roots.keys() - terminal
+    live_turns = roots.keys() - terminal_turn_ids(records)
     if len(live_turns) != 1:
         raise ValueError('current native turn is unavailable or ambiguous')
     current = roots[next(iter(live_turns))]
@@ -976,6 +1027,8 @@ def current_usage(worker_paths):
         if not child_turns or any(len(observed) != 1 or None in observed for observed in child_roots.values()):
             gaps['worker'].add('worker_turn_scope_incomplete')
         if child_turns:
+            if child_turns - terminal_turn_ids(child_records):
+                gaps['worker'].add('selected_turn_terminal_evidence_missing')
             records_by_thread[thread] = child_records
             selected[thread] = child_turns
 
@@ -983,9 +1036,6 @@ def current_usage(worker_paths):
     for thread in accounting['threads']:
         if thread['coverage'].get('unjoined_usage_record_count'):
             gaps[thread['actor']].add('unjoined_usage_records')
-        if thread['actor'] == 'worker' and any(
-                not (turn['events']['completed'] or turn['events']['aborted']) for turn in thread['turns']):
-            gaps['worker'].add('selected_turn_terminal_evidence_missing')
     rows = accounting['usage_by_context']
     for row in rows:
         if row['context_status'] != 'known':
@@ -1008,6 +1058,8 @@ def main(argv=None):
     enroll = sub.add_parser('enroll')
     enroll.add_argument('--thread', default=os.environ.get('CODEX_THREAD_ID'))
     enroll.add_argument('--if-open', action='store_true')
+    enroll.add_argument('--existing-only', action='store_true',
+                        help='Look up the invoking thread in both studies without enrolling')
     enroll.add_argument('--acceptance-ref')
     enroll.add_argument('--routing-not-started', action='store_true',
                         help='Attest enrollment precedes routing; does not prove it from native data')
@@ -1079,7 +1131,10 @@ def main(argv=None):
             result = ledger.allow_model_upgrades()
         elif args.command == 'enroll':
             loaded_selection = None
-            if ledger.status()['enrollment_open']:
+            if args.existing_only:
+                if not args.thread or args.thread != os.environ.get('CODEX_THREAD_ID'):
+                    raise ValueError('look up only the invoking native thread')
+            elif ledger.status()['enrollment_open']:
                 if not args.thread or args.thread != os.environ.get('CODEX_THREAD_ID'):
                     raise ValueError('enroll only the invoking native primary')
                 selection = primary_selection()
@@ -1089,7 +1144,7 @@ def main(argv=None):
                 loaded_selection = {'model': selection['model'], 'effort': selection['reasoning_effort']}
             result = ledger.enroll(args.thread, if_open=args.if_open, acceptance_ref=args.acceptance_ref,
                                    routing_not_started=args.routing_not_started,
-                                   loaded_selection=loaded_selection)
+                                   loaded_selection=loaded_selection, existing_only=args.existing_only)
         elif args.command == 'link':
             result = ledger.link(args.episode, args.thread, args.turn, route=args.route,
                                  contract_ref=args.contract_ref, status=args.status,

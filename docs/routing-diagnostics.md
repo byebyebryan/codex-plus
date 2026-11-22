@@ -45,6 +45,18 @@ an unresolved outcome. For the acceptance check and full notes, inspect
 directory. Use the global `--state-root PATH` before `astra-study` for an
 isolated test ledger. Starting the study again preserves its original window.
 
+The two studies share an admission lock in that diagnostics directory. If the
+primary changes during an open context, the other helper reports
+`retained_sol_episode` with the original episode ID or `retained_astra_context`
+with its index. Continue recording in the original study under its routing
+limits. Outside either intake path, `enroll --existing-only` checks the
+invoking thread for an open assignment without allocating one. This lookup
+grants no additional model permission. A finalized context
+or expired Astra follow-up can give way to the other study in the same thread
+when the current native root demonstrably began after closure. If the root is
+ambiguous, the helper declines admission. Existing overlapping open assignments
+return `conflicting_study_history` for operator review and retain both records.
+
 At review, compare final acceptance across **all assigned contexts**. For
 each Sol handoff, check what Astra expected to do otherwise, the first return,
 correction rounds, primary takeover and any user intervention. Compare elapsed
@@ -64,7 +76,10 @@ named, directly linked workers. The command requires no study and prints only
 aggregate usage, model/effort metadata, and coverage cues.
 
 The primary's running turn has a partial count, and an unavailable or
-unattributed count stays unknown. A goal resumed under a new native root may
+unattributed count stays unknown. A failed earlier turn can end with a scoped
+error. If its terminal status is missing, the reader needs a later, distinct
+turn start and no further activity in the errored turn. A retryable error
+keeps its turn open. A goal resumed under a new native root may
 span more work than this snapshot. Cached input is included in input tokens.
 The counts are native usage observations, with billing outside their scope.
 

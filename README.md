@@ -51,7 +51,11 @@ Markdown sources and technical evidence are linked below.
 The preview is ready for daily-use trials. Choose workers, follow useful changes
 or publish a browser handoff around your existing Codex conversation.
 
-**v0.1.0-preview.29** includes seven worker workflows and four current roles.
+**v0.1.0-preview.30** includes seven worker workflows and four current roles.
+
+Preview.30 keeps a continuing goal in its original routing study when the primary
+changes, recovers usage after failed turns, and checks native execution evidence
+before attributing a handoff to Luna.
 
 Preview.29 lets either adaptive workflow run independent assignments concurrently.
 The primary chooses a model for each assignment, gives each change one owner,
@@ -247,7 +251,7 @@ over decisions outside the execution contract.
 | `$adaptive-goal-loop` | A substantial goal, routed per assignment | Primary, selective Luna, or a justified worker for the selected primary |
 | `$sol-task` | One bounded task; no goal management | Exact Sol XHigh worker; primary accepts the result |
 | `$astra-task` | One bounded task; no goal management | Exact Astra XHigh worker; primary accepts the result |
-| `$terra-task` | One bounded task; no goal management | Exact GPT-6.1 Terra XHigh worker; primary accepts the result |
+| `$terra-task` | One bounded task; no goal management | Configured current Terra XHigh worker; primary accepts the result |
 
 The named tasks preserve your primary and need no automatic escalation setting.
 Review and investigation return evidence without source fixes. For example:
@@ -257,7 +261,8 @@ $sol-task Review the current changes and run appropriate validation.
 Return findings and evidence; leave source fixes to the primary.
 ```
 
-These three skills require preview.18; older installations need an explicit upgrade.
+These three skills first shipped in preview.18. For installation or upgrade,
+follow the [release selection guide](docs/manage-agent.md#resolve-and-verify-one-published-release).
 See the [named-task contract and examples](docs/workers.md#choose-sol-or-astra-explicitly-source-candidate).
 The current Terra task uses a distinct `terra-6-1-xhigh` role; the legacy task of
 the same name remains GPT-5.6-only. Install only the deliberately selected variant.

@@ -63,14 +63,17 @@ the corresponding adaptive name. There are no aliases. The canonical
 workflow identities and invocation boundaries remain unchanged. Generic task/goal wording and
 discussion activate no worker workflow.
 
-Preview.18 adds the three named tasks. Preview.17 installations retain only the
-four Luna/adaptive workflows until explicitly upgraded. See the [Sol/Astra examples](#choose-sol-or-astra-explicitly-source-candidate)
-and [current Terra task](#choose-current-terra-explicitly-source-candidate).
+Check the selected release manifest for the workflow identities it contains.
+Older releases may not include the three named tasks; select and verify a
+compatible release through the [installation procedure](#installation). See the
+[Sol/Astra examples](#choose-sol-or-astra-explicitly-source-candidate) and
+[current Terra task](#choose-current-terra-explicitly-source-candidate).
 
 Task workflows do not create or manage a goal. Goal-loop workflows use available
 goal tools for an explicitly requested substantial outcome. A generic “go for a
-goal loop” uses the ordinary primary workflow. Mentioning or discussing a skill
-does not activate it.
+goal loop” uses the ordinary primary workflow; an explicit natural-language
+request to use Luna for a goal loop activates `$luna-goal-loop` even without the
+skill token. Mentioning or discussing a skill does not activate it.
 
 ### One bounded task
 
@@ -97,6 +100,10 @@ $luna-goal-loop Complete the CSV importer migration described in the approved
 plan. Use Luna for cohesive implementation slices, review each result, and
 finish when the compatibility and integration checks pass.
 ```
+
+You can also ask directly: “Use Luna for a goal loop to complete the CSV importer
+migration in the approved plan, reviewing each result against the compatibility
+and integration checks.”
 
 The primary owns the goal, selects assignments and reviews the results. Luna
 can investigate or implement within a clear responsibility boundary. Ordinary
@@ -208,10 +215,11 @@ delete a chosen current task as part of blanket legacy cleanup.
 Also reconcile any manager rule that still declares `terra-task` retired before
 installing the current variant; otherwise it may be removed during convergence.
 
-No Terra automatic offload/escalation route or new Terra goal loop is added.
-Current-Terra execution was not tested in the source qualification session, where
-that role was not exposed. Missing controls/roles or model errors are reported without
-substituting legacy Terra, another model, a new process or a daemon restart.
+Terra is available by explicit assignment. In a [native test of all three named
+tasks](worker-escalation-results.md#current-named-task-source-qualification-2026-11-21),
+the current Terra worker completed a review and its parent verified the finding.
+On a host where the selected role cannot run, the primary reports the missing
+control, incompatible role, spawn failure or execution error.
 
 ## Which agent does the work?
 
@@ -332,9 +340,10 @@ skills do not automatically register a watch or reminder.
 ## Installation
 
 Use the [agent lifecycle guide](manage-agent.md#install-or-upgrade-through-the-configuration-owner)
-for the complete procedure. Install the four native roles and seven workflow
-skills from a verified preview.18
-worker release archive. Preserve your configuration
+for the complete procedure. Select and verify the current release using its
+[release selection and verification procedure](manage-agent.md#resolve-and-verify-one-published-release),
+then install the four native roles and seven workflow skills from that release's
+worker archive. Preserve your configuration
 owner, local changes and skill disable preferences. Remove the two retired
 worker-name directories through that owner after retaining any local edits;
 verify they are absent from installed inventory and native discovery. The human
@@ -357,11 +366,12 @@ Installing the role alone changes neither skill policy nor an already loaded
 conversation. Your client and account must support the selected models,
 custom agents and skills.
 
-Preview.17 contains no current `sol-task`, `astra-task` or GPT-6.1 `terra-task`.
-Upgrade through the configuration owner using preview.18's verified archive,
-both files per skill, four roles and synchronized pins. Reconcile any retired
-Terra-task declaration before applying. Verify native discovery separately from
-actual model execution; do not graft moving-main files into a pinned older release.
+When upgrading an installation that predates the named tasks, select a verified
+release whose manifest contains the requested skills and roles.
+Upgrade through the configuration owner, including both files per skill, the
+required roles and synchronized pins. Reconcile any retired Terra-task
+declaration before applying. Verify native discovery separately from actual
+model execution; do not graft moving-main files into a pinned older release.
 
 Workers do not require the monitoring or reporting runtime. Those components
 have their own [monitoring setup](runtime-distribution.md) and

@@ -32,7 +32,9 @@ class PagesTests(unittest.TestCase):
                 f'Snap, Starship and Carbon select workers, monitoring and reporting **{managed_short}**.\n'),
             'docs/presentation/index.html': f'Codex Plus {published_short}. Available in {published_short}\n',
             'docs/workers.md': ('$luna-task $luna-goal-loop $adaptive-task $adaptive-goal-loop '
-                                'skills/html-report\n'),
+                                '$sol-task $astra-task $terra-task skills/html-report\n\n'
+                                '## Installation\n'
+                                '[Select a release](manage-agent.md#resolve-and-verify-one-published-release)\n'),
             'codex_plus/__init__.py': f'VERSION = {source!r}\n',
         }
         for name, text in files.items():
@@ -63,6 +65,56 @@ class PagesTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = self.release_fixture(directory)
             (root / 'codex_plus/__init__.py').unlink()
+            self.assertEqual(pages.validate_current_guides(root), 13)
+
+    def test_worker_installation_requires_the_canonical_release_selector(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.release_fixture(directory)
+            path = root / 'docs/workers.md'
+            path.write_text(path.read_text().replace(
+                'manage-agent.md#resolve-and-verify-one-published-release',
+                'manage-agent.md#install-or-upgrade-through-the-configuration-owner'))
+            message = 'worker installation must link to the canonical release selector'
+            with self.assertRaisesRegex(ValueError, message):
+                pages.validate_current_guides(root)
+
+    def test_worker_installation_rejects_a_numbered_preview_archive_pin(self):
+        phrases = (
+            'Use the verified preview.18 worker release archive.',
+            "Use preview.18's verified archive.",
+        )
+        for phrase in phrases:
+            with self.subTest(phrase=phrase), tempfile.TemporaryDirectory() as directory:
+                root = self.release_fixture(directory)
+                path = root / 'docs/workers.md'
+                path.write_text(path.read_text() + f'\n{phrase}\n')
+                message = 'worker installation must not pin a numbered preview archive'
+                with self.assertRaisesRegex(ValueError, message):
+                    pages.validate_current_guides(root)
+
+    def test_worker_installation_rejects_a_versioned_worker_archive_name(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.release_fixture(directory)
+            path = root / 'docs/workers.md'
+            path.write_text(path.read_text() + '\nInstall codex-plus-workers-0.1.0-preview.18.tar.gz.\n')
+            message = 'worker installation must not pin a numbered preview archive'
+            with self.assertRaisesRegex(ValueError, message):
+                pages.validate_current_guides(root)
+
+    def test_worker_migration_note_can_mention_a_prior_release_near_selector(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.release_fixture(directory)
+            path = root / 'docs/workers.md'
+            note = ('\nFor preview.18 installs, use the [release selector]'
+                    '(manage-agent.md#resolve-and-verify-one-published-release).\n')
+            path.write_text(path.read_text() + note)
+            self.assertEqual(pages.validate_current_guides(root), 13)
+
+    def test_worker_installation_pin_check_ignores_historical_release_notes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.release_fixture(directory)
+            path = root / 'docs/workers.md'
+            path.write_text(path.read_text() + '\n## Historical release notes\nUsed the preview.18 worker release archive.\n')
             self.assertEqual(pages.validate_current_guides(root), 13)
 
     def test_stale_setup_claim_is_rejected_without_rejecting_historical_features(self):

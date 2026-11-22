@@ -32,7 +32,11 @@ class MetadataTests(unittest.TestCase):
                 self.validate(path.read_text(), path.parent.parent.name)
 
     def test_explicit_only_workflows_require_explicit_invocation(self) -> None:
-        for skill in ('adaptive-task', 'adaptive-goal-loop', 'sol-task', 'astra-task', 'terra-task'):
+        skills = (
+            'luna-task', 'adaptive-task', 'adaptive-goal-loop',
+            'sol-task', 'astra-task', 'terra-task',
+        )
+        for skill in skills:
             valid = VALID.replace('adaptive-goal-loop', skill)
             self.validate(valid, skill)
             for invalid in (valid.replace('false', 'true'), valid.split('\npolicy:')[0]):
@@ -48,7 +52,7 @@ class MetadataTests(unittest.TestCase):
             .replace("false", "false # explicit only")
         )
 
-    def test_implicit_luna_goal_loop_remains_supported(self) -> None:
+    def test_explicit_natural_language_luna_goal_loop_remains_supported(self) -> None:
         self.validate(
             VALID.split("\npolicy:")[0].replace("adaptive-goal-loop", "luna-goal-loop"),
             "luna-goal-loop",

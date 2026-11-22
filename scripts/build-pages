@@ -415,9 +415,29 @@ def validate_current_guides(root: Path = ROOT) -> int:
                     count += 1
     workers = (root / "docs/workers.md").read_text()
     for workflow in ("$luna-task", "$luna-goal-loop", "$adaptive-task", "$adaptive-goal-loop",
-                     "skills/html-report"):
+                     "$sol-task", "$astra-task", "$terra-task", "skills/html-report"):
         if workflow not in workers:
             raise ValueError(f"named workflow missing from worker guide: {workflow}")
+    installation = re.search(r"(?ms)^## Installation\s*\n(.*?)(?=^## |\Z)", workers)
+    if not installation:
+        raise ValueError("worker installation section is missing")
+    install_text = installation.group(1)
+    selector = re.compile(
+        r"\[[^\]]+\]\(manage-agent\.md#resolve-and-verify-one-published-release\)"
+    )
+    if not selector.search(install_text):
+        raise ValueError("worker installation must link to the canonical release selector")
+    pinned_archive = re.compile(
+        r"\bcodex-plus-workers-\d+\.\d+\.\d+(?:-[\w.+-]+)?\.tar\.gz\b|"
+        r"https?://github\.com/byebyebryan/codex-plus/releases/(?:download|tag)/"
+        r"v?\d+\.\d+\.\d+[^\s)]*|"
+        r"\bverified\s+preview\.\d+\s+(?:worker\s+)?release\s+archive\b|"
+        r"\bpreview\.\d+(?:['’]s)?\s+(?:verified\s+)?"
+        r"(?:worker\s+)?(?:release\s+)?archive\b",
+        re.I,
+    )
+    if pinned_archive.search(install_text):
+        raise ValueError("worker installation must not pin a numbered preview archive")
     return count
 
 

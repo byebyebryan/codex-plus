@@ -437,6 +437,79 @@ class DiagnosticTests(unittest.TestCase):
                   self.assertRaisesRegex(ValueError, 'current native (root|turn)')):
                 d.current_usage([])
 
+    def test_usage_selects_next_active_turn_after_scoped_terminal_error(self):
+        for error_type in ('error', 'turn_error'):
+            with self.subTest(error_type=error_type):
+                failed = run_records('failed', 'gpt-6.1-sol', root='failed')[:-1]
+                failed.append(record('event_msg', type=error_type, turn_id='failed', thread_id='parent-a',
+                                     willRetry=False, error={
+                                         'message': 'PRIVATE ERROR DETAIL', 'codexErrorInfo': 'other'}))
+                healthy = run_records('healthy', 'gpt-6.2-sol', root='healthy')[:-1]
+                self.add_thread('parent-a', failed + healthy)
+                with patch.dict(os.environ, {'CODEX_HOME': str(self.home), 'CODEX_THREAD_ID': 'parent-a'}):
+                    result = d.current_usage([])
+                self.assertEqual({row['model'] for row in result['usage_by_context']}, {'gpt-6.2-sol'})
+                self.assertNotIn('PRIVATE ERROR DETAIL', json.dumps(result))
+                projected, _, _ = NativeRecords(self.home).read('parent-a')
+                error = next(item for item in projected if item['type'] == 'event_msg'
+                             and item['payload'].get('type') == error_type)
+                self.assertIs(error['payload']['error_terminal'], True)
+                self.assertNotIn('PRIVATE ERROR DETAIL', json.dumps(projected))
+                self.assertNotIn('codexErrorInfo', json.dumps(projected))
+
+    def test_usage_keeps_retryable_nonterminal_conflicting_and_unscoped_errors_live(self):
+        errors = [
+            record('event_msg', type='error', turnId='active', threadId='parent-a', willRetry=True,
+                   error={'message': 'PRIVATE RETRY DETAIL',
+                          'codexErrorInfo': {'responseStreamDisconnected': {'httpStatusCode': None}}}),
+            record('event_msg', type='error', turn_id='active', thread_id='parent-a', willRetry=False,
+                   error={'message': 'PRIVATE NONTERMINAL DETAIL',
+                          'codexErrorInfo': 'activeTurnNotSteerable'}),
+            record('event_msg', type='error', turn_id='active', thread_id='parent-a',
+                   will_retry=True, willRetry=False, message='PRIVATE CONFLICT DETAIL'),
+            record('event_msg', type='error', thread_id='parent-a', willRetry=False,
+                   message='PRIVATE UNSCOPED DETAIL'),
+            record('event_msg', type='error', turn_id='active', thread_id='parent-a',
+                   error={'message': 'PRIVATE CODE DETAIL',
+                          'codexErrorInfo': {'privateToken_7482': {}}}),
+        ]
+        for error in errors:
+            with self.subTest(error=error['payload'].get('willRetry')):
+                self.add_thread('parent-a', run_records('active', 'gpt-6.2-sol', root='active')[:-1] + [error])
+                with patch.dict(os.environ, {'CODEX_HOME': str(self.home), 'CODEX_THREAD_ID': 'parent-a'}):
+                    result = d.current_usage([])
+                self.assertEqual({row['model'] for row in result['usage_by_context']}, {'gpt-6.2-sol'})
+                self.assertNotIn('PRIVATE', json.dumps(result))
+                projected, _, _ = NativeRecords(self.home).read('parent-a')
+                self.assertNotIn('privateToken_7482', json.dumps(projected))
+
+    def test_unclassified_scoped_error_needs_distinct_start_and_no_later_resumption(self):
+        failed = run_records('failed', 'gpt-6.1-sol', root='failed')[:-1]
+        error = record('event_msg', type='error', turn_id='failed', thread_id='parent-a',
+                       message='PRIVATE ERROR DETAIL')
+        healthy = run_records('healthy', 'gpt-6.2-sol', root='healthy')[:-1]
+        self.add_thread('parent-a', failed + [error] + healthy)
+        with patch.dict(os.environ, {'CODEX_HOME': str(self.home), 'CODEX_THREAD_ID': 'parent-a'}):
+            result = d.current_usage([])
+        self.assertEqual({row['model'] for row in result['usage_by_context']}, {'gpt-6.2-sol'})
+        self.assertNotIn('PRIVATE ERROR DETAIL', json.dumps(result))
+
+        resumed = failed + [error] + healthy + [failed[-2]]
+        self.add_thread('parent-a', resumed)
+        with (patch.dict(os.environ, {'CODEX_HOME': str(self.home), 'CODEX_THREAD_ID': 'parent-a'}),
+              self.assertRaisesRegex(ValueError, 'current native turn')):
+            d.current_usage([])
+
+    def test_terminal_error_does_not_make_ambiguous_active_root_known(self):
+        failed = run_records('failed', root='failed')[:-1]
+        failed.append(record('event_msg', type='turn_error', turn_id='failed', thread_id='parent-a'))
+        active = run_records('active', root='first-root')[:-1]
+        active.append(record('event_msg', type='task_started', turn_id='active', root_turn_id='second-root'))
+        self.add_thread('parent-a', failed + active)
+        with (patch.dict(os.environ, {'CODEX_HOME': str(self.home), 'CODEX_THREAD_ID': 'parent-a'}),
+              self.assertRaisesRegex(ValueError, 'current native root')):
+            d.current_usage([])
+
     def test_old_worker_turn_and_shared_worker_turn_are_not_reassigned(self):
         key = self.enroll()
         old = run_records('old', 'gpt-6-luna', 'max', 'worker-a')
@@ -622,6 +695,139 @@ class DiagnosticTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             study.start('gpt-6.3-astra')
         self.assertEqual(snapshot, (study.root / 'study.json').read_bytes())
+
+    def test_cli_primary_switch_keeps_one_study_until_a_fresh_root_after_closure(self):
+        astra = self.astra_study()
+        start = d.datetime(2030, 1, 1, tzinfo=d.timezone.utc)
+        with patch.object(d, 'now', return_value=start):
+            self.ledger.start()
+            astra.start()
+
+        def invoke(family, thread):
+            cmd = (['enroll', '--if-open', '--routing-not-started'] if family == 'sol'
+                   else ['astra-study', 'assign', '--workflow', 'goal', '--check', 'fixture'])
+            out = io.StringIO()
+            with (patch.dict(os.environ, {'CODEX_HOME': str(self.home), 'CODEX_THREAD_ID': thread}),
+                  patch.object(d, 'primary_selection', return_value=self.loaded_astra('gpt-6.2-' + family)),
+                  contextlib.redirect_stdout(out)):
+                self.assertEqual(d.main(['--state-root', str(self.root), *cmd]), 0)
+            return json.loads(out.getvalue())
+
+        for first, second in [('sol', 'astra'), ('astra', 'sol')]:
+            with self.subTest(first=first):
+                thread = 'from-' + first
+                original = run_records('first', 'gpt-6.2-' + first, thread=thread, root='first')
+                followup = run_records('followup', 'gpt-6.2-' + second, thread=thread, root='first')
+                self.add_thread(thread, original[:-1])
+                with patch.object(d, 'now', return_value=start + timedelta(minutes=1)):
+                    accepted = invoke(first, thread)
+                self.add_thread(thread, original + followup[:-1])
+                paths = [self.root / 'study.json', astra.root / 'study.json']
+                before = [p.read_bytes() for p in paths]
+                with patch.object(d, 'now', return_value=start + timedelta(minutes=2)):
+                    refused = invoke(second, thread)
+                    if first == 'sol':
+                        self.assertEqual(refused, {'assigned': False, 'reason': 'retained_sol_episode',
+                                                   'episode': accepted['episode']})
+                    else:
+                        self.assertEqual(refused, {'enrolled': False, 'reason': 'retained_astra_context',
+                                                   'index': accepted['index']})
+                    self.assertEqual([p.read_bytes() for p in paths], before)
+                    if first == 'sol':
+                        self.ledger.outcome(accepted['episode'], 'accepted_first_review')
+                    else:
+                        astra.note(thread, 'completed fixture', final=True)
+                    self.assertEqual(invoke(second, thread)['reason'], 'previous_study_context')
+
+                later = run_records('new', 'gpt-6.2-' + second, thread=thread, root='new')
+                later[0]['timestamp'] = d.stamp(start + timedelta(minutes=3))
+                self.add_thread(thread, original + followup + later[:-1])
+                with patch.object(d, 'now', return_value=start + timedelta(minutes=4)):
+                    self.assertTrue(invoke(second, thread)['assigned' if second == 'astra' else 'enrolled'])
+
+    def test_primary_switch_racing_admissions_consume_only_one_assignment(self):
+        astra = self.astra_study()
+        self.ledger.start()
+        astra.start()
+        original = run_records('original', root='original')
+        self.add_thread('parent-a', original[:-1])
+        sol_read = threading.Event()
+        both_read = threading.Barrier(2)
+        read_native = NativeRecords.read
+
+        def read_before_switch_finishes(source, thread):
+            result = read_native(source, thread)
+            sol_read.set()
+            both_read.wait(timeout=5)
+            return result
+
+        with (patch.object(NativeRecords, 'read', read_before_switch_finishes),
+              ThreadPoolExecutor(max_workers=2) as pool):
+            sol = pool.submit(self.ledger.enroll, 'parent-a')
+            self.assertTrue(sol_read.wait(timeout=5))
+            followup = run_records('next', 'gpt-6.2-astra', root='original')
+            self.add_thread('parent-a', original + followup[:-1])
+            other = pool.submit(astra.assign, 'parent-a', 'goal', 'fixture',
+                                loaded_selection=self.loaded_astra())
+            self.assertNotEqual(sol.result(timeout=10)['enrolled'], other.result(timeout=10)['assigned'])
+        self.assertEqual(len(self.ledger.read()['episodes']) + len(astra.read()['contexts']), 1)
+
+    def test_existing_only_lookup_preserves_private_state_and_detects_historical_conflict(self):
+        astra = self.astra_study()
+
+        def lookup(*extra):
+            out = io.StringIO()
+            with (patch.dict(os.environ, {'CODEX_HOME': str(self.home), 'CODEX_THREAD_ID': 'parent-a'}),
+                  patch.object(d, 'primary_selection', side_effect=AssertionError('read-only lookup')),
+                  contextlib.redirect_stdout(out)):
+                status = d.main(['--state-root', str(self.root), 'enroll', '--existing-only', *extra])
+            return status, json.loads(out.getvalue())
+
+        self.assertEqual(lookup(), (0, {'enrolled': False, 'reason': 'no_open_context'}))
+        self.assertFalse(self.root.exists())
+        astra.start()
+        self.add_astra_primary('parent-a')
+        assignment = astra.assign('parent-a', 'goal', 'fixture', loaded_selection=self.loaded_astra())
+        self.assertEqual(lookup(), (0, {'enrolled': False, 'reason': 'retained_astra_context',
+                                        'index': assignment['index']}))
+        sol_path, astra_path = self.root / 'study.json', astra.root / 'study.json'
+        self.assertFalse(sol_path.exists())
+        # Reconstruct a pre-fix double admission from independent real ledgers.
+        separate = d.Ledger(self.base / 'fixture-ledger', self.home)
+        separate.start()
+        self.add_thread('parent-a', run_records()[:-1])
+        separate.enroll('parent-a')
+        with self.ledger.write():
+            self.ledger.save(separate.read())
+        before = sol_path.read_bytes(), astra_path.read_bytes()
+        self.assertEqual(lookup(), (0, {'enrolled': False, 'reason': 'conflicting_study_history'}))
+        self.assertEqual(astra.assign('parent-a', 'goal', 'fixture'),
+                         {'assigned': False, 'reason': 'conflicting_study_history'})
+        self.assertEqual(lookup('--thread', 'foreign-primary')[0], 1)
+        self.assertEqual((sol_path.read_bytes(), astra_path.read_bytes()), before)
+
+    def test_expired_astra_context_requires_a_provably_fresh_sol_root(self):
+        astra = self.astra_study()
+        start = d.datetime(2030, 1, 1, tzinfo=d.timezone.utc)
+        original = run_records('first', 'gpt-6.2-astra', root='first')
+        self.add_thread('parent-a', original[:-1])
+        with patch.object(d, 'now', return_value=start):
+            astra.start()
+            astra.assign('parent-a', 'goal', 'fixture', loaded_selection=self.loaded_astra())
+            astra.close()
+        later = start + timedelta(days=3)
+        with patch.object(d, 'now', return_value=later):
+            self.ledger.start()
+            for root in ['first', None, 'missing-from-native-history']:
+                current = run_records('next', root=root)
+                current[0]['timestamp'] = d.stamp(later)
+                self.add_thread('parent-a', original + current[:-1])
+                self.assertEqual(self.ledger.enroll('parent-a'),
+                                 {'enrolled': False, 'reason': 'previous_study_context'})
+            current = run_records('next', root='next')
+            current[0]['timestamp'] = d.stamp(later)
+            self.add_thread('parent-a', original + current[:-1])
+            self.assertTrue(self.ledger.enroll('parent-a')['enrolled'])
 
     def test_astra_assignment_requires_loaded_and_native_model_and_owned_active_thread(self):
         study = self.astra_study()

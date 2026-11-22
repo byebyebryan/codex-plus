@@ -125,7 +125,8 @@ class PackageTests(unittest.TestCase):
                 (22, package.PREVIEW_TWENTYTWO_FILES, True),
                 (26, package.RUNTIME_FILES, True),
                 (27, package.RUNTIME_FILES, True),
-                (28, package.RUNTIME_FILES, True)):
+                (28, package.RUNTIME_FILES, True),
+                (29, package.RUNTIME_FILES, True)):
             with self.subTest(version=number):
                 version = '0.1.0-preview.' + str(number)
                 revision = ('e' if number == 21 else 'f') * 40

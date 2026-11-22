@@ -24,6 +24,7 @@ SKILLS = (
 )
 LEGACY_SKILLS = ("terra-task", "terra-goal-loop")
 EXPLICIT_ONLY_SKILLS = {
+    "luna-task",
     "adaptive-task",
     "adaptive-goal-loop",
     "sol-task",
