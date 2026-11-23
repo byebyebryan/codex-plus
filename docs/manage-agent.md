@@ -65,13 +65,12 @@ directory: `MONITOR/current` or, for a reporting-only setup, `REPORT/current`.
 Run its read-only diagnostics in the intended native home with discovered prefixes:
 
 ```sh
-rtk proxy env CODEX_HOME=CODEX_HOME_PATH python3 -B DIAGNOSTICS/scripts/codex-plus-context
-rtk proxy env CODEX_HOME=CODEX_HOME_PATH python3 -B DIAGNOSTICS/scripts/codex-plus-doctor --human --runtime-prefix MONITOR --report-prefix REPORT --worker-prefix WORKERS --no-native
+env CODEX_HOME=CODEX_HOME_PATH python3 -B DIAGNOSTICS/scripts/codex-plus-context
+env CODEX_HOME=CODEX_HOME_PATH python3 -B DIAGNOSTICS/scripts/codex-plus-doctor --human --runtime-prefix MONITOR --report-prefix REPORT --worker-prefix WORKERS --no-native
 ```
 
 Uppercase names and example paths in commands are parameters for the agent to
-resolve, not literal user commands. Use absolute paths. Prefix shell commands
-with RTK in environments that require it. The context command describes its own
+resolve, not literal user commands. Use absolute paths. The context command describes its own
 environment; pass the same explicit overrides used by the installed MCPs. A
 workers-only setup has no runtime doctor; verify its retained manifest and copied
 agent/skill files instead. Do not add a missing component just to diagnose it.
@@ -135,12 +134,12 @@ do not assume an API's `latest` alias includes previews.
 For example, with an existing personal github.com `gh` connection:
 
 ```sh
-rtk proxy gh api --hostname github.com --paginate 'repos/byebyebryan/codex-plus/releases?per_page=100' --jq '.[] | select(.draft == false) | {tag_name, prerelease, published_at, assets: [.assets[].name]}'
-rtk proxy gh api --hostname github.com repos/byebyebryan/codex-plus/releases/tags/TAG
-rtk proxy gh release download TAG --repo github.com/byebyebryan/codex-plus --dir STAGE/assets
-rtk proxy git clone --branch TAG --single-branch --depth 1 https://github.com/byebyebryan/codex-plus.git STAGE/source
-rtk proxy git -C STAGE/source rev-parse HEAD
-rtk proxy python3 -B STAGE/source/scripts/codex-plus-release verify STAGE/assets
+gh api --hostname github.com --paginate 'repos/byebyebryan/codex-plus/releases?per_page=100' --jq '.[] | select(.draft == false) | {tag_name, prerelease, published_at, assets: [.assets[].name]}'
+gh api --hostname github.com repos/byebyebryan/codex-plus/releases/tags/TAG
+gh release download TAG --repo github.com/byebyebryan/codex-plus --dir STAGE/assets
+git clone --branch TAG --single-branch --depth 1 https://github.com/byebyebryan/codex-plus.git STAGE/source
+git -C STAGE/source rev-parse HEAD
+python3 -B STAGE/source/scripts/codex-plus-release verify STAGE/assets
 ```
 
 Use a new private staging directory outside the installation and source checkout.
@@ -185,12 +184,12 @@ monitoring and reporting and a retained worker release directory. Install and
 verify all selected runtimes before changing either selection:
 
 ```sh
-rtk proxy python3 -B STAGE/source/scripts/codex-plus-package install STAGE/assets/RUNTIME_ARCHIVE --prefix MONITOR --sha256 RUNTIME_SHA256
-rtk proxy python3 -B STAGE/source/scripts/codex-plus-package verify-install MONITOR/releases/REVISION
-rtk proxy python3 -B STAGE/source/scripts/codex-plus-report-package install STAGE/assets/REPORT_ARCHIVE --prefix REPORT --sha256 REPORT_SHA256
-rtk proxy python3 -B STAGE/source/scripts/codex-plus-report-package verify-install REPORT/releases/REVISION
-rtk proxy python3 -B STAGE/source/scripts/codex-plus-package activate --prefix MONITOR --revision REVISION
-rtk proxy python3 -B STAGE/source/scripts/codex-plus-report-package activate --prefix REPORT --revision REVISION
+python3 -B STAGE/source/scripts/codex-plus-package install STAGE/assets/RUNTIME_ARCHIVE --prefix MONITOR --sha256 RUNTIME_SHA256
+python3 -B STAGE/source/scripts/codex-plus-package verify-install MONITOR/releases/REVISION
+python3 -B STAGE/source/scripts/codex-plus-report-package install STAGE/assets/REPORT_ARCHIVE --prefix REPORT --sha256 REPORT_SHA256
+python3 -B STAGE/source/scripts/codex-plus-report-package verify-install REPORT/releases/REVISION
+python3 -B STAGE/source/scripts/codex-plus-package activate --prefix MONITOR --revision REVISION
+python3 -B STAGE/source/scripts/codex-plus-report-package activate --prefix REPORT --revision REVISION
 ```
 
 Run only the selected component commands. Keep previous releases and their
@@ -244,9 +243,9 @@ and [local skill](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-
 references. For empty targets, use explicit file copies such as:
 
 ```sh
-rtk proxy install -D -m 644 VERIFIED_WORKERS/agents/luna-max.toml AGENT_ROOT/luna-max.toml
-rtk proxy install -D -m 644 VERIFIED_WORKERS/skills/luna-task/SKILL.md SKILL_ROOT/luna-task/SKILL.md
-rtk proxy install -D -m 644 VERIFIED_WORKERS/skills/luna-task/agents/openai.yaml SKILL_ROOT/luna-task/agents/openai.yaml
+install -D -m 644 VERIFIED_WORKERS/agents/luna-max.toml AGENT_ROOT/luna-max.toml
+install -D -m 644 VERIFIED_WORKERS/skills/luna-task/SKILL.md SKILL_ROOT/luna-task/SKILL.md
+install -D -m 644 VERIFIED_WORKERS/skills/luna-task/agents/openai.yaml SKILL_ROOT/luna-task/agents/openai.yaml
 ```
 
 Repeat for the other named files. On upgrade, compare each destination with the
@@ -262,8 +261,8 @@ Generate configuration from the selected release with the discovered home and
 existing explicit overrides:
 
 ```sh
-rtk proxy python3 -B MONITOR/current/scripts/codex-plus-package mcp-config --prefix MONITOR --codex-home CODEX_HOME_PATH
-rtk proxy python3 -B REPORT/current/scripts/codex-plus-report-package mcp-config --prefix REPORT --codex-home CODEX_HOME_PATH --config REPORT_CONFIG
+python3 -B MONITOR/current/scripts/codex-plus-package mcp-config --prefix MONITOR --codex-home CODEX_HOME_PATH
+python3 -B REPORT/current/scripts/codex-plus-report-package mcp-config --prefix REPORT --codex-home CODEX_HOME_PATH --config REPORT_CONFIG
 ```
 
 Run only the selected component generator. On an existing setup, carry forward

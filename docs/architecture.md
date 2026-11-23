@@ -1,8 +1,8 @@
 # How Codex Plus works
 
-Codex Plus augments the native Codex CLI/TUI and continuing conversation. The
-existing daemon owns model turns, goals, approvals and native tools. The watch
-coordinator owns bounded observation, timers, event admission and receipts.
+Codex runs the conversation and handles model turns, goals, approvals, and
+native tools. The Codex Plus watch coordinator observes the sources a session
+selects, keeps its timers, and queues relevant updates for that same session.
 
 ## What is in the package
 

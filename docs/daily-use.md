@@ -1,227 +1,205 @@
-# Using Codex Plus day to day
+<a id="using-codex-plus-day-to-day"></a>
 
-Codex Plus adds explicit worker workflows, watches, later checks, peer messages
-and browser reports to the ordinary Codex CLI/TUI. If this is your first visit,
-use the [setup guide](getting-started.md) to choose the components you need.
-For the managed Snap and Starship preview, open a fresh ordinary session in
-the intended environment; monitoring and report MCP tools load from its
-configuration. Existing opt-outs remain effective.
+# Watches and reminders
 
-Describe what you need in normal language. The model chooses the source,
-filtering, cadence and continuation. You do not need a thread UUID, exact session
-title, JSON prompt or polling recipe. If the source or destination is unclear,
-the model should ask a short clarification.
+Use a watch when the next step depends on a change in a running job. Use a
+reminder when you want Codex to look again at a particular time.
 
-## Choose the environment first
+> Watch the export pipeline in CI. Tell me when the archive is ready, a test
+> fails, or the run needs input.
 
-On Snap, `codex` / `codex agents` use OSS, while `codex-work` /
-`codex-work agents` use work. `codex-oss` is retired. A native `--profile`
-selects settings inside one home; it does not provide this separation.
+> Check the export pipeline once in 20 minutes. Is the archive ready?
 
-Peers are discovered only in the selected daemon. A work conversation cannot
-message an OSS conversation through the peer tools, even though both are on
-Snap. Reports also use their own selected store and endpoint. Existing sessions
-may keep older MCP code until reconnect; a source upgrade alone does not reload
-an active process. See [environment selection](environments.md).
+The watch can stay quiet between matching events. The reminder schedules
+one follow-up, even if the pipeline’s status hasn’t changed.
 
-Native completion/approval alerts remain available. Codex Plus adds no terminal
-relay, custom hook or desktop-notification publisher.
+## Choose a follow-up
+
+- **[Watch a run](#read-a-command-or-script)** Follow a log or status endpoint with a command or script. Quiet reads use no model turns.
+- **[Check once later](#check-again-later)** Ask Codex to return to this conversation for one check after a delay.
+- **[Watch a session](#watch-another-session)** Follow another open session on the same daemon. Ask for an update when that agent needs input.
+- **[Schedule an MCP inspection](#inspect-a-configured-mcp-source)** Use a tool already connected to the session. Each inspection uses a model turn.
+
+For initial setup, choose the components and open a fresh ordinary session in
+the intended environment. Existing opt-outs still apply on managed installs.
+[Choose components](getting-started.md#choose-what-to-install).
 
 ## Start with a real task
 
-With preview.19 code loaded, eligible peer watches and un-emitted reminders can
-continue after a verified daemon restart within their original bounds. Commands
-and scheduled MCP checks require an original `restart=resume` choice for a source
-safe to repeat. Older registrations without trustworthy lease evidence and
-uncertain deliveries remain quarantined. Ask “What am I still waiting on?” for
-cached state and gaps; the model can use explicit owner recovery when needed.
-An installation does not reload an existing connection or replay old work.
+An event watch can filter repeated command or script reads without a model
+turn for every poll. A one-time check uses a later native turn, can wait behind
+active work and may expire before it runs. It reports the status observed at
+that time: ready, failed or still running according to the source. Elapsed time
+alone does not establish that a job finished. Ask “What are you watching, and
+what checks are scheduled?” to inspect registrations, or “What am I still
+waiting on?” for the cached recap. [Read a follow-up recap](#return-to-unfinished-work).
 
-For delegated implementation or investigation, choose an explicit
-[Luna or adaptive worker workflow](workers.md). Use `$luna-task` for one bounded
-assignment or `$luna-goal-loop` for a substantial goal with Luna. Your primary
-keeps decisions and review. `$adaptive-task` and `$adaptive-goal-loop` let the primary
-choose whether delegation helps. A generic “goal loop” does not select a worker.
-
-For an explicitly chosen worker, preview.18 adds
-[`$sol-task` and `$astra-task`](workers.md#choose-sol-or-astra-explicitly-source-candidate),
-plus [current `$terra-task`](workers.md#choose-current-terra-explicitly-source-candidate).
-They preserve your primary and keep review separate from implementation. They
-require an explicit upgrade from preview.17 installations.
-
-| What you need | What to say |
-| --- | --- |
-| Follow another session | “Watch the session doing the packaging work and tell me when it is ready.” |
-| Share context | “Tell that session the handoff should include the risks.” |
-| Follow an endpoint or run | “Watch this run and tell me if it stalls or fails.” |
-| Inspect later | “Check this endpoint again later.” |
-| See registrations | “What are you watching, and what checks are scheduled?” |
-| Return to unfinished work | “What am I still waiting on?” |
-| Stop a watch | “Stop watching that run.” |
-| Cancel a later check | “Cancel the endpoint reminder.” |
-| Get a browser report | “Make a browser report of what we learned, with the main risks.” |
-
-Supply an endpoint, run or project reference when it is not already established
-in the conversation. Keep credentials in the existing configured connection or
-an authorized private reference rather than pasting them into the request.
+For delegated work, choose an explicit [worker workflow](workers.md#choose-a-workflow).
 
 ## Watch another session
 
-Start two independent sessions within the same daemon on one host. One can do
-the packaging work while the other observes it. A subagent spawned by a parent
-is a different relationship; it is excluded from ordinary peer discovery.
+Peer communication uses two independent, loaded sessions in the same daemon.
+A child agent belongs to its primary and is excluded from peer discovery.
+Codex uses project and recent task context to find a peer, asks if the match is
+ambiguous, and reports when a reference disappears. [Find, message and inspect
+independent sessions](session-communication.md) for the worked example and
+boundaries.
 
-The observing model uses project and recent task context to find the right
-session. If two plausible sessions remain, it asks which one. Once selected,
-“that session” keeps the same identity even if its title changes. A lost reference
-does not silently switch to a different session.
-
-Setup should give a short confirmation of the selected work and useful condition.
-Follow-up should report changes relevant to that condition. Routine checks,
-ordinary phase changes and successful renewals can remain quiet.
-Later updates should explain a meaningful finding, such as readiness or a request
-for input. Observation does not resume, interrupt or stop the other session.
-Idle status alone does not prove that its task succeeded.
-
-“Tell that session to include the risks” sends an attributed request. The receiver
-evaluates it against its existing task and direct user instructions. A receipt
-can show received, accepted or declined; accepted does not prove the requested
-work finished. Ask “Did it accept that request?” for the cached handling receipt.
-
-Peer communication is currently within one daemon. Installing Codex Plus on two
-hosts does not add Snap-to-Starship native messaging.
+While watching, routine reads and phase changes can stay quiet. Observation
+leaves control with the other session; an idle peer can still have unfinished
+work. A message receipt describes how the peer handled a request, not whether
+the requested work finished.
 
 ## Watch an endpoint or inspect through MCP
 
-For an accessible endpoint, the model can select repeated short commands or a
-continuing script. Unchanged reads can stay quiet without a model turn per poll.
-Useful emitted observations return to your conversation for interpretation.
+### Read a command or script
 
-For a configured MCP source, the model schedules native inspection turns and
-calls the selected tool through its normal approved connection. Each check has
-model cost. “Check it less often” can guide the next cadence; “Stop watching it”
-ends the selected watch. Missing access is explained rather than bypassed.
+> Watch this run and tell me if it stalls or fails.
 
-An observer has a finite lease and event allowance. Expiry means observation
-ended, not that the task completed. The model can explicitly continue useful
-observation under your existing request or report that it ended. Explicit stop
-forbids renewal or replacement.
+The model can repeat a short command or run a continuing script against a
+source that the session can access. Its filter can emit just the changes that
+merit a turn in your conversation. Give the endpoint or run reference if it
+is new to the conversation. Use the configured connection or an
+authorized private reference for credentials.
+
+### Inspect a configured MCP source
+
+If the source is available through MCP, Codex schedules a native turn and
+calls the tool over its ordinary approved connection. Each check uses model
+time. Say “Check it less often” to guide the next cadence. If access is
+missing, Codex identifies the gap.
+
+Both kinds of watch have a finite lease and event allowance. On expiry, the
+model can report that observation ended or explicitly continue it under your
+original request. The final state of the watched task needs its own evidence.
+“Stop watching that run” cancels the watch and forbids renewal or replacement.
 
 ## Check again later
 
-“Check this endpoint again in a little while” registers one future reassessment
-and returns now. The model should not hold the foreground turn open with sleep
-or repeatedly poll while waiting. A due check follows native conversation
-control and can wait behind active work; it is not an exact-time alarm.
+The timed instruction in the opening example registers one future reassessment
+and returns the prompt. The check can wait behind active work in the same
+conversation. By default, the delivery window extends up to two minutes past
+the requested delay, within the configured lifetime limit. The receipt shows
+that window. Codex can set a
+longer expiry when the request calls for it.
 
-The default expiry leaves up to two minutes for delivery after the requested
-delay, within the configured lifetime limit. The receipt states that window;
-the model can choose an explicit longer expiry when the request needs it.
-If active work outlasts expiry, the reminder records that outcome.
-
-A reminder is separate from a watch. Ask to list or cancel the relevant reminder
-when you want to stop it. The preview does not provide a recurring calendar or
-cron service.
+If the turn stays busy past expiry, the reminder records that outcome. Ask
+“Cancel the endpoint reminder” to cancel that one check. Recurring calendar
+events and cron schedules are outside this preview.
 
 ## Inspect follow-up health
 
-Ask “What are you watching?” for bounded active and unresolved watch status.
-Source failures, observation gaps, control holds and uncertain delivery are
-reported with cached receipt freshness. An offline coordinator makes a previous
-running receipt unknown. Ask for watch history to page through settled entries;
-history and handling receipts remain retained.
+Ask “What are you watching?” for active watches and unresolved findings.
+The recap gives the age of cached receipts and flags source failures, gaps,
+control holds or uncertain delivery. A previously running observer has unknown
+status if its coordinator is offline. Request watch history for bounded pages
+of settled entries and retained handling receipts.
 
-**Preview.21** improves receipt tracking for a callback
-that acknowledges early and continues working. Source expiry or cancellation
-does not end observation of its positively running native turn. Bounded passive
-native history can fill a missed final receipt after reconnect; missing evidence
-stays unknown. Existing helpers need normal code adoption to use the fix.
-For an ephemeral peer, it can show name/project/phase while
-explaining that native history or goals are unsupported. It does not infer an
-empty reply or absent goal from that limit, and it cannot watch unavailable
-signals. Ephemeral status does not change the native independent/subagent rules.
+In preview.21, tracking continues for a callback known to be running even
+after early acknowledgement, source expiry or cancellation. After reconnect,
+a bounded read of native history may recover a missing final receipt.
+Otherwise the outcome stays unknown. Existing helpers pick up the change on
+normal code adoption.
+
+An ephemeral peer can expose its name, project and phase even when native
+history or goals are unavailable. Codex reports those fields as unsupported
+and can only watch available signals. The same independent-session rule applies.
 
 <a id="return-to-unfinished-work--source-preview"></a>
 
 ### Return to unfinished work
 
-The following inspection improvements are available in preview.10 and later; see
-[released and source features](getting-started.md#released-and-source-features).
+Preview.10 added these ways to recover context. [Release history](getting-started.md#released-and-source-features).
 
 | Ask | What the recap should cover |
 | --- | --- |
 | “What checks are still pending?” | This conversation's active reminders, unknown follow-up outcomes and failures needing attention, with due time, expiry and receipt freshness. |
-| “Did it accept my request?” | The stored message kind, a short quoted excerpt and its received/accepted/declined handling receipt. Acceptance does not establish completion. |
+| “Did it accept my request?” | The stored message kind, a short quoted excerpt and its received/accepted/declined handling receipt. Completion needs separate evidence. |
 | “What am I still waiting on?” | Watches, reminder follow-ups and recorded outgoing messages, with stale or missing evidence explained. |
-| “Show me the history.” | Bounded pages of settled registrations and retained receipts; the model follows or discloses additional pages. |
-
-For example, a recap could say:
+| “Show me the history.” | Bounded pages of settled registrations and retained receipts. Codex reads or identifies additional pages. |
 
 > I’m still watching packaging for a blocker. The CI reminder was received, but
-> its follow-up turn hasn’t finished. Packaging accepted the release-note request;
-> completion is unconfirmed. These are cached receipts, not a fresh check of CI
-> or packaging.
+> its follow-up turn hasn’t finished. Packaging accepted the release-note request. I don’t
+> have a completion receipt. This recap uses the last recorded status for both.
 
-This is an authored example. Inspection reads the current receipts before
-summarizing; it leaves existing follow-ups unchanged and does not poll a source,
-resend a message or restart an observer. Saved references survive context
-compaction in this conversation. The recap covers its own recorded follow-ups;
-it does not inventory other conversations, environments or hosts.
+Inspection reads cached receipts for this conversation. Its saved references
+survive context compaction. Polling a source, resending a message or restarting
+an observer is a separate action.
 
-A reminder's acknowledgement confirms receipt before follow-up work finishes.
-Pending or unknown native turn outcomes remain visible. A failed or interrupted
-follow-up needs attention until you explicitly cancel that reminder; its receipts
-stay in history. Cancellation preserves an already consumed native turn, whose
-unknown outcome remains visible until a terminal receipt is recorded. A missing
-receipt stays unknown even if the coordinator has exited; it is not inferred as
-success or automatically retried. Unresolved delivery/withdrawal also stays visible.
+### Interpret the receipt
 
-In **preview.12 and later**, explicitly cancelling a watch also closes
-attention for a known terminal source error. The error stays in history;
-uncertain delivery or withdrawal and unacknowledged native input stay visible.
-Preview.11 retains the earlier behavior. See the
-[qualification and correction](native-qualification-results.md).
+- **Acknowledged** means the reminder reached the conversation. Its follow-up turn may still be running.
+- **Failed or interrupted** stays visible until you cancel the reminder. Cancellation keeps its receipts, including an already consumed turn whose outcome is unknown.
+- **Unknown** means a terminal receipt or reliable delivery evidence is missing. A coordinator exit leaves this unresolved. The model can report an unresolved withdrawal or delivery without retrying the input.
 
-Detailed inspection shows up to three event receipts with unresolved delivery
-first, plus bounded renewal details. A receipt records observation, admission or
-handling; it does not establish that the watched work succeeded.
+Detailed inspection shows up to three event receipts, giving unresolved
+delivery priority, plus bounded renewal details. Since preview.12, cancelling
+a watch closes attention for a known terminal source error. The error stays in
+history. Uncertain delivery or withdrawal and unacknowledged native input stay
+visible. Preview.11 used the earlier cancellation behavior.
+[Qualification and correction](native-qualification-results.md).
 
 ## Stop, interrupt or leave
 
 | Action | Effect |
 | --- | --- |
 | Press Esc | Interrupts the foreground turn. Independent watches/reminders remain registered within their bounds. |
-| Say “Stop watching that run” | Cancels that watch and forbids renewal/replacement; the observed work stays intact. |
-| Cancel a reminder | Stops the selected future reassessment; reports any already admitted delivery. |
-| Detach the TUI | Does not itself cancel observation while the owning runtime remains available. |
-| Lose the owner or source | Stops or holds work with an unavailable/gap receipt; no automatic owner replacement or cold resume. |
+| Say “Stop watching that run” | Cancels that watch and forbids renewal or replacement. The observed work stays under its owner’s control. |
+| Cancel a reminder | Stops the selected future reassessment and reports any already admitted delivery. |
+| Detach the TUI | Independent observation can continue within its bounds while the owning runtime is available. |
+| Lose the owner or source | Stops or holds follow-up and records the gap. Owner recovery requires explicit action. |
 
 Cancellation cannot undo an already handled message or an external action.
 The preview does not intercept native `/exit` to add a background-task
 confirmation dialog. Treat viewer detachment and daemon shutdown separately.
 
+### After a daemon restart
+
+With preview.19 code loaded, eligible peer watches and un-emitted reminders
+can continue within their original bounds after a verified daemon restart.
+Commands and scheduled MCP checks require an original `restart=resume` choice
+for a source safe to repeat. Older registrations without trustworthy lease
+evidence and uncertain deliveries stay quarantined. Ask “What am I still
+waiting on?” for cached state and gaps. The model can use explicit owner
+recovery when needed. [Recovery and adoption limits](owner-recovery.md#daemon-restart-candidate-preview19).
+
 ## Make a browser report
 
-Ask for a report when a result benefits from a shareable view. The report skill
-and four report MCP tools publish immutable static HTML, list/get reports and
-delete a specifically selected report. Reports are grouped by project.
+> Make a browser report of what we learned, with the main risks.
 
-Publishing can start or reuse the separately managed report server; read-only
-listing does not start it. The returned link remains useful independently of
-TUI attachment while its host and serving endpoint are online. From an SSH Kitty
-terminal, Ctrl+Shift-click opens it in the local desktop browser.
+The report skill or four report MCP tools can publish an immutable copy and
+return its link, list or inspect existing snapshots, and delete a report you
+select.
+Reports are grouped by project. Publishing can start or reuse the
+separately managed server. A read-only listing leaves its state alone.
+The link works independently of the TUI while the host and endpoint are
+online. From an SSH Kitty terminal, Ctrl+Shift-click opens the link on your
+desktop. [Publish and find reports](html-report-usage.md#publish-and-find-reports).
 
-See the [report guide](html-report-usage.md) for hosting and storage details.
+## Choose the environment first
+
+On Snap, `codex` and `codex agents` use OSS. `codex-work` and
+`codex-work agents` use work. `codex-oss` is retired. A native `--profile`
+chooses settings within the selected home.
+
+Each environment has its own daemon, peers, report store and endpoint. Peer
+messages stay within the selected daemon even when both environments run on
+Snap. Existing sessions can retain older MCP code until reconnect.
+[Environment selection](environments.md).
+
+Completion and approval alerts use native Codex and terminal behavior; the
+monitoring runtime adds no terminal relay or notification hook.
+[Notification ownership](notifications.md).
 
 ## What daily use is testing
 
 Useful watches, messages, endpoint access, configured MCP inspections and explicit
-stop passed bounded native acceptance on both hosts. Those checks used synthetic
+stop passed bounded native acceptance on Snap and Starship. Those checks used synthetic
 sources and owned sessions. Real credentials/provider recovery, long unattended
 operation and your judgment of the interaction still need daily-use evidence.
 
 Use the [soak checklist](soak-checklist.md) during normal work. See
 [how the package works](architecture.md) for component boundaries, Claude
-workflow coverage and evidence, or the [browser walkthrough](presentation.md)
+workflow coverage and evidence, or the [browser walkthrough](https://dev.byebyebryan.com/codex-plus/walkthrough/#scenes)
 for illustrative examples. Low-level CLI diagnostics remain in the
 [technical watch guide](watch-candidate.md).

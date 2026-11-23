@@ -1,217 +1,220 @@
-# Using the HTML report component
+<a id="using-the-html-report-component"></a>
 
-For installation and maintenance, give your agent the
-[canonical lifecycle guide](manage-agent.md). This page remains the component
-reference for artifacts, configuration and behavior.
+# Publish an HTML report
 
-The source implementation supplies durable static snapshots, a static catalog,
-standalone CLI, provider-neutral skill and optional local report MCP. Publishing
-does not start Codex or a browser. With `server_autostart = true`, CLI/MCP publish
-starts or reuses `codex-report-server` under its config-specific tmux ownership.
-The server stays running after publication; there is no idle shutdown or report cleanup timer.
+Choose the report address from the reader’s side. Use `localhost` if your
+browser runs on the Codex machine. If you run Codex over SSH and read on
+your laptop, use a hostname the laptop can reach. Set it once and the report
+skill uses it for each new publication in that environment.
 
 ## Use it from Codex
 
-With reporting configured in your current environment, ask: “Make a browser
-report of the results, including the risks.” Codex prepares the HTML and intended
-assets, publishes them under a stable project label and returns the report link.
-You can ask to find earlier reports for that project or inspect a selected
-report's delivery result. The CLI reference below supports setup and diagnosis;
-ordinary use does not require a report ID or command recipe from you.
+> Show the same book in both export formats side by side. Publish the
+> comparison with my other reading-list reports and give me the link.
 
-For a new installation, start with [component setup](getting-started.md#set-up-reporting)
-and the [artifact and MCP steps](#verified-artifacts-and-optional-mcpplugin-loading).
-GitHub Pages hosts this project's public documentation. The report component
-publishes independent snapshots to your configured endpoint; it does not deploy
-them to GitHub Pages.
+With reporting configured in this environment, Codex prepares the export and
+returns the report link. Ask “Find the earlier reading-list reports” to browse
+the project catalog or “Check delivery for this report” to inspect its receipt.
+
+## From export to browser
+
+1. **Prepare the export.** Codex creates the HTML and collects its assets.
+2. **Publish a snapshot.** The publisher stores a copy under a stable link. A project label groups related reports.
+3. **Check delivery.** Codex can compare the served HTML with the saved copy.
+4. **Open the report.** Follow the link from a browser that can reach the report host.
+
+[Set up reporting](getting-started.md#set-up-reporting) · [Agent installation guide](manage-agent.md) · [Verified artifacts and MCP](#verified-artifacts-and-optional-mcpplugin-loading).
 
 ## Publish and find reports
 
-With the component installed on PATH:
+### Publish an export
 
 ```sh
-rtk proxy codex-plus-report --json publish --source /absolute/report-export --title "Run comparison" --project "descent-lab" --check-delivery
-rtk proxy codex-plus-report list
-rtk proxy codex-plus-report --json list --project "descent-lab"
-rtk proxy codex-plus-report get FULL_REPORT_ID --check-delivery
-rtk proxy codex-plus-report doctor --check-hosting
+codex-plus-report --json publish --source /absolute/report-export --title "Exporter comparison" --project "reading-list" --check-delivery
 ```
 
-Use `scripts/codex-plus-report` for a source-local invocation. Directory exports
-default to `index.html`; `--entrypoint` selects another relative HTML file.
-One HTML file must be self-contained. Include intended assets in a dedicated
-directory; symlinks, escaping paths and special files are rejected.
+Use `codex-plus-report` when it is on PATH, or `scripts/codex-plus-report`
+from source. A directory export uses `index.html` by default. Select another
+relative HTML file with `--entrypoint`. Include only intended files. The
+publisher rejects symlinks, escaping paths and special files.
 
-The receipt separates publication, catalog and delivery. A configured hostname
-URL is not proof that serving is ready. `--check-delivery` verifies actual HTML
-bytes and records its check location; it does not open or validate a desktop
-browser. Unconfigured/unreachable hosting retains the snapshot. Subsequent
-configuration can supply a URL for an initially unconfigured report.
-Automatic server startup has its own receipt. Startup failure retains the stored
-report and explains the unavailable hosting; it does not take over a foreign
-tmux session or listener. Read-only get/list/doctor commands do not start a server.
+Publishing the same files, entrypoint, title and project reuses the snapshot.
+Changing any of them creates a new immutable link. The conventional store is `~/.local/share/codex-plus/reports`.
+Moving or deleting your export leaves the stored copy accessible. Reports stay
+until you select them for deletion. When capacity is exhausted, the publisher
+refuses new reports.
 
-Unchanged content/title/project reuses a snapshot. Changed content gets a new
-immutable link. Files are copied into the selected store, defaulting to
-`~/.local/share/codex-plus/reports` for the conventional home. Deleting/moving the
-source does not affect the published copy. Reports remain stored until selected deletion, subject to
-configured capacity limits that refuse new reports rather than evict old ones.
+### Read the receipt
 
-The catalog groups reports by project, with counts and publication dates. Groups
-with the latest activity come first, and reports within each group are newest
-first. The project selector and title/project search combine; Clear filters
-returns to the complete library. Labels are exact and case-sensitive. Use the
-same stable repository name across sessions and hosts. Omitted labels appear
-under Uncategorized; the publisher does not infer a label from an export path.
+| Result | What it tells you |
+| --- | --- |
+| Publication | The store holds the snapshot. If hosting is unconfigured or unreachable, the copy is still there. A later configuration can supply its URL. |
+| Catalog | An enabled index links the report under its project. A catalog update failure preserves the previous index and the stored report. |
+| Server startup | When enabled, automatic startup records whether the publisher started or reused its server. A startup failure leaves the snapshot in place and reports the hosting problem. |
+| Delivery | `--check-delivery` verifies the HTML bytes and identifies the check location. Open the link separately on your viewing desktop. |
 
-Project views have shareable URLs such as
-`http://starship:8787/reports/#project=cubey`. Search state is also stored in the
-fragment, so bookmarks and browser Back restore the view. Missing projects show
-zero results, and `#uncategorized=1` selects unlabeled reports without reserving
-that name as a real project. CLI/MCP publication, get and list receipts add
-`catalog_url` and `project_url`; both are null when hosting is unconfigured or
-the catalog is disabled. They identify a current mutable catalog view, while
-`url` still identifies the immutable report. Existing snapshots are not moved
-or rewritten, and older report links remain valid. Catalogs cover their own host.
-
-For an update, use project-filtered inventory to find relevant prior reports and
-include their descriptive links in the new HTML. Return its project catalog link
-when useful. Open earlier and later reports in separate browser tabs to compare
-them. A shared label groups related work; it does not imply an automatic revision
-chain or select one report as its replacement.
+### Find and share earlier reports
 
 ```sh
-rtk proxy codex-plus-report delete FULL_REPORT_ID
-rtk proxy codex-plus-report repair
-rtk proxy codex-plus-report repair --apply
-rtk proxy codex-plus-report catalog-rebuild
+codex-plus-report list
+codex-plus-report --json list --project "reading-list"
+codex-plus-report get FULL_REPORT_ID --check-delivery
+codex-plus-report doctor --check-hosting
 ```
 
-Repair previews by default. Applying it finishes verified prepared publications,
-retries exact interrupted deletion and removes positively identified abandoned
-staging. It also releases an unpublished prepared record when no public snapshot
-or active publisher remains. Active copy processes and unknown directories are preserved. Catalog
-failure leaves the prior index and stored report intact; rebuild repairs it.
-If physical trash removal is interrupted, retry the same delete or apply repair
-to finish that exact cleanup. Republishing that identity is refused until cleanup
-finishes, including when deletion completes during another copy. Remaining trash
-continues to reserve payload/report capacity. Source files and other reports are
-preserved.
+Use the **report link** (`url`) for an immutable snapshot. Use the **project
+link** (`project_url`) for a current view of one project or the **catalog link**
+(`catalog_url`) for this host’s whole collection. CLI and MCP publish, get and
+list receipts expose the catalog links when hosting and the catalog are
+configured. Otherwise those fields are null.
+
+The catalog shows project counts and publication dates. Projects with recent
+activity come first and reports are newest first within each group. Filter
+by project and search by title or project together. **Clear filters** restores
+the whole library.
+
+Use one exact, case-sensitive label across sessions and hosts. Omitted labels
+appear under **Uncategorized**. Each host lists its own reports. For example,
+`http://starship:8787/reports/#project=reading-list` opens one project on
+Starship. Search and filters live in the URL fragment, so bookmarks and Back
+restore the view. A missing project shows zero matches. `#uncategorized=1`
+selects unlabeled reports while leaving that name available as a project label.
+
+For a comparison, link earlier reports in the new HTML and open the snapshots
+in separate tabs. Reports that share a label remain individual snapshots with
+their original links. You choose which reports to compare.
+
+### Delete and repair
+
+```sh
+codex-plus-report delete FULL_REPORT_ID
+codex-plus-report repair
+codex-plus-report repair --apply
+codex-plus-report catalog-rebuild
+```
+
+- **Delete** selects one report. If physical trash removal is interrupted, retry that deletion or apply repair. Remaining trash reserves capacity, and the store refuses republication of that identity until cleanup finishes, including during another copy.
+- **Repair** previews the changes. Applying it finishes verified prepared publications, retries exact interrupted deletions and clears positively identified abandoned staging. It releases an unpublished prepared record once both the public snapshot and active publisher are absent. Active copies, unknown directories, source files and other reports are preserved.
+- **Rebuild the catalog** to restore the index from stored reports after an indexing failure.
 
 ## Configuration and hosting
 
-The conventional home defaults to `~/.config/codex-plus/report.toml`, respecting
-`XDG_CONFIG_HOME`. Alternate `CODEX_HOME` values derive separate config and data
-paths; `CODEX_PLUS_REPORT_CONFIG`, `--config` and `--data-root` can preserve
-explicit existing paths. A missing explicitly selected config refuses fallback.
-See [the environment contract](environments.md) before mixing CLI and MCP calls.
+### Choose the config and store
 
-On Snap the work MCP explicitly uses `report-work.toml` and port 8788; OSS uses
-`report.toml` and port 8787. For a standalone work report command, select the same
-work home and pass that existing config explicitly; setting `CODEX_HOME` alone
-would select the derived default instead of this managed override.
-The [implementation plan](html-report-plan.md#configuration-and-serving-ownership)
-shows the supported schema and initial tunable limits.
+The conventional home uses `~/.config/codex-plus/report.toml` and respects
+`XDG_CONFIG_HOME`. Alternate `CODEX_HOME` values derive separate config and
+data paths. `CODEX_PLUS_REPORT_CONFIG`, `--config` and `--data-root` select
+explicit paths. A missing explicitly selected config stops the command.
+[Environment contract](environments.md) · [Configuration schema and limits](html-report-plan.md#configuration-and-serving-ownership).
 
-Serve only the store's `public` subtree at the configured URL prefix. Host profiles
-select `http://HOST:8787/reports/`, using `starship`, `snap` and `carbon`; Starship
-already has a listener on port 8000. Short names must resolve to the serving host's
-Tailscale address from both the publishing host and viewing desktops. Starship's
-local host mapping addresses its earlier loopback alias. This host-side setting
-stays outside chezmoi and needs rechecking after re-enrollment. Full MagicDNS URLs
-remain configurable. HTTPS is supported and requires the full MagicDNS hostname
-when using Tailscale-managed certificates. The publisher and HTTP server do not
-require Tailscale; these machine names use the existing mesh's DNS/network.
+On Snap, the work MCP uses `report-work.toml` and port 8788. OSS uses
+`report.toml` and port 8787. For a standalone work command, select the work
+home **and** pass its existing config explicitly. Setting `CODEX_HOME` alone
+selects the derived default.
+
+### Choose a reachable endpoint
+
+Serve the store’s `public` subtree at the configured URL prefix. The managed
+host profiles use `http://HOST:8787/reports/` with `starship`, `snap` or
+`carbon`. Starship already has a listener on port 8000.
+
+- The short hostname must resolve to the serving host’s Tailscale address on both the publisher and viewing desktops. Starship’s host-side mapping corrects its earlier loopback alias. This mapping lives outside chezmoi and needs rechecking after re-enrollment.
+- A full MagicDNS URL also works. Tailscale-managed HTTPS certificates require the full MagicDNS hostname. The report software can run on other networks.
+- Allow the serving port through the host’s firewall. `doctor --check-hosting` verifies HTTP catalog bytes from any configured server without calling Tailscale.
+
+### Manage the built-in server
 
 ```sh
-rtk proxy codex-report-server start
-rtk proxy codex-report-server status
-rtk proxy codex-report-server attach
-rtk proxy codex-report-server restart
-rtk proxy codex-report-server stop
+codex-report-server start
+codex-report-server status
+codex-report-server attach
+codex-report-server restart
+codex-report-server stop
 ```
 
-`start` initializes an owned store if needed and starts one detached tmux session
-named **codex-report-server** for the conventional config, window **http**.
-Other config paths get stable config-specific session names, so independent
-stores/endpoints can coexist. An explicitly managed service can own serving
-instead; Snap work uses its existing service with autostart disabled.
-A repeated start reuses the healthy owned server. The session starts in the configured report data root, consistently
-across callers and hosts. This display directory does not determine publication
-or serving: the publisher uses `data_root`, and HTTP serves its `public` subtree.
-HTTP reads the public subtree at the URL prefix; publishing new
-reports needs no server restart. The bind address defaults to the configured URL
-hostname; `server_bind` can select another local address. Only HTTP is built in;
-HTTPS can use an external server.
-Management explicitly selects tmux's default socket and clears inherited client
-attachment variables. Starting, inspecting or attaching from another tmux socket
-therefore manages the same shared server. The explicit `--tmux-socket` option
-continues to select a separate socket for isolated checks.
+**Start.** The first start initializes an owned store if needed and starts a
+detached tmux session with an `http` window. The conventional config names
+the session `codex-report-server`. Other configs get stable, distinct names.
+Starting again reuses a healthy owned server. Its pane starts in the configured
+report data root, and HTTP serves that store’s `public` subtree.
 
-`server_autostart` defaults to false for standalone/external installations.
-Chezmoi enables it for default-home configs; Snap work uses its separate service. Publish starts a missing server, reuses a healthy
-one and replaces an exited owned pane. It leaves an unhealthy live server or a
-foreign session alone. Explicit `--data-root` overrides require matching store
-settings in the selected config file for automatic hosting.
+**Publish.** New reports appear without a server restart. With
+`server_autostart = true`, publication starts a missing server, reuses a
+healthy one or replaces an exited owned pane. A foreign session or listener
+and an unhealthy live server are left alone. An explicit `--data-root`
+override needs matching store settings in the chosen config for autostart.
+Read-only get, list and doctor commands leave the server as they find it.
 
-The session survives TUI closure, SSH disconnect and terminal closure. Tmux does
-not survive host reboot: the next publish starts it again, or run
-`codex-report-server start` to restore access before publishing. Chezmoi's
-scoped installation starts it through an idempotent apply script. `stop` and
-`restart` revalidate the owned session, configuration and actual process; foreign
-same-named sessions and added user panes are refused. Stopping preserves reports.
-`--config` supports another explicit configuration; `--tmux-socket` isolates tests
-from regular sessions. HTTP hosting needs the chosen port reachable through the
-host's firewall. `doctor --check-hosting` verifies HTTP catalog bytes with any
-configured server and executes no Tailscale commands.
+**Stop and restart.** Both commands verify session ownership, configuration
+and the actual process. A foreign same-named session or extra user panes block
+the operation. Stopping the server preserves the reports. TUI closure, SSH
+disconnect and terminal closure leave the tmux session running. After a reboot,
+run `codex-report-server start` or let the next autostart-enabled publish start
+it. The server has no idle shutdown or report cleanup timer.
 
-Entrypoints named `index.html` return the containing directory URL. The built-in
-server supports both explicit index filenames and directory URLs, including
-nested reports. Other entrypoint filenames remain explicit. Delivery rejects redirects except the same
-origin's exact index-to-directory canonicalization and verifies the returned bytes.
-Completed snapshot files and directories may use `.write-*` names. Only the
-store's own temporary index files at the public root are hidden over HTTP.
+**Defaults and overrides.** Standalone installs default to
+`server_autostart = false`. Chezmoi enables it for default-home configs
+and its scoped apply starts the server idempotently. Snap work uses its
+existing service with autostart disabled. The bind address defaults to the URL
+hostname. Set `server_bind` to use a different local address. The built-in
+server speaks HTTP. An external server can provide HTTPS.
 
-The optional index is generated from public title/project/date/link fields.
-Private source/provenance/hash records are outside the served tree. Disabling the
-catalog leaves a non-listing landing page; direct report URLs still work. The
-serving host must be online. When using an SSH TUI in Kitty, Ctrl+Shift-click opens
-the link in the local desktop browser. HTTP report controls need fallbacks for
-HTTPS-only browser APIs such as clipboard writing.
+Use `--config` for another configuration. Server management uses tmux’s
+default socket and clears inherited attachment variables, even when you
+call it from another socket. Use `--tmux-socket` to select a
+separate socket explicitly.
+
+### Open a report URL
+
+An `index.html` entrypoint gets a directory URL. The built-in server accepts
+the index filename or its directory, including nested reports. Other HTML
+filenames stay in the link. Delivery checks accept only the same origin’s
+exact index-to-directory redirect and verify the returned bytes.
+
+The optional index contains public titles, projects, dates and links. Private
+source, provenance and hash records live outside the served tree. Disabling
+the catalog leaves a non-listing landing page and working direct URLs.
+Completed snapshots may include files and directories named `.write-*`.
+Only temporary index files at the public root are hidden over HTTP.
+
+From an SSH TUI in Kitty, Ctrl+Shift-click opens the link in your local
+desktop browser. When authoring interactive reports for HTTP, give controls
+like clipboard copy a fallback for APIs that require HTTPS.
 
 ## Verified artifacts and optional MCP/plugin loading
 
 Reporting is an optional archive in the single Codex Plus release, sharing its
 version and source commit with workers and monitoring. See
 [release verification](runtime-distribution.md#one-codex-plus-release).
-The component installer still supports standalone use:
+For a standalone install, build or verify the archive before selecting its revision.
 
 ```sh
-rtk proxy scripts/codex-plus-report-package build --output /absolute/outside/repo/report.tar.gz
-rtk proxy scripts/codex-plus-report-package verify /path/report.tar.gz --sha256 EXPECTED_SHA256
-rtk proxy scripts/codex-plus-report-package install /path/report.tar.gz --prefix /absolute/install --sha256 EXPECTED_SHA256
-rtk proxy scripts/codex-plus-report-package activate --prefix /absolute/install --revision FULL_SOURCE_REVISION
-rtk proxy scripts/codex-plus-report-package mcp-config --prefix /absolute/install --config /absolute/report.toml
+scripts/codex-plus-report-package build --output /absolute/outside/repo/report.tar.gz
+scripts/codex-plus-report-package verify /path/report.tar.gz --sha256 EXPECTED_SHA256
+scripts/codex-plus-report-package install /path/report.tar.gz --prefix /absolute/install --sha256 EXPECTED_SHA256
+scripts/codex-plus-report-package activate --prefix /absolute/install --revision FULL_SOURCE_REVISION
+scripts/codex-plus-report-package mcp-config --prefix /absolute/install --config /absolute/report.toml
 ```
 
-Build requires committed, clean source. The artifact declares exact hashes/modes,
-source revision and Linux/Python compatibility without a native agent owner.
-Installations keep immutable releases; selection changes only `current`. Data and
-config are outside that prefix. Wrappers resolve their real release before import.
-Use these commands for isolated/unmanaged validation; chezmoi owns Bryan's fleet.
+A source build requires a clean, committed checkout. The archive records hashes,
+modes, source revision and Linux/Python compatibility. Selecting an immutable
+release updates `current`. The store and config live outside that prefix.
+Each wrapper resolves its real release before importing code. Use the component
+installer for unmanaged or isolated installations. Chezmoi owns the managed fleet.
 
-The artifact includes portable and Codex compatibility plugin manifests exposing
-the shared skill. The skill needs the installed CLI or independently configured
-report MCP. The generated MCP config selects the installed stdio entry point and
-retains write approval policy. There are four tools: publish, get, list and delete.
-They require no native thread metadata; discovery creates no store or daemon.
+**Skill and MCP.** The portable and Codex compatibility plugin manifests
+expose the same provider-neutral skill. It can use the installed CLI or a
+separately configured report MCP. The generated MCP config points to the
+installed stdio entrypoint and retains the write approval policy. Its four
+tools publish, get, list and delete reports. Discovery needs neither a store
+nor a daemon. Operations run independently of native thread metadata.
 
-Bryan's managed configuration enables report MCP by default on supported hosts
-when the report component is enabled. It keeps required=false and explicitly
-approves report_publish/report_delete under the current never-approval policy.
-Tool availability does not authorize publication or deletion without user intent.
-Existing explicit opt-outs, disabled tools and custom approval preferences are
-preserved. A report-only Codex-config apply uses `htmlReportOnly=true` to preserve
-unrelated settings. Fresh native sessions load the tools without restarting or
-globally refreshing active daemons.
-Plugin hosting/browser behavior still depends on the configured report endpoint.
+**Managed loading.** On supported hosts, enabling reporting enables its MCP
+by default. It sets `required=false` and explicitly approves `report_publish`
+and `report_delete` under the configured never-approval policy. Publication
+and deletion still require user intent. Explicit opt-outs, disabled tools and
+custom approval settings take precedence.
+
+A report-only Codex config apply uses `htmlReportOnly=true` to preserve
+unrelated settings. Open a fresh native session to load the tools. The
+configured report endpoint handles serving and desktop access.

@@ -1,15 +1,15 @@
 # Codex Plus
 
-Workers, watches, later checks, peer communication and browser reports around
-the native Codex CLI/TUI. Keep your continuing conversation and its existing
-daemon; choose explicit worker workflows or ask for useful follow-up in ordinary
-language.
+Codex Plus extends the native Codex CLI with background watches, messages
+between open sessions, worker assignments, and HTML reports. Your chosen
+model keeps the task context and uses the usual Codex tools and approvals.
 
-> **[Explore the interactive walkthrough and HTML guides →](https://dev.byebyebryan.com/codex-plus/)**
->
-> [Get started](https://dev.byebyebryan.com/codex-plus/start/) ·
-> [Luna & workers](https://dev.byebyebryan.com/codex-plus/workers/) ·
-> [Daily use](https://dev.byebyebryan.com/codex-plus/daily-use/)
+Workers and goal loops came first, as a way to manage the token cost of long
+tasks. The watches draw on background monitoring in Claude Code. Reporting
+gives every session in an environment the same way to publish its findings.
+
+**[Explore Codex Plus](https://dev.byebyebryan.com/codex-plus/)** ·
+[Try the walkthrough](https://dev.byebyebryan.com/codex-plus/walkthrough/)
 
 **Install or manage with your agent:** give it the
 [agent guide](https://dev.byebyebryan.com/codex-plus/manage.md) and say
@@ -19,39 +19,21 @@ for inspection, configuration, rollback, cleanup and uninstall too.
 
 ## Start here
 
-Use the [agent guide](docs/manage-agent.md) for installation and maintenance;
-the [setup overview](docs/getting-started.md) explains workers, monitoring and
-reporting for reference. With the relevant components installed, open an
-ordinary Codex session and say, for example:
-
-- “$luna-task Investigate the importer failure and return a reproduction.”
-- “$luna-goal-loop Complete the approved importer migration and verify it.”
-- “Watch the session doing the packaging work and tell me when it is ready.”
-- “Tell that session the handoff should include the risks.”
-- “Watch this run and tell me if it stalls or fails.”
-- “Check this endpoint again later.”
-- “Stop watching it.”
-- “Make a browser report of what we learned.”
-
-The model selects the source, filtering, cadence and continuation. It discovers
-independent peers from context and clarifies ambiguity; no UUID, exact title,
-JSON prompt or polling recipe is required from you.
-
-Read the [daily-use guide](docs/daily-use.md), open the
-[browser walkthrough](docs/presentation.md), or see
-[how the package works](docs/architecture.md).
+| What you want | Try this in Codex |
+| --- | --- |
+| [Watch a run or check back later](docs/daily-use.md) | “Watch this build and tell me when the tests finish.” For a one-time follow-up, “Check this build again in twenty minutes.” |
+| [Publish an HTML report](docs/html-report-usage.md) | “Plot the benchmark results side by side and give me a report link I can share.” |
+| [Contact another session](docs/session-communication.md) | “Ask the session preparing the release if it’s still editing the migration guide. I’d like to take the next pass.” |
+| [Choose who does the work](docs/workers.md) | `$astra-task Review this patch for compatibility.` Use `$adaptive-task` to let your primary decide who takes each part. |
 
 Workers, monitoring and reporting share **one Codex Plus version and release**.
-Choose the component archives you need in the setup guide; an existing managed setup can use these requests
-directly. The public site includes the walkthrough and ten HTML guides. Their
-Markdown sources and technical evidence are linked below.
+Monitoring includes both watches and session communication. Choose the
+components you need in the [setup guide](docs/getting-started.md).
 
 ## Current status
 
-The preview is ready for daily-use trials. Choose workers, follow useful changes
-or publish a browser handoff around your existing Codex conversation.
-
 **v0.1.0-preview.30** includes seven worker workflows and four current roles.
+The preview is ready for daily-use trials.
 
 Preview.30 keeps a continuing goal in its original routing study when the primary
 changes, recovers usage after failed turns, and checks native execution evidence
@@ -177,8 +159,9 @@ and [implementation handoff](docs/implementation-handoff.md).
 | --- | --- | --- |
 | [Install & manage](https://dev.byebyebryan.com/codex-plus/manage/) | Give your agent one guide for the installation lifecycle. | [Source](docs/manage-agent.md) |
 | [Get started](https://dev.byebyebryan.com/codex-plus/start/) | Choose components and follow the right setup path. | [Source](docs/getting-started.md) |
-| [Daily use](https://dev.byebyebryan.com/codex-plus/daily-use/) | Natural requests, useful follow-up, stopping and reports. | [Source](docs/daily-use.md) |
-| [Luna & workers](https://dev.byebyebryan.com/codex-plus/workers/) | Tasks, goal loops, adaptive delegation and worker installation. | [Source](docs/workers.md) |
+| [Watches and reminders](https://dev.byebyebryan.com/codex-plus/daily-use/) | Watch a run, ask for a timed check, see what is pending or stop a watch. | [Source](docs/daily-use.md) |
+| [Session communication](https://dev.byebyebryan.com/codex-plus/sessions/) | Find another open session, send a message and check its receipt. | [Source](docs/session-communication.md) |
+| [Worker workflows](https://dev.byebyebryan.com/codex-plus/workers/) | Choose a named worker or delegate adaptively. | [Source](docs/workers.md) |
 | [Multiple environments](https://dev.byebyebryan.com/codex-plus/environments/) | Home selection, separate stores and same-daemon boundaries. | [Source](docs/environments.md) |
 | [How it works](https://dev.byebyebryan.com/codex-plus/architecture/) | Components, permissions, costs, receipts and Claude-workflow coverage. | [Source](docs/architecture.md) |
 | [Monitoring installation](https://dev.byebyebryan.com/codex-plus/installation/) | Immutable releases, MCP loading, managed setup and rollback. | [Source](docs/runtime-distribution.md) |
@@ -345,12 +328,12 @@ Publish a new release before updating managed URLs/checksums or installed files.
 
 ## Validation and tuning
 
-Run `rtk proxy scripts/check` after changing the kit. It validates the default and legacy
+Run `scripts/check` after changing the kit. It validates the default and legacy
 inventory, agent model/effort selections, skill metadata, and explicit-only
 adaptive invocation policies. It does not prove
 routing quality or runtime model availability.
 
-Run `rtk proxy python3 -B tests/test_check.py` for metadata regression checks. The validator
+Run `python3 -B tests/test_check.py` for metadata regression checks. The validator
 accepts the kit's two-level `interface` and `policy` mappings, quoted strings,
 and lowercase booleans. Unsupported YAML forms are rejected; extend the validator
 deliberately before adding other metadata formats or fields.

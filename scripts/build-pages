@@ -24,21 +24,43 @@ SOURCE = f"https://github.com/{REPOSITORY}/blob/main/docs/"
 GUIDES = {
     "getting-started.md": ("start", "Get started"),
     "manage-agent.md": ("manage", "Install & manage"),
-    "daily-use.md": ("daily-use", "Daily use"),
-    "workers.md": ("workers", "Luna & workers"),
+    "daily-use.md": ("daily-use", "Watches and reminders"),
+    "session-communication.md": ("sessions", "Session communication"),
+    "workers.md": ("workers", "Worker workflows"),
     "architecture.md": ("architecture", "How it works"),
     "environments.md": ("environments", "Environments"),
     "soak-checklist.md": ("soak-checklist", "Daily trial"),
     "routing-diagnostics.md": ("routing-diagnostics", "Routing diagnostics"),
-    "html-report-usage.md": ("reports", "Reporting"),
+    "html-report-usage.md": ("reports", "HTML reports"),
     "runtime-distribution.md": ("installation", "Installation"),
 }
+PRESENTATION_PAGES = {'index.html': SITE, 'walkthrough/index.html': SITE + 'walkthrough/'}
+PUBLIC_PAGES = {**PRESENTATION_PAGES, **{route + '/index.html': SITE + route + '/' for route, _ in GUIDES.values()}}
+GUIDE_FIGURES = {
+    'getting-started.md': ('choose-what-to-install', 'ul'),
+    'workers.md': ('working-in-parallel', 'ol'),
+    'daily-use.md': ('choose-a-follow-up', 'ul'),
+    'session-communication.md': ('send-a-message', 'ol'),
+    'html-report-usage.md': ('from-export-to-browser', 'ol'),
+}
+WALKTHROUGH_SECTIONS = {
+    'package': 'the chapter list',
+    'scenes': 'the examples',
+    'workers': 'the worker request builder',
+    'workflows': 'the watch examples',
+    'control': 'the follow-up controls',
+    'environments': 'the environment selector',
+    'setup': 'the install and upgrade requests',
+    'get-started': 'the setup and first-watch checklist',
+    'resources': 'the guide list',
+}
 DESCRIPTIONS = {
-    "routing-diagnostics.md": "Open and close a private adaptive Sol/Luna observation window, record reviewed outcomes and inspect native usage coverage.",
+    "routing-diagnostics.md": "Run private routing studies and inspect observed model usage for adaptive work.",
     "getting-started.md": "Choose workers, monitoring and reporting, then follow the setup path for your Codex environment.",
     "manage-agent.md": "Give your agent one guide to install, upgrade, inspect, configure, roll back or remove Codex Plus.",
-    "daily-use.md": "Everyday requests for worker tasks, watches, later checks, session coordination and browser reports.",
-    "workers.md": "Use Luna tasks and goal loops or adaptive worker workflows while your primary owns decisions and review.",
+    "daily-use.md": "Watch a running job, ask Codex to check back once, see what is pending and stop a watch.",
+    "session-communication.md": "Find another open Codex session on the same daemon, send it a message and check how it handled your request.",
+    "workers.md": "Choose a named worker, use Luna across a goal, or run independent assignments in parallel with an adaptive workflow.",
     "architecture.md": "Understand Codex Plus components, source access, discovery, costs, receipts and lifecycle boundaries.",
     "environments.md": "Select a Codex home and keep conversations, MCP tools, follow-up state and reports in the intended context.",
     "soak-checklist.md": "Record useful outcomes and friction during ordinary work, with private evidence and clear acceptance limits.",
@@ -47,20 +69,40 @@ DESCRIPTIONS = {
 }
 RAW_GUIDES = {"manage.md": "manage-agent.md"}
 COPY_SCRIPT = """<script>
-document.querySelectorAll('[data-copy-request]').forEach(button=>{
-  button.hidden=false;
-  button.addEventListener('click',async()=>{
-    const text=button.dataset.copyRequest, parent=button.parentElement;
-    const status=parent.querySelector('[role="status"]');
-    let copied=false, fallback=parent.querySelector('textarea');
-    if(navigator.clipboard&&window.isSecureContext){try{await navigator.clipboard.writeText(text);copied=true;}catch{}}
-    if(!copied){
-      if(!fallback){fallback=document.createElement('textarea');fallback.readOnly=true;fallback.setAttribute('aria-label','Request for manual copying');parent.appendChild(fallback);}
-      fallback.hidden=false;fallback.value=text;fallback.focus();fallback.select();
-      try{copied=document.execCommand('copy');}catch{}
+document.querySelectorAll('[data-copy-request]').forEach(button => {
+  button.hidden = false;
+  const container = button.parentElement;
+  const sourceId = container.dataset.copySource;
+  const source = sourceId ? document.getElementById(sourceId) : null;
+  const status = container.querySelector('[role="status"]');
+  let field = source;
+  button.addEventListener('click', async () => {
+    const text = button.dataset.copyRequest;
+    let copied = false;
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        copied = true;
+      } catch {}
     }
-    if(copied){if(fallback)fallback.hidden=true;button.focus();}
-    status.textContent=copied?'Request copied.':'Select the request text and copy it manually.';
+    if (!copied) {
+      if (!field) {
+        field = document.createElement('textarea');
+        field.readOnly = true;
+        field.setAttribute('aria-label', 'Request for manual copying');
+        container.appendChild(field);
+      }
+      field.hidden = false;
+      field.value = text;
+      field.focus();
+      field.select();
+      try { copied = document.execCommand('copy'); } catch {}
+    }
+    if (copied) {
+      if (field && field !== source) field.hidden = true;
+      button.focus();
+    }
+    status.textContent = copied ? 'Request copied.' : 'Select the request text and copy it manually.';
   });
 });
 </script>"""
@@ -123,7 +165,7 @@ CURRENT_RELEASE_CLAIMS = {
             r"(?m)^\[v[^\]]+\]\(https://github.com/byebyebryan/codex-plus/releases/tag/v([^\)]+)\)",
             r"(?m)^\| (?:Workers|Monitoring|Reporting) \| `codex-plus-(?:workers|runtime|report)-([\w.+-]+)\.tar\.gz`",
         ),
-        "docs/presentation/index.html": (r"Codex Plus (preview\.\d+)\.", r"Available in (preview\.\d+)"),
+        "docs/presentation/index.html": (r"Codex Plus (preview\.\d+)\.",),
     },
     "managed": {
         "README.md": (r"(?:Snap, Starship and Carbon select|Managed configuration selects) \*\*v([^*]+)\*\*",),
@@ -134,27 +176,201 @@ CURRENT_RELEASE_CLAIMS = {
     },
 }
 STYLE = """
-:root{color-scheme:light;--paper:#f6f4ee;--ink:#202e2c;--teal:#185b50;--line:#d7ddd4}
-*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 system-ui,sans-serif}
-a{color:var(--teal);text-underline-offset:3px}:focus-visible{outline:3px solid #b04e29;outline-offset:4px}
-header,main,footer{max-width:980px;margin:auto;padding:24px}header{border-bottom:1px solid var(--line)}
-.brand{font-size:22px;font-weight:800;text-decoration:none}nav{display:flex;flex-wrap:wrap;gap:9px 20px;margin-top:13px;font-size:14px}
-nav a[aria-current]{font-weight:750}main{padding-top:32px}h1{font-size:38px;line-height:1.2;letter-spacing:-1px}
-h2{margin-top:38px;line-height:1.3;font-size:25px}h3{margin-top:28px}p,li{overflow-wrap:anywhere}
-pre{overflow:auto;border:1px solid var(--line);background:#fffefa;border-radius:9px;padding:16px;font-size:13px;line-height:1.6}
-code{font-family:ui-monospace,Consolas,monospace;font-size:.88em}p code,td code{background:#e7eee7;padding:2px 4px;border-radius:3px}
-.table-scroll{overflow-x:auto;max-width:100%}table{border-collapse:collapse;width:100%;font-size:14px;background:#fffefa}
-th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#e7eee7}
-figure{margin:24px 0}figure img{display:block;width:100%;height:auto}figcaption{color:#586760;font-size:13px;margin-top:8px}
-.source,.mesh-note{font-size:13px;color:#586760}.source{margin-bottom:25px}footer{border-top:1px solid var(--line);font-size:13px;color:#586760}
-.skip{position:absolute;top:-100px;left:16px;padding:10px;background:#fffefa;z-index:2}.skip:focus{top:12px}
-.toc{display:block;border:1px solid var(--line);border-radius:10px;background:#fffefa;padding:16px 20px;margin:25px 0}.toc ol{columns:2;margin:10px 0 0;padding-left:20px;font-size:14px}.toc li{break-inside:avoid;margin:5px 0}.toc a{display:block;padding:3px 0}
-html{scroll-padding-top:20px}h2[id]{scroll-margin-top:20px}.table-scroll:focus-visible{outline:3px solid #b04e29;outline-offset:3px}td code{white-space:nowrap}
-.more{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-size:14px}.more strong{flex-basis:100%}
-.copy-action{display:block;margin-top:10px;padding:8px 12px;border:1px solid var(--line);border-radius:6px;cursor:pointer;background:#fffefa;color:var(--teal);font:inherit}.copy-action[hidden]{display:none}.copy-result{display:block;font-size:14px}textarea{display:block;width:100%;min-height:90px;font:inherit}textarea[hidden]{display:none}
-@media(max-width:600px){.toc ol{columns:1}}@media print{.skip,header nav,.toc,.more{display:none}body{background:white}pre{white-space:pre-wrap;overflow-wrap:anywhere}}
-@media(max-width:600px){header,main,footer{padding:18px}h1{font-size:31px}h2{font-size:23px}th,td{padding:9px}figure{overflow-x:auto}figure img{min-width:650px}}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 16px; }
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.7 var(--font-ui);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+header, main, footer { max-width: 980px; margin: auto; padding: 24px; }
+header { border-bottom: 1px solid var(--line); }
+.guide-nav { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 13px; font-size: 14px; }
+.guide-nav a { padding: 5px 0; color: var(--muted); text-decoration: none; }
+.guide-nav a:hover { color: var(--ink); text-decoration: underline; }
+.guide-trail { margin: 0 0 24px; color: var(--muted); font-size: 14px; }
+.guide-trail span { margin-inline-start: 8px; }
+main { padding-top: 26px; }
+h1 { font-size: clamp(32px, 5vw, 50px); line-height: 1.08; letter-spacing: -.04em; }
+h2 { margin-top: 40px; font-size: 26px; line-height: 1.27; letter-spacing: -.02em; }
+h3 { margin-top: 26px; line-height: 1.35; }
+p, li { overflow-wrap: anywhere; }
+pre {
+    overflow: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+    font: 13px/1.65 var(--font-code);
+}
+code { font: .88em var(--font-code); }
+pre code { font-size: inherit; }
+:is(p, li, td) > code { background: var(--surface-alt); padding: 2px 4px; border-radius: 3px; }
+td code { white-space: nowrap; }
+.table-scroll { overflow-x: auto; max-width: 100%; border: 1px solid var(--line); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 14px; }
+th, td { padding: 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--surface-alt); }
+tbody tr:last-child td { border-bottom: 0; }
+blockquote {
+    margin-inline: 0;
+    padding-inline: 16px;
+    border-inline-start: 3px solid var(--accent);
+    color: var(--muted);
+}
+figure { margin: 24px 0; }
+figure img { display: block; width: 100%; height: auto; }
+figcaption { margin-top: 8px; }
+figcaption, .source, .mesh-note, footer { color: var(--muted); font-size: 13px; }
+.source { margin-bottom: 25px; }
+footer { border-top: 1px solid var(--line); }
+.skip { position: absolute; top: -100px; left: 16px; padding: 10px; background: var(--surface); z-index: 2; }
+.skip:focus { top: 12px; }
+.toc {
+    margin: 25px 0;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+.toc summary { cursor: pointer; color: var(--ink); font-weight: 650; }
+.toc ol { columns: 2; margin: 10px 0 0; padding-left: 20px; font-size: 14px; }
+.toc li { break-inside: avoid; margin: 5px 0; }
+.toc a { display: block; padding: 3px 0; }
+.guide-figure {
+    display: grid;
+    gap: 14px;
+    margin: 18px 0 28px;
+    padding: 0;
+    list-style: none;
+    font-size: .93rem;
+    line-height: 1.55;
+}
+.guide-figure > li {
+    position: relative;
+    min-width: 0;
+    padding: 15px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    break-inside: avoid;
+}
+.guide-figure > li > :first-child { margin-block-start: 0; }
+.guide-figure > li > :last-child { margin-block-end: 0; }
+.guide-figure > li > strong:first-child,
+.guide-figure > li > p:first-child > strong {
+    display: block;
+    margin-block-end: 4px;
+    color: var(--ink);
+}
+.guide-choices { grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+.guide-choices > li { border-block-start-color: var(--accent); }
+.guide-steps { counter-reset: guide-step; }
+.guide-steps > li { counter-increment: guide-step; padding-block-start: 44px; }
+.guide-steps > li::before {
+    content: counter(guide-step);
+    position: absolute;
+    inset-block-start: 13px;
+    inset-inline-start: 15px;
+    color: var(--accent);
+    font: 650 .86rem/1.6 var(--font-code);
+}
+.guide-steps > li + li::after {
+    content: '';
+    position: absolute;
+    inset-block-end: 100%;
+    inset-inline-start: 21px;
+    width: 1px;
+    height: 15px;
+    background: var(--accent);
+}
+.guide-steps > li > ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+}
+.guide-steps > li > ul li {
+    padding: 8px;
+    background: var(--surface-alt);
+    border-radius: 5px;
+    font-size: .84rem;
+}
+.guide-steps > li > ul strong { display: block; }
+@media (min-width: 740px) {
+    .guide-steps { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+    .guide-steps > li + li::after {
+        inset-block: 22px auto;
+        inset-inline: auto 100%;
+        width: 15px;
+        height: 1px;
+    }
+}
+.more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 14px;
+}
+.more strong { flex-basis: 100%; }
+.copy-action {
+    display: block;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface-alt);
+    color: var(--accent);
+    cursor: pointer;
+    font: inherit;
+}
+.copy-action:hover { border-color: var(--accent); }
+.copy-result { display: block; font-size: 14px; }
+textarea { display: block; width: 100%; min-height: 90px; font: inherit; }
+.copy-action[hidden], textarea[hidden] { display: none; }
+@media (max-width: 600px) {
+    header, main, footer { padding: 18px; }
+    h2 { font-size: 23px; }
+    .toc ol { columns: 1; }
+    th, td { padding: 9px; }
+    figure { overflow-x: auto; }
+    figure img { min-width: 650px; }
+}
+@media print {
+    :root {
+        color-scheme: light;
+        --paper: white;
+        --ink: #17221c;
+        --surface: white;
+        --surface-alt: #edf2ef;
+        --muted: #405048;
+        --accent: #185b50;
+        --line: #bec9c3;
+    }
+    .skip, header nav, .toc, .more, .copy-action, .copy-result { display: none; }
+    pre, td code { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .table-scroll, pre, figure { overflow: visible; }
+    figure img { min-width: 0; }
+}
 """
+
+
+def site_theme(landing: str) -> tuple[str, str]:
+    blocks = re.findall(r'<style id="site-theme">.*?</style>', landing, flags=re.S)
+    if len(blocks) != 1:
+        raise ValueError("landing page needs exactly one site theme style block")
+    color = re.search(r'--paper\s*:\s*(#[0-9a-f]{6})\s*(?=[;}])', blocks[0], flags=re.I)
+    if not color:
+        raise ValueError("site theme needs a six-digit --paper color")
+    return blocks[0], color[1].lower()
 
 
 def rewrite_link(url: str, prefix: str) -> str:
@@ -173,6 +389,8 @@ def rewrite_link(url: str, prefix: str) -> str:
     if name in GUIDES:
         return prefix + GUIDES[name][0] + "/" + fragment
     if name in {"presentation.md", "presentation/index.html"}:
+        return prefix + "walkthrough/" + fragment
+    if name == "presentation/overview.html":
         return prefix + fragment
     if not parsed.scheme and name.endswith(".md"):
         return SOURCE + name + fragment
@@ -261,61 +479,79 @@ def architecture_diagram(text: str, markdown: str) -> str:
     digest = hashlib.sha256(code[1].encode()).hexdigest()
     if f'data-source-sha256="{digest}"' not in svg:
         raise ValueError("update the authored SVG alongside the architecture diagram source")
-    figure = ('<figure><img src="../assets/architecture.svg" alt="Requests, bounded sources and timers return to the native conversation; MCP calls use normal native approval and reports are independent.">'
-              '<figcaption>Observation and native follow-up. <a href="' + SOURCE + 'architecture.md#observation-and-follow-up">Diagram source on GitHub</a>.</figcaption></figure>')
+    figure = ('<figure tabindex="0" aria-label="Observation and native follow-up diagram">'
+              '<img src="../assets/architecture.svg" alt="Requests, bounded sources and timers return to the native conversation; MCP calls use normal native approval and reports are independent.">'
+              '<figcaption>Observation and native follow-up. <a href="' + SOURCE + 'presentation/architecture.svg">Diagram source on GitHub</a>.</figcaption></figure>')
     text, count = re.subn(r'<section\b[^>]*data-type="mermaid"[^>]*>.*?</section>', figure, text, flags=re.S)
     if count != 1 or 'data-type="mermaid"' in text:
         raise ValueError("unexpected GitHub Mermaid rendering; refusing incomplete diagram")
     return text
 
 
+def guide_figure(name: str, body: str) -> str:
+    if name not in GUIDE_FIGURES:
+        return body
+    anchor, tag = GUIDE_FIGURES[name]
+    heading = re.search(rf'<h[2-6]\b[^>]*\bid="{re.escape(anchor)}"[^>]*>.*?</h[2-6]>', body, re.S)
+    if not heading:
+        return body
+    next_heading = re.search(r'<h[2-6]\b', body[heading.end():])
+    end = heading.end() + next_heading.start() if next_heading else len(body)
+    section = body[heading.end():end]
+    layout = 'guide-steps' if tag == 'ol' else 'guide-choices'
+    section = re.sub(rf'<{tag}\b', f'<{tag} class="guide-figure {layout}" role="list"', section, count=1)
+    return body[:heading.end()] + section + body[end:]
+
+
 def guide_page(name: str, route: str, title: str, body: str, icon: str,
-               requests: dict[str, str] | None = None) -> str:
+               theme: tuple[str, str], requests: dict[str, str] | None = None) -> str:
     if requests:
         body = action_table(body, requests)
-    nav = '<a href="../">Walkthrough</a>' + "".join(
-        f'<a href="../{slug}/"' + (' aria-current="page"' if route == slug else "") + f'>{html.escape(label)}</a>'
-        for slug, label in GUIDES.values())
+    theme_style, theme_color = theme
+    nav = ('<a href="../">Overview</a><a href="../walkthrough/">Walkthrough</a>'
+           '<a href="../#guide-directory">Guides</a><a href="../manage/">Install</a>')
     sections = re.findall(r'<h2\b[^>]*\bid="([^"]+)"[^>]*>(.*?)</h2>', body, re.S)
-    toc = ('<nav class="toc" aria-label="On this page"><strong>On this page</strong><ol>' + ''.join(
+    toc = ('<details class="toc"><summary>On this page</summary><nav aria-label="On this page"><ol>' + ''.join(
         '<li><a href="#' + html.escape(identifier, quote=True) + '">' +
         html.escape(html.unescape(re.sub(r'<[^>]+>', '', heading))) + '</a></li>'
-        for identifier, heading in sections) + '</ol></nav>') if sections else ''
+        for identifier, heading in sections) + '</ol></nav></details>') if sections else ''
     body = re.sub(r"<table\b([^>]*)>", r'<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable table"><table\1>', body)
     body = body.replace("</table>", "</table></div>")
-    first_heading = re.search(r'</h1>', body)
-    if first_heading:
-        body = body[:first_heading.end()] + toc + body[first_heading.end():]
-    else:
-        body = toc + body
-    more = '<aside class="more" aria-label="Related guides"><strong>Keep exploring</strong>' + ''.join(
-        f'<a href="../{slug}/">{label}</a>' for slug, label in
-        [('start', 'Choose components'), ('daily-use', 'Everyday requests'), ('architecture', 'How it works')]
-        if slug != route) + '</aside>'
+    intro = re.search(r'</h1>(?:\s*<p\b[^>]*>.*?</p>)?', body, re.S)
+    contents_position = intro.end() if intro else 0
+    body = body[:contents_position] + toc + body[contents_position:]
+    feature_guides = ('daily-use.md', 'html-report-usage.md', 'session-communication.md', 'workers.md')
+    more = '<aside class="more" aria-label="Related guides"><strong>Explore the features</strong>' + ''.join(
+        f'<a href="../{GUIDES[guide][0]}/">{GUIDES[guide][1]}</a>'
+        for guide in feature_guides if guide != name) + '</aside>'
+    page_title = title + ' — Codex Plus'
+    page_metadata = metadata(SITE + route + '/', page_title, DESCRIPTIONS[name], theme_color)
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
-            f'<title>{html.escape(title)} — Codex Plus</title>{metadata(SITE + route + "/", title + " — Codex Plus", DESCRIPTIONS[name])}{icon}<style>{STYLE}</style></head><body>'
+            f'<title>{html.escape(page_title)}</title>{page_metadata}{icon}{theme_style}<style>{STYLE}</style></head><body>'
             '<a class="skip" href="#main">Skip to content</a>'
-            f'<header><a class="brand" href="../">Codex Plus /</a><nav aria-label="Public guides">{nav}</nav></header>'
-            f'<main id="main" tabindex="-1"><p class="source">Current preview guide · <a href="{SOURCE}{name}">Source on GitHub</a>' +
-            (' · <a href="../manage.md">Plain Markdown for your agent</a>' if route == 'manage' else '') + f'</p>{body}{more}</main>'
-            '<footer>Codex Plus · Documentation updates do not repin installed runtime artifacts. '
-            '<a href="../">Return to the walkthrough</a></footer>' + (COPY_SCRIPT if requests else '') + '</body></html>')
+            f'<header><a class="wordmark" href="../" aria-label="Codex Plus home">codex<span aria-hidden="true">+</span></a>'
+            f'<nav class="guide-nav" aria-label="Public guides">{nav}</nav></header>'
+            '<main id="main" tabindex="-1"><p class="guide-trail"><a href="../#guide-directory">Guide directory</a>'
+            f'<span aria-current="page">{html.escape(title)}</span></p>'
+            + ('<p class="source"><a href="../manage.md">Plain Markdown for your agent</a></p>' if route == 'manage' else '')
+            + f'{body}{more}</main><footer><a href="{SOURCE}{name}">Source on GitHub</a>'
+            ' · <a href="../walkthrough/">Walkthrough</a></footer>' + (COPY_SCRIPT if requests else '') + '</body></html>')
 
 
-def metadata(url: str, title: str, description: str) -> str:
-    url, title, description = (html.escape(value, quote=True) for value in (url, title, description))
+def metadata(url: str, title: str, description: str, theme_color: str) -> str:
+    url, title, description, theme_color = (html.escape(value, quote=True)
+                                            for value in (url, title, description, theme_color))
     return (f'<link rel="canonical" href="{url}"><meta name="description" content="{description}">'
-            '<meta name="theme-color" content="#185b50"><meta property="og:type" content="website">'
+            f'<meta name="theme-color" content="{theme_color}"><meta property="og:type" content="website">'
             '<meta property="og:site_name" content="Codex Plus">'
             f'<meta property="og:url" content="{url}"><meta property="og:title" content="{title}">'
             f'<meta property="og:description" content="{description}">')
 
 
 def write_sitemap(output: Path) -> None:
-    urls = [SITE, *(SITE + route + '/' for route, _ in GUIDES.values())]
     (output / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(
-            '<url><loc>' + xml_escape(url) + '</loc></url>' for url in urls) + '</urlset>\n')
+            '<url><loc>' + xml_escape(url) + '</loc></url>' for url in PUBLIC_PAGES.values()) + '</urlset>\n')
 
 
 class PageFacts(HTMLParser):
@@ -324,6 +560,7 @@ class PageFacts(HTMLParser):
         self.canonical = []
         self.descriptions = []
         self.social_urls = []
+        self.ids: set[str] = set()
         self.main_count = 0
         self.h1_count = 0
         self.feed(text)
@@ -337,20 +574,32 @@ class PageFacts(HTMLParser):
             self.descriptions.append(attrs.get('content'))
         if tag == 'meta' and attrs.get('property') == 'og:url':
             self.social_urls.append(attrs.get('content'))
+        if attrs.get('id'):
+            self.ids.add(attrs['id'])
         self.main_count += tag == 'main'
         self.h1_count += tag == 'h1'
 
 
+def walkthrough_fragment_links(overview: str, walkthrough: str) -> str:
+    moved = PageFacts(walkthrough).ids - PageFacts(overview).ids
+    entries = []
+    for identifier in sorted(moved):
+        label = WALKTHROUGH_SECTIONS.get(identifier, 'this example or control')
+        target = html.escape(identifier, quote=True)
+        entries.append(f'<aside class="fragment-entry wrap" id="{target}">'
+                       f'<a href="./walkthrough/#{target}">Open {label} in the walkthrough →</a></aside>')
+    return '\n'.join(entries)
+
+
 def validate_publication(output: Path, source_root: Path = ROOT) -> None:
-    pages = {'index.html': SITE, **{route + '/index.html': SITE + route + '/' for route, _ in GUIDES.values()}}
-    allowed = {*pages, *RAW_GUIDES, 'assets/architecture.svg', '.nojekyll', 'sitemap.xml'}
+    allowed = {*PUBLIC_PAGES, *RAW_GUIDES, 'assets/architecture.svg', '.nojekyll', 'sitemap.xml'}
     actual = {p.relative_to(output).as_posix() for p in output.rglob('*') if p.is_file()}
     if actual != allowed:
         raise ValueError(f'public file inventory differs: missing={sorted(allowed-actual)}, extra={sorted(actual-allowed)}')
     for target, source in RAW_GUIDES.items():
         if (output / target).read_bytes() != (source_root / 'docs' / source).read_bytes():
             raise ValueError(f'raw guide differs from authored source: {target}')
-    for name, url in pages.items():
+    for name, url in PUBLIC_PAGES.items():
         facts = PageFacts((output / name).read_text())
         if facts.canonical != [url] or facts.social_urls != [url]:
             raise ValueError(f'public URL metadata differs in {name}')
@@ -360,7 +609,7 @@ def validate_publication(output: Path, source_root: Path = ROOT) -> None:
             raise ValueError(f'public page needs one main and one h1 in {name}')
     sitemap = ElementTree.fromstring((output / 'sitemap.xml').read_text())
     urls = [element.text for element in sitemap.findall('{*}url/{*}loc')]
-    if sorted(urls) != sorted(pages.values()):
+    if sorted(urls) != sorted(PUBLIC_PAGES.values()):
         raise ValueError('public sitemap differs from published routes')
 
 
@@ -441,6 +690,37 @@ def validate_current_guides(root: Path = ROOT) -> int:
     return count
 
 
+def fill_marker(page: str, marker: str, content: str) -> str:
+    placeholder = f'<!-- {marker} -->'
+    if page.count(placeholder) != 1:
+        raise ValueError(f'expected exactly one presentation placeholder: {marker}')
+    return page.replace(placeholder, content)
+
+
+def presentation_page(source: str, route: str, theme_color: str) -> str:
+    descriptions = PageFacts(source).descriptions
+    title = re.search(r'<title>(.*?)</title>', source, re.S)
+    if len(descriptions) != 1 or not descriptions[0] or not descriptions[0].strip() or not title:
+        raise ValueError('presentation page needs a title and one nonempty description')
+    page = links(source, '../' if route else './')
+    page = re.sub(r'<meta name="description"[^>]+>', '', page)
+    page_metadata = metadata(SITE + route, html.unescape(title[1]), descriptions[0], theme_color)
+    page = page.replace('</head>', page_metadata + '</head>')
+    page = page.replace('</body>', COPY_SCRIPT + '</body>')
+    # Preserve internal snapshot references with an explicit reachability label.
+    return re.sub(r'(<a href="http://(?:snap|starship):[^\"]+">)(.*?)(</a>)', r'\1\2 (mesh access)\3', page)
+
+
+def overview_page(source: str, walkthrough: str, icon: str, theme: tuple[str, str], install: str) -> str:
+    page = fill_marker(source, 'site-icon', icon)
+    page = fill_marker(page, 'site-theme', theme[0])
+    page = fill_marker(page, 'walkthrough-fragments', walkthrough_fragment_links(page, walkthrough))
+    install_control = ('<textarea id="install-request-text" class="install-prompt" aria-label="Install request to paste into your agent" '
+                       f'readonly rows="3">{html.escape(install)}</textarea>'
+                       f'<div class="copy-tools" data-copy-source="install-request-text">{copy_control(install, "Install")}</div>')
+    return presentation_page(fill_marker(page, 'install-request', install_control), '', theme[1])
+
+
 def build(output: Path) -> None:
     claims = validate_current_guides()
     requests = lifecycle_requests((ROOT / 'docs/manage-agent.md').read_text())
@@ -450,24 +730,16 @@ def build(output: Path) -> None:
     if output.exists() and any(output.iterdir()):
         raise ValueError("Pages output must be empty")
     output.mkdir(parents=True, exist_ok=True)
-    original = (ROOT / "docs/presentation/index.html").read_text()
-    icon = re.search(r'<link rel="icon"[^>]+>', original)
+    walkthrough = (ROOT / 'docs/presentation/index.html').read_text()
+    overview = (ROOT / 'docs/presentation/overview.html').read_text()
+    theme = site_theme(walkthrough)
+    icon = re.search(r'<link rel="icon"[^>]+>', walkthrough)
     if not icon:
         raise ValueError("presentation icon is missing")
-    landing = links(original, "./")
-    if landing.count('<!-- management-requests -->') != 1:
-        raise ValueError('landing page needs one agent request entry point')
-    landing = landing.replace('<!-- management-requests -->', action_cards(requests))
-    landing = landing.replace('</body>', COPY_SCRIPT + '</body>')
-    # Metadata is generated from the public URL, keeping local/report editions portable.
-    landing = re.sub(r'<meta name="description"[^>]+>', '', landing)
-    title = html.unescape(re.search(r'<title>(.*?)</title>', original, re.S)[1])
-    landing = landing.replace('</head>', metadata(SITE, title,
-        'Delegate to Luna, watch running work, coordinate sessions and publish browser handoffs in native Codex.') + '</head>')
-    # Preserve internal snapshot references with an explicit reachability label.
-    landing = re.sub(r'(<a href="http://(?:snap|starship):[^\"]+">)(.*?)(</a>)',
-                     r'\1\2 (mesh access)\3', landing)
-    (output / "index.html").write_text(landing)
+    (output / 'index.html').write_text(overview_page(overview, walkthrough, icon[0], theme, requests['Install']))
+    walkthrough = fill_marker(walkthrough, 'management-requests', action_cards(requests))
+    (output / 'walkthrough').mkdir()
+    (output / 'walkthrough/index.html').write_text(presentation_page(walkthrough, 'walkthrough/', theme[1]))
     (output / "assets").mkdir()
     shutil.copyfile(ROOT / "docs/presentation/architecture.svg", output / "assets/architecture.svg")
     for name, (route, title) in GUIDES.items():
@@ -475,17 +747,18 @@ def build(output: Path) -> None:
         body = render(markdown)
         if name == "architecture.md":
             body = architecture_diagram(body, markdown)
-        body = links(headings(body), "../")
+        body = guide_figure(name, links(headings(body), '../'))
         page = output / route
         page.mkdir()
-        (page / "index.html").write_text(guide_page(name, route, title, body, icon[0],
+        (page / "index.html").write_text(guide_page(name, route, title, body, icon[0], theme,
             requests if route == 'manage' else None))
     write_raw_guides(output)
     (output / ".nojekyll").write_text("")
     write_sitemap(output)
     count = validate(output)
     validate_publication(output)
-    print(f"Built walkthrough + {len(GUIDES)} guides; {count} local links/assets/anchors, {claims} current-release claims and public metadata verified: {output}")
+    print(f"Built overview, walkthrough and {len(GUIDES)} guides; {count} local links/assets/anchors, "
+          f"{claims} current-release claims and public metadata verified: {output}")
 
 
 def main() -> None:

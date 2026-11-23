@@ -3,140 +3,842 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23185b50%22%2F%3E%3Cpath%20d%3D%22M32%2017v30M17%2032h30%22%20stroke%3D%22%23fffefa%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
-<meta name="description" content="Delegate to Luna, watch running work, coordinate sessions and publish browser handoffs in native Codex.">
-<title>Codex Plus — Workers, watches and browser handoffs</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2213%22%20fill%3D%22%23a9d180%22%2F%3E%3Cpath%20d%3D%22M32%2015v34M15%2032h34%22%20stroke%3D%22%23111213%22%20stroke-width%3D%227%22%2F%3E%3C%2Fsvg%3E">
+<meta name="description" content="Follow six example requests in native Codex, build an adaptive worker prompt and compare passive watches with scheduled MCP inspections.">
+<title>Interactive walkthrough — Codex Plus</title>
+<style id="site-theme">
+:root {
+  color-scheme: dark;
+  --paper: #111213;
+  --ink: #efefec;
+  --secondary: #c9cbc8;
+  --surface: #1b1d1f;
+  --surface-alt: #303336;
+  --muted: #aaaeac;
+  --accent: #a9d180;
+  --line: #454b50;
+  --accent-surface: #292c2d;
+  --accent-line: #758369;
+  --focus: #c4e39d;
+  --warning: #e9b55f;
+  --font-ui: "Noto Sans", Inter, system-ui, sans-serif;
+  --font-code: "MesloLGS Nerd Font", "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+.wordmark { display: inline-flex; align-items: baseline; color: var(--ink); font: 650 1.7rem/1.2 var(--font-ui); letter-spacing: -.08em; text-decoration: none; }
+.wordmark span { color: var(--accent); font-weight: 500; }
+</style>
 <style>
-:root{color-scheme:light;--paper:#f6f4ee;--white:#fffefa;--ink:#202e2c;--muted:#586760;--line:#d7ddd4;--teal:#185b50;--lime:#d8ed9b;--orange:#b04e29;--soft:#e7eee7;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
-*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px;line-height:1.6}a{color:var(--teal);text-underline-offset:3px}a:hover{text-decoration-thickness:2px}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.45}button,a,input,summary{touch-action:manipulation}:focus-visible{outline:3px solid var(--orange);outline-offset:4px}button{border:1px solid var(--line);border-radius:9px;background:var(--white);color:var(--ink);padding:10px 16px;min-height:44px}button:hover:not(:disabled){border-color:var(--teal)}.primary{background:var(--teal);color:white;border-color:var(--teal)}.primary:hover:not(:disabled){background:#12473e}.wrap{max-width:1120px;margin:0 auto;padding:0 28px}.top{padding:25px 0;border-bottom:1px solid var(--line)}.top-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}.wordmark{font-weight:800;letter-spacing:-.6px;font-size:21px;color:var(--ink);text-decoration:none}.top nav{display:flex;gap:24px;flex-wrap:wrap}.top nav a{font-size:14px;font-weight:600;text-decoration:none}.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:1.7px;text-transform:uppercase;color:var(--teal);font-weight:600;margin:0 0 16px}.hero{padding:68px 0 60px;display:grid;grid-template-columns:1.4fr 1fr;gap:48px;align-items:center}h1{font-size:clamp(40px,5.4vw,67px);line-height:1.09;letter-spacing:-2.6px;margin:0 0 22px;font-weight:750}h1 span{color:var(--teal)}.lead{font-size:19px;max-width:640px;color:var(--muted);line-height:1.6;margin:0 0 26px}.actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.button-link{display:inline-flex;align-items:center;min-height:44px;padding:10px 18px;border-radius:9px;background:var(--teal);color:#fff;text-decoration:none;font-weight:600}.quiet-link{font-size:14px}.status-card{background:var(--teal);color:#f8fbf2;border-radius:18px;padding:28px;box-shadow:0 16px 40px #1b493916}.status-card .eyebrow{color:var(--lime)}.status-card h2{font-size:25px;margin:0 0 12px}.host-row{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}.host{border:1px solid #77a597;border-radius:99px;padding:4px 12px;font-size:14px}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--lime);margin-right:7px}.status-card p{font-size:14px;margin:14px 0 0;color:#e0ebe4}.version{font-family:var(--mono);font-size:12px;border-top:1px solid #55867a;padding-top:16px}.status-card a{color:#e1f4bb}.section{padding:44px 0 50px;border-top:1px solid var(--line)}.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:26px}.section-head h2{font-size:31px;line-height:1.2;letter-spacing:-.8px;margin:5px 0 0}.section-head p{max-width:480px;margin:0;color:var(--muted);font-size:15px}.kicker{font-family:var(--mono);color:var(--teal);font-size:12px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase}.scene-picker{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.scene-picker button[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:white}.scene-card{display:grid;grid-template-columns:220px 1fr;border:1px solid var(--line);background:var(--white);border-radius:16px;overflow:hidden}.scene-aside{background:var(--soft);padding:24px 20px;border-right:1px solid var(--line)}.scene-aside h3{font-size:18px;margin:0 0 8px;line-height:1.4}.scene-aside p{font-size:13px;color:var(--muted);margin:0 0 22px}.steps{list-style:none;padding:0;margin:0;display:grid;gap:10px}.steps li{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--muted)}.steps span{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:1px solid #b9c8bc;border-radius:50%;font-family:var(--mono);font-size:11px}.steps li.current{color:var(--teal);font-weight:700}.steps li.current span{background:var(--teal);border-color:var(--teal);color:white}.scene-main{padding:27px 30px;min-width:0}.illustration{display:inline-block;padding:3px 9px;border:1px solid #d0bdae;background:#faf0e8;border-radius:5px;font-size:11px;font-weight:700;color:#824220;letter-spacing:.5px}.scene-main h3{font-size:23px;line-height:1.3;margin:13px 0 18px}.dialogue{display:grid;gap:17px}.speaker{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:0 0 5px}.utterance{margin:0;font-size:16px;line-height:1.6}.user-bubble{border-left:3px solid #bdc9bf;padding-left:16px}.model-bubble{background:#edf3e8;padding:15px 17px;border-radius:9px}.trace{margin:20px 0 0;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:15px}.trace strong{color:var(--teal)}.scene-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:23px}.control-group{display:flex;gap:8px}.copy-status{font-size:12px;color:var(--teal);min-height:19px;margin:8px 0 0}.manual-copy{width:100%;height:85px;margin-top:10px;padding:10px;font-size:14px}.note{font-size:13px;color:var(--muted);margin:13px 0 0}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card{padding:23px;background:var(--white);border:1px solid var(--line);border-radius:12px}.card .number{font-family:var(--mono);color:var(--teal);font-size:12px}.card h3{margin:8px 0;font-size:19px}.card p{font-size:14px;color:var(--muted);margin:0}.card a{display:inline-block;margin-top:14px;font-size:13px}.component-foot{margin-top:18px;font-size:14px;color:var(--muted)}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0}.flow-box{border-top:3px solid var(--teal);padding:15px 16px;background:var(--soft);border-radius:0 0 8px 8px}.flow-box strong{display:block;font-size:15px;margin-bottom:6px}.flow-box span{font-size:13px;color:var(--muted);display:block}.cost-panel{display:grid;grid-template-columns:1fr 1fr;gap:32px;border:1px solid var(--line);background:var(--white);border-radius:12px;padding:26px;margin-top:26px}.cost-panel h3{font-size:19px;margin:0 0 8px}.cost-panel p{font-size:14px;color:var(--muted);margin:0 0 16px}.slider-label{font-size:14px;font-weight:600;display:block}.slider-label output{font-family:var(--mono);margin-left:8px;color:var(--teal)}input[type="range"]{width:100%;accent-color:var(--teal);height:32px}.bar-row{display:grid;grid-template-columns:90px 1fr 34px;gap:12px;align-items:center;margin:15px 0;font-size:14px}.bar-track{height:13px;background:var(--soft);border-radius:4px;overflow:hidden}.bar{height:100%;background:var(--teal);border-radius:4px;width:0}.bar.command{background:#bac9b8}.bar-number{font-family:var(--mono);font-weight:700;text-align:right}.cost-caption{font-size:12px!important}.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.faq-grid details{padding:15px 18px;background:var(--white);border:1px solid var(--line);border-radius:9px}.faq-grid summary{cursor:pointer;min-height:28px;font-weight:650;font-size:15px}.faq-grid details p{font-size:14px;color:var(--muted);margin:12px 0 0}.limits{border-left:4px solid var(--orange);padding:18px 22px;background:#fbede4;margin-top:24px;border-radius:0 10px 10px 0}.limits h3{font-size:16px;margin:0 0 8px}.limits p{font-size:14px;margin:0;color:#73442f}.matrix-wrap{overflow-x:auto;max-width:100%}code{font-family:var(--mono);font-size:.9em}td code{white-space:nowrap}.card p{overflow-wrap:anywhere}.hero>*,.soak-layout>*{min-width:0}table{width:100%;border-collapse:collapse;font-size:14px}th{text-align:left;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:.5px;text-transform:uppercase;padding:12px 15px;border-bottom:1px solid #b9c9bc}td{padding:14px 15px;border-bottom:1px solid var(--line);vertical-align:top}td:first-child{font-weight:650;min-width:145px}.evidence-pill{font-size:11px;color:var(--teal);padding:2px 7px;border-radius:4px;background:var(--soft);white-space:nowrap;display:inline-block;margin-bottom:4px}.soak-layout{display:grid;grid-template-columns:1fr 1fr;gap:35px}.soak-layout p{font-size:15px;color:var(--muted);margin-top:0}.checks{display:grid;gap:8px}.check{display:flex;align-items:flex-start;gap:11px;padding:10px 13px;border:1px solid var(--line);border-radius:8px;background:var(--white);font-size:14px;cursor:pointer}.check input{accent-color:var(--teal);width:18px;height:18px;flex-shrink:0;margin-top:3px}.check-count{font-family:var(--mono);font-size:12px;color:var(--teal);margin:12px 0}.evidence{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.evidence a{display:block;border:1px solid var(--line);border-radius:9px;background:var(--white);padding:16px 19px;text-decoration:none}.evidence strong{display:block;font-size:15px}.evidence span{display:block;color:var(--muted);font-size:13px;margin-top:4px}footer{padding:26px 0 40px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.footer-inner{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.skip{position:absolute;left:16px;top:-90px;background:white;padding:10px;z-index:3}.skip:focus{top:10px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-@media(max-width:800px){.hero{gap:28px;grid-template-columns:1.2fr 1fr;padding:42px 0}.status-card{padding:22px}.cards{grid-template-columns:1fr 1fr}.section-head{align-items:flex-start;flex-direction:column;gap:12px}.flow{grid-template-columns:1fr 1fr}.scene-card{grid-template-columns:180px 1fr}.scene-main{padding:24px}.cost-panel{gap:22px}.wrap{padding:0 22px}}
-@media(max-width:600px){.wrap{padding:0 18px}.top-inner{align-items:flex-start;flex-direction:column;gap:12px}.top nav{gap:15px}.hero{grid-template-columns:1fr;padding:35px 0}.hero h1{letter-spacing:-1.6px}.lead{font-size:17px}.status-card{padding:22px}.section{padding:32px 0}.section-head h2{font-size:27px}.scene-picker{display:grid;grid-template-columns:1fr}.scene-picker button{text-align:left}.scene-card{grid-template-columns:1fr}.scene-aside{border-right:0;border-bottom:1px solid var(--line);padding:17px 19px}.scene-aside h3{margin-bottom:5px}.scene-aside p{margin:0 0 14px}.steps{grid-template-columns:repeat(4,1fr);gap:5px}.steps li{flex-direction:column;gap:4px;font-size:11px;text-align:center}.scene-main{padding:21px 19px}.scene-main h3{font-size:21px}.scene-controls{align-items:flex-start;flex-direction:column}.cards,.cost-panel,.faq-grid,.soak-layout,.evidence{grid-template-columns:1fr}.cards{gap:12px}.card{padding:20px}.cost-panel{padding:21px;gap:12px}.soak-layout{gap:22px}.flow{gap:10px}.flow-box{padding:13px}.note{font-size:12px}table{font-size:13px}th,td{padding:10px 11px}.footer-inner{flex-direction:column}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-@media print{body{background:white}.top nav,.scene-picker,.scene-controls,.cost-panel input,.soak-layout button{display:none}.wrap{max-width:none}.hero{padding:25px 0}.section{break-inside:avoid}.status-card{box-shadow:none}.scene-card{display:block}.scene-aside{display:none}.card,.faq-grid details,.scene-card{border-color:#aaa}a{color:inherit}.faq-grid details:not([open])>p{display:block}}
-.environment-panel{border:1px solid var(--line);border-radius:14px;background:var(--white);padding:24px}.environment-panel button[aria-pressed="true"]{background:var(--teal);color:white}.environment-paths{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px 18px;margin:20px 0}.environment-paths dt{font-size:14px;color:var(--muted)}.environment-paths dd{margin:0;font-family:inherit;font-size:15px;overflow-wrap:anywhere}.environment-panel h3{margin:18px 0 8px}@media(max-width:520px){.environment-paths{grid-template-columns:minmax(0,1fr);gap:5px}.environment-paths dd{margin-bottom:10px}}
-.setup-paths{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:800px){.setup-paths{grid-template-columns:1fr}}
-#scene-release-note{margin:0 0 18px}
-.agent-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}.agent-actions article{padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--card)}.agent-actions p{overflow-wrap:anywhere}.copy-action{margin-top:10px}.copy-action[hidden]{display:none}.copy-result{display:block;font-size:14px;margin-top:8px}.agent-actions textarea{width:100%;min-height:100px;font:inherit}
-.worker-routing{margin:22px 0}.worker-routing .choices{display:grid;grid-template-columns:1fr 1fr;gap:18px}.worker-routing label{display:grid;gap:7px;font-weight:600}.worker-routing select{width:100%;min-height:44px;padding:9px;border:1px solid var(--line);border-radius:7px;background:var(--white);font:inherit;color:var(--ink)}.worker-routing pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:16px;border-radius:8px;background:var(--soft);font:14px/1.7 var(--mono)}.worker-routing textarea{width:100%;min-height:100px;font:inherit}@media(max-width:600px){.worker-routing .choices{grid-template-columns:1fr}}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-padding-top: 24px; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 16px/1.65 var(--font-ui); -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, p, ul, ol, figure, dl, dd, pre { margin: 0; }
+h1, h2, h3, h4 { line-height: 1.16; letter-spacing: -.035em; font-weight: 590; text-wrap: balance; }
+h1 { font-size: clamp(2.75rem, 5.1vw, 4.8rem); letter-spacing: -.06em; line-height: 1.04; }
+h2 { font-size: clamp(1.85rem, 3.25vw, 2.85rem); letter-spacing: -.05em; }
+h3 { font-size: 1.28rem; }
+p { text-wrap: pretty; }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .22em; }
+a:hover { color: var(--ink); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+button, input, select, textarea { font: inherit; }
+button, a, summary, select { touch-action: manipulation; }
+button, select { border: 1px solid var(--line); background: var(--surface-alt); color: var(--ink); }
+button {
+  display: inline-flex; align-items: center; justify-content: center; gap: .6em;
+  min-height: 44px; padding: 9px 15px; border-radius: 6px; cursor: pointer;
+  font-size: .88rem; font-weight: 600; line-height: 1.4; text-decoration: none;
+}
+button:hover:enabled, select:hover:enabled { border-color: var(--accent); }
+button:disabled { color: var(--muted); opacity: .52; cursor: default; }
+button.primary, button[aria-pressed="true"] {
+  background: var(--accent); color: var(--paper); border-color: var(--accent);
+}
+.primary:hover:enabled, button[aria-pressed="true"]:hover { background: var(--focus); color: var(--paper); }
+textarea, pre { width: 100%; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 12px; color: var(--ink); }
+pre, code, .mono, .label { font-family: var(--font-code); }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .87rem; }
+code { font-size: .88em; }
+textarea { min-height: 5em; }
+label, summary { cursor: pointer; }
+input { accent-color: var(--accent); }
+.wrap { width: min(1192px, calc(100% - clamp(36px, 8.5vw, 112px))); margin-inline: auto; }
+.skip { position: absolute; top: 8px; left: 8px; z-index: 2; padding: 8px 14px; background: var(--ink); color: var(--paper); }
+.skip:not(:focus) { width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); }
+.top { border-bottom: 1px solid var(--line); }
+.top-inner, .top nav, .actions, .control-group, .scene-picker, .scene-controls, .footer-inner { display: flex; align-items: center; flex-wrap: wrap; }
+.top-inner, .footer-inner, .scene-controls { justify-content: space-between; gap: 12px; }
+.top-inner { padding-block: 15px; }
+.top nav { gap: 4px clamp(14px, 2.5vw, 32px); }
+.top nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--muted); text-decoration: none; font-size: .9rem; font-weight: 550; }
+.top nav a:hover, .top nav a[aria-current] { color: var(--accent); text-decoration: underline; }
+.actions { gap: 8px 20px; }
+.walk-intro { padding-block: clamp(34px, 4.3vw, 62px); }
+.walk-intro p { max-width: 66ch; margin-top: 15px; color: var(--muted); font-size: 1.06rem; }
+.walk-layout { display: grid; grid-template-columns: minmax(156px, .35fr) minmax(0, 1.65fr); gap: clamp(24px, 3.4vw, 54px); align-items: start; }
+.chapters { position: sticky; top: 20px; border-block: 1px solid var(--line); padding-block: 14px; }
+.chapters h2 { margin-bottom: 8px; font: .77rem/1.5 var(--font-code); color: var(--muted); }
+.chapters ul { margin: 0; padding: 0; list-style: none; }
+.chapters a { display: block; padding: 6px 0; text-decoration: none; font-size: .88rem; }
+.chapters a:hover { text-decoration: underline; }
+.walk-content { min-width: 0; }
+.work-example { margin-top: 16px; }
+.work-example .figure { margin-block: 6px 14px; max-width: 550px; }
+.section > .actions { margin-top: 16px; }
+.compare { margin-top: 12px; }
+.compare .matrix-wrap { margin-block: 6px 14px; }
+.figure { margin: 0; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.figure figcaption { padding: 12px 18px; border-bottom: 1px solid var(--line); color: var(--muted); font: .76rem/1.4 var(--font-code); }
+.graph { padding: 20px clamp(12px, 2vw, 30px); background-image: radial-gradient(#383c3e .7px, transparent .9px); background-size: 12px 12px; }
+.node { padding: 8px; text-align: center; color: var(--ink); background: var(--surface-alt); border: 1px solid var(--line); border-radius: 5px; font-size: .88rem; line-height: 1.4; }
+.node b { display: block; font-weight: 600; }
+.node small { display: block; color: var(--muted); font: .68rem/1.5 var(--font-code); }
+.root-node { position: relative; width: max-content; max-width: 100%; margin: auto; padding-inline: 18px; background: var(--accent-surface); border-color: var(--accent-line); }
+.branches { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-block: 19px; position: relative; }
+.branches::before, .branches::after { content: ""; position: absolute; left: calc(25% - 4px); right: calc(25% - 4px); height: 8px; border: 1px solid var(--accent); }
+.branches::before { top: 10px; border-bottom: 0; border-radius: 4px 4px 0 0; }
+.branches::after { bottom: 10px; border-top: 0; border-radius: 0 0 4px 4px; }
+.root-node:first-child::after, .root-node:last-child::before { content: ""; position: absolute; left: 50%; height: 10px; border-left: 1px solid var(--accent); }
+.root-node:first-child::after { top: 100%; } .root-node:last-child::before { bottom: 100%; }
+.section { padding-block: clamp(30px, 4vw, 52px); border-top: 1px solid var(--line); }
+.section-head { margin-bottom: 18px; }
+.section-head > p { color: var(--muted); margin-top: 10px; max-width: 72ch; }
+.checks, .faq-grid, .agent-actions { display: grid; gap: 0 24px; grid-template-columns: repeat(2,minmax(0,1fr)); }
+.note, .copy-status, .copy-result, .check-count { font-size: .85rem; color: var(--muted); }
+.note { margin-top: 16px; }
+.copy-status, .copy-result { display: block; color: var(--accent); }
+.copy-status:not(:empty), .copy-result:not(:empty) { margin-top: 8px; }
+.scene-picker { gap: 7px; margin-bottom: 14px; }
+.scene-picker button { background: transparent; }
+.scene-picker button[aria-pressed="true"] { background: var(--accent); }
+.scene-card { display: grid; grid-template-columns: minmax(190px,.7fr) minmax(0,2fr); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.scene-aside { background: var(--surface-alt); padding: 24px; border-right: 1px solid var(--line); }
+.scene-aside h3 { font-size: 1.08rem; }
+.scene-aside p { color: var(--muted); margin-top: 8px; font-size: .85rem; }
+.steps { list-style: none; margin-top: 24px; padding: 0; display: grid; gap: 8px; }
+.steps li { border-left: 2px solid var(--line); padding: 2px 10px; color: var(--muted); font-size: .85rem; }
+.steps [aria-current="step"] { color: var(--ink); border-color: var(--accent); font-weight: 650; }
+.scene-main, .panel { padding: clamp(18px, 2.4vw, 32px); min-width: 0; }
+.label, .speaker { font: .73rem/1.5 var(--font-code); color: var(--muted); }
+.scene-main h3 { margin: 4px 0 20px; font-size: clamp(1.35rem, 2vw, 1.65rem); }
+.dialogue { display: grid; gap: 15px; }
+.dialogue .speaker { display: block; margin-bottom: 3px; }
+.user-bubble { border-left: 2px solid #81878c; padding-left: 14px; }
+.model-bubble { border-left: 2px solid var(--accent); padding-left: 14px; }
+.model-bubble .speaker { color: var(--accent); }
+.trace { margin-block: 20px; border-top: 1px solid var(--line); padding-top: 14px; font-size: .875rem; color: var(--muted); }
+.trace strong { color: var(--ink); }
+.control-group { gap: 7px; }
+.panel { border: 1px solid var(--line); background: var(--surface); border-radius: 9px; }
+.panel > p, .faq-grid p, .split-copy > p { margin-block: 8px 14px; color: var(--muted); }
+.matrix-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; text-align: left; font-size: .91rem; }
+th, td { vertical-align: top; padding: 12px 16px; }
+tr + tr, thead + tbody { border-top: 1px solid var(--line); }
+th { background: var(--surface-alt); color: var(--ink); font-weight: 550; }
+td:first-child { color: var(--ink); }
+td { color: var(--muted); }
+td code { color: var(--accent); white-space: nowrap; }
+.two-col, .cost-panel, .environment-panel { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: clamp(20px, 3vw, 40px); }
+.worker-routing, .cost-panel, .environment-panel, .agent-actions { margin-block: 16px; }
+.choices { display: flex; flex-wrap: wrap; gap: 12px; }
+.choices label { display: grid; flex: 1 1 110px; gap: 5px; color: var(--muted); font-size: .84rem; }
+select { width: 100%; min-height: 44px; padding: 8px; border-radius: 5px; }
+.worker-routing pre { margin-bottom: 12px; }
+.questions { margin-top: 24px; }
+details { border-top: 1px solid var(--line); padding: 0 0 3px; }
+summary { padding: 12px 4px; line-height: 1.5; font-weight: 550; }
+details p { margin: 6px 0 12px; color: var(--muted); }
+.transcript ol { padding-left: 24px; } .transcript li { margin-block: 12px; }
+.transcript summary { font-size: 1.05rem; }
+.slider-label { display: block; margin-top: 12px; }
+input[type="range"] { width: min(100%, 280px); min-height: 36px; }
+.bar-row { display: grid; grid-template-columns: 7ch minmax(30px, 1fr) 3ch; align-items: center; gap: 12px; margin-block: 8px; font: .85rem/1.6 var(--font-code); }
+.bar-number { text-align: right; }
+.bar-track { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.bar { height: 100%; background: var(--accent); }
+.environment-paths { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 7px 18px; font-size: .92rem; }
+.environment-paths dt { color: var(--muted); }
+.environment-paths dd { overflow-wrap: anywhere; }
+.check { display: flex; align-items: flex-start; gap: 10px; padding-block: 6px; font-size: .9rem; }
+.check input { width: 16px; height: 16px; flex-shrink: 0; margin-top: 4px; }
+.check-count { margin-top: 8px; }
+.agent-actions article { padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.agent-actions p { margin: 9px 0 12px; color: var(--muted); font: .85rem/1.65 var(--font-code); overflow-wrap: anywhere; }
+.agent-actions { gap: 14px; }
+footer { border-top: 1px solid var(--line); color: var(--muted); }
+.footer-inner { padding-block: 20px; font-size: .86rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 960px) {
+  .walk-layout { display: block; }
+  .chapters { position: static; border-bottom: 0; }
+  .chapters ul { display: flex; flex-wrap: wrap; gap: 0 18px; }
+}
+@media (max-width: 700px) {
+  .top-inner { align-items: flex-start; gap: 0 18px; padding-block: 8px; }
+  .top nav { gap: 0 16px; }
+  .two-col, .cost-panel, .environment-panel, .scene-card { grid-template-columns: minmax(0,1fr); }
+  .figure { width: min(100%, 480px); }
+  .scene-aside { border-right: 0; border-bottom: 1px solid var(--line); padding: 16px 18px; }
+  .steps { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 12px; }
+  .steps li { padding-left: 6px; }
+  .checks { grid-template-columns: minmax(0,1fr); }
+  .two-col, .cost-panel, .environment-panel { gap: 18px; }
+}
+@media (max-width: 500px) {
+  .top-inner { display: block; }
+  .top nav a { min-height: 40px; font-size: .82rem; }
+  .faq-grid, .agent-actions { grid-template-columns: minmax(0,1fr); }
+  .scene-picker { gap: 6px; } .scene-picker button, .control-group button { padding: 8px 10px; }
+  .environment-paths { gap: 6px 12px; }
+  th, td { padding: 9px 10px; } td code { white-space: normal; overflow-wrap: anywhere; }
+}
+@media (forced-colors: active) {
+  button[aria-pressed="true"], .steps [aria-current="step"] { outline: 2px solid Highlight; outline-offset: -3px; }
+  .bar { background: Highlight; forced-color-adjust: none; }
+}
+@media print {
+  :root {
+    color-scheme: light;
+    --paper: #fff; --ink: #18191d; --surface: #fff; --surface-alt: #f0f3f1;
+    --muted: #40434d; --accent: #185b45; --line: #a5a6ae;
+  }
+  body { font-size: 10pt; }
+  .wrap { width: 100%; }
+  .walk-intro, .section { padding-block: 18px; }
+  .walk-layout { display: block; }
+  .top nav, .chapters, .scene-picker, .scene-controls, .choices, .copy-status, .copy-result,
+  .slider-label, .check-count, button, input[type="range"], textarea { display: none !important; }
+  .graph, .root-node { background: var(--paper); }
+  h1 { font-size: 34pt; }
+  h2 { font-size: 20pt; }
+  h1, h2, h3, summary { break-after: avoid; }
+  .figure, tr, .transcript li { break-inside: avoid; }
+  .matrix-wrap { overflow: visible; }
+}
 </style>
 </head>
 <body>
-<a class="skip" href="#main">Skip to the guide</a>
-<header class="top"><div class="wrap top-inner"><a class="wordmark" href="#main">Codex Plus<span aria-hidden="true"> /</span></a><nav aria-label="Explore Codex Plus"><a href="#package">Features</a><a href="#scenes">See it in action</a><a href="#workers">Luna &amp; workers</a><a href="#resources">Guides</a><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/manage-agent.md">Install &amp; manage</a><a href="https://github.com/byebyebryan/codex-plus">GitHub</a></nav></div></header>
-<main id="main" class="wrap">
-<section class="hero" aria-labelledby="title"><div><p class="eyebrow">More ways to work in native Codex</p><h1 id="title">Ask once.<br><span>Keep working.</span></h1><p class="lead">Delegate a task to Luna, follow a long-running job, coordinate with another session, or check back later. Codex Plus brings the useful update into the conversation where you’re already working.</p><div class="actions"><a class="button-link" href="#scenes">See it in action <span aria-hidden="true">&nbsp;↓</span></a><a class="quiet-link" href="https://github.com/byebyebryan/codex-plus/blob/main/docs/manage-agent.md">Install with your agent →</a></div></div><aside class="status-card" aria-label="What Codex Plus adds"><p class="eyebrow">Stay in your flow</p><h2>Another pair of hands.<br>A useful update.<br>A clear handoff.</h2><div class="host-row"><span class="host">Delegate</span><span class="host">Watch</span><span class="host">Coordinate</span><span class="host">Share</span></div><p>Give Luna a focused task, follow the work that matters and share what you learned. Your primary agent keeps decisions and review.</p><p class="version">Built around your Codex CLI and continuing conversation.</p><p><a href="https://github.com/byebyebryan/codex-plus">Explore the open-source project →</a></p></aside></section>
-<section id="setup" class="section" aria-labelledby="setup-title"><div class="section-head"><div><span class="kicker">Install and maintain</span><h2 id="setup-title">Give your agent one link.</h2></div><p>Ask it to install or upgrade Codex Plus. The guide handles release verification and configuration ownership while preserving your settings and active work.</p></div><!-- management-requests --><p class="note"><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/manage-agent.md">Agent instructions and all maintenance actions →</a> · <a href="https://dev.byebyebryan.com/codex-plus/manage.md">Plain Markdown</a> · <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/getting-started.md">Human setup overview</a></p></section>
-<section id="package" class="section" aria-labelledby="package-title"><div class="section-head"><div><span class="kicker">What you can do</span><h2 id="package-title">Choose what moves your work forward.</h2></div><p>Use a worker, follow a run, coordinate independent sessions or leave a browser report. Install the components that fit your work.</p></div><div class="cards"><article class="card"><span class="number">DELEGATE A TASK</span><h3>Luna &amp; worker workflows</h3><p>Give Luna a bounded investigation or implementation. Use a task or goal loop while your primary keeps decisions and review.</p><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md">Choose a workflow →</a></article><article class="card"><span class="number">STAY INFORMED</span><h3>Watches &amp; reminders</h3><p>Follow logs, endpoints and running work. Ask for the change you care about, or schedule a later check.</p><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/daily-use.md">Use the capabilities →</a></article><article class="card"><span class="number">WORK TOGETHER</span><h3>Independent sessions</h3><p>Find a session from its recent work, follow its progress, and share context without switching conversations.</p><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/architecture.md#discovery-and-messaging">Understand discovery →</a></article><article class="card"><span class="number">LEAVE A HANDOFF</span><h3>Browser handoffs</h3><p>Turn findings into a browser report with a stable link. Group reports by project and share a clear summary.</p><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/html-report-usage.md">Read the report guide →</a></article></div><p class="component-foot"><strong>Bring in Luna when it helps.</strong> Use <code>$luna-task</code> for a bounded assignment or <code>$luna-goal-loop</code> for a substantial goal. Your primary keeps decisions, integration and review. <a href="#workers">Choose a worker workflow →</a></p><div class="flow" aria-label="Observation and follow-up flow"><div class="flow-box"><strong>1 · Describe the need</strong><span>Source, useful condition and existing task scope.</span></div><div class="flow-box"><strong>2 · Register and return</strong><span>Model-selected observation with finite bounds.</span></div><div class="flow-box"><strong>3 · Admit useful input</strong><span>Queued to the exact continuing conversation.</span></div><div class="flow-box"><strong>4 · Decide and settle</strong><span>Handle, continue explicitly, report or stop.</span></div></div><div class="cost-panel"><div><h3>Spend reasoning where it matters.</h3><p>Commands can poll without inference per read. Configured MCP inspection uses a native model turn for each check under normal tool approval.</p><label class="slider-label" for="read-count">Illustrative quiet reads <output id="read-value" for="read-count">6</output></label><input id="read-count" type="range" min="1" max="24" value="6"><p class="cost-caption">Illustrative model calls, excluding setup, handling and provider billing.</p></div><div aria-live="polite"><p class="speaker">Observation model turns</p><div class="bar-row"><span>Command</span><div class="bar-track"><div class="bar command" style="width:0%"></div></div><span class="bar-number">0</span></div><div class="bar-row"><span>MCP</span><div class="bar-track"><div id="mcp-bar" class="bar" style="width:25%"></div></div><span id="mcp-turns" class="bar-number">6</span></div><p class="cost-caption" id="cost-caption">6 quiet reads: 0 observation turns for commands; 6 inspection turns for MCP. Useful events can add handling turns on either route.</p></div></div></section>
-<section id="scenes" class="section" aria-labelledby="scenes-title"><div class="section-head"><div><span class="kicker">In your own words</span><h2 id="scenes-title">Tell Codex what matters.</h2></div><p>Explore five example conversations, from the first request to a useful update or a return to unfinished work. The controls only change this page.</p></div><p class="note" id="scene-release-note"><strong>Codex Plus preview.30.</strong> The five example conversations use released capabilities. <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/getting-started.md#released-and-source-features">Check feature availability →</a></p><noscript><p>Interactive scenes need JavaScript. The <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/daily-use.md">daily-use guide</a> contains the same requests and behavior in plain text.</p></noscript><div class="scene-picker" role="group" aria-label="Choose an illustrative scene"><button type="button" data-scene="worker" aria-pressed="false">Delegate to Luna</button><button type="button" data-scene="peer" aria-pressed="true">Watch another session</button><button type="button" data-scene="endpoint" aria-pressed="false">Watch an endpoint</button><button type="button" data-scene="later" aria-pressed="false">Check later → report</button><button type="button" data-scene="recap" aria-pressed="false">Catch up</button></div><div class="scene-card"><aside class="scene-aside"><h3 id="scene-name">Independent sessions</h3><p id="scene-scope">Two independent loaded sessions within one owning daemon.</p><p id="scene-availability">Available in preview.30.</p><ol class="steps" aria-label="Scene progress"><li class="current" aria-current="step"><span>1</span>Request</li><li><span>2</span>Setup</li><li><span>3</span>Update</li><li><span>4</span>Handoff</li></ol></aside><div class="scene-main"><span class="illustration">EXAMPLE CONVERSATION</span><div id="scene-body" aria-live="polite" aria-atomic="true"><h3 id="step-title">Ask for the useful condition</h3><div class="dialogue"><div class="user-bubble"><p class="speaker">You</p><p class="utterance" id="scene-user">Watch the session preparing the packaging report and tell me when it is ready.</p></div><div class="model-bubble"><p class="speaker">Codex Plus</p><p class="utterance" id="scene-reply">I’ll find the session from its project and recent work. If there are two plausible matches, I’ll ask which one.</p></div></div><p class="trace" id="scene-trace"><strong>Selection:</strong> Independent peers from context; subagents are excluded.</p></div><div class="scene-controls"><div class="control-group"><button type="button" id="previous" disabled aria-label="Previous illustrative step">← Back</button><button type="button" id="next" class="primary" aria-label="Next illustrative step">Next step →</button><button type="button" id="reset" aria-label="Reset this illustrative scene">Reset</button></div><button type="button" id="copy-request">Copy request</button></div><p class="copy-status" id="copy-status" role="status"></p><textarea id="manual-copy" class="manual-copy" aria-label="Request text for manual copying" hidden readonly></textarea></div></div><p class="note">Copy a request to try it in your own session. <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/daily-use.md">Read the daily-use guide →</a></p></section>
-<section id="environments" class="section" aria-labelledby="environments-title"><div class="section-head"><div><span class="kicker">Keep your contexts focused</span><h2 id="environments-title">Personal projects. Work projects.<br>Room for both.</h2></div><p>Use separate Codex homes for separate conversations, follow-up state and report libraries. Choose the context that fits the task.</p></div><div class="environment-panel"><div class="actions" role="group" aria-label="Example environment"><button type="button" data-environment="oss" aria-pressed="true">Personal projects</button><button type="button" data-environment="work" aria-pressed="false">Work projects</button></div><div aria-live="polite"><h3 id="environment-name">Personal projects</h3><dl class="environment-paths"><dt>Example launch</dt><dd id="environment-command">codex</dd><dt>Codex home</dt><dd id="environment-home">~/.codex</dd><dt>Follow-up</dt><dd id="environment-state">Watches and later checks for your personal projects.</dd><dt>Reports</dt><dd id="environment-config">A report library for this context.</dd><dt>Publishing</dt><dd id="environment-url">Your configured report endpoint.</dd></dl><p id="environment-peers">Coordinate with other sessions in your personal Codex daemon.</p></div><p class="note">Example contexts only. Your Codex home and configuration select the actual paths, tools and access. <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/environments.md">Set up your environments →</a></p></div></section>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap top-inner">
+  <a class="wordmark" href="https://dev.byebyebryan.com/codex-plus/" aria-label="Codex Plus home">codex<span aria-hidden="true">+</span></a>
+  <nav aria-label="Main navigation">
+    <a href="https://dev.byebyebryan.com/codex-plus/">Overview</a>
+    <a href="#main" aria-current="page">Walkthrough</a>
+    <a href="https://dev.byebyebryan.com/codex-plus/#guide-directory">Guides</a>
+    <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/manage-agent.md">Install</a>
+  </nav>
+</div></header>
+<main id="main" class="wrap" tabindex="-1">
+  <div class="walk-intro">
+    <h1 id="title">Interactive walkthrough</h1>
+    <p>See what happens after you ask Codex to delegate, watch a job, or check back later. You can also build a worker request or compare which kinds of checks use a model turn.</p>
+  </div>
+  <div class="walk-layout">
+  <nav class="chapters" id="package" aria-labelledby="package-title">
+    <h2 id="package-title">In this walkthrough</h2>
+    <ul><li><a href="#scenes">Example conversations</a></li>
+      <li><a href="#workers">Worker requests</a></li>
+      <li><a href="#workflows">Watch costs</a></li>
+      <li><a href="#control">Stopping and catching up</a></li>
+      <li><a href="#environments">Codex homes</a></li>
+      <li><a href="#get-started">Installation</a></li></ul>
+  </nav>
+  <div class="walk-content">
+  <section id="scenes" class="section" aria-labelledby="scenes-title">
+    <div class="section-head">
+      <h2 id="scenes-title">Follow a request</h2>
+      <p>Choose a conversation and follow it one step at a time. You can copy its opening request to try in your own session.</p>
+    </div>
+    <div class="scene-picker" role="group" aria-label="Choose an illustrative scene" hidden data-enhanced>
+      <button type="button" data-scene="adaptive" aria-pressed="true">Parallel work</button>
+      <button type="button" data-scene="worker" aria-pressed="false">Luna task</button>
+      <button type="button" data-scene="peer" aria-pressed="false">Peer session</button>
+      <button type="button" data-scene="endpoint" aria-pressed="false">Endpoint watch</button>
+      <button type="button" data-scene="later" aria-pressed="false">Later check &amp; report</button>
+      <button type="button" data-scene="recap" aria-pressed="false">Catch up</button>
+    </div>
+    <div class="scene-card" hidden data-enhanced>
+      <aside class="scene-aside">
+        <h3 id="scene-name"></h3><p id="scene-scope"></p>
+        <ol class="steps" aria-label="Scene progress"></ol>
+      </aside>
+      <div class="scene-main">
+        <div id="scene-body" aria-live="polite" aria-atomic="true">
+          <p class="label" id="scene-position"></p><h3 id="step-title"></h3>
+          <div class="dialogue">
+            <div class="user-bubble"><span class="speaker" id="scene-speaker">You</span><p id="scene-user"></p></div>
+            <div class="model-bubble"><span class="speaker">Primary</span><p id="scene-reply"></p></div>
+          </div>
+          <p class="trace" id="scene-trace"></p>
+        </div>
+        <div class="scene-controls">
+          <div class="control-group">
+            <button type="button" id="previous" aria-label="Previous illustrative step" disabled>← Back</button>
+            <button type="button" id="next" class="primary" aria-label="Next illustrative step">Next step →</button>
+            <button type="button" id="reset" aria-label="Reset this illustrative scene">Reset</button>
+          </div>
+          <button type="button" id="copy-request">Copy request</button>
+        </div>
+        <p class="copy-status" id="copy-status" role="status"></p>
+        <textarea id="manual-copy" aria-label="Request text for manual copying" hidden readonly></textarea>
+      </div>
+    </div>
+    <details id="transcripts" class="transcript" open>
+      <summary>Read the example transcripts</summary>
+      <details data-example="adaptive">
+        <summary>Two reading-list exporters</summary>
+        <p class="scope">Two workers own separate renderers. The primary owns the CLI and the cross-format checks.</p>
+        <ol>
+          <li data-stage="Contract">
+            <h4>Settle the record format</h4>
+            <p class="input"><strong>You</strong> <span>$adaptive-task Add Markdown and plain-text exports to the reading-list CLI. Preserve each title, author and position in the list.</span></p>
+            <p class="response"><strong>Primary</strong> <span>Both renderers can use the existing ordered list of title and author pairs. I’ll keep the CLI wiring here and give each renderer its own module and tests.</span></p>
+            <p class="reason"><strong>Shared input.</strong> Both assignments can start as soon as the record format is settled.</p>
+          </li>
+          <li data-stage="Parallel work">
+            <h4>Give each writer its own files</h4>
+            <p class="input"><strong>You</strong> <span>Can the two formats be implemented together?</span></p>
+            <p class="response"><strong>Primary</strong> <span>Yes. One Luna assignment covers the Markdown table and its tests. A second covers the plain-text list and its tests. Each can run against the same fixture without editing the other’s files.</span></p>
+            <p class="reason"><strong>Ownership.</strong> The primary chooses a worker for each assignment and can take an independent part itself.</p>
+          </li>
+          <li data-stage="Integration">
+            <h4>Check both formats through the CLI</h4>
+            <p class="input"><strong>Worker returns</strong> <span>Both renderers are ready for review.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ll inspect both changes, connect the format switch, then run each export through the CLI. Using two books with the same title and different authors checks that both records survive in order.</span></p>
+            <p class="reason"><strong>Dependency.</strong> The CLI check needs both renderers. Each worker’s local tests cover only its own format.</p>
+          </li>
+          <li data-stage="Attribution">
+            <h4>Account for the work</h4>
+            <p class="input"><strong>You</strong> <span>Who did what, and what did you check?</span></p>
+            <p class="response"><strong>Primary</strong> <span>The two worker returns supplied the Markdown and plain-text renderers. I wired up the CLI and checked titles, authors and order in both outputs. The example records identify Luna Max for Markdown. The plain-text worker’s model is unconfirmed.</span></p>
+            <p class="reason"><strong>Evidence.</strong> Credit the reviewed work. Name the executed model and effort when native records establish them, and include token totals only when usage is available.</p>
+          </li>
+        </ol>
+      </details>
+      <details data-example="worker">
+        <summary>One Luna investigation</summary>
+        <p class="scope">Luna investigates a parser defect. The primary reviews the evidence and decides what to do next.</p>
+        <ol>
+          <li data-stage="Request">
+            <h4>Choose Luna for an investigation</h4>
+            <p class="input"><strong>You</strong> <span>$luna-task Investigate why the CSV importer drops quoted newlines. Return a reproduction and proposed fix. Keep this pass read-only.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ll give Luna the importer context and ask for a small input that reproduces the failure.</span></p>
+            <p class="reason"><strong>Invocation.</strong> An explicit Luna task selects Luna as the only delegated model.</p>
+          </li>
+          <li data-stage="Assignment">
+            <h4>Set the boundary</h4>
+            <p class="input"><strong>You</strong> <span>Preserve the other work in the checkout.</span></p>
+            <p class="response"><strong>Primary</strong> <span>The assignment covers the parser and its existing tests. Luna can investigate and propose a change within this read-only scope.</span></p>
+            <p class="reason"><strong>Ownership.</strong> The primary identifies the files, the requested outcome and a way to check it.</p>
+          </li>
+          <li data-stage="Review">
+            <h4>Check the reproduction</h4>
+            <p class="input"><strong>Worker return</strong> <span>The importer splits a quoted field at a newline. Here is the two-row input that triggers it.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ll run the input through the importer and check that the proposed parser change addresses the cause.</span></p>
+            <p class="reason"><strong>Evidence.</strong> The primary inspects the return. Native execution records establish which model ran.</p>
+          </li>
+          <li data-stage="Handoff">
+            <h4>Return the finding</h4>
+            <p class="input"><strong>You</strong> <span>What would you change?</span></p>
+            <p class="response"><strong>Primary</strong> <span>The importer splits physical lines before parsing CSV quoting. I’d pass the input stream to the CSV reader and use the two-row fixture for a regression test. This investigation ends with the proposal.</span></p>
+            <p class="reason"><strong>Next step.</strong> For a substantial goal involving several Luna assignments, explicitly request $luna-goal-loop.</p>
+          </li>
+        </ol>
+      </details>
+      <details data-example="peer">
+        <summary>Two independent sessions</summary>
+        <p class="scope">The packaging and review sessions share an owning Codex daemon.</p>
+        <ol>
+          <li data-stage="Request">
+            <h4>Identify the session</h4>
+            <p class="input"><strong>You</strong> <span>Watch the session preparing the packaging report and tell me when it is ready.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ll look at the project and recent work. If two sessions match, I’ll ask you to choose.</span></p>
+            <p class="reason"><strong>Selection.</strong> Peer discovery considers independent loaded sessions in the same daemon. Child workers have their own assignment channel.</p>
+          </li>
+          <li data-stage="Setup">
+            <h4>Follow the selected peer</h4>
+            <p class="input"><strong>You</strong> <span>Follow that report session.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I found the session preparing the report. I’ll watch for readiness or a request for input while you keep working.</span></p>
+            <p class="reason"><strong>Observation.</strong> The watch stays bound to the selected peer. Passive reads leave its work intact.</p>
+          </li>
+          <li data-stage="Update">
+            <h4>Inspect the readiness update</h4>
+            <p class="input"><strong>Peer update</strong> <span>The report owner marked the draft ready.</span></p>
+            <p class="response"><strong>Primary</strong> <span>The draft is available for review. Its owner says the risk summary is still pending.</span></p>
+            <p class="reason"><strong>Handling.</strong> A peer can report a draft ready while parts of the handoff remain open.</p>
+          </li>
+          <li data-stage="Handoff">
+            <h4>Send a request and stop the watch</h4>
+            <p class="input"><strong>You</strong> <span>Tell that session to include the risks, then stop watching it.</span></p>
+            <p class="response"><strong>Primary</strong> <span>The peer accepted the request for a risk summary. Completion is still unconfirmed. I’ve stopped the watch and the report session can continue.</span></p>
+            <p class="reason"><strong>Receipts.</strong> A handling receipt records the peer’s decision. Explicit stop prevents renewal or replacement of this watch.</p>
+          </li>
+        </ol>
+      </details>
+      <details data-example="endpoint">
+        <summary>An endpoint watch</summary>
+        <p class="scope">A command polls an accessible status endpoint and reports a meaningful change.</p>
+        <ol>
+          <li data-stage="Request">
+            <h4>Define the condition</h4>
+            <p class="input"><strong>You</strong> <span>Watch this run and tell me if it stalls or fails.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ll check the run’s status source and establish a progress window. If the intended endpoint is unclear, I’ll ask which one to use.</span></p>
+            <p class="reason"><strong>Scope.</strong> The watch uses the access already configured for the session.</p>
+          </li>
+          <li data-stage="Setup">
+            <h4>Register a quiet watch</h4>
+            <p class="input"><strong>You</strong> <span>Continue with the other work.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ve registered the watch. I’ll report a stall, failure or loss of access. Routine reads can stay quiet.</span></p>
+            <p class="reason"><strong>Observation.</strong> Short commands or a continuing script can poll without a model turn per read.</p>
+          </li>
+          <li data-stage="Update">
+            <h4>Interpret the signal</h4>
+            <p class="input"><strong>Endpoint update</strong> <span>The run is still marked running. Its progress has stayed flat for the agreed window.</span></p>
+            <p class="response"><strong>Primary</strong> <span>The progress window has elapsed. The run appears stalled and its endpoint still reports running.</span></p>
+            <p class="reason"><strong>Follow-up.</strong> The observation returns to the same conversation. Repairs depend on the existing authorization.</p>
+          </li>
+          <li data-stage="Stop">
+            <h4>End observation</h4>
+            <p class="input"><strong>You</strong> <span>Stop watching that run.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ve stopped the watch. The run continues. I’ll distinguish any update that was already admitted before the stop.</span></p>
+            <p class="reason"><strong>Control.</strong> Explicit cancellation closes this observation and prevents renewal or replacement.</p>
+          </li>
+        </ol>
+      </details>
+      <details data-example="later">
+        <summary>A later check and browser report</summary>
+        <p class="scope">A one-shot reminder brings the primary back to a configured tool.</p>
+        <ol>
+          <li data-stage="Request">
+            <h4>Specify the later decision</h4>
+            <p class="input"><strong>You</strong> <span>Check the deployment again later, then make a browser report of what we learned.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ll schedule one reassessment and use the configured deployment connection when it comes due.</span></p>
+            <p class="reason"><strong>Scheduling.</strong> Registering the check leaves the conversation available for other work.</p>
+          </li>
+          <li data-stage="Setup">
+            <h4>Return to the conversation</h4>
+            <p class="input"><strong>You</strong> <span>Work on something else in the meantime.</span></p>
+            <p class="response"><strong>Primary</strong> <span>The later check is registered. It can wait behind an active turn until the conversation is available.</span></p>
+            <p class="reason"><strong>Ordering.</strong> A reminder is a one-shot request. Inspecting the MCP source takes a native model turn.</p>
+          </li>
+          <li data-stage="Inspection">
+            <h4>Read the configured source</h4>
+            <p class="input"><strong>Reminder</strong> <span>The conversation is available for the scheduled inspection.</span></p>
+            <p class="response"><strong>Primary</strong> <span>The deployment tool now reports ready. I’ll include its result, the time of inspection and the remaining risks in the report.</span></p>
+            <p class="reason"><strong>Permissions.</strong> The inspection uses the configured connection and its normal approvals.</p>
+          </li>
+          <li data-stage="Report">
+            <h4>Publish the handoff</h4>
+            <p class="input"><strong>You</strong> <span>Give me the report link.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ll publish the summary and return its immutable URL with the delivery result, so you can open the report after this session ends.</span></p>
+            <p class="reason"><strong>Delivery.</strong> The report component stores a static copy. Readers need access to the serving endpoint.</p>
+          </li>
+        </ol>
+      </details>
+      <details data-example="recap">
+        <summary>A return to unfinished work</summary>
+        <p class="scope">The primary reads this conversation’s stored watches, reminders and outgoing message receipts.</p>
+        <ol>
+          <li data-stage="Ask">
+            <h4>Pick up the same conversation</h4>
+            <p class="input"><strong>You</strong> <span>What am I still waiting on?</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ll check this conversation’s stored watches, reminder outcomes and outgoing messages before I summarize what still needs attention.</span></p>
+            <p class="reason"><strong>Inspection.</strong> A recap reads existing state. Starting or renewing observation is a separate action.</p>
+          </li>
+          <li data-stage="Recap">
+            <h4>Read the stored receipts</h4>
+            <p class="input"><strong>You</strong> <span>Show me the outstanding follow-ups.</span></p>
+            <p class="response"><strong>Primary</strong> <span>The packaging watch is registered. The CI reminder was received and its follow-up is pending. Packaging accepted “Review the release notes.” Its completion is unconfirmed.</span></p>
+            <p class="reason"><strong>Coverage.</strong> This recap uses cached receipts for this conversation. Fresh source status would require another check.</p>
+          </li>
+          <li data-stage="Attention">
+            <h4>Identify a failed follow-up</h4>
+            <p class="input"><strong>Stored receipt</strong> <span>The CI follow-up turn failed.</span></p>
+            <p class="response"><strong>Primary</strong> <span>That check still needs attention. Its stored receipt records the failure. No successful result or retry is recorded.</span></p>
+            <p class="reason"><strong>Outcome.</strong> A failed or interrupted follow-up stays visible until the reminder is explicitly cancelled.</p>
+          </li>
+          <li data-stage="Close">
+            <h4>Close the selected reminder</h4>
+            <p class="input"><strong>You</strong> <span>Cancel the failed CI reminder.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ve closed attention on that reminder. Its failure and handling receipts remain in history. The packaging watch continues.</span></p>
+            <p class="reason"><strong>Control.</strong> An acknowledged follow-up with no terminal receipt has an unknown outcome.</p>
+          </li>
+        </ol>
+      </details>
+    </details>
+    <p class="note" id="scene-release-note"><strong id="scene-availability">Codex Plus preview.30.</strong> <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/getting-started.md#released-and-source-features">Feature availability</a> · <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/reliability-packaging-results.md#preview30-worker-workflow-fixes">Native qualification and release records</a></p>
+  </section>
 
-<section id="workers" class="section" aria-labelledby="workers-title">
-<div class="section-head"><div><span class="kicker">An extra pair of hands</span><h2 id="workers-title">Give Luna a clear task.<br>Keep the decisions with your primary.</h2></div><p>Choose one bounded assignment or a substantial goal. Your primary agent defines the work, reviews the result and handles the difficult portions.</p></div>
-<div class="matrix-wrap"><table><caption class="sr-only">Choose an explicit worker workflow</caption><thead><tr><th scope="col">Invoke</th><th scope="col">Use it for</th><th scope="col">Who does the work</th></tr></thead><tbody>
-<tr><td><code>$luna-task</code></td><td>One bounded investigation or implementation.</td><td>Luna, with primary decisions and review.</td></tr>
-<tr><td><code>$luna-goal-loop</code></td><td>A substantial goal across cohesive assignments.</td><td>Luna on suitable slices; the primary integrates and verifies the whole result.</td></tr>
-<tr><td><code>$adaptive-task</code></td><td>One task with selective delegation.</td><td>The primary chooses direct work, useful Luna delegation, or one permitted escalation target.</td></tr>
-<tr><td><code>$adaptive-goal-loop</code></td><td>A substantial goal with routing per assignment.</td><td>The primary selects useful delegation and owns final acceptance.</td></tr>
-<tr><td><code>$sol-task</code></td><td>One bounded task with Sol XHigh.</td><td>Explicit review, validation, investigation or implementation; the primary accepts the result.</td></tr>
-<tr><td><code>$astra-task</code></td><td>One bounded task with Astra XHigh.</td><td>Exact named worker; your primary and adaptive defaults stay selected.</td></tr>
-<tr><td><code>$terra-task</code></td><td>One bounded task with GPT-6.1 Terra XHigh.</td><td>Distinct current role; select this or the legacy task deliberately.</td></tr>
-</tbody></table></div>
-<p class="note">Preview.18 contains seven workflows and four current roles. The old worker-name commands remain removed; update old prompts to the adaptive names. Existing Luna/adaptive routing stays unchanged.</p>
-<aside class="environment-panel" aria-labelledby="named-task-title"><span class="illustration">Explicit named tasks · preview.18</span><h3 id="named-task-title">Choose a named reviewer.</h3><p>Keep Terra as your primary and ask Sol for a second opinion: <code>$sol-task Review the current changes and run appropriate validation. Return findings and evidence; leave source fixes to the primary.</code></p><p><code>$astra-task</code> selects Astra and <code>$terra-task</code> selects GPT-6.1 Terra for the same bounded review, investigation or implementation contract. Your request chooses the mode; no primary switch or automatic escalation setting is needed. These three skills require an explicit upgrade from older installations. Current and legacy Terra tasks are distinct variants; install only the chosen one.</p><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md#choose-sol-or-astra-explicitly-source-candidate">Named-task contract and availability →</a></aside>
-<div class="soak-layout"><div><h3>Try one focused assignment.</h3><p><code>$luna-task Investigate why the CSV importer drops quoted newlines. Return a reproduction and proposed fix; keep this pass read-only.</code></p></div><div><h3>Carry a larger goal through.</h3><p><code>$luna-goal-loop Complete the approved CSV importer migration. Use cohesive Luna assignments and finish when compatibility and integration checks pass.</code></p></div></div>
-<p class="note"><strong>Explicit choice:</strong> A generic “goal loop” does not select a worker. Mentioning a skill does not invoke it. Choose Luna workflows when Luna should be the only delegated model. Adaptive workflows can also escalate. Your primary model stays selected.</p>
-<div class="environment-panel worker-routing" aria-labelledby="worker-routing-title">
-<span class="illustration">Preview.28 · policy illustration</span>
-<h3 id="worker-routing-title">Which workers can my primary use?</h3>
-<p>Astra XHigh is available by default in the adaptive skills for Sol and current Terra primaries. An Astra primary can delegate to Sol if you opt in.</p>
-<div class="choices"><label for="worker-primary">Your primary<select id="worker-primary"><option value="sol">Sol</option><option value="terra">Current Terra</option><option value="astra">Astra</option><option value="unknown">Other or unknown</option></select></label><label for="worker-target">Additional worker<select id="worker-target" disabled><option value="astra">Astra XHigh (default)</option></select></label></div>
-<p id="worker-route" aria-live="polite">Astra XHigh is available when warranted. The primary can also work directly or delegate to Luna.</p>
-<pre id="worker-prompt">$adaptive-task Review the importer migration and verify any confirmed fixes.</pre>
-<button type="button" id="worker-copy">Copy adaptive request</button><p id="worker-copy-status" class="copy-status" role="status"></p><textarea id="worker-manual-copy" aria-label="Adaptive request for manual copying" hidden readonly></textarea>
-<p class="note">The primary decides whether an assignment warrants escalation. It needs reliable primary metadata and access to the selected native role. User restrictions apply to new assignments.</p>
-</div>
-<p class="note">Workers are child agents assigned by your primary. Independent-session peer discovery excludes them. The worker bundle can be installed separately from monitoring and reporting.</p>
-<div class="actions"><a class="button-link" href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md">Read the worker guide →</a><a class="quiet-link" href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md#installation">Install the worker bundle →</a></div>
-</section>
-<section id="control" class="section" aria-labelledby="control-title"><div class="section-head"><div><span class="kicker">You stay in control</span><h2 id="control-title">Keep working. Stay in control.</h2></div><p>Cancel a watch, interrupt the foreground turn, or leave the terminal. Know what each action does.</p></div><div class="faq-grid"><details><summary>What does Esc do?</summary><p>Esc interrupts the foreground turn. Independent watches and reminders remain registered within their bounds. Say “Stop watching that run” to cancel its observation.</p></details><details><summary>Does stopping a watch stop the work?</summary><p>Stopping the selected watch ends future observation/admission and forbids renewal or replacement. The observed session or job continues. Already handled messages or actions cannot be undone.</p></details><details><summary>What if a watch expires?</summary><p>Expiry ends an observation lease or event allowance; it does not prove task completion. The model can explicitly continue useful observation under the existing request, or tell you it ended.</p></details><details><summary>Can I detach the TUI?</summary><p>You can detach while supervision remains with its owner. With preview.21 loaded, eligible observations can hand off after a verified daemon restart within their original bounds. Uncertain work stays in history; Plus never starts a replacement daemon or conversation.</p></details><details><summary>Can it reach another host or a subagent?</summary><p>Ordinary peer coordination is between independent loaded sessions within one daemon. Children are excluded from ordinary selection. Two installed hosts do not add cross-host native messaging.</p></details><details><summary>What if a source needs access?</summary><p>Your normal tool permissions and configured connections still apply. If a source is unavailable, Codex Plus explains what’s missing. Watching something does not give it permission to change that work.</p></details><details><summary>How do I catch up after stepping away?</summary><p>In preview.10 and later, ask “What am I still waiting on?” The model rereads this conversation’s stored watches, reminder outcomes and outgoing receipts. It explains stale or missing evidence without starting new observation.</p></details><details><summary>Does received mean finished?</summary><p>Acknowledgement records receipt. Acceptance records a request decision. A follow-up turn or external task may still be pending or fail later; neither receipt proves completion.</p></details></div><aside id="limits" class="limits"><h3>Focused follow-up with clear boundaries.</h3><p>Peer coordination stays within one Codex daemon. Watches have finite bounds, and later checks are one-shot. Your normal tool permissions still apply. <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/architecture.md">Read how it works →</a></p></aside></section>
-<section id="workflows" class="section" aria-labelledby="workflows-title"><div class="section-head"><div><span class="kicker">Fits the work you already do</span><h2 id="workflows-title">From a status check to a clear handoff.</h2></div><p>A small request can carry the follow-up. Start with the run, conversation or question already in front of you.</p></div><div class="matrix-wrap"><table><caption class="sr-only">Ways to use Codex Plus</caption><thead><tr><th scope="col">When you need to…</th><th scope="col">Ask Codex…</th><th scope="col">Keep moving with…</th></tr></thead><tbody><tr><td>Follow a long-running job</td><td>“Tell me if this run stalls or fails.”</td><td>Quiet observation and updates about meaningful changes.</td></tr><tr><td>Coordinate another conversation</td><td>“Ask the packaging session to include the risks.”</td><td>An attributed request and a handling receipt.</td></tr><tr><td>Come back to a question</td><td>“Check the deployment again later.”</td><td>A later reassessment through your normal tools.</td></tr><tr><td>Return to unfinished work <span class="evidence-pill">Source preview</span></td><td>“What am I still waiting on?”</td><td>A recap of this conversation’s recorded follow-ups, with unknown outcomes explained.</td></tr><tr><td>Share what you learned</td><td>“Make a browser report of the results.”</td><td>A stable report link and a project catalog.</td></tr></tbody></table></div></section>
-<section id="get-started" class="section" aria-labelledby="get-started-title">
-<div class="section-head"><div><span class="kicker">Get started</span><h2 id="get-started-title">Start with the part you need.</h2></div><p>Workers, monitoring and reporting install separately. Already using a managed setup? Open a session in the intended context and make one useful request.</p></div>
-<div class="cards setup-paths"><article class="card"><span class="number">GIVE IT A TASK</span><h3>Use a worker</h3><p>Install the agents and workflow skills. Start with <code>$luna-task</code> and a concrete outcome.</p><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md#installation">Set up workers →</a></article><article class="card"><span class="number">GET A USEFUL UPDATE</span><h3>Add monitoring</h3><p>Install the runtime and connect its MCP tools. Follow an accessible source or another independent session.</p><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/runtime-distribution.md">Set up monitoring →</a></article><article class="card"><span class="number">SHARE THE FINDINGS</span><h3>Add reporting</h3><p>Install the report component and configure a reachable endpoint for your browser handoffs.</p><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/html-report-usage.md">Set up reporting →</a></article></div>
-<p class="note"><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/getting-started.md">Read the complete setup guide →</a></p>
-<div class="soak-layout" style="margin-top:28px"><div><h3>Try one useful watch.</h3><p>If monitoring is your first choice, use a task already in front of you. Describe the useful change, then keep working.</p><div class="actions"><button id="download-note" type="button">Save a watch checklist</button></div></div><div><div class="checks" role="group" aria-label="Your first watch"><label class="check"><input type="checkbox">Choose a project and Codex context.</label><label class="check"><input type="checkbox">Pick a run, endpoint or independent session.</label><label class="check"><input type="checkbox">Describe the useful change you want to hear about.</label><label class="check"><input type="checkbox">Ask Codex to watch it while you keep working.</label><label class="check"><input type="checkbox">Stop the watch when you’re done.</label><label class="check"><input type="checkbox">Ask for a browser report when a handoff would help.</label></div><p id="check-count" class="check-count" role="status">0 of 6 steps marked</p></div></div>
-</section>
-<section id="resources" class="section" aria-labelledby="resources-title"><div class="section-head"><div><span class="kicker">Keep exploring</span><h2 id="resources-title">Go from an example to your own workflow.</h2></div><p>Find the setup steps, everyday requests and configuration details in the guides.</p></div><div class="evidence"><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/getting-started.md"><strong>Get started</strong><span>Choose components and follow the right setup path.</span></a><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md"><strong>Luna &amp; worker workflows</strong><span>Choose a task or goal loop, understand routing and install the worker bundle.</span></a><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/daily-use.md"><strong>Everyday use</strong><span>Watch work, share context, check later and stop when you’re done.</span></a><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/runtime-distribution.md"><strong>Monitoring installation</strong><span>Install the component and connect its tools to native Codex.</span></a><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/environments.md"><strong>Multiple environments</strong><span>Choose homes, understand overrides and keep contexts separate.</span></a><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/html-report-usage.md"><strong>Browser reports</strong><span>Publish a report, browse the project catalog and configure hosting.</span></a><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/architecture.md"><strong>How it works</strong><span>Understand components, source access, costs, discovery and lifecycle boundaries.</span></a><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/soak-checklist.md"><strong>Daily-use trial</strong><span>Record useful outcomes and friction while working with real sources.</span></a></div><p class="note">For development and acceptance records, explore the <a href="https://github.com/byebyebryan/codex-plus">source on GitHub →</a>.</p></section>
+  <section id="workers" class="section" aria-labelledby="workers-title">
+    <div class="section-head">
+      <h2 id="workers-title">Choose a worker request</h2>
+      <p>Use an adaptive workflow when the primary should choose who does the work. To request one model by name, use its task skill.</p>
+    </div>
+    <div class="panel worker-routing" aria-labelledby="worker-routing-title">
+      <div class="two-col">
+        <div class="split-copy">
+          <h3 id="worker-routing-title">Build an adaptive request</h3>
+          <p>Choose a task for one outcome or a goal loop for work that needs follow-through across assignments. Your primary can always do the work directly or give Luna a suitable assignment.</p>
+          <p>Supported Sol and current Terra primaries can use Astra when the work warrants it. Terra can explicitly choose Sol instead. An Astra primary needs an opt-in to delegate to Sol.</p>
+        </div>
+        <div>
+          <div class="choices" hidden data-enhanced>
+            <label for="worker-workflow">Workflow
+              <select id="worker-workflow"><option value="task">Task</option><option value="goal">Goal loop</option></select>
+            </label>
+            <label for="worker-primary">Primary
+              <select id="worker-primary"><option value="sol">Sol</option><option value="terra">Current Terra</option><option value="astra">Astra</option><option value="unknown">Other or unknown</option></select>
+            </label>
+            <label for="worker-target">Additional worker
+              <select id="worker-target" disabled><option value="astra">Astra XHigh (default)</option></select>
+            </label>
+          </div>
+          <p id="worker-route" class="note" aria-live="polite">Sol can ask Astra XHigh for a justified second opinion.</p>
+          <pre id="worker-prompt">$adaptive-task Add Markdown and plain-text exports to the reading-list CLI. Preserve each title, author and position in the list.</pre>
+          <button type="button" id="worker-copy" hidden data-enhanced>Copy adaptive request</button>
+          <p id="worker-copy-status" class="copy-status" role="status"></p>
+          <textarea id="worker-manual-copy" aria-label="Adaptive request for manual copying" hidden readonly></textarea>
+        </div>
+      </div>
+    </div>
+    <details class="compare"><summary>Compare named, Luna-only and adaptive skills</summary>
+    <div class="matrix-wrap" tabindex="0" role="region" aria-label="Worker workflow comparison">
+      <table>
+        <caption class="sr-only">Seven worker skills for tasks and goals</caption>
+        <thead><tr><th scope="col">Workflow</th><th scope="col">Invoke in your conversation</th><th scope="col">When to use it</th></tr></thead>
+        <tbody>
+          <tr><td>Adaptive</td><td><code>$adaptive-task</code><br><code>$adaptive-goal-loop</code></td><td>Give the primary a task or goal. It can work directly, use Luna, or bring in another eligible worker. Independent assignments can run in parallel.</td></tr>
+          <tr><td>Luna only</td><td><code>$luna-task</code><br><code>$luna-goal-loop</code></td><td>Delegate one investigation or implementation to Luna Max, or use Luna on successive assignments within a larger goal.</td></tr>
+          <tr id="named-task-title"><td>Named task</td><td><code>$sol-task</code><br><code>$astra-task</code><br><code>$terra-task</code></td><td>Choose Sol, Astra or current Terra at XHigh for one review, investigation or implementation. The named worker returns its work to your primary.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    </details>
+    <details class="work-example"><summary>See how two workers share the export task</summary>
+    <figure class="figure" aria-labelledby="example-caption">
+      <figcaption id="example-caption">Example · Add two reading-list exporters</figcaption>
+      <div class="graph">
+        <div class="node root-node"><small>Primary</small><b>Agree on fields and order</b></div>
+        <div class="branches" role="group" aria-label="Independent assignments that can run in parallel">
+          <div class="node"><small>Assigned to Luna</small><b>Write the Markdown table</b></div>
+          <div class="node"><small>Assigned to Luna</small><b>Write the plain-text list</b></div>
+        </div>
+        <div class="node root-node"><small>Primary</small><b>Wire up and test both formats</b></div>
+      </div>
+    </figure>
+    </details>
+    <div class="actions">
+      <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md">Worker guide</a>
+      <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md#optional-escalation">Model eligibility and permissions</a>
+      <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/routing-diagnostics.md">Usage and contribution records</a>
+    </div>
+  </section>
+
+  <section id="workflows" class="section" aria-labelledby="workflows-title">
+    <div class="section-head">
+      <h2 id="workflows-title">Compare watch costs</h2>
+      <p>How many model turns does it take to check a source when nothing has changed?</p>
+    </div>
+    <div class="panel cost-panel">
+      <div>
+        <h3>Command polling and MCP inspections</h3>
+        <p>A command can poll an endpoint on its own. A scheduled check through a connected MCP tool asks the model to inspect it.</p>
+        <label class="slider-label" for="read-count" hidden data-enhanced>Quiet reads <output id="read-value" for="read-count">6</output></label>
+        <input id="read-count" type="range" min="1" max="24" value="6" hidden data-enhanced>
+      </div>
+      <div>
+        <p class="label">Observation turns for quiet reads</p>
+        <div class="bar-row"><span>Command</span><div class="bar-track" aria-hidden="true"></div><span class="bar-number">0</span></div>
+        <div class="bar-row"><span>MCP</span><div class="bar-track" aria-hidden="true"><div id="mcp-bar" class="bar" style="width:25%"></div></div><span id="mcp-turns" class="bar-number">6</span></div>
+        <p class="note" id="cost-caption" aria-live="polite">At 6 quiet reads, a command uses 0 observation turns and MCP inspection uses 6. Setup and handling a useful change can add turns.</p>
+      </div>
+    </div>
+    <details class="compare"><summary>Compare requests for follow-up and reporting</summary>
+    <div class="matrix-wrap" tabindex="0" role="region" aria-label="Follow-up requests">
+      <table>
+        <caption class="sr-only">Examples of monitoring, coordination and reporting requests</caption>
+        <thead><tr><th scope="col">Ask Codex</th><th scope="col">What comes back</th></tr></thead>
+        <tbody>
+          <tr><td>“Tell me if this run stalls or fails.”</td><td>An update in this conversation if the watch detects a stall or failure.</td></tr>
+          <tr><td>“Ask the packaging session to include the risks.”</td><td>The other agent receives the request. You can check its receipt from this session.</td></tr>
+          <tr><td>“Check the deployment again later.”</td><td>A reminder to check the deployment once. If your session is busy, the check can wait or expire.</td></tr>
+          <tr><td>“What am I still waiting on?”</td><td>A recap of this conversation’s stored watches, reminders and outgoing messages, including unknown outcomes.</td></tr>
+          <tr><td>“Make a browser report of the results.”</td><td>A snapshot you can open from a browser that can reach your report host.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    </details>
+    <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/daily-use.md">Watches and reminders</a>
+  </section>
+
+  <section id="control" class="section" aria-labelledby="control-title">
+    <div class="section-head"><h2 id="control-title">Pausing, stopping and catching up</h2></div>
+    <div class="faq-grid" id="limits">
+      <details><summary>What does Esc do?</summary><p>Esc interrupts the foreground turn. Registered watches and reminders keep their own bounds. Say “Stop watching that run” to cancel its observation.</p></details>
+      <details><summary>Does stopping a watch stop the job?</summary><p>The observed job continues. Cancelling closes the selected watch and prevents renewal or replacement. An already admitted update may still be handled.</p></details>
+      <details><summary>What happens when a watch expires?</summary><p>The observation ends when its time or event allowance runs out. The primary can explicitly continue useful observation under the existing request. The job’s own status determines whether it finished.</p></details>
+      <details><summary>Can I leave the terminal?</summary><p>You can detach the TUI while the daemon retains supervision. Eligible observations can transfer after a verified daemon restart within their original bounds. Uncertain outcomes remain in history.</p></details>
+      <details><summary>Which sessions can I reach?</summary><p>Peers are independent loaded sessions in the same daemon. The primary uses separate native worker controls to assign and review its child agents. Each daemon has its own peer directory.</p></details>
+      <details><summary>Which permissions does a watch use?</summary><p>Watches use the source access already configured for your session. Changing a job or taking another action requires authorization for that action.</p></details>
+      <details><summary>How do I pick up unfinished work?</summary><p>Ask “What am I still waiting on?” The primary reads this conversation’s stored follow-ups and identifies missing or stale evidence. Ask for a fresh check when you need current source status.</p></details>
+      <details><summary>What does a receipt confirm?</summary><p>Acknowledgement records delivery. Acceptance records how a peer handled a request. A separate completion result is needed for the follow-up turn or external job.</p></details>
+    </div>
+  </section>
+
+  <section id="environments" class="section" aria-labelledby="environments-title">
+    <div class="section-head"><h2 id="environments-title">Separate personal and work sessions</h2>
+      <p>Select the Codex home for the project. Each environment can have its own daemon, monitoring state and report configuration.</p></div>
+    <div class="panel environment-panel">
+      <div>
+        <div class="actions" role="group" aria-label="Example environment" hidden data-enhanced>
+          <button type="button" data-environment="oss" aria-pressed="true">Personal projects</button>
+          <button type="button" data-environment="work" aria-pressed="false">Work projects</button>
+        </div>
+        <p class="note">These example launches use conventional homes. The selected home and configuration determine the actual paths, tools and access.</p>
+        <noscript><p>For the work example, launch <code>CODEX_HOME=~/.codex-work codex</code> to select <code>~/.codex-work</code>.</p></noscript>
+      </div>
+      <div aria-live="polite">
+        <h3 id="environment-name">Personal projects</h3>
+        <dl class="environment-paths">
+          <dt>Launch</dt><dd id="environment-command" class="mono">codex</dd>
+          <dt>Codex home</dt><dd id="environment-home" class="mono">~/.codex</dd>
+          <dt>Follow-up</dt><dd id="environment-state">Watches and reminders for personal projects.</dd>
+          <dt>Reports</dt><dd id="environment-config">The personal report library.</dd>
+          <dt>Publishing</dt><dd id="environment-url">The configured personal endpoint.</dd>
+        </dl>
+        <p id="environment-peers" class="note">Peers share the personal Codex daemon.</p>
+      </div>
+    </div>
+    <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/environments.md">Configure multiple environments</a>
+  </section>
+
+  <section id="get-started" class="section" aria-labelledby="get-started-title">
+    <div class="section-head">
+      <h2 id="get-started-title">Install the components you need</h2>
+      <p>Workers, monitoring and reporting install separately. Workers use native agent tools. Monitoring adds watches, peer sessions and reminders. Reporting serves the HTML you choose to publish.</p>
+    </div>
+    <div id="setup">
+      <h3 id="setup-title">Give your agent the management guide</h3>
+      <p>Ask it to install or upgrade Codex Plus. The guide walks it through release verification, the owner of your configuration and checks on the installed files.</p>
+      <!-- management-requests -->
+      <div class="actions"><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/manage-agent.md">Install and manage</a>
+        <a href="https://dev.byebyebryan.com/codex-plus/manage.md">Plain Markdown for your agent</a>
+        <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/getting-started.md">Human setup guide</a></div>
+    </div>
+    <details class="questions"><summary>Try your first watch</summary>
+      <p>Choose a project that already has an accessible source and ask “Watch this run and tell me if it stalls or fails.”</p>
+      <div class="checks" role="group" aria-label="Your first watch">
+        <label class="check"><input type="checkbox">Choose a project and Codex home.</label>
+        <label class="check"><input type="checkbox">Pick a run, endpoint or independent session.</label>
+        <label class="check"><input type="checkbox">Describe the change you want to hear about.</label>
+        <label class="check"><input type="checkbox">Ask Codex to watch while you keep working.</label>
+        <label class="check"><input type="checkbox">Stop the watch when you are done.</label>
+        <label class="check"><input type="checkbox">Ask for a browser report if you need a handoff.</label>
+      </div>
+      <p id="check-count" class="check-count" role="status" hidden data-enhanced>0 of 6 steps marked</p>
+      <button id="download-note" type="button" hidden data-enhanced>Save watch checklist</button>
+    </details>
+  </section>
+
+  <section id="resources" class="section" aria-labelledby="resources-title">
+    <div class="section-head"><h2 id="resources-title">Project guides</h2></div>
+    <div class="actions">
+      <a href="https://dev.byebyebryan.com/codex-plus/#guide-directory">All guides</a>
+      <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/daily-use.md">Watches and reminders</a>
+      <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/html-report-usage.md">HTML reports</a>
+      <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/session-communication.md">Session communication</a>
+      <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md">Worker workflows</a>
+    </div>
+  </section>
+  </div>
+  </div>
 </main>
-<footer><div class="wrap footer-inner"><span>Codex Plus · Workers, watches and browser handoffs</span><span><a href="https://github.com/byebyebryan/codex-plus">GitHub</a> · <a href="#resources">All guides</a></span></div></footer>
+<footer><div class="wrap footer-inner">
+  <span>Codex Plus</span>
+  <span><a href="https://github.com/byebyebryan/codex-plus/releases">Releases</a> · <a href="https://github.com/byebyebryan/codex-plus">GitHub</a></span>
+</div></footer>
 <script>
 'use strict';
-const environments={oss:{name:'Personal projects',command:'codex',home:'~/.codex',state:'Watches and later checks for your personal projects.',config:'A report library for this context.',url:'Your configured report endpoint.',peers:'Coordinate with other sessions in your personal Codex daemon.'},work:{name:'Work projects',command:'CODEX_HOME=~/.codex-work codex',home:'~/.codex-work',state:'Watches and later checks for your work projects.',config:'A separate report library for this context.',url:'Your configured work report endpoint.',peers:'Coordinate with sessions in your work daemon, keeping personal conversations in their own context.'}};
-document.querySelectorAll('[data-environment]').forEach(button=>button.addEventListener('click',()=>{const key=button.dataset.environment;for(const [field,value] of Object.entries(environments[key]))document.getElementById('environment-'+field).textContent=value;document.querySelectorAll('[data-environment]').forEach(other=>other.setAttribute('aria-pressed',String(other.dataset.environment===key)));}));
 
-const scenes={
-worker:{name:'A Luna assignment',scope:'Your primary delegates a bounded task and reviews the result. This example only changes the page.',request:'$luna-task Investigate why the CSV importer drops quoted newlines. Return a reproduction and proposed fix; keep this pass read-only.',steps:[
-{title:'Choose a worker and an outcome',user:'$luna-task Investigate why the CSV importer drops quoted newlines. Return a reproduction and proposed fix; keep this pass read-only.',reply:'I’ll give Luna a focused investigation with the parser context and a reproduction check. I’ll keep decisions and review here.',label:'Invocation',trace:'The named skill explicitly selects Luna. A generic task or goal loop does not.'},
-{title:'Give Luna a bounded assignment',user:'Preserve the other work in the checkout.',reply:'Luna owns the importer investigation. It can inspect and reproduce the issue, then return evidence and a proposed fix within that scope.',label:'Ownership',trace:'An investigation does not authorize implementation. Useful assignments have a clear responsibility and acceptance check.'},
-{title:'Review the evidence',user:'Luna returns a reproduction and a proposed parser change.',reply:'I’ll inspect the reproduction and reasoning before accepting the finding. If evidence is missing, I’ll ask for a correction or resolve the difficult portion here.',label:'Review',trace:'The primary checks actual findings. Delegation alone does not establish correctness or a cost saving.'},
-{title:'Return a clear result',user:'Give me the cause, evidence and proposed next step.',reply:'Here is the reviewed investigation. Implementation can follow once its intended behavior is settled; this read-only assignment stops at the finding.',label:'Acceptance',trace:'Use $luna-goal-loop for a larger authorized goal across cohesive assignments. The primary retains final acceptance.'}]},
-peer:{name:'Independent sessions',scope:'Two independent loaded sessions within one owning daemon.',request:'Watch the session preparing the packaging report and tell me when it is ready.',steps:[
-{title:'Ask for the useful condition',user:'Watch the session preparing the packaging report and tell me when it is ready.',reply:'I’ll find the session from its project and recent work. If there are two plausible matches, I’ll ask which one.',label:'Selection',trace:'Independent peers from context; subagents are excluded.'},
-{title:'Confirm the target and return',user:'Follow that report session.',reply:'I found the session preparing the report. I’ll watch for readiness or a request for input while you keep working.',label:'Observation',trace:'The reference is frozen. Passive reads leave the report session’s work intact.'},
-{title:'Receive something useful',user:'A useful readiness change is observed.',reply:'The report draft is ready. Its owner notes that the risk summary is still pending; readiness does not prove the whole handoff is complete.',label:'Handling',trace:'A useful update brings you back to the decision that needs your attention.'},
-{title:'Share context, then stop watching',user:'Tell that session to include the risks, then stop watching it.',reply:'The risk-summary request was accepted. Completion is still unconfirmed. I’ve stopped the watch; the report work continues.',label:'Receipts',trace:'Accepted means the request was handled, not completed. Explicit stop forbids renewal or replacement.'}]},
-endpoint:{name:'An accessible endpoint',scope:'Use an existing authorized status source; polling can stay quiet.',request:'Watch this run and tell me if it stalls or fails.',steps:[
-{title:'Describe what matters',user:'Watch this run and tell me if it stalls or fails.',reply:'I’ll use the run’s established status source and choose useful progress and failure signals. If the endpoint is unclear, I’ll clarify it.',label:'Scope',trace:'The watch uses the access already configured for your session.'},
-{title:'Poll quietly and keep working',user:'Continue with the other work.',reply:'Observation is registered. Unchanged reads will stay quiet; I’ll report useful changes or explain if the source becomes unavailable.',label:'Cost',trace:'Repeated short commands or a continuing script can observe without a model turn per read.'},
-{title:'Separate a stall signal from failure',user:'Progress is unchanged across the agreed observation window.',reply:'The run still reports running, but progress has stopped for the selected window. That is a stall signal; it does not establish a failed job.',label:'Follow-up',trace:'A useful observation reaches the same conversation. Any repair still needs the existing action scope.'},
-{title:'Stop observation, preserve the run',user:'Stop watching that run.',reply:'The watch is stopped and will not renew or be replaced. The run remains untouched; any already admitted update is reported separately.',label:'Control',trace:'Watch cancellation stops the selected observation intent, not the observed workload.'}]},
-later:{name:'Later inspection and report',scope:'A one-shot reassessment through a configured MCP connection.',request:'Check the deployment again later, then make a browser report of what we learned.',steps:[
-{title:'Ask for a later decision',user:'Check the deployment again later, then make a browser report of what we learned.',reply:'I’ll schedule one reassessment using the existing deployment inspection connection and return now.',label:'Scheduling',trace:'Register the later check, then keep the conversation available for other work.'},
-{title:'Keep the conversation available',user:'Work on something else in the meantime.',reply:'The later check is registered. Its due time is subject to native conversation control and can wait behind active work.',label:'Ordering',trace:'A due registration is not an exact-time alarm. A later inspection uses a native model turn.'},
-{title:'Call the real configured tool',user:'The reassessment is handled when native control permits.',reply:'The configured inspection reports the deployment ready. I’ll include that result and the remaining operational risks in the requested report.',label:'Permissions',trace:'The check uses your configured tool connection and normal approvals.'},
-{title:'Leave a browser handoff',user:'Give me the report link.',reply:'Here is the published summary, with its delivery result. The immutable report remains available while the serving host is online.',label:'Report ownership',trace:'Reports have stable links and independent hosting, so a handoff can remain available after you leave the terminal.'}]},
-recap:{name:'Return to unfinished work',scope:'Read this conversation’s recorded follow-ups, then close the selected failure.',availability:'Available in preview.30; catch-up inspection was added in preview.10.',stages:['Ask','Recap','Attention','Close'],request:'What am I still waiting on?',steps:[
-{title:'Pick up the continuing conversation',user:'What am I still waiting on?',reply:'I’ll check this conversation’s watch, reminder and outgoing-message receipts before summarizing what still needs attention.',label:'Inspection',trace:'Read existing state. A recap does not register, renew or recover observation.'},
-{title:'Separate receipt from completion',user:'Show me the outstanding follow-ups.',reply:'The packaging watch is registered. The CI reminder was received, but its follow-up turn hasn’t finished. Packaging accepted “Review the release notes”; completion is unconfirmed. These are cached receipts, not fresh source checks.',label:'Coverage',trace:'The stored message kind and quoted purpose distinguish requests. Unknown outcomes stay unknown; this is not an inventory of every session.'},
-{title:'Keep a failed follow-up visible',user:'The stored CI follow-up receipt now says failed.',reply:'The CI follow-up turn failed, so that check still needs attention. No successful CI result is recorded. The failure does not automatically retry the check.',label:'Outcome',trace:'Acknowledgement is not completion. A failed or interrupted turn stays visible until explicit reminder cancellation.'},
-{title:'Close only the selected follow-up',user:'Cancel the failed CI reminder.',reply:'Closed attention on that reminder. Its failure and handling receipts stay in history. The packaging watch continues and its work stays intact.',label:'Control',trace:'Cancellation retains receipts and preserves native work. A consumed turn with no terminal receipt would remain unknown.'}]}
-};
-let sceneKey='peer',step=0;
-const $=id=>document.getElementById(id);
-function renderScene(){const s=scenes[sceneKey],v=s.steps[step];$('scene-name').textContent=s.name;$('scene-scope').textContent=s.scope;$('scene-availability').textContent=s.availability||'Available in preview.30.';$('step-title').textContent=v.title;$('scene-user').textContent=v.user;$('scene-reply').textContent=v.reply;const strong=document.createElement('strong');strong.textContent=v.label+': ';$('scene-trace').replaceChildren(strong,document.createTextNode(v.trace));document.querySelectorAll('[data-scene]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.scene===sceneKey)));document.querySelectorAll('.steps li').forEach((li,i)=>{li.lastChild.textContent=(s.stages||['Request','Setup','Update','Handoff'])[i];li.classList.toggle('current',i===step);if(i===step)li.setAttribute('aria-current','step');else li.removeAttribute('aria-current');});$('previous').disabled=step===0;$('next').disabled=step===s.steps.length-1;$('copy-status').textContent='';$('manual-copy').hidden=true;}
-document.querySelectorAll('[data-scene]').forEach(b=>b.addEventListener('click',()=>{sceneKey=b.dataset.scene;step=0;renderScene();}));$('next').addEventListener('click',()=>{if(step<scenes[sceneKey].steps.length-1){step++;renderScene();}});$('previous').addEventListener('click',()=>{if(step>0){step--;renderScene();}});$('reset').addEventListener('click',()=>{step=0;renderScene();});
-async function copyVisible(text,button,manual,status){let copied=false;if(navigator.clipboard&&window.isSecureContext){try{await navigator.clipboard.writeText(text);copied=true;}catch{}}if(!copied){const t=$(manual);t.value=text;t.hidden=false;t.focus();t.select();try{copied=document.execCommand('copy');}catch{}if(copied){t.hidden=true;$(button).focus();}}$(status).textContent=copied?'Request copied.':'Select the request text and copy it manually.';}
-async function copyRequest(){await copyVisible(scenes[sceneKey].request,'copy-request','manual-copy','copy-status');}
-$('copy-request').addEventListener('click',copyRequest);
-function renderWorkerPolicy(resetTarget){
-  const primary=$('worker-primary').value,target=$('worker-target');
-  const previous=target.value;
-  const choices=primary==='terra'?[['astra','Astra XHigh (default)'],['sol','Sol XHigh']]:
-    primary==='sol'?[['astra','Astra XHigh (default)']]:
-    primary==='astra'?[['none','None (default)'],['sol','Sol XHigh (opt in)']]:[['none','No compatible target']];
-  target.replaceChildren();
-  for(const [value,label] of choices){
-    const option=document.createElement('option');
-    option.value=value;
-    option.textContent=label;
-    target.appendChild(option);
+const byId = id => document.getElementById(id);
+const sceneButtons = document.querySelectorAll('[data-scene]');
+const transcripts = new Map(Array.from(document.querySelectorAll('[data-example]'), element => [element.dataset.example, element]));
+let sceneKey = 'adaptive';
+let step = 0;
+
+function renderScene() {
+  const transcript = transcripts.get(sceneKey);
+  const steps = Array.from(transcript.querySelectorAll('[data-stage]'));
+  const current = steps[step];
+  byId('scene-name').textContent = transcript.querySelector('summary').textContent;
+  byId('scene-scope').textContent = transcript.querySelector('.scope').textContent;
+  byId('scene-position').textContent = 'Step ' + (step + 1) + ' of ' + steps.length;
+  byId('step-title').textContent = current.querySelector('h4').textContent;
+  byId('scene-speaker').textContent = current.querySelector('.input strong').textContent;
+  byId('scene-user').textContent = current.querySelector('.input span').textContent;
+  byId('scene-reply').textContent = current.querySelector('.response span').textContent;
+  const reason = current.querySelector('.reason');
+  byId('scene-trace').replaceChildren(...Array.from(reason.childNodes, node => node.cloneNode(true)));
+  document.querySelector('.steps').replaceChildren(...steps.map((item, index) => {
+    const stage = document.createElement('li');
+    stage.textContent = item.dataset.stage;
+    if (index === step) stage.setAttribute('aria-current', 'step');
+    return stage;
+  }));
+  for (const button of sceneButtons) {
+    button.setAttribute('aria-pressed', String(button.dataset.scene === sceneKey));
   }
-  target.value=!resetTarget&&choices.some(([value])=>value===previous)?previous:choices[0][0];
-  target.disabled=choices.length===1;
-  const chosen=target.value;
-  const base='$adaptive-task Review the importer migration and verify any confirmed fixes.';
-  $('worker-prompt').textContent=base+(chosen==='sol'?(primary==='astra'?' You may delegate a suitable assignment to Sol XHigh.':' Use Sol XHigh for any justified escalation.'):'');
-  $('worker-route').textContent=chosen==='none'?'Use the primary or Luna. This primary has no default escalation target.':
-    primary==='astra'?'Astra may delegate to Sol when the outcome is clear and significant local decisions remain. Astra accepts the result.':
-    (chosen==='sol'?'Sol':'Astra')+' XHigh is available when warranted. The primary can also work directly or delegate to Luna.';
-  $('worker-copy-status').textContent='';
-  $('worker-manual-copy').hidden=true;
+  byId('previous').disabled = step === 0;
+  byId('next').disabled = step === steps.length - 1;
+  byId('copy-status').textContent = '';
+  byId('manual-copy').hidden = true;
 }
-$('worker-primary').addEventListener('change',()=>renderWorkerPolicy(true));$('worker-target').addEventListener('change',()=>renderWorkerPolicy(false));$('worker-copy').addEventListener('click',()=>copyVisible($('worker-prompt').textContent,'worker-copy','worker-manual-copy','worker-copy-status'));renderWorkerPolicy(true);
-$('read-count').addEventListener('input',()=>{const n=Number($('read-count').value);$('read-value').textContent=String(n);$('mcp-turns').textContent=String(n);$('mcp-bar').style.width=(n/24*100)+'%';$('cost-caption').textContent=n+' quiet reads: 0 observation turns for commands; '+n+' inspection turns for MCP. Useful events can add handling turns on either route.';});
-document.querySelectorAll('.checks input').forEach(c=>c.addEventListener('change',()=>{$('check-count').textContent=document.querySelectorAll('.checks input:checked').length+' of 6 steps marked';}));
-$('download-note').addEventListener('click',()=>{const text=['Codex Plus — your first watch','1. Choose a project and Codex home.','2. Pick an accessible run, endpoint or independent session.','3. Describe the useful change you want to hear about.','4. Ask Codex to watch it while you keep working.','5. Stop the watch when you are done.','6. Ask for a browser report when a handoff would help.','','Example request: Watch this run and tell me if it stalls or fails.','Setup: https://dev.byebyebryan.com/codex-plus/start/','More examples: https://dev.byebyebryan.com/codex-plus/daily-use/',''].join('\n');const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='codex-plus-quickstart.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+
+for (const button of sceneButtons) {
+  button.addEventListener('click', () => {
+    sceneKey = button.dataset.scene;
+    step = 0;
+    renderScene();
+  });
+}
+byId('previous').addEventListener('click', () => { step--; renderScene(); });
+byId('next').addEventListener('click', () => { step++; renderScene(); });
+byId('reset').addEventListener('click', () => { step = 0; renderScene(); });
+
+async function copyRequest(text, button, textarea, status) {
+  let copied = false;
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      copied = true;
+    } catch {}
+  }
+  if (!copied) {
+    textarea.value = text;
+    textarea.hidden = false;
+    textarea.focus();
+    textarea.select();
+    try { copied = document.execCommand('copy'); } catch {}
+  }
+  if (copied) {
+    textarea.hidden = true;
+    button.focus();
+  }
+  status.textContent = copied ? 'Request copied.' : 'Select the request text and copy it manually.';
+}
+
+byId('copy-request').addEventListener('click', event => {
+  const request = transcripts.get(sceneKey).querySelector('.input span').textContent;
+  copyRequest(request, event.currentTarget, byId('manual-copy'), byId('copy-status'));
+});
+
+const eligibleWorkers = {
+  sol: [['astra', 'Astra XHigh (default)']],
+  terra: [['astra', 'Astra XHigh (default)'], ['sol', 'Sol XHigh (explicit)']],
+  astra: [['none', 'None (default)'], ['sol', 'Sol XHigh (opt in)']],
+  unknown: [['none', 'None']]
+};
+function selectPrimary() {
+  const target = byId('worker-target');
+  const choices = eligibleWorkers[byId('worker-primary').value];
+  target.replaceChildren(...choices.map(([value, label]) => new Option(label, value)));
+  target.disabled = choices.length === 1;
+  renderRequest();
+}
+
+function renderRequest() {
+  const primary = byId('worker-primary').value;
+  const worker = byId('worker-target').value;
+  const taskRequest = transcripts.get('adaptive').querySelector('.input span').textContent;
+  let request = byId('worker-workflow').value === 'task' ? taskRequest :
+    '$adaptive-goal-loop Complete the reading-list export migration. Add both formats, integrate them into the CLI and verify compatibility with existing reading lists.';
+  let route;
+  if (primary === 'unknown') {
+    route = 'Other or unknown primary. Work directly or use Luna where suitable. Automatic escalation needs reliable native primary metadata and an eligible model.';
+  } else if (primary === 'astra' && worker === 'none') {
+    route = 'Astra can work directly or delegate to Luna. Select Sol to permit it for this request.';
+  } else if (primary === 'astra') {
+    route = 'This request permits Astra to delegate a suitable assignment to Sol XHigh. Astra reviews the return.';
+    request += ' You may delegate a suitable assignment to Sol XHigh.';
+  } else if (worker === 'sol') {
+    route = 'This request selects Sol XHigh as Terra’s escalation target. The primary decides whether the work warrants it.';
+    request += ' Use Sol XHigh for any justified escalation.';
+  } else {
+    route = 'Astra XHigh is available when a difficult assignment or independent review warrants it. The primary can also work directly or delegate to Luna.';
+  }
+  byId('worker-route').textContent = route;
+  byId('worker-prompt').textContent = request;
+  byId('worker-copy-status').textContent = '';
+  byId('worker-manual-copy').hidden = true;
+}
+byId('worker-primary').addEventListener('change', selectPrimary);
+byId('worker-target').addEventListener('change', renderRequest);
+byId('worker-workflow').addEventListener('change', renderRequest);
+byId('worker-copy').addEventListener('click', event => {
+  copyRequest(byId('worker-prompt').textContent, event.currentTarget, byId('worker-manual-copy'), byId('worker-copy-status'));
+});
+
+const environmentButtons = document.querySelectorAll('[data-environment]');
+const personal = Object.fromEntries(
+  Array.from(document.querySelectorAll('.environment-panel [id^="environment-"]'), element =>
+    [element.id.slice('environment-'.length), element.textContent])
+);
+const environments = {
+  oss: personal,
+  work: {
+    name: 'Work projects', command: 'CODEX_HOME=~/.codex-work codex', home: '~/.codex-work',
+    state: 'Watches and reminders for work projects.', config: 'The work report library.',
+    url: 'The configured work endpoint.', peers: 'Peers share the work Codex daemon.'
+  }
+};
+for (const button of environmentButtons) {
+  button.addEventListener('click', () => {
+    for (const [field, value] of Object.entries(environments[button.dataset.environment])) {
+      byId('environment-' + field).textContent = value;
+    }
+    for (const item of environmentButtons) item.setAttribute('aria-pressed', String(item === button));
+  });
+}
+
+byId('read-count').addEventListener('input', event => {
+  const reads = event.currentTarget.valueAsNumber;
+  const turnCount = reads === 1 ? '1 quiet read' : reads + ' quiet reads';
+  byId('read-value').textContent = reads;
+  byId('mcp-turns').textContent = reads;
+  byId('mcp-bar').style.width = (reads / 24 * 100) + '%';
+  byId('cost-caption').textContent = 'At ' + turnCount + ', a command uses 0 observation turns and MCP inspection uses ' + reads + '. Setup and handling a useful change can add turns.';
+});
+
+const checks = Array.from(document.querySelectorAll('.checks input'));
+function updateChecks() {
+  byId('check-count').textContent = checks.filter(input => input.checked).length + ' of ' + checks.length + ' steps marked';
+}
+for (const check of checks) check.addEventListener('change', updateChecks);
+byId('download-note').addEventListener('click', () => {
+  const lines = checks.map((input, index) => (index + 1) + '. ' + input.parentElement.textContent.trim());
+  const text = ['Codex Plus — your first watch', ...lines, '',
+    'Example request: Watch this run and tell me if it stalls or fails.',
+    'Setup: https://dev.byebyebryan.com/codex-plus/start/',
+    'More examples: https://dev.byebyebryan.com/codex-plus/daily-use/', ''].join('\n');
+  const url = URL.createObjectURL(new Blob([text], {type: 'text/plain;charset=utf-8'}));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'codex-plus-quickstart.txt';
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
 renderScene();
+selectPrimary();
+updateChecks();
+byId('transcripts').open = false;
+for (const element of document.querySelectorAll('[data-enhanced]')) element.hidden = false;
 </script>
 </body>
 </html>

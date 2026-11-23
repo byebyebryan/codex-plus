@@ -36,7 +36,7 @@ start a daemon. The CLI describes only its own environment/arguments, not the
 settings hidden in another MCP process. For Snap's managed work setup:
 
 ```sh
-rtk proxy env CODEX_HOME=/home/bryan/.codex-work codex-plus-context --state-root /home/bryan/.local/state/codex-plus-work --report-config /home/bryan/.config/codex-plus/report-work.toml
+env CODEX_HOME=/home/bryan/.codex-work codex-plus-context --state-root /home/bryan/.local/state/codex-plus-work --report-config /home/bryan/.config/codex-plus/report-work.toml
 ```
 
 For OSS, use `~/.codex`, `codex-plus-oss` and `report.toml` instead. These are
@@ -71,7 +71,7 @@ or changes the native qualification baseline. See [read-only diagnosis](runtime-
 Preview.15 includes an opt-in mode in the context CLI:
 
 ```sh
-rtk proxy scripts/codex-plus-context --primary
+scripts/codex-plus-context --primary
 ```
 
 Run it in the primary's environment with its native `CODEX_THREAD_ID`. It reads

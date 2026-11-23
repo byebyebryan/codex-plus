@@ -1,71 +1,73 @@
-# Product page and interactive walkthrough
+# Overview and interactive walkthrough
 
-[Open the public browser walkthrough](https://dev.byebyebryan.com/codex-plus/).
-GitHub Pages also serves the setup, daily-use, worker, architecture, environment,
-soak, reporting and installation guides. Use **Guides** in the page header for
-the complete directory, **Get started** for setup or **GitHub** for the source
-repository. The README links the site prominently and offers both HTML and
-Markdown editions of each guide. See the [Pages deployment guide](pages-deployment.md).
+The [site overview](https://dev.byebyebryan.com/codex-plus/) shows what you can
+ask for in a Codex conversation and what each request returns. Go directly to
+[watches and timed checks](daily-use.md), [HTML reports](html-report-usage.md),
+[communication between sessions](session-communication.md), or
+[named and adaptive worker assignments](workers.md). The opening includes
+the install request. The task chooser shows one request and its guide at a time.
+Beneath it, a CSV importer example connects a worker review, a handoff between
+sessions, a CI watch and an HTML report.
+Setup and reference material are in the
+[guide directory](https://dev.byebyebryan.com/codex-plus/#guide-directory).
 
-The [immutable report edition](http://snap:8787/reports/293fdc3828d80409edd88861719fa5d376df1afa4bbdf5fae6a569d8f12aaa17/)
-is the historical 2026-10-14 edition retained on Snap and requires access to its report endpoint. The [Codex Plus project catalog](http://snap:8787/reports/#project=codex-plus)
-contains related reports. Publication, HTTP-byte checks from both hosts and
-browser interaction/layout checks passed; see the
-[documentation pass results](documentation-pass-results.md).
+## Walkthrough content
 
-The [self-contained authoring file](presentation/index.html) also opens locally.
-Its source now has five illustrative scenes: a Luna investigation, an endpoint
-watch, coordination between independent sessions, a later MCP inspection followed
-by a report, and returning to unfinished work. All five workflows are available
-in **preview.10 and later**. The catch-up scene uses preview.10's recap/history improvements;
-see [feature availability](getting-started.md#released-and-source-features).
-A separate environment selector illustrates personal and
-work contexts with example Codex homes. It only updates the page; it does not
-create a home, change config or contact a daemon.
+The [interactive walkthrough](https://dev.byebyebryan.com/codex-plus/walkthrough/)
+opens with six invented conversations. The adaptive example shows which files
+each writer owns, when the primary can integrate the exporters and how it can
+credit the work. The primary checks both formats through the CLI. One worker’s
+executed model is unconfirmed. The
+[release qualification](reliability-packaging-results.md#preview30-worker-workflow-fixes)
+contains the native execution records and their limits.
 
-The scene controls reveal a request, setup or recap, useful update and stop/handoff. They
-only change the page; they do not run commands, create watches, send messages or
-control a session. Dialogue is authored illustration, not a captured native run.
-Technical acceptance records remain in the repository guides rather than the
-landing page.
+The other examples cover a Luna investigation, a watched peer session, quiet
+endpoint polling, a one-shot MCP inspection followed by a report, and catching
+up on unfinished work. Each interactive step reads the corresponding
+JavaScript-free transcript. Readers can expand the transcripts for the complete
+conversations.
 
-The catch-up example distinguishes an acknowledged reminder from a completed
-follow-up, identifies an accepted message by purpose, and closes attention on
-a failed callback through explicit cancellation. It explains that the recap is
-cached and conversation-scoped. Its dialogue does not claim that a native run
-or fresh source check occurred.
+The worker request builder illustrates a bounded task or goal loop for the
+selected primary. Changing the primary resets the additional worker to its
+eligible default. The selected permission appears in the generated request.
+The [worker guide](workers.md) explains the seven workflows and model
+eligibility.
 
-The page leads with use cases, everyday benefits, setup links and an interactive
-first-watch checklist. A dedicated worker section compares the seven worker
-workflows and links to the [worker guide](workers.md) for examples and setup.
-The presentation includes released `$sol-task`, `$astra-task` and current
-`$terra-task`, with a Terra-primary/Sol-review example. They require preview.18;
-older selected installations need an explicit upgrade. Role availability and
-accepted model execution remain separate from static UI examples.
-It includes a model-call illustration, lifecycle FAQ and
-a downloadable quickstart checklist. Host-specific deployment status, comparison
-research and validation records stay in the technical guides. Prompt copy
-controls have a plain-HTTP fallback for SSH/mesh-hosted reports. It uses inline assets and JavaScript with no third-party dependencies.
+The other controls compare observation costs, show how personal and work homes
+select different state, and provide a downloadable first-watch checklist.
+Copying an example puts the request on the clipboard or exposes selectable
+text. The demonstrations run locally in the browser.
 
 ## Authoring and publication
 
-Edit `docs/presentation/index.html`. Keep every asset embedded or inside a
-dedicated export directory. Verify desktop/mobile layouts, keyboard controls,
-scene state, copy/download controls and absence of browser errors before publishing.
+Edit the [overview template](presentation/overview.html) for the first-visit
+page. Edit the [self-contained walkthrough](presentation/index.html) for the
+examples and interactive controls. The walkthrough opens directly from disk
+and supplies the site’s shared dark theme and icon.
 
-Publish only the finished HTML:
+The [Pages builder](../scripts/build-pages) assembles both routes, rewrites
+public guide links and adds page metadata. The overview uses the install request
+from the management guide. The walkthrough uses the same install and upgrade
+requests. Older overview URLs
+with walkthrough fragments show a link to the corresponding example or
+control. The [Pages deployment guide](pages-deployment.md) covers the build and
+publication checks.
+
+Before publication, check the overview diagrams at narrow and wide widths,
+follow the old fragment links, and try each walkthrough scene, routing change,
+copy fallback, download and JavaScript-free transcript. Use the
+[feature table](getting-started.md#released-and-source-features) and current
+release receipt when updating availability or execution claims.
+
+For a separately requested immutable report edition, publish the
+self-contained walkthrough to the configured report endpoint.
 
 ```sh
-rtk proxy codex-plus-report --json publish --source /absolute/codex-plus/docs/presentation/index.html --title "Codex Plus: daily use and workflow guide" --project codex-plus --check-delivery
+codex-plus-report --json publish --source /absolute/codex-plus/docs/presentation/index.html --title "Codex Plus: daily use and workflow guide" --project codex-plus --check-delivery
 ```
 
-Read the receipt: a stored snapshot, configured URL, verified HTTP bytes and
-browser acceptance are separate facts. Changed content gets a new immutable
-URL. Keep previous reports unless the user selects deletion. The shared report
-server remains independently managed; publication reuses it when healthy.
-
-The daily quickstart and reference material remain readable without a browser:
-[daily use](daily-use.md), [architecture and comparison](architecture.md),
-[setup](getting-started.md), [workers](workers.md) and the
-[soak checklist](soak-checklist.md). This presentation does not change installed
-runtime bytes, managed release pins or worker invocation behavior.
+The [historical report edition](http://snap:8787/reports/293fdc3828d80409edd88861719fa5d376df1afa4bbdf5fae6a569d8f12aaa17/)
+retains the 2026-10-14 walkthrough on Snap. It requires access to the report
+endpoint. The [historical documentation checks](documentation-pass-results.md)
+record its publication, HTTP verification and browser checks. New content
+receives its own immutable URL when published.

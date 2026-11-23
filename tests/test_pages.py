@@ -2,6 +2,7 @@
 import importlib.machinery
 import importlib.util
 from pathlib import Path
+import re
 import tempfile
 import unittest
 
@@ -10,6 +11,12 @@ loader = importlib.machinery.SourceFileLoader('pages_builder', str(ROOT / 'scrip
 spec = importlib.util.spec_from_loader(loader.name, loader)
 pages = importlib.util.module_from_spec(spec)
 loader.exec_module(pages)
+
+THEME_STYLE = (
+    '<style id="site-theme">:root{color-scheme:dark;--paper:#142A3B;--ink:#F4F7F8}'
+    '.note{color:var(--ink)}</style>')
+THEMED_LANDING = '<!doctype html><html><head>' + THEME_STYLE + '</head><body></body></html>'
+THEME = pages.site_theme(THEMED_LANDING)
 
 
 class PagesTests(unittest.TestCase):
@@ -30,7 +37,7 @@ class PagesTests(unittest.TestCase):
                 f'| Monitoring | `codex-plus-runtime-{published}.tar.gz` |\n'
                 f'| Reporting | `codex-plus-report-{published}.tar.gz` |\n\n'
                 f'Snap, Starship and Carbon select workers, monitoring and reporting **{managed_short}**.\n'),
-            'docs/presentation/index.html': f'Codex Plus {published_short}. Available in {published_short}\n',
+            'docs/presentation/index.html': f'Codex Plus {published_short}.\n',
             'docs/workers.md': ('$luna-task $luna-goal-loop $adaptive-task $adaptive-goal-loop '
                                 '$sol-task $astra-task $terra-task skills/html-report\n\n'
                                 '## Installation\n'
@@ -44,7 +51,52 @@ class PagesTests(unittest.TestCase):
         return root
 
     def test_current_guide_claims_match_their_documented_anchors(self):
-        self.assertEqual(pages.validate_current_guides(), 15)
+        self.assertEqual(pages.validate_current_guides(), 12)
+
+    def test_presentation_pages_keep_overview_and_walkthrough_canonical_routes(self):
+        self.assertEqual(pages.PRESENTATION_PAGES, {
+            'index.html': pages.SITE,
+            'walkthrough/index.html': pages.SITE + 'walkthrough/',
+        })
+        self.assertEqual(
+            {name: route for name, (route, _title) in pages.GUIDES.items()},
+            {
+                'getting-started.md': 'start',
+                'manage-agent.md': 'manage',
+                'daily-use.md': 'daily-use',
+                'session-communication.md': 'sessions',
+                'workers.md': 'workers',
+                'architecture.md': 'architecture',
+                'environments.md': 'environments',
+                'soak-checklist.md': 'soak-checklist',
+                'routing-diagnostics.md': 'routing-diagnostics',
+                'html-report-usage.md': 'reports',
+                'runtime-distribution.md': 'installation',
+            })
+
+    def test_each_feature_has_a_request_and_its_own_guide_on_the_overview(self):
+        source = (ROOT / 'docs/presentation/overview.html').read_text()
+        overview = pages.links(source, './')
+        sections = re.findall(r'<section class="feature"[^>]*>(.*?)</section>', overview, re.S)
+        self.assertEqual(len(sections), 4)
+        guide_links = []
+        for section in sections:
+            self.assertIn('<code>', section)
+            guide = re.search(r'href="\./([a-z-]+)/"', section)
+            self.assertIsNotNone(guide)
+            guide_links.append(guide[1])
+        self.assertCountEqual(guide_links, ['daily-use', 'reports', 'sessions', 'workers'])
+
+    def test_workflow_steps_and_task_choices_reach_the_same_examples(self):
+        source = (ROOT / 'docs/presentation/overview.html').read_text()
+        choices = re.findall(r'<a id="choose-[^"]+" href="#([^"]+)" aria-controls="([^"]+)">', source)
+        panels = re.findall(r'<section class="feature" id="([^"]+)" aria-labelledby="([^"]+)">', source)
+        self.assertEqual(len(choices), 4)
+        self.assertCountEqual(choices, [(heading, panel) for panel, heading in panels])
+        workflow = re.search(r'<ol class="sequence"[^>]*>(.*?)</ol>', source, re.S)
+        self.assertIsNotNone(workflow)
+        self.assertCountEqual(re.findall(r'href="#([^"]+)"', workflow[1]),
+                              [heading for heading, _ in choices])
 
     def test_release_transitions_allow_independent_versions(self):
         cases = (
@@ -59,13 +111,13 @@ class PagesTests(unittest.TestCase):
         for source, published, managed in cases:
             with self.subTest(source=source, published=published, managed=managed), tempfile.TemporaryDirectory() as directory:
                 root = self.release_fixture(directory, source=source, published=published, managed=managed)
-                self.assertEqual(pages.validate_current_guides(root), 13)
+                self.assertEqual(pages.validate_current_guides(root), 12)
 
     def test_guide_consistency_does_not_require_a_source_version_module(self):
         with tempfile.TemporaryDirectory() as directory:
             root = self.release_fixture(directory)
             (root / 'codex_plus/__init__.py').unlink()
-            self.assertEqual(pages.validate_current_guides(root), 13)
+            self.assertEqual(pages.validate_current_guides(root), 12)
 
     def test_worker_installation_requires_the_canonical_release_selector(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -108,14 +160,14 @@ class PagesTests(unittest.TestCase):
             note = ('\nFor preview.18 installs, use the [release selector]'
                     '(manage-agent.md#resolve-and-verify-one-published-release).\n')
             path.write_text(path.read_text() + note)
-            self.assertEqual(pages.validate_current_guides(root), 13)
+            self.assertEqual(pages.validate_current_guides(root), 12)
 
     def test_worker_installation_pin_check_ignores_historical_release_notes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = self.release_fixture(directory)
             path = root / 'docs/workers.md'
             path.write_text(path.read_text() + '\n## Historical release notes\nUsed the preview.18 worker release archive.\n')
-            self.assertEqual(pages.validate_current_guides(root), 13)
+            self.assertEqual(pages.validate_current_guides(root), 12)
 
     def test_stale_setup_claim_is_rejected_without_rejecting_historical_features(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -166,7 +218,7 @@ class PagesTests(unittest.TestCase):
                 path = root / name
                 path.write_text(path.read_text().replace(old, new) +
                     '\nVerified host receipts: Snap/Starship preview.19; Carbon offline, last verified preview.18.\n')
-            self.assertEqual(pages.validate_current_guides(root), 13)
+            self.assertEqual(pages.validate_current_guides(root), 12)
             path = root / 'docs/runtime-distribution.md'
             path.write_text(path.read_text().replace('**preview.19**', '**preview.18**'))
             with self.assertRaisesRegex(ValueError, 'inconsistent managed release claim'):
@@ -216,8 +268,8 @@ class PagesTests(unittest.TestCase):
         self.assertEqual(pages.rewrite_link('environments.md#selection-and-overrides', '../'),
                          '../environments/#selection-and-overrides')
         self.assertEqual(pages.rewrite_link(pages.SOURCE + 'environments.md', './'), './environments/')
-        nav = pages.guide_page('environments.md', 'environments', 'Environments', '<h1>Homes</h1>', '')
-        self.assertIn('aria-current="page">Environments</a>', nav)
+        nav = pages.guide_page('environments.md', 'environments', 'Environments', '<h1>Homes</h1>', '', THEME)
+        self.assertIn('<span aria-current="page">Environments</span>', nav)
 
     def test_historical_guides_remain_on_github(self):
         self.assertEqual(pages.rewrite_link('implementation-history.md#earlier-implementation-history', '../'),
@@ -227,12 +279,78 @@ class PagesTests(unittest.TestCase):
         self.assertEqual(pages.rewrite_link('workers.md#choose-a-workflow', '../'),
                          '../workers/#choose-a-workflow')
         self.assertEqual(pages.rewrite_link(pages.SOURCE + 'workers.md', './'), './workers/')
-        nav = pages.guide_page('workers.md', 'workers', 'Luna & workers', '<h1>Workers</h1>', '')
-        self.assertIn('aria-current="page">Luna &amp; workers</a>', nav)
+        nav = pages.guide_page('workers.md', 'workers', 'Worker workflows', '<h1>Workers</h1>', '', THEME)
+        self.assertIn('<nav class="guide-nav"', nav)
+        self.assertIn('<a href="../">Overview</a>', nav)
+        self.assertIn('<a href="../walkthrough/">Walkthrough</a>', nav)
+        self.assertIn('<a href="../#guide-directory">Guides</a>', nav)
+        self.assertIn('<a href="../manage/">Install</a>', nav)
+        self.assertIn('<p class="guide-trail">', nav)
+        self.assertIn('<span aria-current="page">Worker workflows</span>', nav)
+
+    def test_presentation_links_use_the_new_public_routes(self):
+        cases = (
+            ('presentation.md#scenes', './', './walkthrough/#scenes'),
+            ('presentation/index.html#workers', '../', '../walkthrough/#workers'),
+            ('presentation/overview.html#guide-directory', '../', '../#guide-directory'),
+            (pages.SOURCE + 'presentation.md#scenes', './', './walkthrough/#scenes'),
+            (pages.SOURCE + 'presentation/index.html', '../', '../walkthrough/'),
+            (pages.SOURCE + 'presentation/overview.html#guide-directory', '../', '../#guide-directory'),
+        )
+        for url, prefix, expected in cases:
+            with self.subTest(url=url, prefix=prefix):
+                self.assertEqual(pages.rewrite_link(url, prefix), expected)
+
+    def test_walkthrough_fragment_fallback_uses_only_moved_actual_ids(self):
+        overview = (
+            '<main id="main"><h1 id="title">Overview</h1>'
+            '<section id="package"><h2 id="package-title">Package</h2></section></main>')
+        walkthrough = (
+            '<main id="main"><h1 id="title">Walkthrough</h1>'
+            '<section id="package"><h2 id="package-title">Package</h2></section>'
+            '<section id="scenes"><h2 id="scene-title">Scenes</h2></section>'
+            '<button id="next">Next</button></main>')
+        result = pages.walkthrough_fragment_links(overview, walkthrough)
+        self.assertIn('<aside class="fragment-entry wrap" id="scenes">', result)
+        self.assertIn('<aside class="fragment-entry wrap" id="scene-title">', result)
+        self.assertIn('<aside class="fragment-entry wrap" id="next">', result)
+        self.assertNotIn('id="package"', result)
+        self.assertNotIn('id="package-title"', result)
+        hrefs = re.findall(r'href="([^"]+)"', result)
+        self.assertTrue(hrefs)
+        self.assertTrue(all(href.startswith('./walkthrough/#') for href in hrefs), hrefs)
+        self.assertNotIn('<script', result)
+        self.assertNotIn('onclick=', result)
+
+    def test_prepared_guide_figures_decorate_only_the_first_list_in_the_selected_section(self):
+        workers = (
+            '<h2 id="working-in-parallel">Working in parallel</h2>'
+            '<p>Introductory text.</p>'
+            '<ol><li>First step<ul class="fanout"><li>Native branch</li></ul></li></ol>'
+            '<ul><li>Later list stays native.</li></ul>'
+            '<h2 id="next-section">Next section</h2><ol><li>Next section stays native.</li></ol>')
+        result = pages.guide_figure('workers.md', workers)
+        self.assertIn('<ol class="guide-figure guide-steps"', result)
+        self.assertEqual(result.count('class="guide-figure guide-steps"'), 1)
+        self.assertIn('<ul class="fanout"><li>Native branch</li></ul>', result)
+        self.assertIn('<ul><li>Later list stays native.</li></ul>', result)
+        self.assertIn('<h2 id="next-section">Next section</h2><ol><li>Next section stays native.</li></ol>', result)
+
+        getting_started = (
+            '<h2 id="choose-what-to-install">Choose what to install</h2>'
+            '<p>Choose a component.</p><ul><li>Workers</li><li>Monitoring</li></ul>')
+        result = pages.guide_figure('getting-started.md', getting_started)
+        self.assertIn('<ul class="guide-figure guide-choices"', result)
+        self.assertEqual(result.count('class="guide-figure guide-choices"'), 1)
+
+    def test_guide_figures_leave_missing_sections_and_unknown_guides_unchanged(self):
+        body = '<h2 id="not-prepared">A section without a selected figure</h2><ul><li>Choice</li></ul>'
+        self.assertEqual(pages.guide_figure('workers.md', body), body)
+        self.assertEqual(pages.guide_figure('unknown-guide.md', body), body)
 
     def test_github_accessible_table_keeps_attributes_inside_scroll_container(self):
         body = '<markdown-accessiblity-table><table role="table"><tr><td>Wide</td></tr></table></markdown-accessiblity-table>'
-        result = pages.guide_page('architecture.md', 'architecture', 'How it works', body, '')
+        result = pages.guide_page('architecture.md', 'architecture', 'How it works', body, '', THEME)
         self.assertIn('tabindex="0" role="region" aria-label="Scrollable table"><table role="table">', result)
         self.assertIn('</table></div></markdown-accessiblity-table>', result)
 
@@ -261,27 +379,48 @@ class PagesTests(unittest.TestCase):
                          'https://example.invalid/codex-plus/manage.md')
 
     def test_guide_contents_links_and_skip_target_are_accessible(self):
-        body = pages.headings('<h1>Workers</h1><h2>Choose &amp; review</h2><h2>Choose &amp; review</h2>')
-        result = pages.guide_page('workers.md', 'workers', 'Luna & workers', body, '')
+        body = pages.headings('<h1>Workers</h1>\n<p dir="auto">Choose a worker.</p>'
+                              '<h2>Choose &amp; review</h2><h2>Choose &amp; review</h2>')
+        result = pages.guide_page('workers.md', 'workers', 'Luna & workers', body, '', THEME)
+        self.assertIn('Choose a worker.</p><details class="toc">', result)
         self.assertIn('<a class="skip" href="#main">', result)
         self.assertIn('<main id="main" tabindex="-1">', result)
         self.assertIn('aria-label="On this page"', result)
         self.assertIn('href="#choose--review-1">Choose &amp; review</a>', result)
         self.assertIn('aria-label="Related guides"', result)
 
+    def test_guide_uses_source_theme_and_matches_metadata_color(self):
+        style, paper = THEME
+        result = pages.guide_page(
+            'workers.md', 'workers', 'Luna & workers', '<h1>Workers</h1>', '', THEME)
+        self.assertEqual(style, THEME_STYLE)
+        self.assertIn(THEME_STYLE, result)
+        self.assertIn(f'<meta name="theme-color" content="{paper}">', result)
+        self.assertEqual(paper, '#142a3b')
+
     def test_metadata_escapes_titles_and_uses_public_route(self):
-        result = pages.metadata(pages.SITE + 'workers/', 'Luna & "review"', 'Choose <workers>.')
+        result = pages.metadata(
+            pages.SITE + 'workers/', 'Luna & "review"', 'Choose <workers>.', THEME[1])
         self.assertIn('Luna &amp; &quot;review&quot;', result)
         self.assertIn('Choose &lt;workers&gt;.', result)
         self.assertIn('rel="canonical" href="' + pages.SITE + 'workers/"', result)
 
     def publication_fixture(self, directory):
         root = Path(directory)
-        (root / 'index.html').write_text(pages.metadata(pages.SITE, 'Codex Plus', 'Workers and watches') +
-                                        '<main><h1>Codex Plus</h1></main>')
+        presentation_labels = {
+            'index.html': ('Codex Plus', 'Overview of workers and watches.'),
+            'walkthrough/index.html': ('Interactive walkthrough', 'Illustrated Codex Plus workflows.'),
+        }
+        for name, url in pages.PRESENTATION_PAGES.items():
+            title, description = presentation_labels[name]
+            target = root / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(pages.metadata(url, title, description, THEME[1]) +
+                              f'<main><h1>{title}</h1></main>')
         for name, (route, title) in pages.GUIDES.items():
             (root / route).mkdir()
-            (root / route / 'index.html').write_text(pages.guide_page(name, route, title, '<h1>Guide</h1>', ''))
+            (root / route / 'index.html').write_text(
+                pages.guide_page(name, route, title, '<h1>Guide</h1>', '', THEME))
         (root / 'assets').mkdir()
         (root / 'assets/architecture.svg').write_text('<svg/>')
         (root / '.nojekyll').write_text('')
@@ -301,6 +440,15 @@ class PagesTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'public file inventory differs'):
                 pages.validate_publication(root)
 
+    def test_overview_offers_the_canonical_install_request_before_the_feature_guides(self):
+        request = pages.lifecycle_requests((ROOT / 'docs/manage-agent.md').read_text())['Install']
+        source = (ROOT / 'docs/presentation/overview.html').read_text()
+        page = pages.overview_page(source, THEMED_LANDING, '', THEME, request)
+        first_screen = page.split('<section class="feature"', 1)[0]
+        self.assertRegex(first_screen, r'<textarea\b[^>]*\breadonly\b[^>]*>' + re.escape(request) + r'</textarea>')
+        self.assertIn(f'data-copy-request="{request}"', first_screen)
+        self.assertIn(pages.COPY_SCRIPT, page)
+
     def test_agent_requests_share_authored_text_and_keep_manual_copy(self):
         requests = pages.lifecycle_requests((ROOT / 'docs/manage-agent.md').read_text())
         self.assertEqual(len(requests), 7)
@@ -308,7 +456,7 @@ class PagesTests(unittest.TestCase):
         body = '<h1>Manage</h1><table>' + ''.join(
             '<tr><td>' + name + '</td><td>' + request + '</td></tr>'
             for name, request in requests.items()) + '</table>'
-        page = pages.guide_page('manage-agent.md', 'manage', 'Manage', body, '', requests)
+        page = pages.guide_page('manage-agent.md', 'manage', 'Manage', body, '', THEME, requests)
         self.assertIn('hidden data-copy-request="' + requests['Install'] + '"', page)
         self.assertIn('Plain Markdown for your agent', page)
         self.assertIn('copy it manually', page)
@@ -354,6 +502,32 @@ class PagesTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             pages.validate_publication(self.publication_fixture(directory))
 
+    def test_publication_requires_both_presentation_pages(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.publication_fixture(directory)
+            (root / 'walkthrough/index.html').unlink()
+            with self.assertRaisesRegex(ValueError, 'public file inventory differs'):
+                pages.validate_publication(root)
+
+    def test_public_sitemap_requires_walkthrough_route(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.publication_fixture(directory)
+            path = root / 'sitemap.xml'
+            entry = '<url><loc>' + pages.SITE + 'walkthrough/</loc></url>'
+            sitemap = path.read_text()
+            self.assertIn(entry, sitemap)
+            path.write_text(sitemap.replace(entry, ''))
+            with self.assertRaisesRegex(ValueError, 'public sitemap differs'):
+                pages.validate_publication(root)
+
+    def test_publication_refuses_wrong_walkthrough_canonical_route(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.publication_fixture(directory)
+            path = root / 'walkthrough/index.html'
+            path.write_text(path.read_text().replace(pages.SITE + 'walkthrough/', pages.SITE + 'wrong/'))
+            with self.assertRaisesRegex(ValueError, 'public URL metadata differs'):
+                pages.validate_publication(root)
+
     def test_publication_refuses_wrong_canonical_route(self):
         with tempfile.TemporaryDirectory() as directory:
             root = self.publication_fixture(directory)
@@ -365,7 +539,7 @@ class PagesTests(unittest.TestCase):
     def test_publication_refuses_missing_description(self):
         with tempfile.TemporaryDirectory() as directory:
             root = self.publication_fixture(directory)
-            (root / 'index.html').write_text(pages.metadata(pages.SITE, 'Codex Plus', '') +
+            (root / 'index.html').write_text(pages.metadata(pages.SITE, 'Codex Plus', '', THEME[1]) +
                                            '<main><h1>Codex Plus</h1></main>')
             with self.assertRaisesRegex(ValueError, 'public description'):
                 pages.validate_publication(root)

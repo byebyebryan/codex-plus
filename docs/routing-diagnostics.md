@@ -97,7 +97,7 @@ other routing policy or automatic model change.
 For an existing legacy or frozen study, explicitly request its policy update:
 
 ```sh
-rtk proxy codex-plus-diagnostics allow-model-upgrades
+codex-plus-diagnostics allow-model-upgrades
 ```
 
 Use the same native home and optional `--state-root` as that study. The operation
@@ -132,7 +132,7 @@ Before planning a selected goal's first routing decision, the adaptive goal
 skill runs:
 
 ```sh
-rtk proxy codex-plus-diagnostics enroll --if-open --routing-not-started
+codex-plus-diagnostics enroll --if-open --routing-not-started
 ```
 
 No open study means a read-only no-op. An enrolled goal returns a private episode
@@ -159,7 +159,7 @@ guessing or target resume occurs. For multiple candidate turns, use explicit
 identities and record each relevant turn separately:
 
 ```sh
-rtk proxy codex-plus-diagnostics link EPISODE --route luna \
+codex-plus-diagnostics link EPISODE --route luna \
   --thread CHILD --turn CHILD_TURN --first-result accepted \
   --contract-ref 'private-artifact:contract-and-check'
 ```
@@ -181,7 +181,7 @@ repair. References may point to correction/reuse links or material defects.
 After actual acceptance review, record one final outcome:
 
 ```sh
-rtk proxy codex-plus-diagnostics outcome EPISODE minor_correction \
+codex-plus-diagnostics outcome EPISODE minor_correction \
   --children-reviewed --user-intervention none \
   --evidence-ref 'private-artifact:final-check'
 ```
@@ -200,9 +200,9 @@ regressions as private evidence for the study's fixed follow-up review.
 After the closing native turn settles, run:
 
 ```sh
-rtk proxy codex-plus-diagnostics collect EPISODE
-rtk proxy codex-plus-diagnostics status
-rtk proxy codex-plus-diagnostics close
+codex-plus-diagnostics collect EPISODE
+codex-plus-diagnostics status
+codex-plus-diagnostics close
 ```
 
 `collect` prints private JSON to the caller and writes no native or study state.

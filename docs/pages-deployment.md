@@ -47,11 +47,15 @@ their original guide counts and scope.
 
 ## Site contents
 
-- Interactive walkthrough at the root, from `docs/presentation/index.html`.
+- Overview and guide directory at the root, from `docs/presentation/overview.html`. The opening offers the install request from the management guide. Each workflow links directly to its guide.
+- Interactive examples and copyable requests at `/walkthrough/`, from the
+  self-contained `docs/presentation/index.html`. Old overview fragments offer
+  direct links to their original content at the new route.
 - [Install and manage](manage-agent.md), the primary agent lifecycle guide, plus its exact plain Markdown export.
 - [Setup](getting-started.md), the human overview of workers, monitoring and reporting.
-- [Daily use](daily-use.md), [Luna and workers](workers.md), [architecture](architecture.md),
-  [environments](environments.md), [soak checklist](soak-checklist.md), [reporting](html-report-usage.md) and
+- [Watches and reminders](daily-use.md), [session communication](session-communication.md), [worker workflows](workers.md), [architecture](architecture.md),
+  [environments](environments.md), [soak checklist](soak-checklist.md),
+  [routing diagnostics](routing-diagnostics.md), [reporting](html-report-usage.md), and
   [installation](runtime-distribution.md), rendered as HTML guides.
 - The architecture SVG, tied by SHA-256 to the Markdown Mermaid diagram source.
 
@@ -70,14 +74,14 @@ deploy job. The github-pages environment and Pages concurrency group own deploym
 No personal credential is stored in the repository or site artifact.
 
 `scripts/build-pages` uses GitHub’s Markdown API through `gh api --hostname
-github.com` to render the nine public guides. GitHub Actions supplies its temporary
+github.com` to render the public guides. GitHub Actions supplies its temporary
 repository token; local builds use the selected personal github.com authentication.
 Rendering requires network access. No JavaScript library/CDN is needed by the site.
 
 Build outside the checkout:
 
 ```sh
-rtk proxy python3 -B scripts/build-pages --output /absolute/empty/site-directory
+python3 -B scripts/build-pages --output /absolute/empty/site-directory
 ```
 
 The builder refuses a non-empty destination or an output inside the checkout.
@@ -86,19 +90,22 @@ anchors, preserves links to technical GitHub sources, and validates every local
 page/asset/fragment before upload. Generated files remain outside committed source.
 It also checks identified current-release claims in the README, setup,
 architecture, installation and walkthrough against the README's independent
-published-release and managed-deployment declarations, and checks that the worker guide names all four worker workflows and
-the reporting skill. Historical release references remain valid. If current
+published-release and managed-deployment declarations. It checks all seven worker
+workflows and the reporting skill in the worker guide. Historical release references remain valid. If current
 claim wording changes, update its focused matcher in the builder alongside it.
 These consistency checks do not prove publication or installed adoption.
 Update the diagram SVG alongside Mermaid changes; a mismatched source hash fails
 rather than publishing a stale diagram.
 
-Generated guides include section contents, skip links, keyboard-accessible table
-scrolling and related-guide navigation. All public pages receive canonical and
-Open Graph URL/description metadata. `sitemap.xml` lists only the landing page
-and selected guide routes. The build rejects a mismatched public file inventory,
+The overview and guides share the walkthrough's dark theme tokens from its inline
+`site-theme` style block. Selected Markdown lists become choice and sequence
+figures in the generated guides, with the same text in GitHub's plain rendering.
+The guides include collapsible section contents, skip links, keyboard-accessible
+table scrolling and related-guide navigation. `sitemap.xml` lists the overview,
+walkthrough and guide routes. All public pages receive canonical and Open Graph
+URL and description metadata. The build rejects a mismatched public file inventory,
 missing or duplicate descriptions, incorrect canonical URLs, multiple main/H1
-elements or a stale sitemap before upload. Existing public routes stay stable;
+elements or a stale sitemap before upload. Guide routes stay stable;
 the component-based setup overview is at `/start/`.
 
 Pages serves current guides; the report tool serves immutable snapshots. Neither

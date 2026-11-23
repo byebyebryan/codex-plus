@@ -83,8 +83,8 @@ artifacts are immutable. Documentation publication is a separate operation.
 From a clean committed checkout, build into a new directory outside it:
 
 ```sh
-rtk proxy scripts/codex-plus-release build --output /ABSOLUTE/OUTSIDE/REPO/release
-rtk proxy scripts/codex-plus-release verify /ABSOLUTE/OUTSIDE/REPO/release
+scripts/codex-plus-release build --output /ABSOLUTE/OUTSIDE/REPO/release
+scripts/codex-plus-release verify /ABSOLUTE/OUTSIDE/REPO/release
 ```
 
 The verifier checks all archives, exact member inventories, modes, component
@@ -128,7 +128,7 @@ account-specific candidates through the same owner.
 
 ## Read-only diagnosis
 
-Run `rtk proxy scripts/codex-plus-doctor` from this checkout, or the shipped
+Run `scripts/codex-plus-doctor` from this checkout, or the shipped
 `scripts/codex-plus-doctor` inside a selected monitoring/reporting release.
 `--runtime-prefix`, `--report-prefix` and `--worker-prefix` select nondefault
 installations. The selected `CODEX_HOME` chooses MCP configuration and native
@@ -136,7 +136,7 @@ status queries; managed state/report path overrides are reflected. `--no-native`
 limits diagnosis to local files and configuration.
 
 Preview.13 adds `--human` for a readable summary of the
-same evidence. For example, run `rtk proxy scripts/codex-plus-doctor --human`
+same evidence. For example, run `scripts/codex-plus-doctor --human`
 from this checkout. JSON remains the default, with the same schema and exit
 statuses in both modes. Older preview.12 archives retain their original JSON-only CLI.
 
@@ -192,10 +192,10 @@ to establish the selected artifact identity.
 For an isolated installation, run:
 
 ```sh
-rtk proxy scripts/codex-plus-package verify /PATH/runtime.tar.gz --sha256 EXPECTED_SHA256
-rtk proxy scripts/codex-plus-package install /PATH/runtime.tar.gz --prefix /ABSOLUTE/INSTALL --sha256 EXPECTED_SHA256
-rtk proxy scripts/codex-plus-package activate --prefix /ABSOLUTE/INSTALL --revision FULL_SOURCE_REVISION
-rtk proxy scripts/codex-plus-package mcp-config --prefix /ABSOLUTE/INSTALL
+scripts/codex-plus-package verify /PATH/runtime.tar.gz --sha256 EXPECTED_SHA256
+scripts/codex-plus-package install /PATH/runtime.tar.gz --prefix /ABSOLUTE/INSTALL --sha256 EXPECTED_SHA256
+scripts/codex-plus-package activate --prefix /ABSOLUTE/INSTALL --revision FULL_SOURCE_REVISION
+scripts/codex-plus-package mcp-config --prefix /ABSOLUTE/INSTALL
 ```
 
 Installation creates `/ABSOLUTE/INSTALL/releases/FULL_SOURCE_REVISION` and selection
