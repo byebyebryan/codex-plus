@@ -15,7 +15,8 @@ loader.exec_module(pages)
 THEME_STYLE = (
     '<style id="site-theme">:root{color-scheme:dark;--paper:#142A3B;--ink:#F4F7F8}'
     '.note{color:var(--ink)}</style>')
-THEMED_LANDING = '<!doctype html><html><head>' + THEME_STYLE + '</head><body></body></html>'
+THEME_SCRIPT = '<script id="site-appearance">/* test control */</script>'
+THEMED_LANDING = '<!doctype html><html><head>' + THEME_STYLE + THEME_SCRIPT + '</head><body></body></html>'
 THEME = pages.site_theme(THEMED_LANDING)
 
 
@@ -393,10 +394,22 @@ class PagesTests(unittest.TestCase):
         style, paper = THEME
         result = pages.guide_page(
             'workers.md', 'workers', 'Luna & workers', '<h1>Workers</h1>', '', THEME)
-        self.assertEqual(style, THEME_STYLE)
-        self.assertIn(THEME_STYLE, result)
+        self.assertEqual(style, THEME_STYLE + THEME_SCRIPT)
+        self.assertIn(style, result)
         self.assertIn(f'<meta name="theme-color" content="{paper}">', result)
         self.assertEqual(paper, '#142a3b')
+
+    def test_public_templates_share_light_default_metadata_and_appearance_script(self):
+        overview = (ROOT / 'docs/presentation/overview.html').read_text()
+        walkthrough = (ROOT / 'docs/presentation/index.html').read_text()
+        theme = pages.site_theme(walkthrough)
+        for page in (pages.overview_page(overview, walkthrough, '', theme, 'Install request'),
+                     pages.presentation_page(walkthrough, 'walkthrough/', theme[1]),
+                     pages.guide_page('workers.md', 'workers', 'Workers', '<h1>Workers</h1>', '', theme)):
+            head = page.split('</head>')[0]
+            self.assertIn('<meta name="theme-color" content="#f6f6f4">', head)
+            self.assertEqual(page.count('id="site-appearance"'), 1)
+            self.assertIn('id="site-appearance"', head)
 
     def test_metadata_escapes_titles_and_uses_public_route(self):
         result = pages.metadata(

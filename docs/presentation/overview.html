@@ -131,8 +131,16 @@ footer { border-block: 1px solid var(--line); }
   .choices a[aria-selected="true"] { outline: 2px solid Highlight; outline-offset: -2px; }
   .plot i { background: CanvasText; forced-color-adjust: none; }
 }
+@media (max-width: 600px) {
+  .bar { column-gap: 5px; }
+  .bar nav { gap: 7px; }
+  .bar .theme-switch { width: 32px; }
+}
+@media (max-width: 385px) {
+  .bar:has(.theme-switch) { position: relative; display: block; }
+  .bar .theme-switch { position: absolute; top: 2px; right: 0; }
+}
 @media print {
-  :root { color-scheme: light; --paper: white; --surface: white; --surface-alt: #eee; --ink: #111; --secondary: #222; --muted: #444; --accent: #375b24; --line: #999; }
   .bar nav, .skip, .copy-tools, .choices { display: none; }
   .hero, .intro, .bench { display: block; }
   .hero { padding-block: 10px; }

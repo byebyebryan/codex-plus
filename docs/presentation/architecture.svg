@@ -1,17 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 690" role="img" aria-labelledby="title desc" data-source-sha256="ecc3f320ea950761a6071dfdd413a07475ae4d3926d32428b3a26eac0f29eda8">
 <title id="title">Codex Plus observation and native follow-up</title>
 <desc id="desc">An ordinary request reaches the model in the native conversation. Codex Plus tools register a coordinator and private journal. Permission-verified commands and passive peers supply useful observations, queued back to the same thread. Timers also queue a native turn. The model uses its normal approved MCP connection and the independent report publisher.</desc>
-<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9Z" fill="#a9d180"/></marker></defs>
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9Z" fill="var(--accent)"/></marker></defs>
 <style>
-text { font-family: system-ui,sans-serif; fill: #efefec; font-size: 16px; }
+:root {
+  --paper: #111213; --ink: #efefec; --muted: #aaaeac; --surface: #1b1d1f;
+  --line: #454b50; --accent: #a9d180; --accent-line: #758369; --accent-surface: #292c2d;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --paper: #f6f6f4; --ink: #222524; --muted: #545c56; --surface: #ffffff;
+    --line: #c1c6c2; --accent: #426628; --accent-line: #67795b; --accent-surface: #edf0e9;
+  }
+}
+text { font-family: system-ui,sans-serif; fill: var(--ink); font-size: 16px; }
 .title { font-weight: 650; }
-.sub { font-size: 13px; fill: #aaaeac; }
-.box { fill: #1b1d1f; stroke: #758369; stroke-width: 1.5; }
-.owned { fill: #292c2d; }
-.line { fill: none; stroke: #a9d180; stroke-width: 2; marker-end: url(#arrow); }
-.label { font-size: 12px; fill: #a9d180; }
+.sub { font-size: 13px; fill: var(--muted); }
+.box { fill: var(--surface); stroke: var(--accent-line); stroke-width: 1.5; }
+.owned { fill: var(--accent-surface); }
+.line { fill: none; stroke: var(--accent); stroke-width: 2; marker-end: url(#arrow); }
+.label { font-size: 12px; fill: var(--accent); }
 </style>
-<rect width="960" height="690" rx="16" fill="#111213" stroke="#454b50"/>
+<rect width="960" height="690" rx="16" fill="var(--paper)" stroke="var(--line)"/>
 <rect class="box" x="305" y="25" width="290" height="58" rx="9"/><text class="title" x="450" y="60" text-anchor="middle">Your ordinary request</text>
 <path class="line" d="M450 83V116"/>
 <rect class="box owned" x="305" y="120" width="290" height="79" rx="9"/><text class="title" x="450" y="151" text-anchor="middle">Native conversation / model</text><text class="sub" x="450" y="177" text-anchor="middle">Existing daemon, goals and approvals</text>

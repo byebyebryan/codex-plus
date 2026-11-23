@@ -337,6 +337,8 @@ footer { border-top: 1px solid var(--line); }
 textarea { display: block; width: 100%; min-height: 90px; font: inherit; }
 .copy-action[hidden], textarea[hidden] { display: none; }
 @media (max-width: 600px) {
+    header { position: relative; }
+    .guide-nav .theme-switch { position: absolute; right: 18px; top: 15px; }
     header, main, footer { padding: 18px; }
     h2 { font-size: 23px; }
     .toc ol { columns: 1; }
@@ -345,16 +347,6 @@ textarea { display: block; width: 100%; min-height: 90px; font: inherit; }
     figure img { min-width: 650px; }
 }
 @media print {
-    :root {
-        color-scheme: light;
-        --paper: white;
-        --ink: #17221c;
-        --surface: white;
-        --surface-alt: #edf2ef;
-        --muted: #405048;
-        --accent: #185b50;
-        --line: #bec9c3;
-    }
     .skip, header nav, .toc, .more, .copy-action, .copy-result { display: none; }
     pre, td code { white-space: pre-wrap; overflow-wrap: anywhere; }
     .table-scroll, pre, figure { overflow: visible; }
@@ -367,10 +359,13 @@ def site_theme(landing: str) -> tuple[str, str]:
     blocks = re.findall(r'<style id="site-theme">.*?</style>', landing, flags=re.S)
     if len(blocks) != 1:
         raise ValueError("landing page needs exactly one site theme style block")
+    controls = re.findall(r'<script id="site-appearance">.*?</script>', landing, flags=re.S)
+    if len(controls) != 1:
+        raise ValueError("landing page needs exactly one appearance script")
     color = re.search(r'--paper\s*:\s*(#[0-9a-f]{6})\s*(?=[;}])', blocks[0], flags=re.I)
     if not color:
         raise ValueError("site theme needs a six-digit --paper color")
-    return blocks[0], color[1].lower()
+    return blocks[0] + controls[0], color[1].lower()
 
 
 def rewrite_link(url: str, prefix: str) -> str:

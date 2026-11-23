@@ -97,9 +97,12 @@ These consistency checks do not prove publication or installed adoption.
 Update the diagram SVG alongside Mermaid changes; a mismatched source hash fails
 rather than publishing a stale diagram.
 
-The overview and guides share the walkthrough's dark theme tokens from its inline
-`site-theme` style block. Selected Markdown lists become choice and sequence
-figures in the generated guides, with the same text in GitHub's plain rendering.
+The overview and guides share the walkthrough's `site-theme` style block and
+`site-appearance` script. Light is the default even with JavaScript disabled.
+The header switch saves the
+reader's light or dark preference on the site origin. Selected Markdown lists
+become choice and sequence figures in the generated guides, with the same text
+in GitHub's plain rendering.
 The guides include collapsible section contents, skip links, keyboard-accessible
 table scrolling and related-guide navigation. `sitemap.xml` lists the overview,
 walkthrough and guide routes. All public pages receive canonical and Open Graph
