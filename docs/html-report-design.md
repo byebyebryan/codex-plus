@@ -128,8 +128,8 @@ HTTP hosting or desktop browser access by itself.
 Proposed CLI name: `codex-plus-report`. Proposed skill name: `html-report`.
 
 ```sh
-rtk proxy codex-plus-report publish --source /absolute/path/report.html --title "SSH findings"
-rtk proxy codex-plus-report publish --source /absolute/path/report-bundle --entrypoint index.html --title "Run comparison"
+codex-plus-report publish --source /absolute/path/report.html --title "SSH findings"
+codex-plus-report publish --source /absolute/path/report-bundle --entrypoint index.html --title "Run comparison"
 ```
 
 The equivalent MCP operation is `report_publish(source, title, entrypoint?, project?)`.

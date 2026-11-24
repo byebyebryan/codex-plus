@@ -2,12 +2,13 @@
 
 # Worker workflows
 
-Your primary is the agent in your current conversation. It can give Luna a
-well-defined change to keep costs down or ask Astra to review a difficult
-decision. The primary checks the result and carries on with the larger task.
+You can keep your usual model on a project and choose a different one for a
+particular job. Give Luna a well-defined change to keep token costs down, or
+bring in Astra for a design decision that deserves a second look. The agent
+you’re talking to is the primary. It reviews what comes back.
 
-- **Name a worker.** In a Sol-led session, try `$astra-task Review the CSV importer for compatibility with the old format.` Astra reviews that change. Sol uses the findings and carries on with the migration.
-- **Let Codex choose.** Try `$adaptive-task Check the CSV importer and update its examples.` Your primary decides what to handle itself and what to delegate, then verifies the result.
+- **Name a worker.** In a Sol-led session, try `$astra-task Review the CSV importer for compatibility with the old format.` Astra returns its findings to Sol. Sol decides what needs fixing before the migration can proceed.
+- **Let Codex choose.** Try `$adaptive-task Update the CSV examples and check that the importer can read them.` Your primary decides whether to delegate and verifies that the revised examples import.
 
 ## Choose a workflow
 
@@ -17,11 +18,11 @@ decision. The primary checks the result and carries on with the larger task.
 | Use Luna as the only delegated model | `$luna-task` | `$luna-goal-loop` |
 | Choose a particular XHigh worker | `$sol-task`, `$astra-task` or `$terra-task` (current Terra) | Name the assignment and worker in your adaptive goal request. |
 
-Invoke the skill explicitly. “Use Luna for a goal loop” also works. A generic
-request for a task or goal loop stays with the ordinary primary workflow.
-Discussing a skill leaves it inactive. Task skills handle one outcome.
-Goal-loop skills can use native goal tools to track an explicitly requested
-goal through acceptance.
+Use a task for a single result, such as a compatibility review. Use a goal
+loop when you want the primary to carry the work through fixes and final
+checks. Name the skill to start it. “Use Luna for a goal loop” also works.
+Discussing a skill or asking for a generic goal loop leaves ordinary Codex in
+charge. An explicitly requested goal can use native goal tracking.
 
 ## Working in parallel
 
@@ -76,12 +77,11 @@ The primary owns the goal. It can send a defect back to Luna for correction,
 take over an unresolved decision, or handle a difficult portion itself. An
 assignment with missing verification returns to the primary for review.
 
-Adaptive workflows close with a short account of who did what. The primary
-can credit a finding to the assignment that returned it. For a claim that
-Luna completed the work, preview.30 requires a completed native turn, the
-returned work and evidence of the selected role, model and effort. The primary
-reports attribution gaps and conflicting evidence. A usage summary can also
-show observed tokens for this run. [How usage is scoped](routing-diagnostics.md#current-run-usage).
+At the end of an adaptive run, you can see what each worker contributed and
+what the primary checked. Since preview.30, crediting Luna by name requires
+the returned work, a completed native turn and records confirming the role,
+model and effort. The summary flags any missing or conflicting evidence. It
+can also include observed tokens for the run. [How usage is scoped](routing-diagnostics.md#current-run-usage).
 
 <a id="choose-sol-or-astra-explicitly-source-candidate"></a>
 

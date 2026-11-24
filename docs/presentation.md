@@ -44,7 +44,7 @@ Edit the [overview template](presentation/overview.html) for the first-visit
 page. Edit the [self-contained walkthrough](presentation/index.html) for the
 examples and interactive controls. The walkthrough opens directly from disk
 and supplies the site’s shared palettes, theme switch and icon. New readers
-see the light theme. The header lets them switch themes on any page.
+see the dark theme. The header lets them switch themes on any page.
 
 The [Pages builder](../scripts/build-pages) assembles both routes, rewrites
 public guide links and adds page metadata. The overview uses the install request

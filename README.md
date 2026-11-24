@@ -21,7 +21,7 @@ for inspection, configuration, rollback, cleanup and uninstall too.
 
 | What you want | Try this in Codex |
 | --- | --- |
-| [Watch a run or check back later](docs/daily-use.md) | “Watch this build and tell me when the tests finish.” For a one-time follow-up, “Check this build again in twenty minutes.” |
+| [Watch for changes or check back later](docs/daily-use.md) | “Watch the export queue and tell me if a job needs input.” For a one-time follow-up, “Check the queue again in twenty minutes.” |
 | [Publish an HTML report](docs/html-report-usage.md) | “Plot the benchmark results side by side and give me a report link I can share.” |
 | [Contact another session](docs/session-communication.md) | “Ask the session preparing the release if it’s still editing the migration guide. I’d like to take the next pass.” |
 | [Choose who does the work](docs/workers.md) | `$astra-task Review this patch for compatibility.` Use `$adaptive-task` to let your primary decide who takes each part. |

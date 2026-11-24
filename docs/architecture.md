@@ -1,58 +1,9 @@
 # How Codex Plus works
 
-Codex runs the conversation and handles model turns, goals, approvals, and
-native tools. The Codex Plus watch coordinator observes the sources a session
-selects, keeps its timers, and queues relevant updates for that same session.
-
-## What is in the package
-
-| Component | Surface | Responsibility |
-| --- | --- | --- |
-| Monitoring runtime | 17 `codex_plus` MCP tools; watch/peer/package/owner CLIs | Peer discovery and passive reads, bounded sources, messages, reminders, cancellation, receipts and explicit clean owner recovery. |
-| Reporting component | Four `html_report` MCP tools; report CLI; HTML report skill | Immutable static snapshots, project catalog, delivery checks and selected deletion. |
-| Report server | `codex-report-server` | Independent HTTP hosting; per-config tmux ownership or an explicitly managed server. |
-| Worker bundle | `luna-max`, `sol-xhigh`, `astra-xhigh`, `terra-6-1-xhigh`; seven workflow skills | Explicit named tasks and adaptive/Luna workflows; primary retains decisions and acceptance. |
-| Development source | Tests, validators, guides and research reports | Implementation and acceptance evidence; distinct from installed immutable artifacts. |
-
-Codex Plus `v0.1.0-preview.30` unifies workers, monitoring and reporting under one
-version, source commit and release. Optional archives retain each component's
-dependencies and configuration. Managed source selects preview.30 artifacts
-from `33de05c`. Snap and Starship verified the rollout. Carbon's deployment
-is pending. Snap's default and Work environments retain separate native homes.
-See the [delivery receipt](reliability-packaging-results.md#preview30-worker-workflow-fixes).
-Managed configuration, selected artifacts and already loaded processes
-are different layers: existing MCP processes adopt new code on normal reconnect.
-Journals, report data and hosting remain runtime-owned.
-
-The read-only `scripts/codex-plus-doctor` reports selected manifest integrity,
-enabled MCP configuration and native client/owner version evidence. Preview.10 and later
-can read reported MCP versions for one positively loaded conversation;
-missing metadata remains unknown and reported versions do not verify payload
-bytes. It never starts services or infers loaded code from a selected symlink.
-A version outside the recorded qualification baseline remains unqualified; see
-[diagnosis](runtime-distribution.md#read-only-diagnosis).
-
-Each canonical `CODEX_HOME` selects a native endpoint and Codex Plus context.
-Explicit state/config paths take precedence; alternate homes otherwise derive
-separate namespaces. Native `--profile` does not create another environment.
-Peers and messages stay within that home's daemon, even on the same host.
-Reports use the selected config/store and distinct configured serving endpoints.
-See [multiple environments](environments.md) for diagnostics and compatibility.
-
-Native Codex/terminal notification delivery is outside Codex Plus. There is no
-relay, completion hook or notification enrichment dependency. Formatting belongs
-to Kitty/chezmoi; the old delivery/349 inspector work is retired.
-
-Worker identities and explicit invocation behavior are unchanged. Discussing a
-skill or asking for a generic goal loop does not invoke a worker workflow. The
-HTML report skill is an additional skill, separate from the seven worker workflows.
-The [worker guide](workers.md) covers Luna, task versus goal-loop workflows,
-adaptive routing and the distinction between workers and independent peers.
-Preview.18 adds three explicit named task frontends, reusing Sol/Astra roles and
-adding a distinct current-Terra role. Older preview.17 installations retain four
-worker workflows until upgraded. Named review
-is an assignment choice, with primary acceptance and inherited permissions,
-rather than a new service, primary switch or automatic escalation policy.
+When you ask Codex to watch an export, you can keep using the same thread.
+Codex Plus keeps track of the job and queues an update when something you
+asked about happens. Native Codex decides when the model can respond and
+continues to handle goals, approvals and tools.
 
 ## Observation and follow-up
 
@@ -72,10 +23,10 @@ flowchart TD
   Model -->|Report request| Reports[Independent report publisher and HTTP store]
 ```
 
-Registration freezes the caller, thread, owner and source identity. The runtime
-positively verifies the loaded independent caller and native listener; it does
-not launch another daemon or cold-resume a target. A private user-owned `0700`
-state root holds intent and event receipts outside model context.
+When a watch starts, Codex Plus verifies the open session and its daemon and
+ties the watch to that caller, thread, owner and source. Only an already
+loaded, independent session can register it. A private user-owned `0700`
+state directory keeps the request and its receipts outside model context.
 
 Command sources inherit the exact calling session's effective execution policy,
 including existing network access and authorized cache writes. Read-only and
@@ -95,13 +46,62 @@ human control retain native ordering. The model reads fresh relevant state,
 records handling and decides the next useful step under the existing request.
 An observation supplies data, not permission to repair a workload or start a task.
 
+## What is in the package
+
+| Component | How you reach it | What it does |
+| --- | --- | --- |
+| Monitoring runtime | 17 `codex_plus` MCP tools and the watch, peer, package and owner CLIs | Follows sources for a limited time, delivers messages and reminders, and records what happened. Supports cancellation and explicit owner recovery. |
+| Reporting component | Four `html_report` MCP tools, the report CLI and the HTML report skill | Saves static snapshots, groups them by project, checks delivery and deletes reports you select. |
+| Report server | `codex-report-server` | Serves the snapshots independently of Codex. Each configuration can use its own tmux session or a server you manage. |
+| Worker bundle | Seven workflow skills and four roles (`luna-max`, `sol-xhigh`, `astra-xhigh`, `terra-6-1-xhigh`) | Routes assignments to workers. The primary reviews their work and makes the final decisions. |
+| Development source | Tests, validators, guides and research reports | Records what was implemented and checked. Installed archives have their own manifests. |
+
+Codex Plus `v0.1.0-preview.30` unifies workers, monitoring and reporting under one
+version, source commit and release. Optional archives retain each component's
+dependencies and configuration. Managed source selects preview.30 artifacts
+from `33de05c`. Snap and Starship verified the rollout. Carbon's deployment
+is pending. Snap's default and Work environments retain separate native homes.
+See the [delivery receipt](reliability-packaging-results.md#preview30-worker-workflow-fixes).
+Changing the selected release updates the files available to the next process.
+An existing MCP connection picks up the change on its normal reconnect. The
+runtime continues to own its journals, report data and hosting.
+
+The read-only `scripts/codex-plus-doctor` reports selected manifest integrity,
+enabled MCP configuration and native client/owner version evidence. Preview.10 and later
+can read reported MCP versions for one positively loaded conversation;
+missing metadata remains unknown and reported versions do not verify payload
+bytes. It never starts services or infers loaded code from a selected symlink.
+A version outside the recorded qualification baseline remains unqualified; see
+[diagnosis](runtime-distribution.md#read-only-diagnosis).
+
+Each canonical `CODEX_HOME` selects a native endpoint and Codex Plus context.
+Explicit state/config paths take precedence; alternate homes otherwise derive
+separate namespaces. Native `--profile` does not create another environment.
+Peers and messages stay within that home's daemon, even on the same host.
+Reports use the selected config/store and distinct configured serving endpoints.
+See [multiple environments](environments.md) for diagnostics and compatibility.
+
+Completion and approval alerts still come from native Codex and your terminal.
+On the managed hosts, Kitty and chezmoi own their formatting.
+
+Worker identities and explicit invocation behavior are unchanged. Discussing a
+skill or asking for a generic goal loop does not invoke a worker workflow. The
+HTML report skill is an additional skill, separate from the seven worker workflows.
+The [worker guide](workers.md) covers Luna, task versus goal-loop workflows,
+adaptive routing and the distinction between workers and independent peers.
+Preview.18 adds three explicit named task frontends, reusing Sol/Astra roles and
+adding a distinct current-Terra role. Older preview.17 installations retain four
+worker workflows until upgraded. Named review
+is an assignment choice, with primary acceptance and inherited permissions,
+rather than a new service, primary switch or automatic escalation policy.
+
 ## Discovery and messaging
 
-Ordinary peers are positively classified independent, loaded sessions within the
-same daemon. Known children and unknown classification are excluded from ordinary
-selection. Project/recent agent context helps resolve a description; ambiguity
-or incomplete coverage is exposed. Peer reads omit user prompts and tool outputs.
-Stable references never retarget when a name is reused.
+Describe the other session by its project or recent work. Codex looks among
+confirmed independent sessions loaded on the same daemon. If several fit, it
+asks which one you mean. If it could inspect only part of the directory, it
+says so. Peer reads omit user prompts and tool outputs. Once selected, the
+reference stays with that session even if another takes its name.
 
 Information and requests are attributed. The receiver can accept or decline a
 request within its existing task. The sender reads cached handling receipts
@@ -114,13 +114,13 @@ cross-host transport. Agent Observer/Mesh is not a runtime dependency.
 
 | Fact or control | Meaning |
 | --- | --- |
-| Registered | The runtime has bounded intent; this does not prove a useful update will occur. |
-| Native queued | Input was admitted to the bound conversation, not necessarily handled. |
-| Received / accepted / declined | The model recorded handling; neither receipt nor acceptance proves an external effect. |
-| Cancelled | Future observation/admission is stopped for the selected intent; already consumed work is reported honestly. |
-| Expired | A lease or allowance ended; it is not a task-success signal. |
-| Lost / uncertain | Coverage or delivery is incomplete; no blind replay or silent retargeting. |
-| Esc | Foreground interruption, without cancellation of independent registrations. |
+| Registered | The watch or reminder is set up. Its time and event limits apply. |
+| Native queued | The update is waiting in the intended conversation. |
+| Received / accepted / declined | The recipient recorded how it handled the message. Look for a reply or check the work to confirm the result. |
+| Cancelled | Future checks or deliveries stop for this request. History shows any work that already went through. |
+| Expired | The time or event allowance ran out. Check the job itself to see whether it finished. |
+| Lost / uncertain | There’s a gap in observation or delivery. The runtime leaves it visible and won’t silently retry or switch targets. |
+| Esc | The foreground turn stops. Independent watches and reminders keep their original limits. |
 
 Explicit stop forbids renewal/replacement. Renewal retains the frozen source.
 Recovery is explicit, retains remaining bounds, discloses gaps and does not replay
@@ -157,11 +157,11 @@ See [the daily recap example](daily-use.md#inspect-follow-up-health),
 
 ## Coverage of the studied Claude workflow
 
-Bryan's sampled Claude histories supplied the sequence: observe, wake, inspect,
-decide, take an authorized action, continue and report. They included repeated
-script-based watches, later checks and independently inspectable conversations.
-That is historical mechanism evidence, not an audited production-outcome sample.
-The [context study](claude-monitoring-context.md) retains the sanitized counts.
+The watch design grew out of everyday use of Claude Code. A script could
+follow a job quietly, then bring the agent back when there was a decision to
+make. One-off checks and handoffs between conversations followed much the same
+pattern. The [context study](claude-monitoring-context.md) records how those
+features were used. The table shows which parts have been checked in Codex.
 
 | Function in that workflow | Codex Plus today | Evidence or remaining limit |
 | --- | --- | --- |

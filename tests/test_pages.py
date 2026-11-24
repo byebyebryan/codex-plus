@@ -399,7 +399,7 @@ class PagesTests(unittest.TestCase):
         self.assertIn(f'<meta name="theme-color" content="{paper}">', result)
         self.assertEqual(paper, '#142a3b')
 
-    def test_public_templates_share_light_default_metadata_and_appearance_script(self):
+    def test_public_templates_share_dark_default_metadata_and_appearance_script(self):
         overview = (ROOT / 'docs/presentation/overview.html').read_text()
         walkthrough = (ROOT / 'docs/presentation/index.html').read_text()
         theme = pages.site_theme(walkthrough)
@@ -407,7 +407,7 @@ class PagesTests(unittest.TestCase):
                      pages.presentation_page(walkthrough, 'walkthrough/', theme[1]),
                      pages.guide_page('workers.md', 'workers', 'Workers', '<h1>Workers</h1>', '', theme)):
             head = page.split('</head>')[0]
-            self.assertIn('<meta name="theme-color" content="#f6f6f4">', head)
+            self.assertIn('<meta name="theme-color" content="#111213">', head)
             self.assertEqual(page.count('id="site-appearance"'), 1)
             self.assertIn('id="site-appearance"', head)
 
@@ -591,6 +591,24 @@ class PagesTests(unittest.TestCase):
     def test_missing_guide_refuses_publication(self):
         with self.assertRaisesRegex(ValueError, 'broken site link'):
             self.validate_site('<a href="environments/">Homes</a>')
+
+    def test_raw_agent_guide_links_resolve_from_the_exported_markdown_address(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'workers').mkdir()
+            (root / 'workers/index.html').write_text('<h2 id="named-task">Named task</h2>')
+            for href, error in (
+                ('workers.md#named-task', 'broken site link'),
+                (pages.SITE + 'workers/#missing', 'broken site anchor'),
+                (pages.SITE + 'workers/#named-task', None),
+            ):
+                with self.subTest(href=href):
+                    raw = {'manage.md': f'<a href="{href}">Worker guide</a>'}
+                    if error:
+                        with self.assertRaisesRegex(ValueError, error + ' in manage.md'):
+                            pages.validate(root, raw)
+                    else:
+                        self.assertEqual(pages.validate(root, raw), 1)
 
     def test_duplicate_control_id_refuses_publication(self):
         with self.assertRaisesRegex(ValueError, 'duplicate site id'):

@@ -1,13 +1,15 @@
 # Get started with Codex Plus
 
-Ask your coding agent to install the components you need. All three ship in
-the same release and work from an ordinary Codex session.
+Start with something you’d like Codex to handle. If you often wait for a job
+to finish, install monitoring. If you want charts or comparisons you can open
+in a browser, install reporting. You can ask your coding agent to install any
+combination from the same release, then try it in a fresh Codex CLI session.
 
 ## Choose what to install
 
-- **[Workers](#set-up-workers)** Choose a model for an assignment or let your primary decide what to delegate.
-- **[Monitoring](#set-up-monitoring-and-coordination)** Watch a job, schedule a one-time check, or contact another open session.
-- **[Reporting](#set-up-reporting)** Publish charts and findings to a host you can reach from your browser.
+- **[Workers](#set-up-workers)** Give a well-defined job to Luna, ask Astra for a review, or let Codex choose.
+- **[Monitoring](#set-up-monitoring-and-coordination)** Hear when a job needs attention, check back later, or arrange a handoff with another open session.
+- **[Reporting](#set-up-reporting)** Put results side by side in a browser and find earlier reports by project.
 
 ## Install or manage with your agent
 
@@ -52,30 +54,32 @@ acceptance. [Compare the workflows](workers.md#choose-a-workflow).
 
 ## Set up monitoring and coordination
 
-The released monitoring archive requires Linux, Python 3.11 or newer and RTK.
-Integrate the generated MCP table through your configuration owner. The
-release qualification baseline is Codex 0.162.1. Later trials cover specific paths on Codex 0.163.0 and
-restart, callback and ephemeral-peer behavior on 0.167.2.
-[Installation and qualification](runtime-distribution.md).
-
 > Watch this run and tell me if it stalls or fails.
 
 Give Codex a source your session can already access and describe the change
-you care about. The 17 monitoring tools also support reminders and communication
-between independent loaded sessions in the same daemon.
+you care about. In the same conversation you can also schedule a reminder or
+ask Codex to send a message to another independent session on the same daemon.
 [Watch a run](daily-use.md#choose-a-follow-up) · [Contact another session](session-communication.md).
+
+The monitoring archive requires Linux, Python 3.11 or newer and RTK. Your
+agent configures its 17 MCP tools through the manager that owns your settings.
+The release qualification baseline is Codex 0.162.1. Later trials covered
+specific paths on 0.163.0 and restart, callback and ephemeral-peer behavior on
+0.167.2. [Installation and qualification](runtime-distribution.md).
 
 ## Set up reporting
 
-The report publisher runs independently of a native agent owner. Configure
-its CLI or four MCP tools and a URL reachable from your viewing desktop.
-Use tmux for optional automatic hosting or serve the report store’s public
-subtree through your own HTTP server. [Report setup and hosting](html-report-usage.md#configuration-and-hosting).
-
 > Make a browser report of the results, including the risks.
 
-Publication saves a snapshot. A delivery check verifies the served HTML
-bytes. Open the link on your viewing desktop to check the presentation.
+If you use Codex over SSH, choose a report address you can open from your
+laptop. Your agent can publish through the CLI or the four report MCP tools.
+For hosting, use the built-in tmux option or serve the report store’s public
+directory with your own HTTP server. Reports stay available after the Codex
+session ends while that server is running.
+[Report setup and hosting](html-report-usage.md#configuration-and-hosting).
+
+Codex saves a snapshot. A delivery check verifies the served HTML bytes.
+Open the link in your own browser to check the presentation.
 [From export to browser](html-report-usage.md#from-export-to-browser).
 
 ## Try one useful request

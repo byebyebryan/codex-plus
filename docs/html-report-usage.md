@@ -2,19 +2,18 @@
 
 # Publish an HTML report
 
-Choose the report address from the reader’s side. Use `localhost` if your
-browser runs on the Codex machine. If you run Codex over SSH and read on
-your laptop, use a hostname the laptop can reach. Set it once and the report
-skill uses it for each new publication in that environment.
+A chart beside its data or two versions of an export are easier to read in
+a browser. Ask Codex for the view you need. Once you’ve set a report address
+for your Codex environment, the next session can publish there too.
 
 ## Use it from Codex
 
 > Show the same book in both export formats side by side. Publish the
 > comparison with my other reading-list reports and give me the link.
 
-With reporting configured in this environment, Codex prepares the export and
-returns the report link. Ask “Find the earlier reading-list reports” to browse
-the project catalog or “Check delivery for this report” to inspect its receipt.
+Open the report to compare the same record in both formats. Next time you
+change an exporter, ask “Find the earlier reading-list reports.” The project
+catalog keeps the old snapshots together so you can compare them with the new one.
 
 ## From export to browser
 
@@ -22,6 +21,10 @@ the project catalog or “Check delivery for this report” to inspect its recei
 2. **Publish a snapshot.** The publisher stores a copy under a stable link. A project label groups related reports.
 3. **Check delivery.** Codex can compare the served HTML with the saved copy.
 4. **Open the report.** Follow the link from a browser that can reach the report host.
+
+Choose the report address from the reader’s side. Use `localhost` if your
+browser runs on the Codex machine. If you run Codex over SSH and read on
+your laptop, configure a hostname the laptop can reach.
 
 [Set up reporting](getting-started.md#set-up-reporting) · [Agent installation guide](manage-agent.md) · [Verified artifacts and MCP](#verified-artifacts-and-optional-mcpplugin-loading).
 
@@ -45,6 +48,9 @@ until you select them for deletion. When capacity is exhausted, the publisher
 refuses new reports.
 
 ### Read the receipt
+
+A report can be safely stored even when the server is down. If the link
+doesn’t open, ask “Check delivery for this report” to see how far it got.
 
 | Result | What it tells you |
 | --- | --- |
@@ -73,8 +79,9 @@ activity come first and reports are newest first within each group. Filter
 by project and search by title or project together. **Clear filters** restores
 the whole library.
 
-Use one exact, case-sensitive label across sessions and hosts. Omitted labels
-appear under **Uncategorized**. Each host lists its own reports. For example,
+Reuse the same project label, including capitalization, so reports from
+different sessions appear together on the same host. Each host has its own
+catalog. Reports with no label appear under **Uncategorized**. For example,
 `http://starship:8787/reports/#project=reading-list` opens one project on
 Starship. Search and filters live in the URL fragment, so bookmarks and Back
 restore the view. A missing project shows zero matches. `#uncategorized=1`

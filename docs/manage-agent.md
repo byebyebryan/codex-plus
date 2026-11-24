@@ -1,14 +1,14 @@
 # Install and manage Codex Plus with your agent
 
-Give your coding agent this guide and the action you want. It uses ordinary
-file, shell and network tools; Codex Plus does not need to be installed first.
-The [setup overview](https://dev.byebyebryan.com/codex-plus/start/) explains components for human readers.
-The [plain Markdown guide](https://dev.byebyebryan.com/codex-plus/manage.md)
-contains these same instructions without the website navigation.
+Choose a request below and paste it into the coding session you already use.
+Your agent can follow it with ordinary file, shell and network tools, even on
+a machine getting Codex Plus for the first time. If you’re deciding what to
+install, start with the [setup overview](https://dev.byebyebryan.com/codex-plus/start/).
+Each request points your agent to the [plain Markdown guide](https://dev.byebyebryan.com/codex-plus/manage.md).
 
 ## Choose an action
 
-Copy a request, or describe the same intent in your own words:
+Use the request as written or name the components you want it to cover.
 
 | Action | Request to your agent |
 | --- | --- |
@@ -26,13 +26,13 @@ An upgrade request includes changing ordinary installation pins through their
 owner; ask only for missing scope, a meaningful choice or an action beyond the
 request. Complete independent preparation before reporting a manual prerequisite.
 
-Start with environment discovery below. For **Inspect**, perform read-only
-verification and diagnostics, then stop; no release download or repair is needed.
-For **Configure**, change only the requested settings. **Roll back**, **Clean up**
-and **Uninstall** use their action sections and retained provenance; they do not
-begin by installing a newer release. Only **Install** and **Upgrade** follow the
-new-release installation sequence. Fetch missing provenance only when needed for
-the requested action and available under existing access.
+First identify the environment and the owner of its configuration. Then follow
+the path for the requested action.
+
+- **Inspect** runs read-only verification and diagnostics. Finish with the findings.
+- **Install** and **Upgrade** follow the new-release sequence below.
+- **Configure** changes only the requested settings.
+- **Roll back**, **Clean up** and **Uninstall** use their own sections and retained installation records. Fetch missing records only when the requested action needs them and existing access permits it.
 
 ## Inspect the existing environment
 
@@ -79,47 +79,6 @@ and configuration without contacting native sessions. Omit it only for an
 authorized read against an existing owner. Never start a daemon to make diagnosis
 pass. Keep a private before/after record of affected files and process identities;
 do not put credentials or private runtime captures in source control.
-
-## Refresh worker model preferences
-
-During a requested install/upgrade or model-selection refresh, inspect each
-selected native home/provider independently. Never derive Work access from
-another home or assume a model catalogue proves entitlement. Keep exact-version
-preferences and restrictions. Otherwise use `latest-available` within the role's
-family and existing effort, using the selected release's offline resolver.
-
-When monitoring is installed, `codex-plus-context --models` (daemon-default provider; add
-`--model-provider NAME` for a configured provider override) reads the selected
-existing owner's bounded catalogue without inference, resuming threads, reload
-or owner start. Supply the resulting JSON to
-`WORKERS/scripts/codex-plus-workers resolve --catalog CATALOG.json`, optionally
-with a TOML `--preferences` file containing `[models.sol]` and
-`version = "latest-available"` or an exact model ID. Equivalent family keys are
-`astra`, `luna`, and `terra`. The worker archive includes the helper without
-requiring the monitoring runtime. Catalogue/preference files stay private.
-
-Retain the preferences file (or equivalent manager fields) and a private refresh
-receipt outside immutable releases. A concrete installed model alone cannot tell
-you whether its version was an exact preference or a previous latest selection.
-Treat unexplained local role edits as drift to preserve, not permission to reset.
-
-The plan contains concrete selections and unavailable-role reasons. Apply only
-reviewed candidates through the configuration owner, changing the native role's
-model while retaining instructions, effort, permissions and invocation rules.
-Do not replace a local exact preference or use a rejected candidate's older
-version automatically. Missing native discovery holds existing selections;
-do not start/restart a daemon to obtain a catalogue. Keep a private refresh
-receipt with the exact resolved models and catalogue date.
-
-For chezmoi, retain published role-file URLs/checksums as provenance and project
-reviewed per-home model selections through the manager. Do not hand-patch the
-installed files. "Latest" means latest at the last requested refresh; an
-ordinary apply performs no native catalogue call. Native loaded roles and active
-workers may retain prior definitions until ordinary adoption. Verify selected
-files and actual executed models separately. Diagnostic studies record exact versions for analysis without stopping
-collection on model updates. An existing frozen study needs the explicitly
-requested `allow-model-upgrades` operation; preserve its backup, history and
-bounds rather than creating or extending a window implicitly.
 
 ## Resolve and verify one published release
 
@@ -222,7 +181,7 @@ Preview.18 adds explicit `sol-task`, `astra-task` and current
 release manifest. Do not graft moving-main skills into a pinned managed release.
 Install both files per skill through the same owner,
 preserve invocation restrictions, and verify discovery and model execution as
-separate acceptance steps. The [named-task guide](workers.md#choose-sol-or-astra-explicitly-source-candidate)
+separate acceptance steps. The [named-task guide](https://dev.byebyebryan.com/codex-plus/workers/#choose-sol-or-astra-explicitly-source-candidate)
 explains their assignment-scoped permission and primary ownership.
 Current Terra also requires `terra-6-1-xhigh` (current Terra family / `xhigh`), separate
 from legacy `terra-xhigh` (`gpt-5.6-terra`). Both task variants use `terra-task`:
@@ -254,6 +213,47 @@ content and reconcile the requested update. Unknown extra files stay intact.
 Avoid recursive copying into an existing skill directory, which can merge old
 files or nest directories. An existing skill disable preference stays effective.
 Installing these files does not activate a worker workflow.
+
+## Refresh worker model preferences
+
+During a requested install/upgrade or model-selection refresh, inspect each
+selected native home/provider independently. Never derive Work access from
+another home or assume a model catalogue proves entitlement. Keep exact-version
+preferences and restrictions. Otherwise use `latest-available` within the role's
+family and existing effort, using the selected release's offline resolver.
+
+When monitoring is installed, `codex-plus-context --models` (daemon-default provider; add
+`--model-provider NAME` for a configured provider override) reads the selected
+existing owner's bounded catalogue without inference, resuming threads, reload
+or owner start. Supply the resulting JSON to
+`WORKERS/scripts/codex-plus-workers resolve --catalog CATALOG.json`, optionally
+with a TOML `--preferences` file containing `[models.sol]` and
+`version = "latest-available"` or an exact model ID. Equivalent family keys are
+`astra`, `luna`, and `terra`. The worker archive includes the helper without
+requiring the monitoring runtime. Catalogue/preference files stay private.
+
+Retain the preferences file (or equivalent manager fields) and a private refresh
+receipt outside immutable releases. A concrete installed model alone cannot tell
+you whether its version was an exact preference or a previous latest selection.
+Treat unexplained local role edits as drift to preserve, not permission to reset.
+
+The plan contains concrete selections and unavailable-role reasons. Apply only
+reviewed candidates through the configuration owner, changing the native role's
+model while retaining instructions, effort, permissions and invocation rules.
+Do not replace a local exact preference or use a rejected candidate's older
+version automatically. Missing native discovery holds existing selections;
+do not start/restart a daemon to obtain a catalogue. Keep a private refresh
+receipt with the exact resolved models and catalogue date.
+
+For chezmoi, retain published role-file URLs/checksums as provenance and project
+reviewed per-home model selections through the manager. Do not hand-patch the
+installed files. "Latest" means latest at the last requested refresh; an
+ordinary apply performs no native catalogue call. Native loaded roles and active
+workers may retain prior definitions until ordinary adoption. Verify selected
+files and actual executed models separately. Diagnostic studies record exact versions for analysis without stopping
+collection on model updates. An existing frozen study needs the explicitly
+requested `allow-model-upgrades` operation; preserve its backup, history and
+bounds rather than creating or extending a window implicitly.
 
 ## Configure tools and reporting
 
@@ -319,7 +319,7 @@ commands/messages remain quarantined. Newly registered replay-safe command/MCP
 sources can choose `restart=resume`; peer watches and un-emitted reminders can
 continue within their original bounds. Diagnose retained gaps with `owner_status`
 before any explicitly authorized recovery. See the
-[recovery contract](owner-recovery.md#daemon-restart-candidate-preview19).
+[recovery contract](https://github.com/byebyebryan/codex-plus/blob/main/docs/owner-recovery.md#daemon-restart-candidate-preview19).
 
 Re-run manifest verification, parse affected configuration and compare only the
 requested files/selections with the before record. Use the installed doctor with

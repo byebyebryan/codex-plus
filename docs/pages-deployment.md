@@ -98,7 +98,7 @@ Update the diagram SVG alongside Mermaid changes; a mismatched source hash fails
 rather than publishing a stale diagram.
 
 The overview and guides share the walkthrough's `site-theme` style block and
-`site-appearance` script. Light is the default even with JavaScript disabled.
+`site-appearance` script. Dark is the default even with JavaScript disabled.
 The header switch saves the
 reader's light or dark preference on the site origin. Selected Markdown lists
 become choice and sequence figures in the generated guides, with the same text

@@ -290,9 +290,9 @@ automatically approved watch/reminder controls. Recipient diagnosis is read only
 For operator diagnosis of one exact loaded conversation, from the source checkout:
 
 ```sh
-rtk proxy scripts/codex-plus-owner --thread THREAD_UUID status
-rtk proxy scripts/codex-plus-owner --thread THREAD_UUID recover --expected-preview PREVIEW_TOKEN --confirm
-rtk proxy scripts/codex-plus-owner --thread THREAD_UUID status --category references --incarnation ARCHIVE_EPOCH
+scripts/codex-plus-owner --thread THREAD_UUID status
+scripts/codex-plus-owner --thread THREAD_UUID recover --expected-preview PREVIEW_TOKEN --confirm
+scripts/codex-plus-owner --thread THREAD_UUID status --category references --incarnation ARCHIVE_EPOCH
 ```
 
 `--state-root` and `--socket` select an explicit existing environment; keep the

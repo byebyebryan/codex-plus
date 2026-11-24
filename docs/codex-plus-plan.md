@@ -1438,8 +1438,8 @@ explicitly owned and use the existing daemon; other active conversations remain
 passive. Keep transcripts, process details and raw receipts outside committed
 source. The preparation pass need not create any actor to author the guide.
 
-Run `rtk proxy scripts/check`, the relevant existing Pages/package/worker checks
-and `rtk proxy git diff --check`. Add focused tests only for meaningful changed
+Run `scripts/check`, the relevant existing Pages/package/worker checks
+and `git diff --check`. Add focused tests only for meaningful changed
 builder behavior such as Markdown export, inventory and link handling. Update the
 explicit source inventory deliberately when adding the guide. Preserve the two
 existing untracked bytecode files; if their known inventory failure remains,
@@ -1545,7 +1545,7 @@ Leave a reviewed local candidate, exact setup/rollback instructions, evidence by
 gate and a short recommendation explaining what becomes simpler and what remains
 on the existing path. Use existing package tooling and tests; if packaged code
 changes, run the relevant tests and clean-candidate inventory/worker checks plus
-`rtk proxy git diff --check`. Keep worker checks separate from watch acceptance.
+`git diff --check`. Keep worker checks separate from watch acceptance.
 Deliberately update the explicit inventory only for necessary new tracked files.
 No new runtime feature is required to make the packaging trial pass.
 
@@ -1657,8 +1657,8 @@ concurrent work.
 Browser review is limited to affected content and release links; repeat broader
 interactive walkthrough checks only if layout or behavior changes.
 
-The validation commands include both `rtk proxy python3 -B tests/test_pages.py`
-and `rtk proxy python3 -B -m unittest discover -s tests -p 'test_*.py'`, plus the
+The validation commands include both `python3 -B tests/test_pages.py`
+and `python3 -B -m unittest discover -s tests -p 'test_*.py'`, plus the
 Pages workflow's inventory tests. Prefer self-contained fixtures over adding an
 import-path workaround or changing workflows to conceal the failing entry point.
 
@@ -1818,8 +1818,8 @@ prefer the existing distribution path and record why.
 
 Use focused existing tests for semantic release consistency and the doctor;
 check that each new regression catches its intended defect or ambiguity. Run
-the full fixture suite when packaged Python changes, `rtk proxy scripts/check`
-against a clean tracked-file candidate, and `rtk proxy git diff --check`.
+the full fixture suite when packaged Python changes, `scripts/check`
+against a clean tracked-file candidate, and `git diff --check`.
 Preserve canonical bytecode and validate workers independently. For changed
 guides, build outside the checkout and inspect actual browser output as well as
 links, version claims and named workflow coverage.
@@ -1946,7 +1946,7 @@ Record partial acceptance and the smallest further question instead.
 ### Validation, evidence and completion
 
 Run focused existing regressions and the full fixture suite when runtime code
-changes, `rtk proxy scripts/check`, `rtk proxy git diff --check`, and the external
+changes, `scripts/check`, `git diff --check`, and the external
 Pages builder for guide changes. Validate inventory in a clean tracked-file
 candidate while preserving canonical bytecode. Add a results file to the explicit
 inventory deliberately when actual results exist; do not pre-fill acceptance.
@@ -2288,7 +2288,7 @@ peer messages, daemon restarts or managed live applies belong to this pass.
 | 5. Soak handoff | Small private-note template and review criteria for ordinary use. | No completed-soak claim or automatic trial; private data stays outside published source/reports. |
 
 Commit and push validated slices. Update the explicit inventory for new files;
-run `rtk proxy scripts/check`, the existing metadata tests, `git diff --check`,
+run `scripts/check`, the existing metadata tests, `git diff --check`,
 and local-link checks. Browser validation uses only fresh owned tooling; it never
 operates an active session or shared browser profile. Publish through the shared
 report component and leave its existing host/server running. Keep publication,

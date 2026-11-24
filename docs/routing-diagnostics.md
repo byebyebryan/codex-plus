@@ -1,17 +1,29 @@
 # Private routing diagnostics
 
-Preview.22 adds an opt-in ledger and a bounded, read-only native-record reader.
-The ledger observes policy A, with Sol XHigh and selective Luna Max. The adaptive
-goal skill holds its default Astra route for an enrolled A episode. A separately
-authorized non-Luna worker can be recorded as `--route other`, which flags a
-policy deviation and keeps its usage visible. The ledger enables no model
-comparison, additional routing permission, or background process. An A-only
-observation cannot establish savings over another policy.
+To see which models worked on a task and how many tokens Codex recorded,
+start with the usage for that run. For a longer look at how delegation works
+in everyday use, you can opt into a private study in one Codex home.
 
-Preview.23 also normalizes nullable integer Unix seconds in native timeline
-fields to UTC. It preserves the outer record timestamp's finer precision for
-episode boundaries, leaves null values unknown and rejects invalid timing data
-without copying arbitrary strings into output.
+- **[One run](#current-run-usage)** shows the tokens observed so far and which workers the records cover.
+- **[With Astra as primary](#astra-primary-daily-study)** compare ordinary tasks with and without permission to delegate to Sol.
+- **[With Sol as primary](#start-and-enroll)** follow up to eight goals over seven days to see what Sol handles itself and what it assigns to Luna. This study observes one policy, so it can’t measure savings against an alternative.
+
+## Current run usage
+
+Run `codex-plus-diagnostics usage` during an adaptive task or goal loop. Add
+`--worker PATH` for each direct worker, using the exact task path returned by
+native collaboration. Since preview.27, this read-only command shows the
+responses observed in the primary’s active native root and the workers you
+named. It reports aggregate tokens, model and effort, and any gaps in coverage.
+You can use it without enrolling in a study.
+
+The primary's running turn has a partial count, and an unavailable or
+unattributed count stays unknown. A failed earlier turn can end with a scoped
+error. If its terminal status is missing, the reader needs a later, distinct
+turn start and no further activity in the errored turn. A retryable error
+keeps its turn open. A goal resumed under a new native root may
+span more work than this snapshot. Cached input is included in input tokens.
+The counts are native usage observations, with billing outside their scope.
 
 ## Astra-primary daily study
 
@@ -66,53 +78,15 @@ reduced Astra effort or faster acceptance justify considering a default
 change. Sparse data leaves the route opt-in. The [study design](codex-plus-plan.md#validation-study)
 describes the decision and a possible later controlled comparison.
 
-## Current run usage
-
-Preview.27 adds `codex-plus-diagnostics usage` for a read-only
-snapshot of the invoking primary's active native root. Pass `--worker PATH`
-once per participating worker using the exact task path returned by native
-collaboration. The reader counts observed responses within that root and its
-named, directly linked workers. The command requires no study and prints only
-aggregate usage, model/effort metadata, and coverage cues.
-
-The primary's running turn has a partial count, and an unavailable or
-unattributed count stays unknown. A failed earlier turn can end with a scoped
-error. If its terminal status is missing, the reader needs a later, distinct
-turn start and no further activity in the errored turn. A retryable error
-keeps its turn open. A goal resumed under a new native root may
-span more work than this snapshot. Cached input is included in input tokens.
-The counts are native usage observations, with billing outside their scope.
-
-## Model-version tracking
-
-New studies record exact model/effort on each episode and native turn. Supported
-Sol version updates do not stop enrollment or require another study. Collection
-exposes `model_observations` and `accounting.usage_by_context`, so analysis can
-separate versions without conflating their capability, quality or cost. A known
-version change within a goal is an observation, not a missing-coverage error.
-Unknown model context and actual family/effort deviations remain explicit gaps.
-The study still observes Sol XHigh with selective Luna Max; this enables no
-other routing policy or automatic model change.
-
-For an existing legacy or frozen study, explicitly request its policy update:
-
-```sh
-codex-plus-diagnostics allow-model-upgrades
-```
-
-Use the same native home and optional `--state-root` as that study. The operation
-creates a private byte-for-byte backup under the ledger lock, records the prior
-version policy, and preserves the study identity, existing episodes/outcomes,
-deadlines and goal limit. Repeating it changes nothing. It never reopens a closed
-study, extends an expired window, starts a new study or backfills ongoing work.
-Only new goals enroll prospectively. Existing episodes keep their recorded
-versions; older episode starting versions come from their own native contexts.
-
-Old studies remain unchanged until this explicit operation. Older helpers may
-refuse the updated policy; retain the new helper and backup when rolling back a
-runtime, and never restore an old ledger over subsequently recorded goals.
-
 ## Start and enroll
+
+Preview.22 adds an opt-in ledger and a bounded, read-only native-record reader.
+The ledger observes policy A, with Sol XHigh and selective Luna Max. The adaptive
+goal skill holds its default Astra route for an enrolled A episode. A separately
+authorized non-Luna worker can be recorded as `--route other`, which flags a
+policy deviation and keeps its usage visible. The ledger enables no model
+comparison, additional routing permission, or background process. An A-only
+observation cannot establish savings over another policy.
 
 Ask your agent: “Open a private seven-day/eight-goal A study, then use
 `$adaptive-goal-loop` for naturally selected goals. Use Sol and Luna only for
@@ -236,3 +210,37 @@ eight admissions close enrollment sooner. Outcomes recorded after that cutoff
 are labeled late; later regressions and unobserved outcomes stay explicit. Report insufficient coverage rather than extending the window
 until results look favorable. No Terra trial or A/B launch follows automatically.
 See the [staged comparison plan](codex-plus-plan.md#proposed-pass-targeted-routing-soak-and-policy-comparison).
+
+## Model-version tracking
+
+New studies record exact model/effort on each episode and native turn. Supported
+Sol version updates do not stop enrollment or require another study. Collection
+exposes `model_observations` and `accounting.usage_by_context`, so analysis can
+separate versions without conflating their capability, quality or cost. A known
+version change within a goal is an observation, not a missing-coverage error.
+Unknown model context and actual family/effort deviations remain explicit gaps.
+The study still observes Sol XHigh with selective Luna Max; this enables no
+other routing policy or automatic model change.
+
+For an existing legacy or frozen study, explicitly request its policy update:
+
+```sh
+codex-plus-diagnostics allow-model-upgrades
+```
+
+Use the same native home and optional `--state-root` as that study. The operation
+creates a private byte-for-byte backup under the ledger lock, records the prior
+version policy, and preserves the study identity, existing episodes/outcomes,
+deadlines and goal limit. Repeating it changes nothing. It never reopens a closed
+study, extends an expired window, starts a new study or backfills ongoing work.
+Only new goals enroll prospectively. Existing episodes keep their recorded
+versions; older episode starting versions come from their own native contexts.
+
+Old studies remain unchanged until this explicit operation. Older helpers may
+refuse the updated policy; retain the new helper and backup when rolling back a
+runtime, and never restore an old ledger over subsequently recorded goals.
+
+Preview.23 also normalizes nullable integer Unix seconds in native timeline
+fields to UTC. It preserves the outer record timestamp's finer precision for
+episode boundaries, leaves null values unknown and rejects invalid timing data
+without copying arbitrary strings into output.

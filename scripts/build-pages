@@ -25,14 +25,14 @@ GUIDES = {
     "getting-started.md": ("start", "Get started"),
     "manage-agent.md": ("manage", "Install & manage"),
     "daily-use.md": ("daily-use", "Watches and reminders"),
-    "session-communication.md": ("sessions", "Session communication"),
-    "workers.md": ("workers", "Worker workflows"),
+    "session-communication.md": ("sessions", "Session messages"),
+    "workers.md": ("workers", "Worker routing and goal loops"),
     "architecture.md": ("architecture", "How it works"),
-    "environments.md": ("environments", "Environments"),
-    "soak-checklist.md": ("soak-checklist", "Daily trial"),
+    "environments.md": ("environments", "Multiple Codex homes"),
+    "soak-checklist.md": ("soak-checklist", "Daily-use checklist"),
     "routing-diagnostics.md": ("routing-diagnostics", "Routing diagnostics"),
     "html-report-usage.md": ("reports", "HTML reports"),
-    "runtime-distribution.md": ("installation", "Installation"),
+    "runtime-distribution.md": ("installation", "Monitoring runtime installation"),
 }
 PRESENTATION_PAGES = {'index.html': SITE, 'walkthrough/index.html': SITE + 'walkthrough/'}
 PUBLIC_PAGES = {**PRESENTATION_PAGES, **{route + '/index.html': SITE + route + '/' for route, _ in GUIDES.values()}}
@@ -55,17 +55,17 @@ WALKTHROUGH_SECTIONS = {
     'resources': 'the guide list',
 }
 DESCRIPTIONS = {
-    "routing-diagnostics.md": "Run private routing studies and inspect observed model usage for adaptive work.",
-    "getting-started.md": "Choose workers, monitoring and reporting, then follow the setup path for your Codex environment.",
+    "routing-diagnostics.md": "Check which models worked on an adaptive task, see the tokens Codex recorded, or start a private routing study.",
+    "getting-started.md": "Pick the parts you want, give your agent the install request, and try Codex Plus in your usual CLI.",
     "manage-agent.md": "Give your agent one guide to install, upgrade, inspect, configure, roll back or remove Codex Plus.",
-    "daily-use.md": "Watch a running job, ask Codex to check back once, see what is pending and stop a watch.",
-    "session-communication.md": "Find another open Codex session on the same daemon, send it a message and check how it handled your request.",
-    "workers.md": "Choose a named worker, use Luna across a goal, or run independent assignments in parallel with an adaptive workflow.",
-    "architecture.md": "Understand Codex Plus components, source access, discovery, costs, receipts and lifecycle boundaries.",
-    "environments.md": "Select a Codex home and keep conversations, MCP tools, follow-up state and reports in the intended context.",
-    "soak-checklist.md": "Record useful outcomes and friction during ordinary work, with private evidence and clear acceptance limits.",
-    "html-report-usage.md": "Publish immutable HTML reports, organize the project catalog and configure independent hosting.",
-    "runtime-distribution.md": "Verify and install the monitoring runtime, configure its MCP tools and select immutable releases.",
+    "daily-use.md": "Tell Codex which change matters, keep working while it watches, and catch up on pending checks in the same conversation.",
+    "session-communication.md": "Find another open session on the same Codex daemon, arrange a handoff, and check whether the other agent agreed.",
+    "workers.md": "Give Luna a well-defined change, ask Astra for a review, or let your main agent choose how to split the work.",
+    "architecture.md": "Follow a watch from your prompt to the update in your thread and see which parts Codex and Codex Plus handle.",
+    "environments.md": "Choose the Codex home for a project and find the sessions, monitoring state and reports that belong to it.",
+    "soak-checklist.md": "Try a watch during ordinary work and record whether it caught a change you needed to act on.",
+    "html-report-usage.md": "Ask for a browser report, publish it at your usual address, and find earlier snapshots from the same project.",
+    "runtime-distribution.md": "Verify release archives, check the version selected on a host, and see what an open session has loaded.",
 }
 RAW_GUIDES = {"manage.md": "manage-agent.md"}
 COPY_SCRIPT = """<script>
@@ -608,18 +608,25 @@ def validate_publication(output: Path, source_root: Path = ROOT) -> None:
         raise ValueError('public sitemap differs from published routes')
 
 
-def validate(output: Path) -> int:
+def validate(output: Path, raw_guide_markup: dict[str, str] | None = None) -> int:
     count = 0
-    for path in output.rglob("*.html"):
-        text = path.read_text()
+    documents = {path: path.read_text() for path in output.rglob("*.html")}
+    for name, markup in (raw_guide_markup or {}).items():
+        documents[output / name] = markup
+    for path, text in documents.items():
         identifiers = re.findall(r'\bid="([^"]+)"', text)
         if len(identifiers) != len(set(identifiers)):
             raise ValueError(f"duplicate site id in {path.relative_to(output)}")
         for url in re.findall(r'\b(?:href|src)="([^"]+)"', text):
-            parsed = urlsplit(html.unescape(url))
+            url = html.unescape(url)
+            parent = path.parent
+            if url.startswith(SITE):
+                url = './' + url[len(SITE):]
+                parent = output
+            parsed = urlsplit(url)
             if parsed.scheme or parsed.netloc:
                 continue
-            target = (path.parent / unquote(parsed.path)).resolve() if parsed.path else path
+            target = (parent / unquote(parsed.path)).resolve() if parsed.path else path
             if target.is_dir():
                 target /= "index.html"
             if not target.is_relative_to(output) or not target.is_file():
@@ -737,9 +744,11 @@ def build(output: Path) -> None:
     (output / 'walkthrough/index.html').write_text(presentation_page(walkthrough, 'walkthrough/', theme[1]))
     (output / "assets").mkdir()
     shutil.copyfile(ROOT / "docs/presentation/architecture.svg", output / "assets/architecture.svg")
+    rendered_guides = {}
     for name, (route, title) in GUIDES.items():
         markdown = (ROOT / "docs" / name).read_text()
         body = render(markdown)
+        rendered_guides[name] = body
         if name == "architecture.md":
             body = architecture_diagram(body, markdown)
         body = guide_figure(name, links(headings(body), '../'))
@@ -750,7 +759,8 @@ def build(output: Path) -> None:
     write_raw_guides(output)
     (output / ".nojekyll").write_text("")
     write_sitemap(output)
-    count = validate(output)
+    raw_guide_markup = {path: rendered_guides[source] for path, source in RAW_GUIDES.items()}
+    count = validate(output, raw_guide_markup)
     validate_publication(output)
     print(f"Built overview, walkthrough and {len(GUIDES)} guides; {count} local links/assets/anchors, "
           f"{claims} current-release claims and public metadata verified: {output}")

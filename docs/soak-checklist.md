@@ -1,23 +1,10 @@
 # Daily-use soak checklist
 
-The installed preview is ready for normal-use trials on Snap and Starship.
-The November 12 passive review found representative Starship monitoring use;
-Snap had worker/report activity but no new monitoring registrations in the
-review window. This is partial field evidence, not completed qualification of
-both hosts or every source. Use existing work and already authorized sources
-rather than creating workloads just to keep a monitor busy. The
-[daily guide](daily-use.md) supplies the requests.
-
-The review identified generic argument errors, an ephemeral-peer history limit,
-ownership-recovery friction and one incomplete completion receipt whose native
-turn was actually completed. Separate local reproductions exposed coordinator
-status after handoff and early-acknowledgement receipt tracking gaps. The
-[preview.21 source pass](codex-plus-plan.md#selected-pass-soak-driven-reliability-refinement)
-addresses those mechanisms and is published/managed. Installation does not
-complete the field soak or reload an existing helper. Successful
-field message handling, configured MCP-source monitoring, authentication recovery
-and longer outages retain their own evidence limits. A reminder whose due and
-expiry window fell between boots is not proof of failure on a running host.
+Use this checklist the next time a real task leaves you waiting. Tell Codex
+which change matters, then note whether you heard about it in time to act.
+One useful signal, one missed update or one watch that was hard to stop is
+worth recording. Use work already underway and sources you already have
+permission to read. The [daily guide](daily-use.md) has requests you can adapt.
 
 ## During the first several working days
 
@@ -52,7 +39,7 @@ observing a known useful transition, its handling and an effective stop.
 
 ## Small private observation note
 
-Copy this into a private working note when a meaningful episode occurs:
+When there’s something worth remembering, keep a short private note.
 
 ```text
 Date / host / Codex Plus version and source revision, if known:
@@ -87,3 +74,20 @@ the observed gaps, without promoting this checklist into production acceptance.
 This guide starts no watch, reminder, peer message or background job. Normal
 requests authorize their own bounded use; collecting feedback requires no new
 automatic monitoring of other sessions.
+
+## What the field review covered
+
+The November 12 review found representative monitoring use on Starship. On
+Snap it found worker and report activity but no new watch registrations in
+the review window. Trials on both hosts and across source types are still open.
+
+The review identified generic argument errors, an ephemeral-peer history limit,
+ownership-recovery friction and one incomplete completion receipt whose native
+turn was actually completed. Separate local reproductions exposed coordinator
+status after handoff and early-acknowledgement receipt tracking gaps. The
+[preview.21 source pass](codex-plus-plan.md#selected-pass-soak-driven-reliability-refinement)
+addresses those mechanisms and is published/managed. Installation does not
+complete the field soak or reload an existing helper. Successful
+field message handling, configured MCP-source monitoring, authentication recovery
+and longer outages retain their own evidence limits. A reminder whose due and
+expiry window fell between boots is not proof of failure on a running host.

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Codex Plus — Ask once. Keep working.</title>
-<meta name="description" content="Follow long-running jobs, coordinate Codex agents, choose a model for a review, and publish HTML reports from your existing Codex conversation.">
+<title>Codex Plus — Codex, with fewer workarounds.</title>
+<meta name="description" content="Background watches, messages between sessions, HTML reports, and worker routing for the Codex CLI. See what to ask for and what comes back.">
 <!-- site-icon -->
 <!-- site-theme -->
 <style>
@@ -65,7 +65,6 @@ h1 span { display: block; color: var(--accent); }
 .trace { display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px 8px; list-style: none; padding: 0; font: .76rem/1.5 var(--font-code); }
 .trace li + li::before { content: "→" / ""; margin-right: 8px; color: var(--muted); }
 .trace li:last-child { color: var(--accent); }
-#flow-example .trace li:last-child { color: var(--warning); }
 .evidence p { margin-top: 6px; }
 .evidence dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; }
 .evidence dt { font-weight: 600; color: var(--ink); }
@@ -164,64 +163,65 @@ footer { border-block: 1px solid var(--line); }
   <div class="hero">
     <div class="intro">
       <div class="intro-copy">
-        <h1 id="title">Ask once. <span>Keep working.</span></h1>
-        <p class="lead">Leave Codex watching the build, or ask another model to review a change. Codex Plus brings the result back to the same conversation in your native Codex CLI.</p>
+        <h1 id="title">Codex, <span>with fewer workarounds.</span></h1>
+        <p class="lead">A few practical improvements to the Codex CLI you already know, shaped by everyday use.</p>
       </div>
       <section class="install" aria-labelledby="install-heading">
         <h2 id="install-heading">Install with your agent</h2>
         <!-- install-request -->
-        <div class="links"><a href="manage-agent.md#choose-an-action">Install guide</a><a href="https://dev.byebyebryan.com/codex-plus/manage.md">Agent instructions</a></div>
+        <div class="links"><a href="manage-agent.md#choose-an-action">Install and manage</a><a href="https://dev.byebyebryan.com/codex-plus/manage.md">Agent guide (Markdown)</a></div>
       </section>
     </div>
     <section class="chooser" aria-labelledby="chooser-heading">
-      <h2 id="chooser-heading">What do you need Codex to do?</h2>
+      <h2 id="chooser-heading">What Codex Plus adds</h2>
       <div class="bench">
-        <nav class="choices" aria-label="Choose a task">
-          <a id="choose-watch" href="#monitor-heading" aria-controls="watch-panel">Watch a build</a>
-          <a id="choose-session" href="#session-heading" aria-controls="session-panel">Message a session</a>
-          <a id="choose-report" href="#report-heading" aria-controls="report-panel">Publish a report</a>
-          <a id="choose-worker" href="#worker-heading" aria-controls="worker-panel">Choose a worker</a>
+        <nav class="choices" aria-label="Choose a feature">
+          <a id="choose-watch" href="#monitor-heading" aria-controls="watch-panel">Background watches</a>
+          <a id="choose-session" href="#session-heading" aria-controls="session-panel">Session messages</a>
+          <a id="choose-report" href="#report-heading" aria-controls="report-panel">HTML reports</a>
+          <a id="choose-worker" href="#worker-heading" aria-controls="worker-panel">Worker routing</a>
         </nav>
         <div class="stage">
           <section class="feature" id="watch-panel" aria-labelledby="monitor-heading">
-            <h3 id="monitor-heading">Hear back when the build needs you.</h3>
-            <p>The background monitoring in Claude Code inspired these watches. Tell Codex which change matters. Quiet log checks use no model turns.</p>
-            <figure class="sample" id="flow-example" aria-label="Example build watch">
-              <figcaption><code>Watch the build log. Tell me if a compatibility test fails.</code></figcaption>
-              <div class="evidence"><ol class="trace" aria-label="Build progress"><li>Queued</li><li>Running</li><li>Test failed</li></ol>
-                <p>The retry test failed. The importer wrote the same row twice.</p></div>
+            <h3 id="monitor-heading">Hear back when something changes</h3>
+            <p>Ask Codex to follow a job, a service, or another session while you keep working. You choose which change brings an update back to your thread.</p>
+            <figure class="sample" id="flow-example" aria-label="Example watch on a service status page">
+              <figcaption><code>Watch the status page and tell me when uploads reopen.</code></figcaption>
+              <div class="evidence"><ol class="trace" aria-label="Upload status"><li>Offline</li><li>Recovering</li><li>Available</li></ol>
+                <p>The status page says uploads reopened at 10:42.</p></div>
             </figure>
-            <p>Want one update either way? Ask Codex to check again in ten minutes.</p>
+            <p>Only need one update? Try “Check the status again in ten minutes.”</p>
             <a class="guide" href="daily-use.md">Watches and reminders</a>
           </section>
           <section class="feature" id="session-panel" aria-labelledby="session-heading">
-            <h3 id="session-heading">Agree on who edits what.</h3>
-            <p>Two Codex agents in separate open sessions on the same daemon can divide the work and pass along the details.</p>
+            <h3 id="session-heading">Give another agent the context it needs</h3>
+            <p>Two agents can work in separate threads and still agree on who edits what. Send the other agent the detail it needs and check whether it accepted the handoff.</p>
             <figure class="sample" aria-label="Example handoff between sessions">
-              <figcaption><code>Ask the docs session to add a README example for --format csv. I’ll handle the parser.</code></figcaption>
-              <div class="evidence"><dl><dt>Docs agent</dt><dd>Accepted. I’ll add the example.</dd></dl></div>
+              <figcaption><code>Tell the docs session we renamed --output-format to --format. Ask it to update the README example.</code></figcaption>
+              <div class="evidence"><dl><dt>Docs agent</dt><dd>I’ll update the example and let you know when it’s ready.</dd></dl></div>
             </figure>
-            <p>Ask whether the other session accepted. It keeps its own conversation and owns the edit it agreed to make.</p>
+            <p>You can reach other open sessions on the same Codex daemon.</p>
             <a class="guide" href="session-communication.md">Session messaging</a>
           </section>
           <section class="feature" id="report-panel" aria-labelledby="report-heading">
-            <h3 id="report-heading">Compare the runs in a browser.</h3>
-            <p>Choose local or LAN hosting once. Each HTML report publishes with its charts and assets, ready for a browser that can reach the host.</p>
-            <figure class="sample" aria-label="HTML report with illustrative import timings">
-              <figcaption><code>Plot the two import times side by side and give me the report link.</code></figcaption>
-              <div class="evidence"><strong>Import time · sample runs</strong>
+            <h3 id="report-heading">Give the results a page of their own</h3>
+            <p>When a comparison is hard to read in the terminal, ask for a chart beside the numbers. Set up a local or LAN address once, and Codex publishes each report there with its supporting files.</p>
+            <figure class="sample" aria-label="Example report comparing median startup times">
+              <figcaption><code>Show startup times before and after the change in an HTML report. Use the median of ten runs per version.</code></figcaption>
+              <div class="evidence"><strong>Median startup time · 10 runs per version</strong>
                 <div class="plot"><span>Before</span><i aria-hidden="true"></i><span>4.8 s</span><span>After</span><i aria-hidden="true"></i><span>2.4 s</span></div></div>
             </figure>
             <a class="guide" href="html-report-usage.md">HTML reports</a>
           </section>
           <section class="feature" id="worker-panel" aria-labelledby="worker-heading">
-            <h3 id="worker-heading">Bring in another model for one job.</h3>
-            <p>Give routine edits to a lower-cost worker like Luna, or ask Astra for a second opinion. Your primary model checks what comes back.</p>
+            <h3 id="worker-heading">Bring in another model for one task</h3>
+            <p>Give a well-defined edit to Luna to keep costs down, or ask Astra for a second opinion on a difficult change. Your main agent checks the result and carries on with the task.</p>
             <figure class="sample" id="worker-example" aria-label="Example review in a Sol-led session">
-              <figcaption><code>$astra-task Check whether retrying this import could write a row twice.</code></figcaption>
-              <div class="evidence"><ol class="trace" aria-label="Review path"><li>Sol assigns</li><li>Astra reviews</li><li>Sol verifies</li></ol></div>
+              <figcaption><code>$astra-task Review the new settings loader. Can it still open files from the previous version?</code></figcaption>
+              <div class="evidence"><ol class="trace" aria-label="Review path"><li>Sol assigns</li><li>Astra reviews</li><li>Sol verifies</li></ol>
+                <p>Older files won’t open unless the loader supplies a default timeout.</p></div>
             </figure>
-            <p>For a longer job, use <code>$adaptive-goal-loop</code> and let your primary decide which parts to delegate.</p>
+            <p>Use <code>$adaptive-task</code> to let Codex choose who does the work, or <code>$adaptive-goal-loop</code> for a longer task.</p>
             <a class="guide" href="workers.md">Worker routing and goal loops</a>
           </section>
         </div>
@@ -231,39 +231,39 @@ footer { border-block: 1px solid var(--line); }
 
   <section class="workflow" aria-labelledby="example-heading">
     <h2 id="example-heading">How the tools work together</h2>
-    <p>A code review can be a one-off request. If it turns up a bug, you can use the other tools to see the fix through in the same Codex conversation.</p>
+    <p>Say you want to know whether it’s safe to retry a CSV import. One Codex conversation can follow that question from a second opinion to a tested fix.</p>
     <ol class="sequence" role="list">
-      <li><h3><a href="#worker-heading">Get a second opinion</a></h3><p>Ask Astra to review a CSV importer. It spots a case where retrying an interrupted import writes the same row twice.</p></li>
-      <li><h3><a href="#session-heading">Split the work</a></h3><p>Ask the agent in your docs session to update the retry instructions while your primary agent fixes the importer.</p></li>
-      <li><h3><a href="#monitor-heading">Watch the tests</a></h3><p>Ask Codex to watch CI while you keep working. It reports back when the retry test passes or fails.</p></li>
-      <li><h3><a href="#report-heading">Show what changed</a></h3><p>Ask for an HTML report comparing row counts from the same import before and after the fix. Include the test result alongside them.</p></li>
+      <li><h3><a href="#worker-heading">Get a second opinion</a></h3><p>Astra finds a case where the importer saves a batch just before the connection drops. A retry writes the same rows twice.</p></li>
+      <li><h3><a href="#session-heading">Hand off the docs</a></h3><p>Ask the docs session to update the retry example in the README. Your main agent fixes the importer and adds a test for the dropped connection.</p></li>
+      <li><h3><a href="#monitor-heading">Follow the test run</a></h3><p>While you review the patch, Codex watches CI. When the retry test finishes, you hear back in the same thread.</p></li>
+      <li><h3><a href="#report-heading">Show what changed</a></h3><p>Retry a 100-row import on both versions. The report shows 200 rows with the old importer and the expected 100 with the fix.</p></li>
     </ol>
-    <a class="guide" href="https://dev.byebyebryan.com/codex-plus/walkthrough/#scenes">See more example conversations</a>
+    <a class="guide" href="https://dev.byebyebryan.com/codex-plus/walkthrough/#scenes">Step through an example conversation</a>
   </section>
 
     <nav class="directory" id="guide-directory" aria-labelledby="directory-heading">
       <h2 id="directory-heading">Guides</h2>
       <div><h3>Everyday use</h3>
         <ul><li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/daily-use.md">Watches and reminders</a></li>
-          <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/session-communication.md">Session messaging</a></li>
-          <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md">Worker workflows</a></li>
-          <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/html-report-usage.md">HTML reports</a></li></ul>
+          <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/session-communication.md">Session messages</a></li>
+          <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/html-report-usage.md">HTML reports</a></li>
+          <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md">Worker routing and goal loops</a></li></ul>
       </div>
-      <div><h3>Set up an environment</h3>
+      <div><h3>Installation and setup</h3>
         <ul><li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/getting-started.md#choose-what-to-install">Choose what to install</a></li>
           <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/manage-agent.md">Install and manage</a></li>
           <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/environments.md">Multiple Codex homes</a></li>
-          <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/runtime-distribution.md">Runtime installation</a></li></ul>
+          <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/runtime-distribution.md">Monitoring runtime installation</a></li></ul>
       </div>
       <div><h3>Technical reference</h3>
-        <ul><li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/architecture.md">How it works</a></li>
+        <ul><li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/architecture.md">Architecture</a></li>
           <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/routing-diagnostics.md">Routing diagnostics</a></li>
-          <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/soak-checklist.md">Daily-use trial</a></li></ul>
+          <li><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/soak-checklist.md">Daily-use checklist</a></li></ul>
       </div>
     </nav>
 </main>
 <footer><div class="wrap foot">
-  <span>Codex Plus</span><span><a href="https://github.com/byebyebryan/codex-plus/releases">Releases</a> · <a href="https://github.com/byebyebryan/codex-plus">GitHub</a></span>
+  <span>Codex Plus</span><span><a href="https://github.com/byebyebryan/codex-plus/releases">Releases</a> · <a href="https://github.com/byebyebryan/codex-plus">Source on GitHub</a></span>
 </div></footer>
 <script>
 (() => {

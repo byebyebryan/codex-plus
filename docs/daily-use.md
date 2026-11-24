@@ -2,20 +2,25 @@
 
 # Watches and reminders
 
-Use a watch when the next step depends on a change in a running job. Use a
-reminder when you want Codex to look again at a particular time.
+You can leave a job running and keep working in the same Codex conversation.
+Tell Codex what would change your next step. That might be an export finishing,
+a service coming back online, or another agent asking for input.
 
 > Watch the export pipeline in CI. Tell me when the archive is ready, a test
 > fails, or the run needs input.
 
+This follows a pattern from background monitoring in Claude Code. A command
+or script handles the routine reads without using model turns. You hear back
+in this thread when one of your conditions is met.
+
 > Check the export pipeline once in 20 minutes. Is the archive ready?
 
-The watch can stay quiet between matching events. The reminder schedules
-one follow-up, even if the pipeline’s status hasn’t changed.
+Use a reminder for one later check. When Codex runs it, you get the status it
+finds, even if the pipeline is still running.
 
 ## Choose a follow-up
 
-- **[Watch a run](#read-a-command-or-script)** Follow a log or status endpoint with a command or script. Quiet reads use no model turns.
+- **[Watch a run](#read-a-command-or-script)** Follow a log or status endpoint with a command or script.
 - **[Check once later](#check-again-later)** Ask Codex to return to this conversation for one check after a delay.
 - **[Watch a session](#watch-another-session)** Follow another open session on the same daemon. Ask for an update when that agent needs input.
 - **[Schedule an MCP inspection](#inspect-a-configured-mcp-source)** Use a tool already connected to the session. Each inspection uses a model turn.
@@ -26,13 +31,11 @@ the intended environment. Existing opt-outs still apply on managed installs.
 
 ## Start with a real task
 
-An event watch can filter repeated command or script reads without a model
-turn for every poll. A one-time check uses a later native turn, can wait behind
-active work and may expire before it runs. It reports the status observed at
-that time: ready, failed or still running according to the source. Elapsed time
-alone does not establish that a job finished. Ask “What are you watching, and
-what checks are scheduled?” to inspect registrations, or “What am I still
-waiting on?” for the cached recap. [Read a follow-up recap](#return-to-unfinished-work).
+If the run is new to the conversation, include its link or log path. A
+one-time check can wait behind active work and may expire before it runs.
+Ask “What are you watching, and what checks are scheduled?” to see what Codex
+set up, or “What am I still waiting on?” for the cached recap.
+[Read a follow-up recap](#return-to-unfinished-work).
 
 For delegated work, choose an explicit [worker workflow](workers.md#choose-a-workflow).
 
@@ -45,10 +48,10 @@ ambiguous, and reports when a reference disappears. [Find, message and inspect
 independent sessions](session-communication.md) for the worked example and
 boundaries.
 
-While watching, routine reads and phase changes can stay quiet. Observation
-leaves control with the other session; an idle peer can still have unfinished
-work. A message receipt describes how the peer handled a request, not whether
-the requested work finished.
+Routine reads and phase changes can stay quiet. If you need to take over a
+file, ask the other agent to tell you when it has finished editing. A session
+can sit idle with work still open, and accepting a message only records its
+agreement to the request.
 
 ## Watch an endpoint or inspect through MCP
 
@@ -76,12 +79,11 @@ original request. The final state of the watched task needs its own evidence.
 
 ## Check again later
 
-The timed instruction in the opening example registers one future reassessment
-and returns the prompt. The check can wait behind active work in the same
-conversation. By default, the delivery window extends up to two minutes past
-the requested delay, within the configured lifetime limit. The receipt shows
-that window. Codex can set a
-longer expiry when the request calls for it.
+Ask “Check again in 20 minutes” when you want one update even if nothing
+changes. You can use the conversation in the meantime. If a turn is still
+running when the reminder comes due, the check waits. By default it can wait
+up to two minutes past the requested delay, within the configured lifetime
+limit. The receipt shows that window. Codex can set a longer expiry if needed.
 
 If the turn stays busy past expiry, the reminder records that outcome. Ask
 “Cancel the endpoint reminder” to cancel that one check. Recurring calendar

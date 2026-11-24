@@ -496,9 +496,9 @@ explicit endpoint, exact thread ID and bounded text. The current calling
 environment exposes `CODEX_THREAD_ID`; validate it and the owning endpoint
 instead of copying a prior thread ID, PID, socket path or role name.
 
-Useful read-only startup checks are `rtk proxy codex --version`,
-`rtk proxy codex queue --help` and
-`rtk proxy codex app-server daemon version`. The last command reports local and
+Useful read-only startup checks are `codex --version`,
+`codex queue --help` and
+`codex app-server daemon version`. The last command reports local and
 running-owner versions; it is not a daemon start/restart operation. The tested
 delivery syntax is `codex queue --remote <owning-endpoint> --thread <thread-id>
 --message <event-text>`. Actual identity and endpoint discovery still need a

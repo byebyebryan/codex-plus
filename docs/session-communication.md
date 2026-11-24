@@ -1,14 +1,13 @@
 # Find and message an independent session
 
-When two Codex agents work on the same project in separate sessions, a message
-can settle which agent is editing a file and when the other can take over.
-From either conversation, ask Codex to find the other session and contact it.
-Both sessions must be loaded on the same Codex daemon.
+If another agent is changing the catalog format, you may want to wait before
+updating the examples. Ask Codex to find that session and have the other
+agent tell you when the format is settled. Both agents keep their own
+conversations and must be connected to the same Codex daemon.
 
 ## Find a session
 
-> Find the session working on the catalog import. Is it still editing the
-> sample catalog?
+> Find the session working on the catalog import.
 
 Codex uses the project and recent task to find a match. If several sessions
 fit, it asks which one you mean. You can see available status such as the name,
@@ -19,9 +18,9 @@ project or phase. Peer status reads omit user prompts and tool outputs.
 1. **Send a request.** “Ask that session to let me know when it’s finished editing the sample catalog so I can update the examples.”
 2. **Check the receipt.** “Did it accept my request?”
 
-The other session can accept or decline the request within its existing task.
-Your session can read the saved receipt. An acceptance means the other
-session agreed to send word. Its handoff tells you when the file is ready.
+An accepted receipt means the catalog agent agreed to send word. When it
+says the format is ready, you can update the examples. If it declines, you
+can see that here and plan another handoff.
 
 ## Peer and worker paths
 

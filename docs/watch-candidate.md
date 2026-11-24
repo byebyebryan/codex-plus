@@ -109,10 +109,10 @@ inventory. Native delegation provenance is separate from independent fork ancest
 Use exact identities from the returned inventory:
 
 ```sh
-rtk proxy scripts/codex-plus-peer list
-rtk proxy scripts/codex-plus-peer list --include-children
-rtk proxy scripts/codex-plus-peer resolve --name 'EXACT_SESSION_TITLE'
-rtk proxy scripts/codex-plus-peer read PEER_UUID --turn-limit 3
+scripts/codex-plus-peer list
+scripts/codex-plus-peer list --include-children
+scripts/codex-plus-peer resolve --name 'EXACT_SESSION_TITLE'
+scripts/codex-plus-peer read PEER_UUID --turn-limit 3
 ```
 
 An explicit `--socket` and `--caller` can select the existing owner/caller; otherwise
@@ -131,8 +131,8 @@ Select an exact independent B from passive discovery. A peer watch reads B throu
 the host-side reader and delivers selected changes into A:
 
 ```sh
-rtk proxy scripts/codex-plus-watch --state STATE_A watch_start --peer PEER_B_UUID --interval 5 --signals reply,needs_input,goal --duration 120 --limit 2 --quiet-initial --followup 'Read fresh peer state and follow up under the existing request'
-rtk proxy scripts/codex-plus-watch --state STATE_A renew --id WATCH_UUID --peer PEER_B_UUID --interval 10 --signals reply,goal --duration 120 --limit 2 --quiet-initial
+scripts/codex-plus-watch --state STATE_A watch_start --peer PEER_B_UUID --interval 5 --signals reply,needs_input,goal --duration 120 --limit 2 --quiet-initial --followup 'Read fresh peer state and follow up under the existing request'
+scripts/codex-plus-watch --state STATE_A renew --id WATCH_UUID --peer PEER_B_UUID --interval 10 --signals reply,goal --duration 120 --limit 2 --quiet-initial
 ```
 
 Supported signals are phase, needs_input, goal, reply, progress and turn. Reply
@@ -152,8 +152,8 @@ and shutdown stop the local reader and reconcile only destination A's owned inpu
 For an authorized message to B, bind a separate coordinator state to B and use:
 
 ```sh
-rtk proxy scripts/codex-plus-watch --state STATE_B peer_send --message 'MESSAGE_WITHIN_EXISTING_SCOPE' --duration 120
-rtk proxy scripts/codex-plus-watch --state STATE_B status MESSAGE_REGISTRATION_UUID
+scripts/codex-plus-watch --state STATE_B peer_send --message 'MESSAGE_WITHIN_EXISTING_SCOPE' --duration 120
+scripts/codex-plus-watch --state STATE_B status MESSAGE_REGISTRATION_UUID
 ```
 
 The returned registration/event IDs identify durable intent. Admission, native
@@ -210,9 +210,9 @@ another owner or conversation.
 Replace the placeholders below with your selected paths and IDs:
 
 ```sh
-rtk proxy scripts/codex-plus-watch --state STATE bind --socket SOCKET --thread THREAD_UUID
-rtk proxy scripts/codex-plus-watch --state STATE watch_start --cwd WORKDIR --duration 120 --limit 2 --followup 'Inspect this observation under the existing request' -- rtk proxy python3 -B -u OBSERVER.py
-rtk proxy scripts/codex-plus-watch --state STATE wake_schedule --after 20 --duration 120 --prompt 'Inspect the run and choose whether further supervision is useful'
+scripts/codex-plus-watch --state STATE bind --socket SOCKET --thread THREAD_UUID
+scripts/codex-plus-watch --state STATE watch_start --cwd WORKDIR --duration 120 --limit 2 --followup 'Inspect this observation under the existing request' -- python3 -B -u OBSERVER.py
+scripts/codex-plus-watch --state STATE wake_schedule --after 20 --duration 120 --prompt 'Inspect the run and choose whether further supervision is useful'
 ```
 
 Registration returns its ID, frozen destination and effective bounds. Registration
@@ -261,11 +261,11 @@ backlog.
 ## Inspection and controls
 
 ```sh
-rtk proxy scripts/codex-plus-watch --state STATE list
-rtk proxy scripts/codex-plus-watch --state STATE status REGISTRATION_ID
-rtk proxy scripts/codex-plus-watch --state STATE cancel REGISTRATION_ID
-rtk proxy scripts/codex-plus-watch --state STATE renew --id REGISTRATION_ID --cwd WORKDIR --duration 120 --limit 2 -- rtk proxy python3 -B -u UPDATED_OBSERVER.py
-rtk proxy scripts/codex-plus-watch --state STATE ack EVENT_ID
+scripts/codex-plus-watch --state STATE list
+scripts/codex-plus-watch --state STATE status REGISTRATION_ID
+scripts/codex-plus-watch --state STATE cancel REGISTRATION_ID
+scripts/codex-plus-watch --state STATE renew --id REGISTRATION_ID --cwd WORKDIR --duration 120 --limit 2 -- python3 -B -u UPDATED_OBSERVER.py
+scripts/codex-plus-watch --state STATE ack EVENT_ID
 ```
 
 Use your actual source argv after `--`; the renewal example is a placeholder.
@@ -331,9 +331,9 @@ to infer a missing completion during recovery.
 ## Recovery and shutdown
 
 ```sh
-rtk proxy scripts/codex-plus-watch --state STATE recover REGISTRATION_ID
-rtk proxy scripts/codex-plus-watch --state STATE shutdown
-rtk proxy scripts/codex-plus-watch --state STATE shutdown --confirm
+scripts/codex-plus-watch --state STATE recover REGISTRATION_ID
+scripts/codex-plus-watch --state STATE shutdown
+scripts/codex-plus-watch --state STATE shutdown --confirm
 ```
 
 After coordinator restart, intent, baselines and events persist. An in-flight

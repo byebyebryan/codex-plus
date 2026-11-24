@@ -243,9 +243,9 @@ validation. The explicit **46-file inventory**, `git diff --check` and staged
 whitespace checks pass. Reproduce the offline checks from the checkout:
 
 ```sh
-rtk proxy scripts/check
-rtk proxy python3 -B -m unittest discover -s tests -p 'test_*.py'
-rtk proxy git diff --check
+scripts/check
+python3 -B -m unittest discover -s tests -p 'test_*.py'
+git diff --check
 ```
 
 ## Reproduction, cleanup and usage

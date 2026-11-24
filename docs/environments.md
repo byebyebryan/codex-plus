@@ -1,27 +1,12 @@
 # Multiple Codex environments
 
-Implementation contract: native Codex owns its homes and daemons. Codex Plus
-resolves one environment from CODEX_HOME, keeps default-home legacy paths, and
-uses stable canonical-home namespaces for alternate homes. Native --profile is
-not an environment selector. Credentials, MCP admission, migration and wrapper
-names remain outside Codex Plus.
+If you keep personal and work projects in separate Codex homes, open the home
+that owns the conversation you want. Its daemon determines which sessions you
+can message. Its report configuration determines where a published report goes.
+A native `--profile` changes settings within the selected home.
 
-Explicit CLI paths take precedence over corresponding CODEX_PLUS_* environment
-overrides, then home-derived defaults. Display labels are not storage identity.
-Missing selected daemons fail without fallback or automatic startup. Existing
-frozen daemon-incarnation bindings remain authoritative.
-
-Monitoring, report MCP/CLI and read-only context
-inspection share this contract. Reports can host concurrently on independently
-configured endpoints with namespaced tmux ownership. Existing legacy report
-config paths retain their session name; explicit existing storage is preserved.
-No existing data or active intent is moved or restored automatically.
-
-Acceptance includes offline resolution/override/legacy checks, two-home report
-CLI/MCP inventories, isolated concurrent tmux servers with independent lifecycle,
-missing-owner refusal, package inventory/install checks and existing regressions.
-The original source pass performed no live deployment or owner restart; the
-subsequent Snap deployment is recorded below.
+Codex Plus uses the same home for monitoring, reporting and diagnostics.
+Your launchers, credentials and MCP approvals stay with their existing owners.
 
 ## Daily selection and diagnosis
 
@@ -31,9 +16,10 @@ On Snap, `codex` / `codex agents` select default OSS (`~/.codex`), and
 native daemons. Both share an account and Unix user; this is best-effort config
 separation rather than filesystem isolation.
 
-Inspect the selected paths with `codex-plus-context`; it does not contact or
-start a daemon. The CLI describes only its own environment/arguments, not the
-settings hidden in another MCP process. For Snap's managed work setup:
+If a session or report seems to be missing, start with `codex-plus-context`.
+It shows the paths and arguments selected for this command without contacting
+or starting a daemon. To check a separately configured MCP process, pass its
+actual overrides. For example, Snap’s managed work environment uses this command.
 
 ```sh
 env CODEX_HOME=/home/bryan/.codex-work codex-plus-context --state-root /home/bryan/.local/state/codex-plus-work --report-config /home/bryan/.config/codex-plus/report-work.toml
@@ -107,6 +93,10 @@ The canonical absolute Codex home is the storage identity. The environment key i
 its SHA-256 prefix (24 hexadecimal characters). Symlink aliases of one home select
 one namespace. Native `--profile` settings inside that home share its namespace.
 There is no global selected-environment switch, profile registry or new daemon.
+
+If the selected daemon is missing, Codex Plus reports it and leaves other
+daemons alone. Existing registrations stay bound to their original daemon
+instance. Choosing a different home doesn’t move its data or resume its work.
 
 | Resource | Default Codex home | Alternate Codex home |
 | --- | --- | --- |

@@ -1,56 +1,26 @@
 # Codex Plus releases and monitoring installation
 
-For installation and maintenance, give your agent the
-[canonical lifecycle guide](manage-agent.md). This page remains the component
-reference for artifacts, configuration and behavior.
+For a first install or an upgrade, give your agent the [installation and
+management guide](manage-agent.md). Use this reference to verify a release
+archive, check what a host has selected, or find out which version an open
+session is using.
 
-Preview.21 preserves truthful coordinator status across repeated handoffs, tracks
-slow callback receipts and clarifies invalid options and partial peer inspection.
-It retains preview.20's MCP launch/health fixes, verified restart recovery and
-rollback support. It extends clean rollover and archived inspection through the
-[owner recovery contract](owner-recovery.md). Publishing or selecting an archive
-does not reload an already running process. Managed rollout is recorded separately
-below.
+Monitoring runs on Linux with Python 3.11 or newer and RTK. It connects to
+an existing Codex daemon over a local Unix socket. The daemon must be running
+and the independent sessions must already be loaded.
 
-The runtime is a Linux/Unix preview qualified against Codex 0.162.1. It uses
-Python 3.11 or newer and RTK for the existing native status/coordinator command
-paths. It requires an already running owning daemon and loaded independent
-sessions; it never starts a daemon or cold-resumes a target. Bounded owner
-replacement, slow-callback receipts and ephemeral-peer limits are qualified on
-native 0.167.2; long production operation and personal
-UX acceptance remain separate.
+The qualification baseline is Codex 0.162.1. Tests on 0.167.2 also covered
+bounded owner replacement, receipts for slow callbacks and the limits of
+temporary peer sessions. Longer production use and everyday interaction still
+need field evidence.
 
 ## One Codex Plus release
 
 [v0.1.0-preview.30](https://github.com/byebyebryan/codex-plus/releases/tag/v0.1.0-preview.30)
 updates worker attribution and [routing diagnostics](routing-diagnostics.md).
-Preview.29 added [parallel work in the adaptive workflows](workers.md#working-in-parallel).
-Preview.28 added opt-in Sol delegation for an Astra primary and a bounded [daily study](routing-diagnostics.md#astra-primary-daily-study).
-Preview.27 added [adaptive contribution and usage summaries](routing-diagnostics.md#current-run-usage).
-Preview.26 defaults to Astra eligibility in the explicit adaptive workflows for supported
-Sol and current Terra primaries. Preview.25 records model versions per
-episode/turn without stopping collection on
-version upgrades. An explicit backed-up policy update preserves existing study
-history and limits. Preview.24 added family-based worker preferences, an offline
-resolver and native catalogue discovery. Preview.23 normalized nullable
-native Unix-second timing fields. Preview.22 added
-[opt-in private A-policy diagnostics](routing-diagnostics.md) while preserving
-the current Sol/Luna routing policy. Preview.21 fixed coordinator identity and
-callback receipt lifetime, improved argument diagnostics and handled verified ephemeral history/goal limits as partial
-capabilities. Preview.20 fixed supervisor log placement and doctor reasons/actions.
-Preview.19 introduced verified daemon restart recovery
-and honest quarantine/continuation within original limits. Preview.18 added explicit Sol, Astra and current-Terra tasks,
-for seven workflows and four current roles. Preview.17 removed the worker-name compatibility entries.
-The adaptive names arrived in preview.16; optional
-primary-aware escalation, Astra XHigh and read-only primary selection arrived
-in preview.15. Escalation remains instruction-based and defaults off.
-
-Explicit Luna workflows, native collaboration discovery, verification/rollback,
-readable diagnostics, clean owner recovery and inspectable history remain
-available. Workers, monitoring and reporting share one
-version, source commit, GitHub tag and release. A reporting-only fix still advances
-the product version; release notes identify which capabilities changed. Components
-remain optional and keep their own configuration, data and running processes.
+Workers, monitoring and reporting share one version, source commit, tag and
+release. You can install each archive separately. Each component keeps its
+own configuration, data and processes.
 
 The single release contains three archives, `release.json` and `SHA256SUMS`:
 
@@ -80,7 +50,7 @@ Preview.10's recap/history and loaded-MCP metadata refinements are retained. See
 revisions and checksums together from the published release; existing tags and
 artifacts are immutable. Documentation publication is a separate operation.
 
-From a clean committed checkout, build into a new directory outside it:
+To build a release yourself, start from a clean committed checkout and use a new directory outside it.
 
 ```sh
 scripts/codex-plus-release build --output /ABSOLUTE/OUTSIDE/REPO/release
@@ -287,3 +257,13 @@ with 21 declared runtime files plus its manifest. It remains historical/rollback
 evidence; it is not the current unified release. The
 [source-access report](source-access-pass-results.md) separates source, artifact,
 installed native qualification and managed wiring from live apply/enablement.
+
+## Earlier monitoring and worker releases
+
+If you’re upgrading an older installation, [feature availability by preview](getting-started.md#released-and-source-features)
+lists the changes from preview.9 onward. These guides explain the differences
+you’re most likely to notice.
+
+- **Worker requests.** Preview.18 introduced the named Sol, Astra and current-Terra tasks. Preview.26 changed the adaptive defaults for supported Sol and current Terra primaries. Preview.29 added parallel assignments. Check [worker eligibility](workers.md#optional-escalation) and [how parallel work is reviewed](workers.md#working-in-parallel) for the current behavior.
+- **Routing records.** The [private Sol study](routing-diagnostics.md#start-and-enroll) began in preview.22. Preview.27 added [usage for a single run](routing-diagnostics.md#current-run-usage). Preview.28 introduced the [Astra-primary study](routing-diagnostics.md#astra-primary-daily-study), including opt-in Sol assignments.
+- **Watches after a restart.** Preview.19 introduced verified restart recovery within the watch’s original limits. Preview.20 fixed monitoring startup and diagnosis. Preview.21 improved coordinator handoffs, callback receipts and reporting for peers with limited native history. The [owner recovery guide](owner-recovery.md) covers those cases and how to inspect archived history.

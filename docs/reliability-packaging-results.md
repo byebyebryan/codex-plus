@@ -613,7 +613,7 @@ correction did not re-audit those hosts. Unified plugins remain deferred.
 From this checkout:
 
 ```sh
-rtk proxy scripts/codex-plus-doctor --human
+scripts/codex-plus-doctor --human
 ```
 
 The formatter uses the existing diagnostic result. It reports the selected

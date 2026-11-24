@@ -4,28 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2213%22%20fill%3D%22%23a9d180%22%2F%3E%3Cpath%20d%3D%22M32%2015v34M15%2032h34%22%20stroke%3D%22%23111213%22%20stroke-width%3D%227%22%2F%3E%3C%2Fsvg%3E">
-<meta name="description" content="Follow six example requests in native Codex, build an adaptive worker prompt and compare passive watches with scheduled MCP inspections.">
+<meta name="description" content="Try example requests for workers, watches, session handoffs and HTML reports. See what Codex does while you keep working.">
 <title>Interactive walkthrough — Codex Plus</title>
 <style id="site-theme">
 :root {
-  color-scheme: light;
-  --paper: #f6f6f4;
-  --ink: #222524;
-  --secondary: #404541;
-  --surface: #ffffff;
-  --surface-alt: #e6e8e5;
-  --muted: #545c56;
-  --accent: #426628;
-  --line: #c1c6c2;
-  --accent-surface: #edf0e9;
-  --accent-line: #67795b;
-  --focus: #294b1e;
-  --warning: #834b13;
-  --graph-dot: #c9cec9;
-  --font-ui: "Noto Sans", Inter, system-ui, sans-serif;
-  --font-code: "MesloLGS Nerd Font", "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
-}
-:root:where([data-theme="dark"]) {
   color-scheme: dark;
   --paper: #111213;
   --ink: #efefec;
@@ -40,6 +22,24 @@
   --focus: #c4e39d;
   --warning: #e9b55f;
   --graph-dot: #383c3e;
+  --font-ui: "Noto Sans", Inter, system-ui, sans-serif;
+  --font-code: "MesloLGS Nerd Font", "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+:root:where([data-theme="light"]) {
+  color-scheme: light;
+  --paper: #f6f6f4;
+  --ink: #222524;
+  --secondary: #404541;
+  --surface: #ffffff;
+  --surface-alt: #e6e8e5;
+  --muted: #545c56;
+  --accent: #426628;
+  --line: #c1c6c2;
+  --accent-surface: #edf0e9;
+  --accent-line: #67795b;
+  --focus: #294b1e;
+  --warning: #834b13;
+  --graph-dot: #c9cec9;
 }
 .wordmark { display: inline-flex; align-items: baseline; color: var(--ink); font: 650 1.7rem/1.2 var(--font-ui); letter-spacing: -.08em; text-decoration: none; }
 .wordmark span { color: var(--accent); font-weight: 500; }
@@ -68,8 +68,8 @@ header .theme-switch:hover { background: var(--surface-alt); color: var(--ink); 
   const key = 'codex-plus.theme';
   const root = document.documentElement;
   function savedTheme() {
-    try { return localStorage.getItem(key) === 'dark' ? 'dark' : 'light'; }
-    catch { return root.dataset.theme || 'light'; }
+    try { return localStorage.getItem(key) === 'light' ? 'light' : 'dark'; }
+    catch { return root.dataset.theme || 'dark'; }
   }
   root.dataset.theme = savedTheme();
   document.addEventListener('DOMContentLoaded', () => {
@@ -304,7 +304,7 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
 <main id="main" class="wrap" tabindex="-1">
   <div class="walk-intro">
     <h1 id="title">Interactive walkthrough</h1>
-    <p>See what happens after you ask Codex to delegate, watch a job, or check back later. You can also build a worker request or compare which kinds of checks use a model turn.</p>
+    <p>What would you actually ask Codex to do? Try handing off a parser bug, finding out when an export stalls, or turning a deployment check into a report you can read in your browser.</p>
   </div>
   <div class="walk-layout">
   <nav class="chapters" id="package" aria-labelledby="package-title">
@@ -320,7 +320,7 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
   <section id="scenes" class="section" aria-labelledby="scenes-title">
     <div class="section-head">
       <h2 id="scenes-title">Follow a request</h2>
-      <p>Choose a conversation and follow it one step at a time. You can copy its opening request to try in your own session.</p>
+      <p>Choose a conversation to see what you’d ask and how Codex might reply. You can copy the opening request at any step.</p>
     </div>
     <div class="scene-picker" role="group" aria-label="Choose an illustrative scene" hidden data-enhanced>
       <button type="button" data-scene="adaptive" aria-pressed="true">Parallel work</button>
@@ -350,7 +350,7 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
             <button type="button" id="next" class="primary" aria-label="Next illustrative step">Next step →</button>
             <button type="button" id="reset" aria-label="Reset this illustrative scene">Reset</button>
           </div>
-          <button type="button" id="copy-request">Copy request</button>
+          <button type="button" id="copy-request">Copy opening request</button>
         </div>
         <p class="copy-status" id="copy-status" role="status"></p>
         <textarea id="manual-copy" aria-label="Request text for manual copying" hidden readonly></textarea>
@@ -360,10 +360,10 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
       <summary>Read the example transcripts</summary>
       <details data-example="adaptive">
         <summary>Two reading-list exporters</summary>
-        <p class="scope">Two workers own separate renderers. The primary owns the CLI and the cross-format checks.</p>
+        <p class="scope">One worker writes a Markdown table and another writes a plain-text list. Your main agent connects both to the CLI and tests them together.</p>
         <ol>
           <li data-stage="Contract">
-            <h4>Settle the record format</h4>
+            <h4>Agree on the fields</h4>
             <p class="input"><strong>You</strong> <span>$adaptive-task Add Markdown and plain-text exports to the reading-list CLI. Preserve each title, author and position in the list.</span></p>
             <p class="response"><strong>Primary</strong> <span>Both renderers can use the existing ordered list of title and author pairs. I’ll keep the CLI wiring here and give each renderer its own module and tests.</span></p>
             <p class="reason"><strong>Shared input.</strong> Both assignments can start as soon as the record format is settled.</p>
@@ -372,19 +372,19 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
             <h4>Give each writer its own files</h4>
             <p class="input"><strong>You</strong> <span>Can the two formats be implemented together?</span></p>
             <p class="response"><strong>Primary</strong> <span>Yes. One Luna assignment covers the Markdown table and its tests. A second covers the plain-text list and its tests. Each can run against the same fixture without editing the other’s files.</span></p>
-            <p class="reason"><strong>Ownership.</strong> The primary chooses a worker for each assignment and can take an independent part itself.</p>
+            <p class="reason"><strong>Ownership.</strong> Separate files let both workers start while the primary handles the CLI.</p>
           </li>
           <li data-stage="Integration">
             <h4>Check both formats through the CLI</h4>
             <p class="input"><strong>Worker returns</strong> <span>Both renderers are ready for review.</span></p>
             <p class="response"><strong>Primary</strong> <span>I’ll inspect both changes, connect the format switch, then run each export through the CLI. Using two books with the same title and different authors checks that both records survive in order.</span></p>
-            <p class="reason"><strong>Dependency.</strong> The CLI check needs both renderers. Each worker’s local tests cover only its own format.</p>
+            <p class="reason"><strong>Dependency.</strong> Trying both formats through the same command catches mistakes that renderer tests can miss.</p>
           </li>
           <li data-stage="Attribution">
-            <h4>Account for the work</h4>
+            <h4>See who did what</h4>
             <p class="input"><strong>You</strong> <span>Who did what, and what did you check?</span></p>
-            <p class="response"><strong>Primary</strong> <span>The two worker returns supplied the Markdown and plain-text renderers. I wired up the CLI and checked titles, authors and order in both outputs. The example records identify Luna Max for Markdown. The plain-text worker’s model is unconfirmed.</span></p>
-            <p class="reason"><strong>Evidence.</strong> Credit the reviewed work. Name the executed model and effort when native records establish them, and include token totals only when usage is available.</p>
+            <p class="response"><strong>Primary</strong> <span>The workers wrote the renderers. I connected them to the CLI and checked titles, authors and order in both outputs. The run confirms Luna Max wrote the Markdown renderer. The model for plain text is still unknown.</span></p>
+            <p class="reason"><strong>Evidence.</strong> The returned files show what each worker contributed. Codex checks the run records before naming the model or reporting tokens.</p>
           </li>
         </ol>
       </details>
@@ -399,9 +399,9 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
             <p class="reason"><strong>Invocation.</strong> An explicit Luna task selects Luna as the only delegated model.</p>
           </li>
           <li data-stage="Assignment">
-            <h4>Set the boundary</h4>
+            <h4>Keep the investigation read-only</h4>
             <p class="input"><strong>You</strong> <span>Preserve the other work in the checkout.</span></p>
-            <p class="response"><strong>Primary</strong> <span>The assignment covers the parser and its existing tests. Luna can investigate and propose a change within this read-only scope.</span></p>
+            <p class="response"><strong>Primary</strong> <span>Luna will read the parser and its tests, then bring back a failing input and a proposed change.</span></p>
             <p class="reason"><strong>Ownership.</strong> The primary identifies the files, the requested outcome and a way to check it.</p>
           </li>
           <li data-stage="Review">
@@ -420,13 +420,13 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
       </details>
       <details data-example="peer">
         <summary>Two independent sessions</summary>
-        <p class="scope">The packaging and review sessions share an owning Codex daemon.</p>
+        <p class="scope">Another agent owns the packaging report. Ask it to tell you when the draft is ready, then send it a follow-up from your own session.</p>
         <ol>
           <li data-stage="Request">
             <h4>Identify the session</h4>
             <p class="input"><strong>You</strong> <span>Watch the session preparing the packaging report and tell me when it is ready.</span></p>
             <p class="response"><strong>Primary</strong> <span>I’ll look at the project and recent work. If two sessions match, I’ll ask you to choose.</span></p>
-            <p class="reason"><strong>Selection.</strong> Peer discovery considers independent loaded sessions in the same daemon. Child workers have their own assignment channel.</p>
+            <p class="reason"><strong>Selection.</strong> Codex can find independent sessions open on the same daemon. Workers report back through the agent that assigned them.</p>
           </li>
           <li data-stage="Setup">
             <h4>Follow the selected peer</h4>
@@ -435,7 +435,7 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
             <p class="reason"><strong>Observation.</strong> The watch stays bound to the selected peer. Passive reads leave its work intact.</p>
           </li>
           <li data-stage="Update">
-            <h4>Inspect the readiness update</h4>
+            <h4>Find out what’s ready</h4>
             <p class="input"><strong>Peer update</strong> <span>The report owner marked the draft ready.</span></p>
             <p class="response"><strong>Primary</strong> <span>The draft is available for review. Its owner says the risk summary is still pending.</span></p>
             <p class="reason"><strong>Handling.</strong> A peer can report a draft ready while parts of the handoff remain open.</p>
@@ -443,49 +443,49 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
           <li data-stage="Handoff">
             <h4>Send a request and stop the watch</h4>
             <p class="input"><strong>You</strong> <span>Tell that session to include the risks, then stop watching it.</span></p>
-            <p class="response"><strong>Primary</strong> <span>The peer accepted the request for a risk summary. Completion is still unconfirmed. I’ve stopped the watch and the report session can continue.</span></p>
-            <p class="reason"><strong>Receipts.</strong> A handling receipt records the peer’s decision. Explicit stop prevents renewal or replacement of this watch.</p>
+            <p class="response"><strong>Primary</strong> <span>The report agent agreed to add the risks. I’ve stopped watching. We’re still waiting for word that the edit is ready.</span></p>
+            <p class="reason"><strong>Receipts.</strong> You can check whether the other agent accepted the request. The report session keeps working after you stop the watch.</p>
           </li>
         </ol>
       </details>
       <details data-example="endpoint">
-        <summary>An endpoint watch</summary>
-        <p class="scope">A command polls an accessible status endpoint and reports a meaningful change.</p>
+        <summary>An export that stops making progress</summary>
+        <p class="scope">A background command follows a running job. Codex checks in when the job stops making progress.</p>
         <ol>
           <li data-stage="Request">
-            <h4>Define the condition</h4>
+            <h4>Say what counts as a stall</h4>
             <p class="input"><strong>You</strong> <span>Watch this run and tell me if it stalls or fails.</span></p>
-            <p class="response"><strong>Primary</strong> <span>I’ll check the run’s status source and establish a progress window. If the intended endpoint is unclear, I’ll ask which one to use.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ll check where the run reports progress and how long it normally goes between updates. Which run should I follow?</span></p>
             <p class="reason"><strong>Scope.</strong> The watch uses the access already configured for the session.</p>
           </li>
           <li data-stage="Setup">
             <h4>Register a quiet watch</h4>
-            <p class="input"><strong>You</strong> <span>Continue with the other work.</span></p>
+            <p class="input"><strong>You</strong> <span>The export run. Flag it if the completed count stays flat for ten minutes.</span></p>
             <p class="response"><strong>Primary</strong> <span>I’ve registered the watch. I’ll report a stall, failure or loss of access. Routine reads can stay quiet.</span></p>
             <p class="reason"><strong>Observation.</strong> Short commands or a continuing script can poll without a model turn per read.</p>
           </li>
           <li data-stage="Update">
-            <h4>Interpret the signal</h4>
-            <p class="input"><strong>Endpoint update</strong> <span>The run is still marked running. Its progress has stayed flat for the agreed window.</span></p>
-            <p class="response"><strong>Primary</strong> <span>The progress window has elapsed. The run appears stalled and its endpoint still reports running.</span></p>
-            <p class="reason"><strong>Follow-up.</strong> The observation returns to the same conversation. Repairs depend on the existing authorization.</p>
+            <h4>Spot the stalled export</h4>
+            <p class="input"><strong>Endpoint update</strong> <span>Running. 42 of 80 files exported.</span></p>
+            <p class="response"><strong>Primary</strong> <span>The export still says “running,” but the count has been at 42 for ten minutes. It looks stalled.</span></p>
+            <p class="reason"><strong>Follow-up.</strong> You get the file count here and can decide what to do about the stalled export.</p>
           </li>
           <li data-stage="Stop">
             <h4>End observation</h4>
             <p class="input"><strong>You</strong> <span>Stop watching that run.</span></p>
-            <p class="response"><strong>Primary</strong> <span>I’ve stopped the watch. The run continues. I’ll distinguish any update that was already admitted before the stop.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ve stopped watching the export. The job is still running.</span></p>
             <p class="reason"><strong>Control.</strong> Explicit cancellation closes this observation and prevents renewal or replacement.</p>
           </li>
         </ol>
       </details>
       <details data-example="later">
         <summary>A later check and browser report</summary>
-        <p class="scope">A one-shot reminder brings the primary back to a configured tool.</p>
+        <p class="scope">You have other work to do while a deployment settles. Ask for one later check and a report at your usual address.</p>
         <ol>
           <li data-stage="Request">
-            <h4>Specify the later decision</h4>
-            <p class="input"><strong>You</strong> <span>Check the deployment again later, then make a browser report of what we learned.</span></p>
-            <p class="response"><strong>Primary</strong> <span>I’ll schedule one reassessment and use the configured deployment connection when it comes due.</span></p>
+            <h4>Ask for one later check</h4>
+            <p class="input"><strong>You</strong> <span>Check the deployment in twenty minutes. Put its status and any remaining risks in an HTML report.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ll set a reminder to check the deployment tool once and use what it reports.</span></p>
             <p class="reason"><strong>Scheduling.</strong> Registering the check leaves the conversation available for other work.</p>
           </li>
           <li data-stage="Setup">
@@ -496,32 +496,32 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
           </li>
           <li data-stage="Inspection">
             <h4>Read the configured source</h4>
-            <p class="input"><strong>Reminder</strong> <span>The conversation is available for the scheduled inspection.</span></p>
+            <p class="input"><strong>Reminder</strong> <span>Time to check the deployment.</span></p>
             <p class="response"><strong>Primary</strong> <span>The deployment tool now reports ready. I’ll include its result, the time of inspection and the remaining risks in the report.</span></p>
             <p class="reason"><strong>Permissions.</strong> The inspection uses the configured connection and its normal approvals.</p>
           </li>
           <li data-stage="Report">
-            <h4>Publish the handoff</h4>
+            <h4>Open the deployment report</h4>
             <p class="input"><strong>You</strong> <span>Give me the report link.</span></p>
-            <p class="response"><strong>Primary</strong> <span>I’ll publish the summary and return its immutable URL with the delivery result, so you can open the report after this session ends.</span></p>
-            <p class="reason"><strong>Delivery.</strong> The report component stores a static copy. Readers need access to the serving endpoint.</p>
+            <p class="response"><strong>Primary</strong> <span>The deployment report is ready. It shows the status I found, when I checked, and the risks still open. I verified that the report host is serving the saved copy.</span></p>
+            <p class="reason"><strong>Delivery.</strong> You can reopen that snapshot after the session ends from a browser that can reach the report host.</p>
           </li>
         </ol>
       </details>
       <details data-example="recap">
         <summary>A return to unfinished work</summary>
-        <p class="scope">The primary reads this conversation’s stored watches, reminders and outgoing message receipts.</p>
+        <p class="scope">Come back to a busy thread and find out which updates you’re still waiting for.</p>
         <ol>
           <li data-stage="Ask">
             <h4>Pick up the same conversation</h4>
             <p class="input"><strong>You</strong> <span>What am I still waiting on?</span></p>
-            <p class="response"><strong>Primary</strong> <span>I’ll check this conversation’s stored watches, reminder outcomes and outgoing messages before I summarize what still needs attention.</span></p>
-            <p class="reason"><strong>Inspection.</strong> A recap reads existing state. Starting or renewing observation is a separate action.</p>
+            <p class="response"><strong>Primary</strong> <span>I’ll look up what we’re watching, which checks have come back, and whether the packaging agent replied.</span></p>
+            <p class="reason"><strong>Inspection.</strong> Catching up reads the saved history. You can ask separately for a fresh check.</p>
           </li>
           <li data-stage="Recap">
             <h4>Read the stored receipts</h4>
             <p class="input"><strong>You</strong> <span>Show me the outstanding follow-ups.</span></p>
-            <p class="response"><strong>Primary</strong> <span>The packaging watch is registered. The CI reminder was received and its follow-up is pending. Packaging accepted “Review the release notes.” Its completion is unconfirmed.</span></p>
+            <p class="response"><strong>Primary</strong> <span>We’re still watching packaging. The CI check came due, but I don’t have its result yet. The packaging agent agreed to review the release notes. We’re waiting for its reply.</span></p>
             <p class="reason"><strong>Coverage.</strong> This recap uses cached receipts for this conversation. Fresh source status would require another check.</p>
           </li>
           <li data-stage="Attention">
@@ -533,7 +533,7 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
           <li data-stage="Close">
             <h4>Close the selected reminder</h4>
             <p class="input"><strong>You</strong> <span>Cancel the failed CI reminder.</span></p>
-            <p class="response"><strong>Primary</strong> <span>I’ve closed attention on that reminder. Its failure and handling receipts remain in history. The packaging watch continues.</span></p>
+            <p class="response"><strong>Primary</strong> <span>I’ve cancelled that reminder. You can still see the failed check in its history. I’m still watching packaging.</span></p>
             <p class="reason"><strong>Control.</strong> An acknowledged follow-up with no terminal receipt has an unknown outcome.</p>
           </li>
         </ol>
@@ -545,13 +545,13 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
   <section id="workers" class="section" aria-labelledby="workers-title">
     <div class="section-head">
       <h2 id="workers-title">Choose a worker request</h2>
-      <p>Use an adaptive workflow when the primary should choose who does the work. To request one model by name, use its task skill.</p>
+      <p>Want Luna to investigate a small bug or Astra to review a tricky decision? Name the worker in your request. If you prefer to leave that choice to your main agent, use an adaptive task or goal loop.</p>
     </div>
     <div class="panel worker-routing" aria-labelledby="worker-routing-title">
       <div class="two-col">
         <div class="split-copy">
           <h3 id="worker-routing-title">Build an adaptive request</h3>
-          <p>Choose a task for one outcome or a goal loop for work that needs follow-through across assignments. Your primary can always do the work directly or give Luna a suitable assignment.</p>
+          <p>Choose a task for one result, such as a code review. Choose a goal loop when you want the fixes and final checks too. Select your main model to see which workers it can call.</p>
           <p>Supported Sol and current Terra primaries can use Astra when the work warrants it. Terra can explicitly choose Sol instead. An Astra primary needs an opt-in to delegate to Sol.</p>
         </div>
         <div>
@@ -647,20 +647,20 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
   <section id="control" class="section" aria-labelledby="control-title">
     <div class="section-head"><h2 id="control-title">Pausing, stopping and catching up</h2></div>
     <div class="faq-grid" id="limits">
-      <details><summary>What does Esc do?</summary><p>Esc interrupts the foreground turn. Registered watches and reminders keep their own bounds. Say “Stop watching that run” to cancel its observation.</p></details>
-      <details><summary>Does stopping a watch stop the job?</summary><p>The observed job continues. Cancelling closes the selected watch and prevents renewal or replacement. An already admitted update may still be handled.</p></details>
+      <details><summary>What does Esc do?</summary><p>Esc interrupts the foreground turn. Your watches and reminders keep going until they expire or you cancel them. Say “Stop watching that run” to end one watch.</p></details>
+      <details><summary>Does stopping a watch stop the job?</summary><p>The job keeps running. Codex stops checking it. An update already queued in your conversation can still arrive.</p></details>
       <details><summary>What happens when a watch expires?</summary><p>The observation ends when its time or event allowance runs out. The primary can explicitly continue useful observation under the existing request. The job’s own status determines whether it finished.</p></details>
-      <details><summary>Can I leave the terminal?</summary><p>You can detach the TUI while the daemon retains supervision. Eligible observations can transfer after a verified daemon restart within their original bounds. Uncertain outcomes remain in history.</p></details>
+      <details><summary>Can I leave the terminal?</summary><p>You can detach the TUI and leave watches running while the owning daemon is available. After a verified daemon restart, eligible watches can resume within their original limits. History shows any gaps.</p></details>
       <details><summary>Which sessions can I reach?</summary><p>Peers are independent loaded sessions in the same daemon. The primary uses separate native worker controls to assign and review its child agents. Each daemon has its own peer directory.</p></details>
       <details><summary>Which permissions does a watch use?</summary><p>Watches use the source access already configured for your session. Changing a job or taking another action requires authorization for that action.</p></details>
-      <details><summary>How do I pick up unfinished work?</summary><p>Ask “What am I still waiting on?” The primary reads this conversation’s stored follow-ups and identifies missing or stale evidence. Ask for a fresh check when you need current source status.</p></details>
-      <details><summary>What does a receipt confirm?</summary><p>Acknowledgement records delivery. Acceptance records how a peer handled a request. A separate completion result is needed for the follow-up turn or external job.</p></details>
+      <details><summary>How do I pick up unfinished work?</summary><p>Ask “What am I still waiting on?” Codex reads this thread’s saved follow-ups and tells you how recent they are. Ask for a fresh check if you need to know what’s happening now.</p></details>
+      <details><summary>What does a receipt confirm?</summary><p>A delivery receipt tells you the message arrived. Acceptance means the other agent agreed to the request. Look for its reply or the finished work to see how it turned out.</p></details>
     </div>
   </section>
 
   <section id="environments" class="section" aria-labelledby="environments-title">
     <div class="section-head"><h2 id="environments-title">Separate personal and work sessions</h2>
-      <p>Select the Codex home for the project. Each environment can have its own daemon, monitoring state and report configuration.</p></div>
+      <p>If you use separate homes for personal and work projects, open the one that owns the task. Switch between the examples to see which sessions and reports you can reach.</p></div>
     <div class="panel environment-panel">
       <div>
         <div class="actions" role="group" aria-label="Example environment" hidden data-enhanced>
@@ -688,11 +688,11 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
   <section id="get-started" class="section" aria-labelledby="get-started-title">
     <div class="section-head">
       <h2 id="get-started-title">Install the components you need</h2>
-      <p>Workers, monitoring and reporting install separately. Workers use native agent tools. Monitoring adds watches, peer sessions and reminders. Reporting serves the HTML you choose to publish.</p>
+      <p>Choose workers for delegated tasks, monitoring for watches and messages, or reporting for browser reports. You can install any combination.</p>
     </div>
     <div id="setup">
       <h3 id="setup-title">Give your agent the management guide</h3>
-      <p>Ask it to install or upgrade Codex Plus. The guide walks it through release verification, the owner of your configuration and checks on the installed files.</p>
+      <p>Copy a request into your usual coding session. Your agent finds out what manages your configuration, verifies the release and checks the installed files.</p>
       <!-- management-requests -->
       <div class="actions"><a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/manage-agent.md">Install and manage</a>
         <a href="https://dev.byebyebryan.com/codex-plus/manage.md">Plain Markdown for your agent</a>
@@ -719,8 +719,8 @@ footer { border-top: 1px solid var(--line); color: var(--muted); }
       <a href="https://dev.byebyebryan.com/codex-plus/#guide-directory">All guides</a>
       <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/daily-use.md">Watches and reminders</a>
       <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/html-report-usage.md">HTML reports</a>
-      <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/session-communication.md">Session communication</a>
-      <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md">Worker workflows</a>
+      <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/session-communication.md">Session messages</a>
+      <a href="https://github.com/byebyebryan/codex-plus/blob/main/docs/workers.md">Worker routing and goal loops</a>
     </div>
   </section>
   </div>
